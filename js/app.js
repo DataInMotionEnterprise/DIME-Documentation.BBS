@@ -276,6 +276,7 @@
       }
     }
     if (!hotspot || !hotspot.panel) return;
+    dismissHint();
 
     // Clear previous active
     var prev = canvas.querySelectorAll('.hotspot.active');
@@ -431,6 +432,27 @@
     });
   }
 
+  // ── First-visit hint ──────────────────────────────────────────
+
+  var hotspotHint = document.getElementById('hotspot-hint');
+  var hintShown = false;
+
+  function showHintIfFirstVisit() {
+    if (localStorage.getItem('dime-hint-seen')) return;
+    // Delay so the page-enter animation plays first
+    setTimeout(function () {
+      hotspotHint.classList.add('visible');
+      hintShown = true;
+    }, 1600);
+  }
+
+  function dismissHint() {
+    if (!hintShown) return;
+    hotspotHint.classList.remove('visible');
+    hintShown = false;
+    localStorage.setItem('dime-hint-seen', '1');
+  }
+
   // ── Theme switcher ────────────────────────────────────────────
 
   function initThemeDots() {
@@ -483,6 +505,7 @@
     initSidebarResize();
     initThemeDots();
     scheduleGlitch();
+    showHintIfFirstVisit();
     panelClose.addEventListener('click', closePanel);
     sidebarToggle.addEventListener('click', toggleSidebar);
     document.addEventListener('keydown', handleKeyboard);

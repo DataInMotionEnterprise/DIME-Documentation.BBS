@@ -312,7 +312,46 @@ kbd {
 }
 
 .hotspot.active {
-  border-bottom: 1px dotted var(--cyan-dim);
+  border-bottom-color: #333;
+}
+
+/* Hotspot shimmer on page load */
+@keyframes hotspot-shimmer {
+  0%   { color: var(--amber); border-bottom-color: #333; }
+  40%  { color: var(--cyan); border-bottom-color: var(--cyan); text-shadow: 0 0 8px var(--cyan-glow); }
+  100% { color: var(--amber); border-bottom-color: #333; }
+}
+
+#ascii-canvas.entering .hotspot {
+  animation: hotspot-shimmer 1.2s ease-out 0.2s backwards;
+}
+
+/* First-visit hint toast */
+#hotspot-hint {
+  position: absolute;
+  bottom: 48px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--bg);
+  border: 1px solid var(--cyan-dim);
+  color: var(--cyan);
+  text-shadow: 0 0 6px var(--cyan-glow);
+  font-family: var(--font);
+  font-size: 12px;
+  padding: 6px 16px;
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  pointer-events: none;
+  z-index: 10;
+}
+
+#hotspot-hint.visible {
+  opacity: 1;
+}
+
+#canvas-wrap {
+  position: relative;
 }
 
 /* === Panel === */
