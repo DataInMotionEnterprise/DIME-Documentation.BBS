@@ -465,12 +465,24 @@
     }
   }
 
+  // ── CRT Glitch ────────────────────────────────────────────────
+
+  function scheduleGlitch() {
+    var delay = 30000 + Math.random() * 60000; // 30-90s → max 2/min
+    setTimeout(function () {
+      canvas.classList.add('glitch');
+      setTimeout(function () { canvas.classList.remove('glitch'); }, 200);
+      scheduleGlitch();
+    }, delay);
+  }
+
   // ── Init ───────────────────────────────────────────────────────
 
   function init() {
     buildSidebar();
     initSidebarResize();
     initThemeDots();
+    scheduleGlitch();
     panelClose.addEventListener('click', closePanel);
     sidebarToggle.addEventListener('click', toggleSidebar);
     document.addEventListener('keydown', handleKeyboard);

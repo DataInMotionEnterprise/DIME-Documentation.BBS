@@ -525,6 +525,25 @@ kbd {
   animation: page-enter 0.3s ease-out;
 }
 
+/* === CRT Glitch === */
+@keyframes glitch {
+  0%   { transform: translate(0) skewX(0); }
+  15%  { transform: translate(-4px, 0) skewX(-0.8deg); }
+  30%  { transform: translate(3px, 1px) skewX(0.5deg); }
+  45%  { transform: translate(-2px, -1px) skewX(-0.3deg); }
+  60%  { transform: translate(2px, 0) skewX(0.4deg); }
+  75%  { transform: translate(-1px, 1px); }
+  100% { transform: translate(0) skewX(0); }
+}
+
+#ascii-canvas.glitch {
+  animation: glitch 180ms linear;
+  text-shadow:
+    -2px 0 rgba(255, 0, 64, 0.7),
+     2px 0 rgba(0, 255, 255, 0.7),
+     0 0 3px var(--amber-glow);
+}
+
 /* === Loading State === */
 #ascii-canvas.loading {
   opacity: 0.3;
