@@ -87,7 +87,7 @@ DIME_PAGES['30'] = {
           '<li>Use <code>emit(\'debug/info\', value)</code> for printf-style debugging</li>' +
           '</ol>',
         related: [
-          { page: '09', label: '09 \u2014 Lua scripting guide' },
+          { page: '09', label: '09 \u2014 Scripting guide' },
           { page: '29', hotspot: 'bottlenecks', label: '29 \u2014 ScriptTime diagnostics' },
           { page: '30', hotspot: 'console-sink', label: 'Console sink for debugging' }
         ]

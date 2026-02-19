@@ -124,7 +124,7 @@ DIME_PAGES['06'] = {
           '<p>Scrapers are useful for integrating REST APIs and web services into the DIME data flow.</p>',
         related: [
           { page: '07', label: '07 \u2014 HTTP/WebSocket server sinks' },
-          { page: '09', label: '09 \u2014 Lua scripting & transforms' },
+          { page: '09', label: '09 \u2014 Scripting & transforms' },
           { page: '04', label: '04 \u2014 YAML configuration basics' }
         ]
       }
@@ -179,7 +179,7 @@ DIME_PAGES['06'] = {
           '          local c = cache("plc/Temperature", 0)\n' +
           '          return c * 1.8 + 32',
         related: [
-          { page: '09', label: '09 \u2014 Lua scripting deep dive' },
+          { page: '09', label: '09 \u2014 Scripting deep dive' },
           { page: '05', label: '05 \u2014 Architecture overview' },
           { page: '07', label: '07 \u2014 Sink connectors' }
         ]

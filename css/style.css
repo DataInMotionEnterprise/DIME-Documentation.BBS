@@ -357,6 +357,20 @@ kbd {
   list-style: none;
 }
 
+#panel-body ol {
+  margin: 8px 0 12px 0;
+  padding: 0 0 0 24px;
+}
+
+#panel-body ol li {
+  padding: 3px 0;
+  color: var(--amber);
+}
+
+#panel-body ol li::marker {
+  color: var(--cyan);
+}
+
 #panel-body ul li {
   padding: 3px 0 3px 16px;
   position: relative;

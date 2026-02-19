@@ -29,7 +29,7 @@ DIME_PAGES['11'] = {
           '    use_sink_transform: !!bool true',
         related: [
           { page: '07', label: '07 \u2014 Sink Connectors Catalog' },
-          { page: '09', label: '09 \u2014 Lua Scripting & Transforms' }
+          { page: '09', label: '09 \u2014 Scripting & transforms' }
         ]
       }
     },
@@ -47,7 +47,7 @@ DIME_PAGES['11'] = {
           '</ul>' +
           '<p>Both engines use <code>{{ }}</code> for variable interpolation. Choose whichever syntax you prefer.</p>',
         related: [
-          { page: '09', label: '09 \u2014 Lua Scripting (alternative to templates)' },
+          { page: '09', label: '09 \u2014 Scripting (alternative to templates)' },
           { page: '07', label: '07 \u2014 Sink Connectors Catalog' }
         ]
       }
@@ -70,7 +70,7 @@ DIME_PAGES['11'] = {
           '</ul>' +
           '<p>Use these variables in your template expressions to build dynamic output strings.</p>',
         related: [
-          { page: '09', label: '09 \u2014 Lua Scripting: the msg object' },
+          { page: '09', label: '09 \u2014 Scripting: the msg object' },
           { page: '08', label: '08 \u2014 Message Paths & Filtering' }
         ]
       }
@@ -118,7 +118,7 @@ DIME_PAGES['11'] = {
           '<p><strong>Best practice:</strong> Use Lua scripts to transform and enrich data on the source side, then use templates on each sink to format the enriched data for that sink\u2019s specific protocol or API format.</p>' +
           '<p>They work together: scripts prepare the data, templates shape the output.</p>',
         related: [
-          { page: '09', label: '09 \u2014 Lua Scripting & Transforms' },
+          { page: '09', label: '09 \u2014 Scripting & transforms' },
           { page: '10', label: '10 \u2014 Cache API: cross-connector state' },
           { page: '12', label: '12 \u2014 PLC to Dashboard Walkthrough' }
         ]

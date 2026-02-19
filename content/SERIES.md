@@ -16,7 +16,7 @@ A series of 30 ASCII infographics for users and integrators of the DIME platform
 | 06 | `06-source-connectors.md`          | Source Connectors Catalog                | pending |
 | 07 | `07-sink-connectors.md`            | Sink Connectors Catalog                  | pending |
 | 08 | `08-message-paths-filtering.md`    | Message Paths, Filtering & Routing       | pending |
-| 09 | `09-lua-scripting.md`              | Lua Scripting & Transforms               | pending |
+| 09 | `09-scripting.md`                  | Scripting (Lua & Python)                  | pending |
 | 10 | `10-cache-api.md`                  | The Cache API — Cross-Connector State    | pending |
 | 11 | `11-templates-formatting.md`       | Templates & Output Formatting            | pending |
 | 12 | `12-plc-to-dashboard.md`          | Walkthrough: PLC to Dashboard            | pending |
@@ -45,7 +45,7 @@ A series of 30 ASCII infographics for users and integrators of the DIME platform
 
 ```
 GETTING STARTED          CORE CONCEPTS            DATA TRANSFORMATION
-  01  What Is DIME?        05  Architecture          09  Lua Scripting
+  01  What Is DIME?        05  Architecture          09  Scripting
   02  The Ecosystem        06  Source Connectors      10  Cache API
   03  Installation         07  Sink Connectors        11  Templates
   04  YAML Basics          08  Filtering & Routing
@@ -212,7 +212,7 @@ ENTERPRISE FLEET         ADVANCED
 
 ---
 
-## 09 — Lua Scripting & Transforms
+## 09 — Scripting (Lua & Python)
 
 **Goal:** Show the scripting power without making it feel complex.
 

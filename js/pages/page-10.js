@@ -27,7 +27,7 @@ DIME_PAGES['10'] = {
           '  local pressure = cache(\'plc1/pressure\', 0)\n' +
           '  return temp * pressure',
         related: [
-          { page: '09', label: '09 \u2014 Lua Scripting & Transforms' },
+          { page: '09', label: '09 \u2014 Scripting & transforms' },
           { page: '08', label: '08 \u2014 Message Paths & Filtering' }
         ]
       }
@@ -55,7 +55,7 @@ DIME_PAGES['10'] = {
           '  set(\'my_counter\', count + 1)\n' +
           '  return count + 1',
         related: [
-          { page: '09', label: '09 \u2014 Lua Scripting: emit() function' },
+          { page: '09', label: '09 \u2014 Scripting: emit() function' },
           { page: '11', label: '11 \u2014 Templates & Output Formatting' }
         ]
       }
@@ -76,7 +76,7 @@ DIME_PAGES['10'] = {
           '</ul>' +
           '<p>The timestamp is a Unix epoch value matching the original message timestamp from the source.</p>',
         related: [
-          { page: '09', label: '09 \u2014 Lua Scripting & Transforms' },
+          { page: '09', label: '09 \u2014 Scripting & transforms' },
           { page: '08', label: '08 \u2014 Message Paths & Filtering' }
         ]
       }
@@ -97,7 +97,7 @@ DIME_PAGES['10'] = {
           '</ul>' +
           '<p>The cache store is global and in-memory. All paths from all sources are accessible to all scripts.</p>',
         related: [
-          { page: '09', label: '09 \u2014 Lua Scripting & Transforms' },
+          { page: '09', label: '09 \u2014 Scripting & transforms' },
           { page: '11', label: '11 \u2014 Templates & Output Formatting' }
         ]
       }
@@ -125,7 +125,7 @@ DIME_PAGES['10'] = {
           '      - plc1\n' +
           '      - weather',
         related: [
-          { page: '09', label: '09 \u2014 Lua Scripting & Transforms' },
+          { page: '09', label: '09 \u2014 Scripting & transforms' },
           { page: '08', label: '08 \u2014 Message Paths & Filtering' },
           { page: '11', label: '11 \u2014 Templates & Output Formatting' }
         ]

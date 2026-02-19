@@ -113,7 +113,7 @@ DIME_PAGES['15'] = {
           '    false\n' +
           '  )',
         related: [
-          { page: '09', label: '09 \u2014 Lua scripting' },
+          { page: '09', label: '09 \u2014 Scripting' },
           { page: '15', hotspot: 'agent-sink', label: 'MTConnect Agent sink' },
           { page: '12', label: '12 \u2014 PLC walkthrough' }
         ]
@@ -135,7 +135,7 @@ DIME_PAGES['15'] = {
         related: [
           { page: '06', label: '06 \u2014 Source connectors' },
           { page: '15', hotspot: 'agent-sink', label: 'MTConnect Agent sink' },
-          { page: '09', label: '09 \u2014 Lua scripting' }
+          { page: '09', label: '09 \u2014 Scripting' }
         ]
       }
     }

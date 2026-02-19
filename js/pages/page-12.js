@@ -61,7 +61,7 @@ DIME_PAGES['12'] = {
           '      local data = from_json(result)\n' +
           '      return data.Value * 1.8 + 32  -- C to F',
         related: [
-          { page: '09', label: '09 \u2014 Lua scripting' },
+          { page: '09', label: '09 \u2014 Scripting' },
           { page: '04', label: '04 \u2014 YAML basics' }
         ]
       }
@@ -144,7 +144,7 @@ DIME_PAGES['12'] = {
         related: [
           { page: '06', label: '06 \u2014 Source connectors' },
           { page: '07', label: '07 \u2014 Sink connectors' },
-          { page: '09', label: '09 \u2014 Lua scripting' },
+          { page: '09', label: '09 \u2014 Scripting' },
           { page: '04', label: '04 \u2014 YAML basics' }
         ]
       }
