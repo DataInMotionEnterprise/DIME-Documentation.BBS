@@ -175,12 +175,13 @@
     }
     if (!page) return;
 
-    // Close panel
-    closePanel();
+    // Close panel (don't update hash — navigation already set it)
+    closePanel(false);
 
     currentPageId = pageId;
     currentHotspots = page.hotspots || [];
     updateSidebarActive(pageId);
+    markVisited(pageId);
     closeSidebar();
 
     // Scroll sidebar to active item
@@ -276,7 +277,6 @@
       }
     }
     if (!hotspot || !hotspot.panel) return;
-    dismissHint();
 
     // Clear previous active
     var prev = canvas.querySelectorAll('.hotspot.active');
@@ -347,13 +347,20 @@
     // Open panel
     shell.classList.add('panel-open');
     sidebarToggle.style.display = 'none';
+
+    // Update URL with hotspot deep-link (replaceState avoids re-triggering hashchange)
+    history.replaceState(null, '', '#page-' + currentPageId + ':' + hotspotId);
   }
 
-  function closePanel() {
+  function closePanel(updateHash) {
     shell.classList.remove('panel-open');
     sidebarToggle.style.display = '';
     var active = canvas.querySelectorAll('.hotspot.active');
     for (var i = 0; i < active.length; i++) active[i].classList.remove('active');
+    // Remove hotspot from URL (only when user-initiated, not during page nav)
+    if (updateHash !== false && currentPageId) {
+      history.replaceState(null, '', '#page-' + currentPageId);
+    }
   }
 
   // ── Keyboard ───────────────────────────────────────────────────
@@ -362,12 +369,37 @@
     // Search is open — let it handle its own keys
     if (searchModal.classList.contains('open')) return;
 
+    // Shortcut modal is open
+    if (shortcutModal.classList.contains('open')) {
+      if (e.key === 'Escape') { closeShortcuts(); e.preventDefault(); }
+      return;
+    }
+
     // Ctrl+K or / — open search
     if ((e.key === 'k' && (e.ctrlKey || e.metaKey)) ||
         (e.key === '/' && !e.ctrlKey && !e.metaKey && !e.altKey &&
          document.activeElement.tagName !== 'INPUT')) {
       e.preventDefault();
       openSearch();
+      return;
+    }
+
+    // ? — open shortcut help
+    if (e.key === '?' && document.activeElement.tagName !== 'INPUT') {
+      e.preventDefault();
+      openShortcuts();
+      return;
+    }
+
+    // Ctrl+= / Ctrl+- — font size
+    if ((e.ctrlKey || e.metaKey) && (e.key === '=' || e.key === '+')) {
+      e.preventDefault();
+      changeFontSize(1);
+      return;
+    }
+    if ((e.ctrlKey || e.metaKey) && e.key === '-') {
+      e.preventDefault();
+      changeFontSize(-1);
       return;
     }
 
@@ -405,16 +437,22 @@
 
   // ── Router ─────────────────────────────────────────────────────
 
-  function getPageIdFromHash() {
+  function parseHash() {
     var hash = window.location.hash;
-    var match = hash.match(/^#page-([\w]+)$/);
-    return match ? match[1] : '01';
+    var match = hash.match(/^#page-([\w]+)(?::([\w-]+))?$/);
+    return match ? { pageId: match[1], hotspotId: match[2] || null } : { pageId: '01', hotspotId: null };
   }
 
   function onHashChange() {
-    var pageId = getPageIdFromHash();
-    if (pageId !== currentPageId) {
-      loadPage(pageId);
+    var parsed = parseHash();
+    if (parsed.pageId !== currentPageId) {
+      loadPage(parsed.pageId).then(function () {
+        if (parsed.hotspotId) {
+          setTimeout(function () { activateHotspot(parsed.hotspotId); }, 100);
+        }
+      });
+    } else if (parsed.hotspotId) {
+      activateHotspot(parsed.hotspotId);
     }
   }
 
@@ -702,31 +740,10 @@
     });
   }
 
-  // ── First-visit hint ──────────────────────────────────────────
-
-  var hotspotHint = document.getElementById('hotspot-hint');
-  var hintShown = false;
-
-  function showHintIfFirstVisit() {
-    if (localStorage.getItem('dime-hint-seen')) return;
-    // Delay so the page-enter animation plays first
-    setTimeout(function () {
-      hotspotHint.classList.add('visible');
-      hintShown = true;
-    }, 1600);
-  }
-
-  function dismissHint() {
-    if (!hintShown) return;
-    hotspotHint.classList.remove('visible');
-    hintShown = false;
-    localStorage.setItem('dime-hint-seen', '1');
-  }
-
   // ── Theme switcher ────────────────────────────────────────────
 
   function initThemeDots() {
-    var dots = document.querySelectorAll('#theme-dots .dot');
+    var dots = document.querySelectorAll('#bottom-controls .dot');
     var saved = localStorage.getItem('dime-theme') || 'amber';
     applyTheme(saved);
 
@@ -747,7 +764,7 @@
     }
     localStorage.setItem('dime-theme', name);
 
-    var dots = document.querySelectorAll('#theme-dots .dot');
+    var dots = document.querySelectorAll('#bottom-controls .dot');
     for (var i = 0; i < dots.length; i++) {
       if (dots[i].getAttribute('data-theme') === name) {
         dots[i].classList.add('active');
@@ -755,6 +772,72 @@
         dots[i].classList.remove('active');
       }
     }
+  }
+
+  // ── Font size ─────────────────────────────────────────────────
+
+  var fontSize = parseInt(localStorage.getItem('dime-font-size'), 10) || 13;
+  var FONT_MIN = 9;
+  var FONT_MAX = 20;
+
+  function applyFontSize() {
+    canvas.style.fontSize = fontSize + 'px';
+    localStorage.setItem('dime-font-size', fontSize);
+  }
+
+  function changeFontSize(delta) {
+    fontSize = Math.max(FONT_MIN, Math.min(FONT_MAX, fontSize + delta));
+    applyFontSize();
+  }
+
+  function initFontControls() {
+    applyFontSize();
+    document.getElementById('font-up').addEventListener('click', function () { changeFontSize(1); });
+    document.getElementById('font-down').addEventListener('click', function () { changeFontSize(-1); });
+  }
+
+  // ── Visited pages ────────────────────────────────────────────
+
+  var visited = {};
+
+  function loadVisited() {
+    try {
+      visited = JSON.parse(localStorage.getItem('dime-visited') || '{}');
+    } catch (e) { visited = {}; }
+  }
+
+  function markVisited(pageId) {
+    if (visited[pageId]) return;
+    visited[pageId] = 1;
+    localStorage.setItem('dime-visited', JSON.stringify(visited));
+    var link = pageList.querySelector('a[data-page-id="' + pageId + '"]');
+    if (link) link.classList.add('visited');
+  }
+
+  function applyVisitedMarks() {
+    var links = pageList.querySelectorAll('a');
+    for (var i = 0; i < links.length; i++) {
+      var id = links[i].getAttribute('data-page-id');
+      if (visited[id]) links[i].classList.add('visited');
+    }
+  }
+
+  // ── Shortcut help ────────────────────────────────────────────
+
+  var shortcutModal = document.getElementById('shortcut-modal');
+
+  function openShortcuts() {
+    shortcutModal.classList.add('open');
+  }
+
+  function closeShortcuts() {
+    shortcutModal.classList.remove('open');
+  }
+
+  function initShortcutModal() {
+    shortcutModal.addEventListener('click', function (e) {
+      if (e.target === shortcutModal) closeShortcuts();
+    });
   }
 
   // ── CRT Glitch ────────────────────────────────────────────────
@@ -772,23 +855,30 @@
 
   function init() {
     buildSidebar();
+    loadVisited();
+    applyVisitedMarks();
     initSidebarResize();
     initThemeDots();
+    initFontControls();
     initSearch();
     initCopyBody();
+    initShortcutModal();
     scheduleGlitch();
-    showHintIfFirstVisit();
     panelClose.addEventListener('click', closePanel);
     sidebarToggle.addEventListener('click', toggleSidebar);
     document.addEventListener('keydown', handleKeyboard);
     window.addEventListener('hashchange', onHashChange);
 
     // Load initial page
-    var initialPage = getPageIdFromHash();
+    var initial = parseHash();
     if (!window.location.hash) {
       window.location.hash = 'page-01';
     } else {
-      loadPage(initialPage);
+      loadPage(initial.pageId).then(function () {
+        if (initial.hotspotId) {
+          setTimeout(function () { activateHotspot(initial.hotspotId); }, 100);
+        }
+      });
     }
   }
 

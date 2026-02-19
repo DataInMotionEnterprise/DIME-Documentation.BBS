@@ -27,7 +27,6 @@
       <button id="copy-page" title="Copy page as markdown">Copy</button>
       <pre id="ascii-canvas"></pre>
       <nav id="page-nav"></nav>
-      <div id="hotspot-hint">Click highlighted text for details</div>
     </main>
     <aside id="panel">
       <div id="panel-header">
@@ -47,10 +46,26 @@
       <div id="search-footer"><kbd>/</kbd> search &nbsp; <kbd>&uarr;</kbd><kbd>&darr;</kbd> navigate &nbsp; <kbd>Enter</kbd> open &nbsp; <kbd>Esc</kbd> close</div>
     </div>
   </div>
-  <div id="theme-dots">
+  <div id="bottom-controls">
+    <button id="font-down" title="Decrease font size">&minus;</button>
+    <button id="font-up" title="Increase font size">+</button>
+    <span class="controls-sep"></span>
     <span class="dot dot-amber active" data-theme="amber" title="Amber"></span>
     <span class="dot dot-green" data-theme="green" title="Green"></span>
     <span class="dot dot-white" data-theme="white" title="White"></span>
+  </div>
+  <div id="shortcut-modal">
+    <div id="shortcut-box">
+      <div id="shortcut-title">Keyboard Shortcuts</div>
+      <table id="shortcut-table">
+        <tr><td><kbd>/</kbd> or <kbd>Ctrl+K</kbd></td><td>Search pages &amp; topics</td></tr>
+        <tr><td><kbd>&uarr;</kbd> <kbd>&darr;</kbd></td><td>Previous / next page</td></tr>
+        <tr><td><kbd>Esc</kbd></td><td>Close panel or modal</td></tr>
+        <tr><td><kbd>Ctrl +</kbd> <kbd>Ctrl &minus;</kbd></td><td>Increase / decrease font</td></tr>
+        <tr><td><kbd>?</kbd></td><td>Show this help</td></tr>
+      </table>
+      <div id="shortcut-footer">Press <kbd>Esc</kbd> to close</div>
+    </div>
   </div>
   <div id="scanlines"></div>
   <div id="vignette"></div>
