@@ -25,12 +25,12 @@
 │   │   │  init_script │   Set up caches, load lookup tables, initialize state.               │    │
 │   │   └──────┬───────┘                                                                      │    │
 │   │          │                                                                              │    │
-│   │          ▼                          ┌──────────────────────────────────────────┐         │   │
-│   │   ┌──────────────────┐              │                                          │         │   │
-│   │   │ loop_enter_script│              │   Runs ONCE per scan cycle, BEFORE       │         │   │
-│   │   └──────┬───────────┘              │   any items are read. Good for           │         │   │
-│   │          │                          │   resetting per-loop accumulators.        │         │  │
-│   │          ▼                          └──────────────────────────────────────────┘         │   │
+│   │          ▼                          ┌──────────────────────────────────────────┐        │    │
+│   │   ┌──────────────────┐              │                                          │        │    │
+│   │   │ loop_enter_script│              │   Runs ONCE per scan cycle, BEFORE       │        │    │
+│   │   └──────┬───────────┘              │   any items are read. Good for           │        │    │
+│   │          │                          │   resetting per-loop accumulators.       │        │    │
+│   │          ▼                          └──────────────────────────────────────────┘        │    │
 │   │   ┌──────────────────┐                                                                  │    │
 │   │   │ loop_item_script │◄──── Runs ONCE PER ITEM, every scan cycle.                       │    │
 │   │   │  (or "script")   │      This is where transforms happen.                            │    │
@@ -38,12 +38,12 @@
 │   │   └──────┬───────────┘      Return the transformed value.                               │    │
 │   │          │ (repeats                                                                     │    │
 │   │          │  for each item)                                                              │    │
-│   │          ▼                          ┌──────────────────────────────────────────┐         │   │
-│   │   ┌──────────────────┐              │                                          │         │   │
-│   │   │ loop_exit_script │              │   Runs ONCE per scan cycle, AFTER        │         │   │
-│   │   └──────┬───────────┘              │   all items are read. Good for           │         │   │
-│   │          │                          │   aggregations, summaries, batch emits.  │         │   │
-│   │          │                          └──────────────────────────────────────────┘         │   │
+│   │          ▼                          ┌──────────────────────────────────────────┐        │    │
+│   │   ┌──────────────────┐              │                                          │        │    │
+│   │   │ loop_exit_script │              │   Runs ONCE per scan cycle, AFTER        │        │    │
+│   │   └──────┬───────────┘              │   all items are read. Good for           │        │    │
+│   │          │                          │   aggregations, summaries, batch emits.  │        │    │
+│   │          │                          └──────────────────────────────────────────┘        │    │
 │   │          │                                                                              │    │
 │   │    (loop repeats every scan_interval)                                                   │    │
 │   │          │                                                                              │    │
@@ -200,16 +200,16 @@
 │   │   KEY DIFFERENCES:                                                           │               │
 │   │   ────────────────                                                           │               │
 │   │                                                                              │               │
-│   │   ┌────────────────────┬────────────────────────────────────────┐             │              │
-│   │   │  Feature           │  Details                               │             │              │
-│   │   ├────────────────────┼────────────────────────────────────────┤             │              │
-│   │   │  Runtime           │  Embedded CLR Python (IronPython)      │             │              │
-│   │   │  Module imports    │  Standard library + custom modules     │             │              │
-│   │   │  Performance       │  Slower than Lua — use for complex     │             │              │
-│   │   │                    │  transforms only                       │             │              │
-│   │   │  Default (if not   │  Lua — faster startup, lower overhead  │             │              │
-│   │   │  specified)        │                                        │             │              │
-│   │   └────────────────────┴────────────────────────────────────────┘             │              │
+│   │   ┌────────────────────┬────────────────────────────────────────┐            │               │
+│   │   │  Feature           │  Details                               │            │               │
+│   │   ├────────────────────┼────────────────────────────────────────┤            │               │
+│   │   │  Runtime           │  Embedded CLR Python (IronPython)      │            │               │
+│   │   │  Module imports    │  Standard library + custom modules     │            │               │
+│   │   │  Performance       │  Slower than Lua — use for complex     │            │               │
+│   │   │                    │  transforms only                       │            │               │
+│   │   │  Default (if not   │  Lua — faster startup, lower overhead  │            │               │
+│   │   │  specified)        │                                        │            │               │
+│   │   └────────────────────┴────────────────────────────────────────┘            │               │
 │   │                                                                              │               │
 │   └──────────────────────────────────────────────────────────────────────────────┘               │
 │                                                                                                  │

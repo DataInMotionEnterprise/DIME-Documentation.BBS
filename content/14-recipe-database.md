@@ -19,7 +19,7 @@
 │    Sources                         Ring Buffer                     Database Sinks                │
 │    ───────                         ───────────                     ──────────────                │
 │                                                                                                  │
-│    ┌──────────┐                 ┌──────────────┐              ┌──────────────────┐               │
+│    ┌──────────┐                ┌──────────────┐              ┌──────────────────┐                │
 │    │ PLC      │──────┐         │              │       ┌─────▶│ InfluxDB         │                │
 │    │ (OPC-UA) │      │         │  ┌────────┐  │       │      │ time-series      │                │
 │    └──────────┘      │         │  │  ····  │  │       │      │ bucket: factory  │                │
@@ -201,11 +201,11 @@
 │   │   Flow:                                                                      │               │
 │   │     Timer fires ──▶ Execute query ──▶ Iterate rows ──▶ Publish each          │               │
 │   │                                                                              │               │
-│   │   ┌─────────┐      ┌─────────────┐      ┌────────────┐      ┌──────────┐    │                │
-│   │   │  Timer  │─────▶│  SQL Query  │─────▶│  Row 1     │─────▶│ Ring     │    │                │
-│   │   │  fires  │      │  executes   │      │  Row 2     │      │ Buffer   │    │                │
-│   │   │         │      │             │      │  Row 3...  │      │          │    │                │
-│   │   └─────────┘      └─────────────┘      └────────────┘      └──────────┘    │                │
+│   │   ┌─────────┐      ┌─────────────┐      ┌────────────┐      ┌──────────┐     │               │
+│   │   │  Timer  │─────▶│  SQL Query  │─────▶│  Row 1     │─────▶│ Ring     │     │               │
+│   │   │  fires  │      │  executes   │      │  Row 2     │      │ Buffer   │     │               │
+│   │   │         │      │             │      │  Row 3...  │      │          │     │               │
+│   │   └─────────┘      └─────────────┘      └────────────┘      └──────────┘     │               │
 │   │                                                                              │               │
 │   │   Each column becomes a path:  db_reader/query1/col_name                     │               │
 │   │   scan_interval controls how often the query runs.                           │               │

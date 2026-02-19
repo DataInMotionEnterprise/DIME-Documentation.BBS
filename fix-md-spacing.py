@@ -2,10 +2,11 @@
 """
 Fix spacing issues in DIME ASCII art .md content files.
 
-Three passes:
+Four passes:
   1. Outer border width — normalizes all lines to consistent width (from top border)
   2. Inner alignment (space-based) — aligns │ within box groups via majority vote
   3. Inner alignment (arrow-aware) — handles ────▶│ connections and text overflow
+  4. Box border tracking — finds ┌┐/└┘ corners and enforces consistent │ positions
 
 Usage:
     python fix-md-spacing.py                    # fix all .md files in content/
@@ -236,6 +237,109 @@ def fix_inner(lines, target_len, fix_fn):
     return fixed
 
 
+# ── Pass 4: Box border tracking ──────────────────────────────────────────────
+
+def find_boxes(lines):
+    """Find box regions defined by ┌┐ (top) and └┘ (bottom) corner pairs."""
+    boxes = []
+    # Find top borders: lines containing ┌ and ┐ as inner characters
+    tops = []
+    for i, line in enumerate(lines):
+        corners = [(j, c) for j, c in enumerate(line) if c in '┌┐' and 0 < j < len(line) - 1]
+        lefts = [j for j, c in corners if c == '┌']
+        rights = [j for j, c in corners if c == '┐']
+        for lc in lefts:
+            for rc in rights:
+                if rc > lc:
+                    tops.append((i, lc, rc))
+
+    # For each top, find matching bottom
+    for top_line, left_col, right_col in tops:
+        for i in range(top_line + 1, min(top_line + 200, len(lines))):
+            line = lines[i]
+            if left_col < len(line) and right_col < len(line):
+                if line[left_col] == '└' and line[right_col] == '┘':
+                    boxes.append((top_line, i, left_col, right_col))
+                    break
+    return boxes
+
+
+def fix_box_borders(lines, target_len):
+    """Pass 4: enforce consistent │ positions within boxes defined by corners."""
+    boxes = find_boxes(lines)
+    fixed = 0
+
+    for top_line, bot_line, left_col, right_col in boxes:
+        # Fix lines between top and bottom borders
+        for i in range(top_line + 1, bot_line):
+            line = lines[i]
+            if len(line) != target_len:
+                continue
+
+            # Check left border
+            for col, expected in [(left_col, '│'), (right_col, '│')]:
+                actual_char = line[col] if col < len(line) else None
+                if actual_char in VERTS:
+                    continue  # already correct position
+
+                # Look for the vert nearby (±1, ±2)
+                found = None
+                for offset in [1, -1, 2, -2]:
+                    nc = col + offset
+                    if 0 < nc < len(line) - 1 and line[nc] in VERTS:
+                        # Verify this is likely the same border (not a different box)
+                        found = (nc, offset)
+                        break
+
+                if found is None:
+                    continue
+
+                nc, offset = found
+                chars = list(line)
+
+                if offset > 0:
+                    # Vert is too far right — remove spaces before it
+                    # Find spaces to remove between col and nc
+                    removable = []
+                    for j in range(col, nc):
+                        if chars[j] == ' ':
+                            removable.append(j)
+                    if len(removable) >= offset:
+                        for j in sorted(removable[:offset], reverse=True):
+                            del chars[j]
+                        # Pad to maintain line length — add spaces after the vert
+                        # Find a good spot: trailing space before next vert or end
+                        result = chars
+                        while len(result) < target_len:
+                            # Add space after the vert (now at col)
+                            result.insert(col + 1, ' ')
+                        line = ''.join(result[:target_len])
+                    else:
+                        continue
+                else:
+                    # Vert is too far left — remove spaces after it
+                    removable = []
+                    for j in range(nc + 1, col + 1):
+                        if chars[j] == ' ':
+                            removable.append(j)
+                    if len(removable) >= abs(offset):
+                        for j in sorted(removable[:abs(offset)], reverse=True):
+                            del chars[j]
+                        # Pad — add spaces before the vert
+                        result = chars
+                        while len(result) < target_len:
+                            result.insert(nc, ' ')
+                        line = ''.join(result[:target_len])
+                    else:
+                        continue
+
+                if len(line) == target_len and line[col] in VERTS:
+                    lines[i] = line
+                    fixed += 1
+
+    return fixed
+
+
 # ── Main ─────────────────────────────────────────────────────────────────────
 
 def process_file(path):
@@ -251,36 +355,38 @@ def process_file(path):
     n1 = fix_outer_widths(lines, target)
     n2 = fix_inner(lines, target, fix_line_space)
     n3 = fix_inner(lines, target, fix_line_segment)
+    n4 = fix_box_borders(lines, target)
 
-    if n1 + n2 + n3 > 0:
+    if n1 + n2 + n3 + n4 > 0:
         with open(path, 'w', encoding='utf-8', newline='') as f:
             f.write('\n'.join(lines))
             if lines[-1] != '':
                 f.write('\n')
-    return n1, n2, n3
+    return n1, n2, n3, n4
 
 
 def main():
     files = sys.argv[1:] if len(sys.argv) > 1 else None
 
-    total = [0, 0, 0]
+    total = [0, 0, 0, 0]
     for fname in sorted(os.listdir(CONTENT_DIR)):
         if not fname.endswith('.md') or fname == 'SERIES.md':
             continue
         if files and fname not in files:
             continue
         path = os.path.join(CONTENT_DIR, fname)
-        n1, n2, n3 = process_file(path)
-        s = n1 + n2 + n3
+        n1, n2, n3, n4 = process_file(path)
+        s = n1 + n2 + n3 + n4
         if s > 0:
-            print(f'{fname}: outer={n1}  inner/space={n2}  inner/segment={n3}')
+            print(f'{fname}: outer={n1}  inner/space={n2}  inner/segment={n3}  box={n4}')
         total[0] += n1
         total[1] += n2
         total[2] += n3
+        total[3] += n4
 
     t = sum(total)
     if t > 0:
-        print(f'\nTotal: {t} fixes (outer={total[0]}, inner/space={total[1]}, inner/segment={total[2]})')
+        print(f'\nTotal: {t} fixes (outer={total[0]}, inner/space={total[1]}, inner/segment={total[2]}, box={total[3]})')
     else:
         print('No issues found.')
 

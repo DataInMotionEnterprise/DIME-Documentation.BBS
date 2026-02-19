@@ -125,9 +125,9 @@
 │   │   │  DIME$Plant1             │  │  DIME$Plant2             │                             │   │
 │   │   │  :9001 / :9002           │  │  :9003 / :9004           │                             │   │
 │   │   │                          │  │                          │                             │   │
-│   │   │  ┌─ Sources ─┐          │  │  ┌─ Sources ─┐          │                             │     │
-│   │   │  │ PLC Line 1│──▶ Ring  │  │  │ PLC Line 2│──▶ Ring  │                             │     │
-│   │   │  └───────────┘   ──▶MQTT│  │  └───────────┘   ──▶MQTT│                             │     │
+│   │   │  ┌─ Sources ─┐           │  │ ┌─ Sources ─┐            │                             │   │
+│   │   │  │ PLC Line 1│──▶ Ring   │  │ │ PLC Line 2│──▶ Ring    │                             │   │
+│   │   │  └───────────┘   ──▶MQTT │  │ └───────────┘   ──▶MQTT  │                             │   │
 │   │   │                          │  │                          │                             │   │
 │   │   └──────────────────────────┘  └──────────────────────────┘                             │   │
 │   │                                                                                          │   │
@@ -145,16 +145,16 @@
 │   │  WINDOWS                                 │  │  LINUX                                   │     │
 │   │                                          │  │                                          │     │
 │   │  C:\Program Files\DIME\                  │  │  /opt/dime-connector/                    │     │
-│   │  ├── DIME.exe                             │  │  ├── DIME                                 │   │
-│   │  ├── Configs\                             │  │  ├── Configs/                             │   │
-│   │  │   ├── main.yaml                        │  │  │   ├── main.yaml                        │   │
-│   │  │   ├── sources.yaml                     │  │  │   ├── sources.yaml                     │   │
-│   │  │   └── sinks.yaml                       │  │  │   └── sinks.yaml                       │   │
-│   │  ├── Logs\                                │  │  ├── Logs/                                │   │
-│   │  │   ├── dime-2026-02-19.log              │  │  │   ├── dime-2026-02-19.log              │   │
-│   │  │   └── dime-2026-02-18.log              │  │  │   └── dime-2026-02-18.log              │   │
-│   │  ├── Scripts\                             │  │  ├── Scripts/                             │   │
-│   │  └── nlog.config                          │  │  └── nlog.config                          │   │
+│   │  ├── DIME.exe                            │  │   ├── DIME                               │     │
+│   │  ├── Configs\                            │  │   ├── Configs/                           │     │
+│   │  │   ├── main.yaml                       │  │   │   ├── main.yaml                      │     │
+│   │  │   ├── sources.yaml                    │  │   │   ├── sources.yaml                   │     │
+│   │  │   └── sinks.yaml                      │  │   │   └── sinks.yaml                     │     │
+│   │  ├── Logs\                               │  │   ├── Logs/                              │     │
+│   │  │   ├── dime-2026-02-19.log             │  │   │   ├── dime-2026-02-19.log            │     │
+│   │  │   └── dime-2026-02-18.log             │  │   │   └── dime-2026-02-18.log            │     │
+│   │  ├── Scripts\                            │  │   ├── Scripts/                           │     │
+│   │  └── nlog.config                         │  │   └── nlog.config                        │     │
 │   │                                          │  │                                          │     │
 │   └──────────────────────────────────────────┘  └──────────────────────────────────────────┘     │
 │                                                                                                  │

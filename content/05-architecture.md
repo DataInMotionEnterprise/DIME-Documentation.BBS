@@ -223,26 +223,26 @@
 │   │                                                                                          │   │
 │   │  Loads YAML          Creates              Starts             Manages                     │   │
 │   │  config files        connectors           ring buffer        admin server                │   │
-│   │       │              via factories              │                  │                      │  │
-│   │       v                   │                     v                  v                      │  │
-│   │  ┌─────────┐              │             ┌──────────────┐    ┌────────────┐                │  │
-│   │  │ YAML    │              │             │  Disruptor   │    │ Admin      │                │  │
-│   │  │ Parser  │              │             │  Ring Buffer │    │ Server     │                │  │
-│   │  └────┬────┘              │             └──────┬───────┘    │            │                │  │
-│   │       │                   │                    │            │ REST :9999 │                │  │
-│   │       v                   v                    v            │ WS   :9998 │                │  │
-│   │  ┌─────────────────────────────────────────────────────┐   └────────────┘                │   │
+│   │       │              via factories              │                  │                     │   │
+│   │       v                   │                     v                  v                     │   │
+│   │  ┌─────────┐              │             ┌──────────────┐    ┌────────────┐               │   │
+│   │  │ YAML    │              │             │  Disruptor   │    │ Admin      │               │   │
+│   │  │ Parser  │              │             │  Ring Buffer │    │ Server     │               │   │
+│   │  └────┬────┘              │             └──────┬───────┘    │            │               │   │
+│   │       │                   │                    │            │ REST :9999 │               │   │
+│   │       v                   v                    v            │ WS   :9998 │               │   │
+│   │  ┌─────────────────────────────────────────────────────┐    └────────────┘               │   │
 │   │  │                                                     │                                 │   │
 │   │  │  ConnectorRunner    ConnectorRunner    ConnectorRunner                                │   │
-│   │  │  ┌─────────────┐   ┌─────────────┐   ┌─────────────┐    ...for each                  │    │
-│   │  │  │ OPC-UA      │   │ MQTT        │   │ InfluxDB    │       connector                 │    │
-│   │  │  │ Source      │   │ Source      │   │ Sink        │       in config                 │    │
-│   │  │  │             │   │             │   │             │                                 │    │
-│   │  │  │ scan: 1000ms│   │ scan: 200ms │   │ scan: 5000ms│                                 │    │
-│   │  │  │ items: 10   │   │ items: 3    │   │ filter: yes │                                 │    │
-│   │  │  └──────┬──────┘   └──────┬──────┘   └──────┬──────┘                                  │   │
-│   │  │         │                 │                  │                                         │  │
-│   │  │         │    publishes    │                  │    receives from                        │  │
+│   │  │  ┌─────────────┐   ┌─────────────┐   ┌─────────────┐    ...for each                   │   │
+│   │  │  │ OPC-UA      │   │ MQTT        │   │ InfluxDB    │       connector                  │   │
+│   │  │  │ Source      │   │ Source      │   │ Sink        │       in config                  │   │
+│   │  │  │             │   │             │   │             │                                  │   │
+│   │  │  │ scan: 1000ms│   │ scan: 200ms │   │ scan: 5000ms│                                  │   │
+│   │  │  │ items: 10   │   │ items: 3    │   │ filter: yes │                                  │   │
+│   │  │  └──────┬──────┘   └──────┬──────┘   └───────┬─────┘                                  │   │
+│   │  │         │                 │                  │                                        │   │
+│   │  │         │    publishes    │                  │    receives from                       │   │
 │   │  │         +────────────────▶│<─────────────────+    SinkDispatcher                      │   │
 │   │  │                   Ring Buffer                                                         │   │
 │   │  │                                                                                       │   │

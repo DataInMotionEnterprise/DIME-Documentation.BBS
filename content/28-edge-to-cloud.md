@@ -21,17 +21,17 @@
 │   ┌────────────────────────────────────────────────────────────────────────────────────────┐     │
 │   │   TIER 3 — CLOUD                                                                       │     │
 │   │                                                                                        │     │
-│   │   ┌─────────────────────────────────┐    ┌─────────────────────────────────┐            │    │
-│   │   │       DIME ZENITH               │    │       ZENITH UX                 │            │    │
-│   │   │                                 │    │                                 │            │    │
-│   │   │  Centralized fleet management   │    │  Desktop app for operators      │            │    │
-│   │   │  MongoDB-backed config store    │◄──▶│  Fleet-wide dashboard           │            │    │
-│   │   │  Health monitoring + stale det  │    │  Push config, view health       │            │    │
-│   │   │  REST API + Web dashboard       │    │  Manage firmware updates        │            │    │
-│   │   │                                 │    │                                 │            │    │
-│   │   │  Scale: 1 instance globally     │    │  Connects via REST + WebSocket  │            │    │
-│   │   │                                 │    │                                 │            │    │
-│   │   └─────────────────┬───────────────┘    └─────────────────────────────────┘            │    │
+│   │   ┌─────────────────────────────────┐    ┌─────────────────────────────────┐           │     │
+│   │   │       DIME ZENITH               │    │       ZENITH UX                 │           │     │
+│   │   │                                 │    │                                 │           │     │
+│   │   │  Centralized fleet management   │    │  Desktop app for operators      │           │     │
+│   │   │  MongoDB-backed config store    │◄──▶│  Fleet-wide dashboard           │           │     │
+│   │   │  Health monitoring + stale det  │    │  Push config, view health       │           │     │
+│   │   │  REST API + Web dashboard       │    │  Manage firmware updates        │           │     │
+│   │   │                                 │    │                                 │           │     │
+│   │   │  Scale: 1 instance globally     │    │  Connects via REST + WebSocket  │           │     │
+│   │   │                                 │    │                                 │           │     │
+│   │   └─────────────────┬───────────────┘    └─────────────────────────────────┘           │     │
 │   │                     │                                                                  │     │
 │   └─────────────────────┼──────────────────────────────────────────────────────────────────┘     │
 │                         │                                                                        │
@@ -42,16 +42,16 @@
 │   ┌────────────────────────────────────────────────────────────────────────────────────────┐     │
 │   │   TIER 2 — GATEWAY                                                                     │     │
 │   │                                                                                        │     │
-│   │   ┌─────────────────────────────────────────────────────────────────────────────────┐   │    │
-│   │   │       DIME HORIZON  (one per site: factory, plant, warehouse)                   │   │    │
-│   │   │                                                                                 │   │    │
-│   │   │  Site-level connector manager        Pull-based bridge to Zenith                │   │    │
-│   │   │  Manages all local Connectors        Executes remote tasks + updates            │   │    │
-│   │   │  Pushes config down to edge          Reports health + status upstream           │   │    │
-│   │   │                                                                                 │   │    │
-│   │   │  Scale: ~50 Horizons across all sites                                           │   │    │
-│   │   │                                                                                 │   │    │
-│   │   └──────────────────────────────┬──────────────────────────────────────────────────┘   │    │
+│   │   ┌─────────────────────────────────────────────────────────────────────────────────┐  │     │
+│   │   │       DIME HORIZON  (one per site: factory, plant, warehouse)                   │  │     │
+│   │   │                                                                                 │  │     │
+│   │   │  Site-level connector manager        Pull-based bridge to Zenith                │  │     │
+│   │   │  Manages all local Connectors        Executes remote tasks + updates            │  │     │
+│   │   │  Pushes config down to edge          Reports health + status upstream           │  │     │
+│   │   │                                                                                 │  │     │
+│   │   │  Scale: ~50 Horizons across all sites                                           │  │     │
+│   │   │                                                                                 │  │     │
+│   │   └──────────────────────────────┬──────────────────────────────────────────────────┘  │     │
 │   │                                  │                                                     │     │
 │   └──────────────────────────────────┼─────────────────────────────────────────────────────┘     │
 │                                      │                                                           │
@@ -70,12 +70,12 @@
 │   │   │ Lua normalize │  │ Lua normalize │  │ Lua normalize │  │ Lua normalize │           │     │
 │   │   │ MQTT/SHDR/HTTP│  │ MQTT/SHDR/HTTP│  │ MQTT/SHDR/HTTP│  │ MQTT/SHDR/HTTP│           │     │
 │   │   └───────┬───────┘  └───────┬───────┘  └───────┬───────┘  └───────┬───────┘           │     │
-│   │           │                  │                  │                  │                    │    │
-│   │           ▼                  ▼                  ▼                  ▼                    │    │
-│   │   ┌─────────────┐  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐                  │      │
-│   │   │  PLC / CNC  │  │  Sensors /  │  │  Robots /   │  │  Cameras /  │                  │      │
-│   │   │  Controllers│  │  Gateways   │  │  Actuators  │  │  Meters     │                  │      │
-│   │   └─────────────┘  └─────────────┘  └─────────────┘  └─────────────┘                  │      │
+│   │           │                  │                  │                  │                   │     │
+│   │           ▼                  ▼                  ▼                  ▼                   │     │
+│   │   ┌─────────────┐  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐                   │     │
+│   │   │  PLC / CNC  │  │  Sensors /  │  │  Robots /   │  │  Cameras /  │                   │     │
+│   │   │  Controllers│  │  Gateways   │  │  Actuators  │  │  Meters     │                   │     │
+│   │   └─────────────┘  └─────────────┘  └─────────────┘  └─────────────┘                   │     │
 │   │                                                                                        │     │
 │   │   Scale: ~500 Connectors, ~50,000 data points                                          │     │
 │   │   Platforms: Windows, Linux, ARM64, Docker                                             │     │
@@ -130,13 +130,13 @@
 │    │  ZENITH  │  1 instance                                                                      │
 │    └────┬─────┘                                                                                  │
 │         │                                                                                        │
-│    ┌────┴────────────────────────────────────────────────────────┐                               │
-│    │              ~50 Horizons (one per site)                    │                               │
+│    ┌────┴──────────────────────────────────────────────────────┐                                 │
+│    │              ~50 Horizons (one per site)                  │                                 │
 │    │  ┌────────┐ ┌────────┐ ┌────────┐ ┌────────┐  ┌────────┐  │                                 │
 │    │  │Site #1 │ │Site #2 │ │Site #3 │ │  ...   │  │Site #50│  │                                 │
 │    │  └───┬────┘ └───┬────┘ └───┬────┘ └────────┘  └───┬────┘  │                                 │
-│    └──────┼──────────┼──────────┼───────────────────────┼───────┘                                │
-│           │          │          │                        │                                       │
+│    └──────┼──────────┼──────────┼──────────────────────┼───────┘                                 │
+│           │          │          │                      │                                         │
 │      10 connectors   │     10 connectors           10 connectors                                 │
 │      100 data pts    │     100 data pts            100 data pts                                  │
 │                 10 connectors                                                                    │

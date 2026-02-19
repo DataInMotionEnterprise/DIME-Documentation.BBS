@@ -33,19 +33,19 @@
 │   │   │ DIME #1    │──┐                                          ┌──────────────┐            │   │
 │   │   │ (PLC)      │  │                                          │              │            │   │
 │   │   └────────────┘  │     ┌──────────────────┐    OUTBOUND     │    ZENITH    │            │   │
-│   │                    ├────▶│                  │ ══════════════▶ │              │            │  │
+│   │                   ├────▶│                  │  ══════════════▶│              │            │   │
 │   │   ┌────────────┐  │     │    HORIZON       │    HTTPS only   │  Fleet C2    │            │   │
 │   │   │ DIME #2    │──┤     │    Gateway       │ ◀══════════════ │              │            │   │
 │   │   │ (MQTT)     │  │     │                  │    responses    │              │            │   │
 │   │   └────────────┘  │     └──────────────────┘                 └──────────────┘            │   │
-│   │                    │           │                                                          │  │
+│   │                   │           │                                                          │   │
 │   │   ┌────────────┐  │           │ Horizon calls each                                       │   │
 │   │   │ DIME #3    │──┘           │ Connector's Admin API                                    │   │
 │   │   │ (OPC-UA)   │              │ locally (localhost)                                      │   │
 │   │   └────────────┘              ▼                                                          │   │
 │   │                                                                                          │   │
 │   │   ██████████████████████████████████████████████████████████                             │   │
-│   │   █  FIREWALL — NO INBOUND RULES NEEDED — ALL OUTBOUND  █                                │   │
+│   │   █  FIREWALL — NO INBOUND RULES NEEDED — ALL OUTBOUND     █                             │   │
 │   │   ██████████████████████████████████████████████████████████                             │   │
 │   │                                                                                          │   │
 │   └──────────────────────────────────────────────────────────────────────────────────────────┘   │
@@ -85,23 +85,23 @@
 │                                                                                                  │
 │   ┌──────────────────────────────────────────────────────────────────────────────────────────┐   │
 │   │                                                                                          │   │
-│   │   ┌─────────────┐     ┌─────────────┐     ┌─────────────┐     ┌─────────────────────┐   │    │
-│   │   │             │     │             │     │             │     │                     │   │    │
-│   │   │ 1. CONTACT  │────▶│ 2. SEND     │────▶│ 3. RECEIVE  │────▶│ 4. EXECUTE          │   │    │
-│   │   │    ZENITH   │     │    STATUS   │     │    TASKS    │     │    LOCALLY          │   │    │
-│   │   │             │     │             │     │             │     │                     │   │    │
-│   │   └─────────────┘     └─────────────┘     └─────────────┘     └──────────┬──────────┘   │    │
-│   │                                                                          │              │    │
-│   │         Horizon calls          Sends summary        Zenith returns       │              │    │
-│   │         POST /horizon/         of all local         pending task         │              │    │
-│   │         {key}/checkin          connector health     queue for this       ▼              │    │
-│   │                                                     Horizon                             │    │
-│   │                                                                   ┌─────────────────┐   │    │
-│   │                                                                   │                 │   │    │
-│   │         ┌──────────────────────────────────────────────────────── │ 5. REPORT       │   │    │
-│   │         │                                                         │    RESULTS      │   │    │
-│   │         │  Horizon posts task results back to Zenith              │                 │   │    │
-│   │         │  POST /horizon/{key}/task/{id}                          └─────────────────┘   │    │
+│   │   ┌─────────────┐     ┌─────────────┐     ┌─────────────┐     ┌─────────────────────┐    │   │
+│   │   │             │     │             │     │             │     │                     │    │   │
+│   │   │ 1. CONTACT  │────▶│ 2. SEND     │────▶│ 3. RECEIVE  │────▶│ 4. EXECUTE          │    │   │
+│   │   │    ZENITH   │     │    STATUS   │     │    TASKS    │     │    LOCALLY          │    │   │
+│   │   │             │     │             │     │             │     │                     │    │   │
+│   │   └─────────────┘     └─────────────┘     └─────────────┘     └──────────┬──────────┘    │   │
+│   │                                                                          │               │   │
+│   │         Horizon calls          Sends summary        Zenith returns       │               │   │
+│   │         POST /horizon/         of all local         pending task         │               │   │
+│   │         {key}/checkin          connector health     queue for this       ▼               │   │
+│   │                                                     Horizon                              │   │
+│   │                                                                   ┌─────────────────┐    │   │
+│   │                                                                   │                 │    │   │
+│   │         ┌──────────────────────────────────────────────────────── │ 5. REPORT       │    │   │
+│   │         │                                                         │    RESULTS      │    │   │
+│   │         │  Horizon posts task results back to Zenith              │                 │    │   │
+│   │         │  POST /horizon/{key}/task/{id}                          └─────────────────┘    │   │
 │   │         ▼                                                                                │   │
 │   │                                                                                          │   │
 │   └──────────────────────────────────────────────────────────────────────────────────────────┘   │
@@ -156,15 +156,15 @@
 │                                                                                                  │
 │   ┌──────────────────────────────────────────────────────────────────────────────────────────┐   │
 │   │                                                                                          │   │
-│   │   ┌──────────────────┐   ┌──────────────────┐   ┌──────────────────┐                    │    │
-│   │   │                  │   │                  │   │                  │                    │    │
-│   │   │  WINDOWS         │   │  LINUX           │   │  DOCKER          │                    │    │
-│   │   │  SERVICE         │   │  SYSTEMD         │   │  CONTAINER       │                    │    │
-│   │   │                  │   │                  │   │                  │                    │    │
-│   │   │  Horizon.exe     │   │  systemctl       │   │  docker run      │                    │    │
-│   │   │  install         │   │  start horizon   │   │  -v config:/app  │                    │    │
-│   │   │                  │   │                  │   │                  │                    │    │
-│   │   └──────────────────┘   └──────────────────┘   └──────────────────┘                    │    │
+│   │   ┌──────────────────┐   ┌──────────────────┐   ┌──────────────────┐                     │   │
+│   │   │                  │   │                  │   │                  │                     │   │
+│   │   │  WINDOWS         │   │  LINUX           │   │  DOCKER          │                     │   │
+│   │   │  SERVICE         │   │  SYSTEMD         │   │  CONTAINER       │                     │   │
+│   │   │                  │   │                  │   │                  │                     │   │
+│   │   │  Horizon.exe     │   │  systemctl       │   │  docker run      │                     │   │
+│   │   │  install         │   │  start horizon   │   │  -v config:/app  │                     │   │
+│   │   │                  │   │                  │   │                  │                     │   │
+│   │   └──────────────────┘   └──────────────────┘   └──────────────────┘                     │   │
 │   │                                                                                          │   │
 │   │   Horizon runs alongside DIME Connectors on the same machine or a dedicated gateway.     │   │
 │   │   It only needs outbound HTTPS access to Zenith and local access to Connector APIs.      │   │

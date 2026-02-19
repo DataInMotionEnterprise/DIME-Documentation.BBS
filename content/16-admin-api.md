@@ -140,8 +140,8 @@
 │   │   │                     CONNECTOR LIFECYCLE VIA API                                 │    │   │
 │   │   │                                                                                 │    │   │
 │   │   │   POST /connector/stop/plc1         POST /connector/start/plc1                  │    │   │
-│   │   │          │                                    │                                  │    │  │
-│   │   │          ▼                                    ▼                                  │    │  │
+│   │   │          │                                    │                                 │    │   │
+│   │   │          ▼                                    ▼                                 │    │   │
 │   │   │   ┌──────────────┐                     ┌─────────────┐                          │    │   │
 │   │   │   │  DISCONNECT  │                     │  INITIALIZE │                          │    │   │
 │   │   │   │  DEINITIALIZE│                     │  CREATE     │                          │    │   │

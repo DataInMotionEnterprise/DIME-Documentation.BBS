@@ -67,9 +67,9 @@
 │   Each source connector caches the last published value per item.                                │
 │   Before publishing, compare new value to cached value. Same? Skip it.                           │
 │                                                                                                  │
-│       ┌─────────────┐     Read       ┌──────────────────┐     Compare      ┌──────────────┐      │
-│       │   Device    │───────────────▶│   New value:     │────────────────▶ │  Same as     │      │
-│       │   (PLC)     │                │   72.5           │                  │  last sent?  │      │
+│       ┌─────────────┐     Read       ┌──────────────────┐     Compare     ┌──────────────┐       │
+│       │   Device    │───────────────▶│   New value:     │───────────────▶ │  Same as     │       │
+│       │   (PLC)     │                │   72.5           │                 │  last sent?  │       │
 │       └─────────────┘                └──────────────────┘                 └──────┬───────┘       │
 │                                                                                  │               │
 │                                                                     ┌────────────┴──────────┐    │

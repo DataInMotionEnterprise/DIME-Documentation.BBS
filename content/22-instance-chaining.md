@@ -16,17 +16,17 @@
 │   One DIME instance is a complete data pipeline: sources merge into one ring buffer,             │
 │   and sinks fork out to any number of destinations.                                              │
 │                                                                                                  │
-│   ┌──────────────┐                                ┌──────────────┐                               │
-│   │  Source A     │──┐                         ┌──│  Sink X       │                              │
-│   └──────────────┘  │   ┌────────────────┐     │  └──────────────┘                               │
+│   ┌──────────────┐                                 ┌──────────────┐                              │
+│   │  Source A    │ ──┐                          ┌──│  Sink X      │                              │
+│   └──────────────┘   │   ┌────────────────┐     │  └──────────────┘                              │
 │                      ├──▶│                │─────┤                                                │
-│   ┌──────────────┐  │   │  Ring Buffer   │     │  ┌──────────────┐                               │
-│   │  Source B    │──┤   │  (merge)       │─────├──│  Sink Y      │                               │
-│   └──────────────┘  │   │                │     │  └──────────────┘                               │
+│   ┌──────────────┐   │   │  Ring Buffer   │     │  ┌──────────────┐                              │
+│   │  Source B    │───┤   │  (merge)       │─────├──│  Sink Y      │                              │
+│   └──────────────┘   │   │                │     │  └──────────────┘                              │
 │                      │   └────────────────┘     │                                                │
-│   ┌──────────────┐  │         (fork)           │  ┌──────────────┐                               │
-│   │  Source C    │──┘                          └──│  Sink Z      │                               │
-│   └──────────────┘                                └──────────────┘                               │
+│   ┌──────────────┐   │         (fork)           │  ┌──────────────┐                              │
+│   │  Source C    │───┘                          └──│  Sink Z      │                              │
+│   └──────────────┘                                 └──────────────┘                              │
 │                                                                                                  │
 │   Many-to-one on the left (merge).  One-to-many on the right (fork).                             │
 │   Everything flows through one lock-free ring buffer at sub-ms latency.                          │
@@ -87,12 +87,12 @@
 │    │  DIME Edge 1 │──┐                                                                           │
 │    │  PLCs, CNCs  │  │         ┌──────────────────┐                                              │
 │    └──────────────┘  │         │                  │          ┌──────────────────┐                │
-│                       ├─ MQTT ─▶│  DIME Aggregator │─── MQTT ─▶│  Splunk          │              │
+│                      ├─ MQTT ─▶│  DIME Aggregator │ ─ MQTT ─▶│  Splunk          │                │
 │    ┌──────────────┐  │         │                  │          └──────────────────┘                │
 │    │  DIME Edge 2 │──┤         │  Merges all edge │                                              │
 │    │  Sensors     │  │         │  streams. Serves │          ┌──────────────────┐                │
 │    └──────────────┘  │         │  local dashboard.│── MQTT ─▶│  InfluxDB        │                │
-│                       │         │                  │          └──────────────────┘               │
+│                      │         │                  │          └ ─────────────────┘                │
 │    ┌──────────────┐  │         │  Forwards to     │                                              │
 │    │  DIME Edge 3 │──┘         │  cloud via MQTT. │          ┌──────────────────┐                │
 │    │  Robots      │            │                  │── HTTP ─▶│  MongoDB         │                │

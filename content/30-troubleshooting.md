@@ -25,8 +25,8 @@
 │   │   │  A missing !!bool tag means it is    │                                             │     │
 │   │   │  a string "true", not boolean true.  │                                             │     │
 │   │   └──────────────┬───────────────────────┘                                             │     │
-│   │                  │ YES                                                                  │    │
-│   │                  ▼                                                                      │    │
+│   │                  │ YES                                                                 │     │
+│   │                  ▼                                                                     │     │
 │   │   ┌──────────────────────────────────────┐                                             │     │
 │   │   │  2. Is the source connected?         │                                             │     │
 │   │   │                                      │                                             │     │
@@ -34,8 +34,8 @@
 │   │   │  Look for IsConnected = true         │                                             │     │
 │   │   │  If false: wrong IP, port, or creds  │                                             │     │
 │   │   └──────────────┬───────────────────────┘                                             │     │
-│   │                  │ YES                                                                  │    │
-│   │                  ▼                                                                      │    │
+│   │                  │ YES                                                                 │     │
+│   │                  ▼                                                                     │     │
 │   │   ┌──────────────────────────────────────┐                                             │     │
 │   │   │  3. Are item addresses correct?      │                                             │     │
 │   │   │                                      │                                             │     │
@@ -44,8 +44,8 @@
 │   │   │  S7: DB1.DBD0 (data block)           │                                             │     │
 │   │   │  Check device docs for exact syntax. │                                             │     │
 │   │   └──────────────┬───────────────────────┘                                             │     │
-│   │                  │ YES                                                                  │    │
-│   │                  ▼                                                                      │    │
+│   │                  │ YES                                                                 │     │
+│   │                  ▼                                                                     │     │
 │   │   ┌──────────────────────────────────────┐                                             │     │
 │   │   │  4. Is RBE hiding unchanged values?  │                                             │     │
 │   │   │                                      │                                             │     │
@@ -53,8 +53,8 @@
 │   │   │  If data appears, the value is not   │                                             │     │
 │   │   │  changing. RBE is working correctly. │                                             │     │
 │   │   └──────────────┬───────────────────────┘                                             │     │
-│   │                  │ YES                                                                  │    │
-│   │                  ▼                                                                      │    │
+│   │                  │ YES                                                                 │     │
+│   │                  ▼                                                                     │     │
 │   │   ┌──────────────────────────────────────┐                                             │     │
 │   │   │  5. Are sink filters too restrictive?│                                             │     │
 │   │   │                                      │                                             │     │
@@ -194,15 +194,15 @@
 │   │   THREE KEY DIAGNOSTICS                                                                │     │
 │   │   ─────────────────────                                                                │     │
 │   │                                                                                        │     │
-│   │   ┌─────────────────────┐  ┌─────────────────────┐  ┌─────────────────────┐           │      │
-│   │   │ Console sink        │  │ GET /status         │  │ GET /config         │           │      │
-│   │   │                     │  │                     │  │                     │           │      │
-│   │   │ See what data is    │  │ See connector state,│  │ See what DIME       │           │      │
-│   │   │ flowing through     │  │ fault info, timing  │  │ actually loaded     │           │      │
-│   │   │ the ring buffer.    │  │ metrics, counts.    │  │ (after merge).      │           │      │
-│   │   │                     │  │                     │  │                     │           │      │
-│   │   │ "Is data there?"    │  │ "Is it healthy?"    │  │ "Is config right?"  │           │      │
-│   │   └─────────────────────┘  └─────────────────────┘  └─────────────────────┘           │      │
+│   │   ┌─────────────────────┐  ┌─────────────────────┐  ┌─────────────────────┐            │     │
+│   │   │ Console sink        │  │ GET /status         │  │ GET /config         │            │     │
+│   │   │                     │  │                     │  │                     │            │     │
+│   │   │ See what data is    │  │ See connector state,│  │ See what DIME       │            │     │
+│   │   │ flowing through     │  │ fault info, timing  │  │ actually loaded     │            │     │
+│   │   │ the ring buffer.    │  │ metrics, counts.    │  │ (after merge).      │            │     │
+│   │   │                     │  │                     │  │                     │            │     │
+│   │   │ "Is data there?"    │  │ "Is it healthy?"    │  │ "Is config right?"  │            │     │
+│   │   └─────────────────────┘  └─────────────────────┘  └─────────────────────┘            │     │
 │   │                                                                                        │     │
 │   │   Remove the Console sink before deploying to production.                              │     │
 │   │                                                                                        │     │

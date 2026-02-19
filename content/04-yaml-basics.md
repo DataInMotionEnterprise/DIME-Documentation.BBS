@@ -116,11 +116,11 @@
 │   ┌────────────────────────────────────────────────────────────────────────────────────────┐     │
 │   │                                                                                        │     │
 │   │   Configs/                                                                             │     │
-│   │   ├── main.yaml           ← loaded LAST (overrides all others)                        │      │
-│   │   ├── opcua-source.yaml   ← merged into sources[]                                     │      │
-│   │   ├── modbus-source.yaml  ← merged into sources[]                                     │      │
-│   │   ├── influx-sink.yaml    ← merged into sinks[]                                       │      │
-│   │   └── mqtt-sink.yaml      ← merged into sinks[]                                       │      │
+│   │   ├── main.yaml           ← loaded LAST (overrides all others)                         │     │
+│   │   ├── opcua-source.yaml   ← merged into sources[]                                      │     │
+│   │   ├── modbus-source.yaml  ← merged into sources[]                                      │     │
+│   │   ├── influx-sink.yaml    ← merged into sinks[]                                        │     │
+│   │   └── mqtt-sink.yaml      ← merged into sinks[]                                        │     │
 │   │                                                                                        │     │
 │   │   Merge order:                                                                         │     │
 │   │     1. All *.yaml files loaded alphabetically                                          │     │

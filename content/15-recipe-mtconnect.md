@@ -58,7 +58,7 @@
 │    └───────────┘      │                             ├─────▶│ InfluxDB /     │                    │
 │                       │         Lua transforms      │      │ SQL Server     │                    │
 │    ┌───────────┐      │         emit_mtconnect()    │      └────────────────┘                    │
-│    │ Existing  │─HTTP─▶│                             │                                           │
+│    │ Existing  │─HTTP─▶│                            │                                            │
 │    │ MTConnect │      │  ┌──────┐     ┌──────────┐  │      ┌────────────────┐                    │
 │    │ Agent     │      │  │Source│────▶│  SHDR    │  ├─────▶│ External       │                    │
 │    └───────────┘      │  └──────┘     │  Sink    │  │      │ MTConnect      │                    │
@@ -204,11 +204,11 @@
 │   │   DIME formats each message as a pipe-delimited SHDR string                  │               │
 │   │   and sends it to the external agent's adapter port.                         │               │
 │   │                                                                              │               │
-│   │   ┌─────────┐      ┌──────────┐      ┌──────────┐      ┌──────────────┐     │                │
-│   │   │ Any     │─────▶│  Ring    │─────▶│  SHDR    │─────▶│  External    │     │                │
-│   │   │ Source  │      │  Buffer  │      │  Sink    │      │  MTConnect   │     │                │
-│   │   └─────────┘      └──────────┘      └──────────┘      │  Agent       │     │                │
-│   │                                                         └──────────────┘     │               │
+│   │   ┌─────────┐      ┌──────────┐      ┌──────────┐      ┌──────────────┐      │               │
+│   │   │ Any     │─────▶│  Ring    │─────▶│  SHDR    │─────▶│  External    │      │               │
+│   │   │ Source  │      │  Buffer  │      │  Sink    │      │  MTConnect   │      │               │
+│   │   └─────────┘      └──────────┘      └──────────┘      │  Agent       │      │               │
+│   │                                                        └──────────────┘      │               │
 │   │                                                                              │               │
 │   │   Use this when your organization mandates a specific MTConnect agent        │               │
 │   │   but you need DIME to collect and transform the data.                       │               │

@@ -20,7 +20,7 @@
 │    │ Source A │────────────────────▶ │   Ring Buffer    │    Source A has no way                 │
 │    │  (PLC)   │     scan cycle 2     │                  │    to see Source B's                   │
 │    └──────────┘────────────────────▶ │   Messages flow  │    temperature value.                  │
-│                                      │   forward only.   │                                       │
+│                                      │   forward only.  │                                        │
 │    ┌──────────┐     scan cycle 1     │                  │    Scripts run in                      │
 │    │ Source B │────────────────────▶ │   No cross-read. │    isolation.                          │
 │    │ (Weather)│     scan cycle 2     │                  │                                        │
@@ -96,7 +96,7 @@
 │                                              │                                  │                │
 │                                              └──────────┬───────────────────────┘                │
 │                                                         │                                        │
-│                              ┌───────────────────────────┘                                       │
+│                              ┌──────────────────────────┘                                        │
 │                              │  cache('plc1/temperature', 0)  ──▶ 72.5                           │
 │                              │  cache('wx/humidity', 0)        ──▶ 45.2                          │
 │                              │  cache('my_counter', 0)         ──▶ 17                            │

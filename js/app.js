@@ -333,10 +333,12 @@
 
     // Open panel
     shell.classList.add('panel-open');
+    sidebarToggle.style.display = 'none';
   }
 
   function closePanel() {
     shell.classList.remove('panel-open');
+    sidebarToggle.style.display = '';
     var active = canvas.querySelectorAll('.hotspot.active');
     for (var i = 0; i < active.length; i++) active[i].classList.remove('active');
   }

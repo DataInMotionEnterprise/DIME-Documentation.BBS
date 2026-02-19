@@ -47,13 +47,13 @@
 │   │                                            │                                             │   │
 │   │          ┌─────────────────────────────────┼─────────────────────────────────┐           │   │
 │   │          │                                 │                                 │           │   │
-│   │   ┌──────────────┐                 ┌──────────────┐                 ┌──────────────┐    │    │
-│   │   │              │                 │              │                 │              │    │    │
-│   │   │  HORIZON     │    check-in     │  HORIZON     │    check-in     │  HORIZON     │    │    │
-│   │   │  Site A      │ ──────────────▶ │  Site B      │ ─────────────▶  │  Site C      │    │    │
-│   │   │  key: abc... │                 │  key: def... │                 │  key: ghi... │    │    │
-│   │   │              │                 │              │                 │              │    │    │
-│   │   └──────────────┘                 └──────────────┘                 └──────────────┘    │    │
+│   │   ┌──────────────┐                 ┌──────────────┐                 ┌──────────────┐     │   │
+│   │   │              │                 │              │                 │              │     │   │
+│   │   │  HORIZON     │    check-in     │  HORIZON     │    check-in     │  HORIZON     │     │   │
+│   │   │  Site A      │ ──────────────▶ │  Site B      │ ─────────────▶  │  Site C      │     │   │
+│   │   │  key: abc... │                 │  key: def... │                 │  key: ghi... │     │   │
+│   │   │              │                 │              │                 │              │     │   │
+│   │   └──────────────┘                 └──────────────┘                 └──────────────┘     │   │
 │   │                                                                                          │   │
 │   │   Each Horizon authenticates with a unique key. No passwords. No tokens to rotate.       │   │
 │   │                                                                                          │   │
@@ -68,36 +68,36 @@
 │                                                                                                  │
 │   ┌──────────────────────────────────────────────────────────────────────────────────────────┐   │
 │   │                                                                                          │   │
-│   │   ┌────────────────────────┐      ┌────────────────────────────────┐                    │    │
-│   │   │                        │      │                                │                    │    │
-│   │   │  Horizons              │      │  Connectors                    │                    │    │
-│   │   │                        │      │                                │                    │    │
-│   │   │  Site metadata         │      │  Per-connector metadata        │                    │    │
-│   │   │  Last check-in time    │      │  across all sites              │                    │    │
-│   │   │  Horizon version       │      │  Connector type and name       │                    │    │
-│   │   │                        │      │                                │                    │    │
-│   │   └────────────────────────┘      └────────────────────────────────┘                    │    │
+│   │   ┌────────────────────────┐      ┌────────────────────────────────┐                     │   │
+│   │   │                        │      │                                │                     │   │
+│   │   │  Horizons              │      │  Connectors                    │                     │   │
+│   │   │                        │      │                                │                     │   │
+│   │   │  Site metadata         │      │  Per-connector metadata        │                     │   │
+│   │   │  Last check-in time    │      │  across all sites              │                     │   │
+│   │   │  Horizon version       │      │  Connector type and name       │                     │   │
+│   │   │                        │      │                                │                     │   │
+│   │   └────────────────────────┘      └────────────────────────────────┘                     │   │
 │   │                                                                                          │   │
-│   │   ┌────────────────────────┐      ┌────────────────────────────────┐                    │    │
-│   │   │                        │      │                                │                    │    │
-│   │   │  Connectors-           │      │  Connectors-Status             │                    │    │
-│   │   │  Configuration         │      │                                │                    │    │
-│   │   │                        │      │  Live health and               │                    │    │
-│   │   │  YAML configs stored   │      │  performance metrics           │                    │    │
-│   │   │  centrally per         │      │  IsConnected, IsFaulted        │                    │    │
-│   │   │  connector             │      │  ReadTime, LoopTime            │                    │    │
-│   │   │                        │      │                                │                    │    │
-│   │   └────────────────────────┘      └────────────────────────────────┘                    │    │
+│   │   ┌────────────────────────┐      ┌────────────────────────────────┐                     │   │
+│   │   │                        │      │                                │                     │   │
+│   │   │  Connectors-           │      │  Connectors-Status             │                     │   │
+│   │   │  Configuration         │      │                                │                     │   │
+│   │   │                        │      │  Live health and               │                     │   │
+│   │   │  YAML configs stored   │      │  performance metrics           │                     │   │
+│   │   │  centrally per         │      │  IsConnected, IsFaulted        │                     │   │
+│   │   │  connector             │      │  ReadTime, LoopTime            │                     │   │
+│   │   │                        │      │                                │                     │   │
+│   │   └────────────────────────┘      └────────────────────────────────┘                     │   │
 │   │                                                                                          │   │
-│   │   ┌────────────────────────┐      ┌────────────────────────────────┐                    │    │
-│   │   │                        │      │                                │                    │    │
-│   │   │  Connectors-Data       │      │  Tasks                         │                    │    │
-│   │   │                        │      │                                │                    │    │
-│   │   │  Current data points   │      │  Task queue per Horizon        │                    │    │
-│   │   │  Last known values     │      │  Pending, executing, done      │                    │    │
-│   │   │  per connector         │      │  Results stored on completion  │                    │    │
-│   │   │                        │      │                                │                    │    │
-│   │   └────────────────────────┘      └────────────────────────────────┘                    │    │
+│   │   ┌────────────────────────┐      ┌────────────────────────────────┐                     │   │
+│   │   │                        │      │                                │                     │   │
+│   │   │  Connectors-Data       │      │  Tasks                         │                     │   │
+│   │   │                        │      │                                │                     │   │
+│   │   │  Current data points   │      │  Task queue per Horizon        │                     │   │
+│   │   │  Last known values     │      │  Pending, executing, done      │                     │   │
+│   │   │  per connector         │      │  Results stored on completion  │                     │   │
+│   │   │                        │      │                                │                     │   │
+│   │   └────────────────────────┘      └────────────────────────────────┘                     │   │
 │   │                                                                                          │   │
 │   └──────────────────────────────────────────────────────────────────────────────────────────┘   │
 │                                                                                                  │
@@ -131,7 +131,7 @@
 │   │       │   ◀── 200 OK ─────────── │  Returns: { tasks: [ ... ] }                          │   │
 │   │       │                          │                                                       │   │
 │   │       │                                                                                  │   │
-│   │     Horizon ──POST /task/{id}──▶ Zenith                                                 │    │
+│   │     Horizon ──POST /task/{id}──▶ Zenith                                                  │   │
 │   │       │                          │                                                       │   │
 │   │       │  { task_result }         │  Marks task complete, stores result                   │   │
 │   │       │                          │                                                       │   │
@@ -156,13 +156,13 @@
 │   │                                                                                          │   │
 │   │   When a stale Horizon comes back online, Zenith automatically generates:                │   │
 │   │                                                                                          │   │
-│   │     ┌──────────────────────────┐                                                        │    │
-│   │     │ get_connector_status     │  ◀── refresh health for all connectors                 │    │
-│   │     ├──────────────────────────┤                                                        │    │
-│   │     │ get_connector_config     │  ◀── refresh configs in case of local changes          │    │
-│   │     ├──────────────────────────┤                                                        │    │
-│   │     │ get_connector_data       │  ◀── refresh current data snapshots                    │    │
-│   │     └──────────────────────────┘                                                        │    │
+│   │     ┌──────────────────────────┐                                                         │   │
+│   │     │ get_connector_status     │  ◀── refresh health for all connectors                  │   │
+│   │     ├──────────────────────────┤                                                         │   │
+│   │     │ get_connector_config     │  ◀── refresh configs in case of local changes           │   │
+│   │     ├──────────────────────────┤                                                         │   │
+│   │     │ get_connector_data       │  ◀── refresh current data snapshots                     │   │
+│   │     └──────────────────────────┘                                                         │   │
 │   │                                                                                          │   │
 │   │   No manual intervention needed. Zenith self-heals its view of the fleet.                │   │
 │   │                                                                                          │   │
@@ -205,15 +205,15 @@
 │   │                         │                            │                                   │   │
 │   │                         └─────────────┬──────────────┘                                   │   │
 │   │                                       │                                                  │   │
-│   │                    ┌──────────────────┼──────────────────┐                               │   │
-│   │                    │                  │                  │                               │   │
-│   │              ┌─────┴─────┐     ┌──────┴─────┐    ┌──────┴─────┐                         │    │
+│   │                    ┌──────────────────┼─────────────────┐                                │   │
+│   │                    │                  │                 │                                │   │
+│   │              ┌─────┴─────┐     ┌──────┴─────┐    ┌──────┴─────┐                          │   │
 │   │              │ HORIZON   │     │ HORIZON    │    │ HORIZON    │     ...100s more         │   │
 │   │              │ Factory 1 │     │ Factory 2  │    │ Warehouse  │                          │   │
-│   │              └─────┬─────┘     └──────┬─────┘    └──────┬─────┘                         │    │
-│   │                    │                  │                  │                               │   │
-│   │               ┌────┼────┐        ┌────┼────┐       ┌────┼────┐                          │    │
-│   │               │    │    │        │    │    │       │    │    │                          │    │
+│   │              └─────┬─────┘     └──────┬─────┘    └──────┬─────┘                          │   │
+│   │                    │                  │                 │                                │   │
+│   │               ┌────┼────┐        ┌────┼────┐       ┌────┼────┐                           │   │
+│   │               │    │    │        │    │    │       │    │    │                           │   │
 │   │              CON  CON  CON     CON  CON  CON    CON  CON  CON   ...1000s more            │   │
 │   │                                                                                          │   │
 │   │   1 Zenith  ──▶  Hundreds of Horizons  ──▶  Thousands of Connectors                      │   │
