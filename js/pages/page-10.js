@@ -9,7 +9,7 @@ DIME_PAGES['10'] = {
   hotspots: [
     {
       id: 'cache-read',
-      startLine: 38, startCol: 3, endLine: 56, endCol: 92,
+      startLine: 35, startCol: 3, endLine: 53, endCol: 92,
       label: 'cache() \u2014 Read Cached Values',
       panel: {
         title: 'Reading Cached Values with cache()',
@@ -34,7 +34,7 @@ DIME_PAGES['10'] = {
     },
     {
       id: 'cache-write',
-      startLine: 65, startCol: 3, endLine: 81, endCol: 92,
+      startLine: 60, startCol: 3, endLine: 76, endCol: 92,
       label: 'set() \u2014 Write to Cache',
       panel: {
         title: 'Writing Custom Values with set()',
@@ -62,7 +62,7 @@ DIME_PAGES['10'] = {
     },
     {
       id: 'cache-ts',
-      startLine: 47, startCol: 3, endLine: 55, endCol: 92,
+      startLine: 44, startCol: 3, endLine: 52, endCol: 92,
       label: 'cache_ts() \u2014 Value + Timestamp',
       panel: {
         title: 'Checking Data Freshness with cache_ts()',
@@ -83,7 +83,7 @@ DIME_PAGES['10'] = {
     },
     {
       id: 'cross-connector',
-      startLine: 87, startCol: 3, endLine: 119, endCol: 92,
+      startLine: 80, startCol: 3, endLine: 112, endCol: 92,
       label: 'Cross-Connector Access',
       panel: {
         title: 'Cross-Connector Cache Access',
@@ -104,7 +104,7 @@ DIME_PAGES['10'] = {
     },
     {
       id: 'wait-for',
-      startLine: 153, startCol: 3, endLine: 191, endCol: 92,
+      startLine: 142, startCol: 3, endLine: 179, endCol: 92,
       label: 'wait_for_connectors',
       panel: {
         title: 'Dependency Ordering with wait_for_connectors',

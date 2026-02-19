@@ -9,7 +9,7 @@ DIME_PAGES['25'] = {
   hotspots: [
     {
       id: 'pull-based',
-      startLine: 23, startCol: 3, endLine: 53, endCol: 90,
+      startLine: 20, startCol: 3, endLine: 49, endCol: 90,
       label: 'Pull-Based Architecture',
       panel: {
         title: 'Pull-Based Architecture \u2014 No Inbound Firewall Rules',
@@ -30,7 +30,7 @@ DIME_PAGES['25'] = {
     },
     {
       id: 'config',
-      startLine: 59, startCol: 3, endLine: 81, endCol: 90,
+      startLine: 53, startCol: 3, endLine: 75, endCol: 90,
       label: 'Horizon Configuration',
       panel: {
         title: 'Horizon Configuration \u2014 YAML',
@@ -60,7 +60,7 @@ DIME_PAGES['25'] = {
     },
     {
       id: 'checkin',
-      startLine: 87, startCol: 3, endLine: 114, endCol: 90,
+      startLine: 79, startCol: 3, endLine: 105, endCol: 90,
       label: 'Check-In Cycle',
       panel: {
         title: 'Check-In Cycle \u2014 5 Steps',
@@ -83,7 +83,7 @@ DIME_PAGES['25'] = {
     },
     {
       id: 'tasks',
-      startLine: 122, startCol: 3, endLine: 160, endCol: 90,
+      startLine: 111, startCol: 3, endLine: 148, endCol: 90,
       label: 'Supported Tasks',
       panel: {
         title: 'Supported Task Types',
@@ -112,7 +112,7 @@ DIME_PAGES['25'] = {
     },
     {
       id: 'deployment',
-      startLine: 166, startCol: 3, endLine: 184, endCol: 90,
+      startLine: 152, startCol: 3, endLine: 170, endCol: 90,
       label: 'Deployment Options',
       panel: {
         title: 'Horizon Deployment Options',

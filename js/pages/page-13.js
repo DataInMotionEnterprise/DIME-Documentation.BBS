@@ -9,7 +9,7 @@ DIME_PAGES['13'] = {
   hotspots: [
     {
       id: 'mqtt-source',
-      startLine: 12, startCol: 3, endLine: 45, endCol: 90,
+      startLine: 11, startCol: 3, endLine: 42, endCol: 90,
       label: 'MQTT Source Configuration',
       panel: {
         title: 'MQTT Source \u2014 Subscribe to Sensor Topics',
@@ -44,7 +44,7 @@ DIME_PAGES['13'] = {
     },
     {
       id: 'mqtt-sink',
-      startLine: 83, startCol: 3, endLine: 107, endCol: 90,
+      startLine: 76, startCol: 3, endLine: 98, endCol: 90,
       label: 'MQTT Sink Configuration',
       panel: {
         title: 'MQTT Sink \u2014 Republish to Cloud Broker',
@@ -75,7 +75,7 @@ DIME_PAGES['13'] = {
     },
     {
       id: 'tls-config',
-      startLine: 57, startCol: 3, endLine: 79, endCol: 90,
+      startLine: 53, startCol: 3, endLine: 73, endCol: 90,
       label: 'TLS / SSL Configuration',
       panel: {
         title: 'TLS / SSL \u2014 Securing MQTT Connections',
@@ -100,7 +100,7 @@ DIME_PAGES['13'] = {
     },
     {
       id: 'sparkplugb',
-      startLine: 111, startCol: 3, endLine: 141, endCol: 90,
+      startLine: 101, startCol: 3, endLine: 128, endCol: 90,
       label: 'SparkplugB \u2014 Industrial MQTT',
       panel: {
         title: 'SparkplugB \u2014 Industrial MQTT Standard',
@@ -123,7 +123,7 @@ DIME_PAGES['13'] = {
     },
     {
       id: 'broker-bridge',
-      startLine: 157, startCol: 3, endLine: 186, endCol: 90,
+      startLine: 143, startCol: 3, endLine: 169, endCol: 90,
       label: 'Edge-to-Cloud MQTT Bridge',
       panel: {
         title: 'MQTT Broker Bridge \u2014 Edge to Cloud',

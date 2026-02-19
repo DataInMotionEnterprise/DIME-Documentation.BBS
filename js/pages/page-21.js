@@ -9,7 +9,7 @@ DIME_PAGES['21'] = {
   hotspots: [
     {
       id: 'single-vs-multi',
-      startLine: 18, startCol: 3, endLine: 36, endCol: 87,
+      startLine: 16, startCol: 3, endLine: 34, endCol: 87,
       label: 'Single File vs Multi-File',
       panel: {
         title: 'Single File vs Multi-File \u2014 When to Split',
@@ -32,7 +32,7 @@ DIME_PAGES['21'] = {
     },
     {
       id: 'load-order',
-      startLine: 48, startCol: 3, endLine: 79, endCol: 87,
+      startLine: 43, startCol: 3, endLine: 74, endCol: 87,
       label: 'Loading Order & Merge Behavior',
       panel: {
         title: 'File Loading Order \u2014 main.yaml Wins',
@@ -54,7 +54,7 @@ DIME_PAGES['21'] = {
     },
     {
       id: 'anchors',
-      startLine: 91, startCol: 3, endLine: 125, endCol: 86,
+      startLine: 83, startCol: 3, endLine: 117, endCol: 86,
       label: 'YAML Anchors & References',
       panel: {
         title: 'YAML Anchors \u2014 Define Once, Reuse Everywhere',
@@ -94,7 +94,7 @@ DIME_PAGES['21'] = {
     },
     {
       id: 'file-patterns',
-      startLine: 137, startCol: 3, endLine: 151, endCol: 88,
+      startLine: 126, startCol: 3, endLine: 140, endCol: 88,
       label: 'File Organization Patterns',
       panel: {
         title: 'Three File Organization Patterns',
@@ -114,7 +114,7 @@ DIME_PAGES['21'] = {
     },
     {
       id: 'enabled-flag',
-      startLine: 166, startCol: 3, endLine: 200, endCol: 86,
+      startLine: 152, startCol: 3, endLine: 186, endCol: 86,
       label: 'The enabled Flag',
       panel: {
         title: 'enabled: !!bool false \u2014 Disable Without Deleting',

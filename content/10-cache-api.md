@@ -1,38 +1,35 @@
 ```
 ┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
 │                                                                                                  │
-│          ██████┐  ██┐ ███┐   ███┐ ███████┐        10 — Cache API                                │
+│          ██████┐  ██┐ ███┐   ███┐ ███████┐        10 — Cache API                                 │
 │          ██┌──██┐ ██│ ████┐ ████│ ██┌────┘                                                       │
-│          ██│  ██│ ██│ ██┌████┌██│ █████┐          Share state across connectors.                  │
+│          ██│  ██│ ██│ ██┌████┌██│ █████┐          Share state across connectors.                 │
 │          ██│  ██│ ██│ ██│└██┌┘██│ ██┌──┘          Remember values between cycles.                │
 │          ██████┌┘ ██│ ██│ └─┘ ██│ ███████┐                                                       │
 │          └─────┘  └─┘ └─┘     └─┘ └──────┘                                                       │
 │                                                                                                  │
 │  ──────────────────────────────────────────────────────────────────────────────────────────────  │
 │                                                                                                  │
-│                                                                                                  │
 │   THE PROBLEM                                                                                    │
 │   ───────────                                                                                    │
 │                                                                                                  │
 │   Sources run independently. Each has its own scan cycle and timer.                              │
-│   But sometimes a script in Source A needs data that Source B collected.                          │
+│   But sometimes a script in Source A needs data that Source B collected.                         │
 │                                                                                                  │
 │    ┌──────────┐     scan cycle 1     ┌──────────────────┐                                        │
-│    │ Source A  │────────────────────▶│   Ring Buffer     │    Source A has no way                  │
-│    │  (PLC)   │     scan cycle 2     │                  │    to see Source B's                    │
-│    └──────────┘────────────────────▶│   Messages flow   │    temperature value.                   │
-│                                      │   forward only.   │                                        │
-│    ┌──────────┐     scan cycle 1     │                  │    Scripts run in                       │
-│    │ Source B  │────────────────────▶│   No cross-read.  │    isolation.                           │
-│    │ (Weather) │     scan cycle 2     │                  │                                        │
-│    └──────────┘────────────────────▶└──────────────────┘                                        │
+│    │ Source A │────────────────────▶ │   Ring Buffer    │    Source A has no way                 │
+│    │  (PLC)   │     scan cycle 2     │                  │    to see Source B's                   │
+│    └──────────┘────────────────────▶ │   Messages flow  │    temperature value.                  │
+│                                      │   forward only.   │                                       │
+│    ┌──────────┐     scan cycle 1     │                  │    Scripts run in                      │
+│    │ Source B │────────────────────▶ │   No cross-read. │    isolation.                          │
+│    │ (Weather)│     scan cycle 2     │                  │                                        │
+│    └──────────┘────────────────────▶ └──────────────────┘                                        │
 │                                                                                                  │
-│   The cache API solves this. Every value that enters the ring buffer is cached.                   │
+│   The cache API solves this. Every value that enters the ring buffer is cached.                  │
 │   Any script, anywhere, can read any cached value at any time.                                   │
 │                                                                                                  │
-│                                                                                                  │
 │  ──────────────────────────────────────────────────────────────────────────────────────────────  │
-│                                                                                                  │
 │                                                                                                  │
 │   READING CACHED VALUES                                                                          │
 │   ─────────────────────                                                                          │
@@ -57,9 +54,7 @@
 │   │                                                                                          │   │
 │   └──────────────────────────────────────────────────────────────────────────────────────────┘   │
 │                                                                                                  │
-│                                                                                                  │
 │  ──────────────────────────────────────────────────────────────────────────────────────────────  │
-│                                                                                                  │
 │                                                                                                  │
 │   WRITING TO THE CACHE                                                                           │
 │   ────────────────────                                                                           │
@@ -82,9 +77,7 @@
 │   │                                                                                          │   │
 │   └──────────────────────────────────────────────────────────────────────────────────────────┘   │
 │                                                                                                  │
-│                                                                                                  │
 │  ──────────────────────────────────────────────────────────────────────────────────────────────  │
-│                                                                                                  │
 │                                                                                                  │
 │   CROSS-CONNECTOR ACCESS                                                                         │
 │   ──────────────────────                                                                         │
@@ -92,36 +85,34 @@
 │   Any script in any connector can read any path from any other connector.                        │
 │                                                                                                  │
 │    ┌──────────────┐                          ┌──────────────────────────────────┐                │
-│    │  Source: plc1 │───▶ plc1/temperature ──▶│                                  │                │
-│    │  (OPC-UA)     │───▶ plc1/pressure   ──▶│         CACHE STORE              │                │
+│    │  Source: plc1│───▶ plc1/temperature ──▶ │                                  │                │
+│    │  (OPC-UA)    │───▶ plc1/pressure   ──▶  │         CACHE STORE              │                │
 │    └──────────────┘                          │                                  │                │
 │                                              │   plc1/temperature  = 72.5       │                │
 │    ┌──────────────┐                          │   plc1/pressure     = 14.7       │                │
-│    │  Source: wx   │───▶ wx/humidity     ──▶│   wx/humidity       = 45.2       │                │
-│    │  (Weather)    │───▶ wx/ambient_temp ──▶│   wx/ambient_temp   = 68.1       │                │
+│    │  Source: wx  │───▶ wx/humidity     ──▶  │   wx/humidity       = 45.2       │                │
+│    │  (Weather)   │───▶ wx/ambient_temp ──▶  │   wx/ambient_temp   = 68.1       │                │
 │    └──────────────┘                          │   my_counter        = 17         │                │
 │                                              │                                  │                │
 │                                              └──────────┬───────────────────────┘                │
 │                                                         │                                        │
 │                              ┌───────────────────────────┘                                       │
 │                              │  cache('plc1/temperature', 0)  ──▶ 72.5                           │
-│                              │  cache('wx/humidity', 0)        ──▶ 45.2                           │
-│                              │  cache('my_counter', 0)         ──▶ 17                             │
-│                              ▼                                                                    │
+│                              │  cache('wx/humidity', 0)        ──▶ 45.2                          │
+│                              │  cache('my_counter', 0)         ──▶ 17                            │
+│                              ▼                                                                   │
 │    ┌──────────────────────────────────────────┐                                                  │
-│    │  Source: enricher (Script connector)      │                                                  │
+│    │  Source: enricher (Script connector)     │                                                  │
 │    │                                          │                                                  │
 │    │  script: |                               │                                                  │
 │    │    local temp = cache('plc1/temp', 0)    │                                                  │
-│    │    local hum  = cache('wx/humidity', 0)   │                                                  │
+│    │    local hum  = cache('wx/humidity', 0)  │                                                  │
 │    │    emit('combined/comfort_index',        │                                                  │
 │    │         temp - (0.55 * (1 - hum/100)     │                                                  │
 │    │              * (temp - 58)))             │                                                  │
 │    └──────────────────────────────────────────┘                                                  │
 │                                                                                                  │
-│                                                                                                  │
 │  ──────────────────────────────────────────────────────────────────────────────────────────────  │
-│                                                                                                  │
 │                                                                                                  │
 │   USE CASES                                                                                      │
 │   ─────────                                                                                      │
@@ -148,9 +139,7 @@
 │   │                        │  │                        │  │                        │             │
 │   └────────────────────────┘  └────────────────────────┘  └────────────────────────┘             │
 │                                                                                                  │
-│                                                                                                  │
 │  ──────────────────────────────────────────────────────────────────────────────────────────────  │
-│                                                                                                  │
 │                                                                                                  │
 │   DEPENDENCY ORDERING WITH wait_for_connectors                                                   │
 │   ────────────────────────────────────────────                                                   │
@@ -181,7 +170,6 @@
 │    │                                                                                       │     │
 │    └───────────────────────────────────────────────────────────────────────────────────────┘     │
 │                                                                                                  │
-│                                                                                                  │
 │   ┌──────────┐      ┌──────────┐                    ┌────────────┐                               │
 │   │  plc1    │─────▶│          │     cache()        │  enricher  │        ┌──────────┐           │
 │   │  (OPC-UA)│      │  CACHE   │◀───────────────────│  (Script)  │───────▶│  Sink    │           │
@@ -191,7 +179,6 @@
 │   │  (HTTP)  │      └──────────┘                    │  Emits     │        │ output   │           │
 │   └──────────┘                                      │  combined. │        └──────────┘           │
 │                                                     └────────────┘                               │
-│                                                                                                  │
 │                                                                                                  │
 └──────────────────────────────────────────────────────────────────────────────────────────────────┘
 ```

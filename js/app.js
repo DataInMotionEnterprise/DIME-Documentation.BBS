@@ -6,15 +6,55 @@
   var currentHotspots = [];
 
   // ── DOM refs ───────────────────────────────────────────────────
-  var shell       = document.getElementById('shell');
-  var canvas      = document.getElementById('ascii-canvas');
-  var canvasWrap  = document.getElementById('canvas-wrap');
-  var pageList    = document.getElementById('page-list');
-  var panelTitle  = document.getElementById('panel-title');
-  var panelBody   = document.getElementById('panel-body');
-  var panelYaml   = document.getElementById('panel-yaml');
+  var shell        = document.getElementById('shell');
+  var canvas       = document.getElementById('ascii-canvas');
+  var canvasWrap   = document.getElementById('canvas-wrap');
+  var pageList     = document.getElementById('page-list');
+  var panelTitle   = document.getElementById('panel-title');
+  var panelBody    = document.getElementById('panel-body');
+  var panelYaml    = document.getElementById('panel-yaml');
   var panelRelated = document.getElementById('panel-related');
-  var panelClose  = document.getElementById('panel-close');
+  var panelClose   = document.getElementById('panel-close');
+  var sidebarToggle = document.getElementById('sidebar-toggle');
+  var pageNav      = document.getElementById('page-nav');
+
+  // ── Sidebar toggle ────────────────────────────────────────────
+  function toggleSidebar() {
+    shell.classList.toggle('sidebar-open');
+  }
+
+  function closeSidebar() {
+    shell.classList.remove('sidebar-open');
+  }
+
+  // ── Page nav (prev / next) ────────────────────────────────────
+  function buildPageNav(pageId) {
+    var curIdx = -1;
+    for (var i = 0; i < PAGES.length; i++) {
+      if (PAGES[i].id === pageId) { curIdx = i; break; }
+    }
+    if (curIdx < 0) { pageNav.innerHTML = ''; return; }
+
+    var prev = curIdx > 0 ? PAGES[curIdx - 1] : null;
+    var next = curIdx < PAGES.length - 1 ? PAGES[curIdx + 1] : null;
+    var html = '';
+
+    if (prev) {
+      html += '<a href="#page-' + prev.id + '" class="page-nav-prev">' +
+        escapeHtml(prev.title) + '</a>';
+    } else {
+      html += '<span></span>';
+    }
+
+    if (next) {
+      html += '<a href="#page-' + next.id + '" class="page-nav-next">' +
+        escapeHtml(next.title) + '</a>';
+    } else {
+      html += '<span></span>';
+    }
+
+    pageNav.innerHTML = html;
+  }
 
   // ── Utilities ──────────────────────────────────────────────────
 
@@ -133,6 +173,7 @@
     currentPageId = pageId;
     currentHotspots = page.hotspots || [];
     updateSidebarActive(pageId);
+    closeSidebar();
 
     // Scroll sidebar to active item
     var activeLink = pageList.querySelector('a.active');
@@ -189,6 +230,9 @@
 
       // Attach click/key handlers to hotspot spans
       attachHotspotHandlers();
+
+      // Build prev/next nav
+      buildPageNav(pageId);
 
     } catch (err) {
       canvas.innerHTML = '';
@@ -352,6 +396,7 @@
   function init() {
     buildSidebar();
     panelClose.addEventListener('click', closePanel);
+    sidebarToggle.addEventListener('click', toggleSidebar);
     document.addEventListener('keydown', handleKeyboard);
     window.addEventListener('hashchange', onHashChange);
 

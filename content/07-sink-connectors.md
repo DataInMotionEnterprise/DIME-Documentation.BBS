@@ -1,7 +1,7 @@
 ```
 ┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
 │                                                                                                  │
-│          ██████┐  ██┐ ███┐   ███┐ ███████┐        07 — Sink Connectors                          │
+│          ██████┐  ██┐ ███┐   ███┐ ███████┐        07 — Sink Connectors                           │
 │          ██┌──██┐ ██│ ████┐ ████│ ██┌────┘                                                       │
 │          ██│  ██│ ██│ ██┌████┌██│ █████┐          Where data goes.                               │
 │          ██│  ██│ ██│ ██│└██┌┘██│ ██┌──┘          Fan-out to every destination.                  │
@@ -14,7 +14,7 @@
 │   ───────────────                                                                                │
 │                                                                                                  │
 │   Every sink receives EVERY message from the ring buffer.                                        │
-│   Filters determine what each sink keeps. This is fan-out, not routing.                         │
+│   Filters determine what each sink keeps. This is fan-out, not routing.                          │
 │                                                                                                  │
 │  ──────────────────────────────────────────────────────────────────────────────────────────────  │
 │                                                                                                  │
@@ -23,7 +23,7 @@
 │                                                                                                  │
 │   ┌──────────────────────────┐  ┌──────────────────────────┐  ┌──────────────────────────┐       │
 │   │                          │  │                          │  │                          │       │
-│   │  InfluxDB (Line Proto)   │  │  Splunk HEC             │  │  Splunk Edge Hub SDK     │       │
+│   │  InfluxDB (Line Proto)   │  │  Splunk HEC              │  │  Splunk Edge Hub SDK     │       │
 │   │                          │  │                          │  │                          │       │
 │   │  Writes InfluxDB line    │  │  HTTP Event Collector.   │  │  v1 and v2 SDK modes.    │       │
 │   │  protocol over HTTP.     │  │  Pushes JSON events to   │  │  Direct Edge Hub         │       │
@@ -36,8 +36,8 @@
 │   │                          │  │                          │  │                          │       │
 │   └──────────────────────────┘  └──────────────────────────┘  └──────────────────────────┘       │
 │                                                                                                  │
-│   InfluxDB is the most common time-series destination. DIME formats data as line protocol       │
-│   automatically. Splunk HEC enables enterprise analytics and alerting.                          │
+│   InfluxDB is the most common time-series destination. DIME formats data as line protocol        │
+│   automatically. Splunk HEC enables enterprise analytics and alerting.                           │
 │                                                                                                  │
 │  ──────────────────────────────────────────────────────────────────────────────────────────────  │
 │                                                                                                  │
@@ -79,8 +79,8 @@
 │   └──────────────────────┘  └──────────────────────┘  └──────────────────────┘                   │
 │                                                                                                  │
 │   ┌──────────────────────┐                                                                       │
-│   │                      │     Broker sinks republish data to messaging infrastructure.           │
-│   │  Redis               │     Use include/exclude filters to control which messages              │
+│   │                      │     Broker sinks republish data to messaging infrastructure.          │
+│   │  Redis               │     Use include/exclude filters to control which messages             │
 │   │                      │     get published. MQTT sink topic can mirror the message path.       │
 │   │  address: host       │                                                                       │
 │   │  port: 6379          │     Common pattern: MQTT source from one broker, MQTT sink            │
@@ -110,7 +110,7 @@
 │   │                                          │  │                                          │     │
 │   └──────────────────────────────────────────┘  └──────────────────────────────────────────┘     │
 │                                                                                                  │
-│   DIME can read from any protocol and expose data as MTConnect. This makes legacy               │
+│   DIME can read from any protocol and expose data as MTConnect. This makes legacy                │
 │   devices visible to any MTConnect-compatible monitoring system.                                 │
 │                                                                                                  │
 │  ──────────────────────────────────────────────────────────────────────────────────────────────  │
@@ -132,8 +132,8 @@
 │   │                          │  │                          │  │                          │       │
 │   └──────────────────────────┘  └──────────────────────────┘  └──────────────────────────┘       │
 │                                                                                                  │
-│   Server sinks turn DIME into a data endpoint. Read from any protocol, serve via HTTP,          │
-│   WebSocket, or OPC-UA. Build self-contained dashboards with zero external dependencies.        │
+│   Server sinks turn DIME into a data endpoint. Read from any protocol, serve via HTTP,           │
+│   WebSocket, or OPC-UA. Build self-contained dashboards with zero external dependencies.         │
 │                                                                                                  │
 │  ──────────────────────────────────────────────────────────────────────────────────────────────  │
 │                                                                                                  │
@@ -153,11 +153,11 @@
 │   │                          │  │                          │  │                          │       │
 │   └──────────────────────────┘  └──────────────────────────┘  └──────────────────────────┘       │
 │                                                                                                  │
-│   The Console sink is essential during development. Add one to every config while building.     │
+│   The Console sink is essential during development. Add one to every config while building.      │
 │                                                                                                  │
 │  ──────────────────────────────────────────────────────────────────────────────────────────────  │
 │                                                                                                  │
-│   FAN-OUT: ONE RING BUFFER → MANY SINKS                                                         │
+│   FAN-OUT: ONE RING BUFFER → MANY SINKS                                                          │
 │   ──────────────────────────────────────                                                         │
 │                                                                                                  │
 │   SinkDispatcher pushes every message to every registered sink.                                  │
@@ -181,15 +181,15 @@
 │        │ InfluxDB   │  │ Splunk     │ │ MQTT   │ │ MTConnect  │ │ Console  │                     │
 │        │            │  │            │ │        │ │            │ │          │                     │
 │        │ include:   │  │ exclude:   │ │ include│ │ include:   │ │ (all)    │                     │
-│        │ plc/.*     │  │ .*\$SYS.* │ │ robot/ │ │ cnc/.*     │ │          │                     │
+│        │ plc/.*     │  │ .*\$SYS.*  │ │ robot/ │ │ cnc/.*     │ │          │                     │
 │        │            │  │            │ │ .*     │ │            │ │ Raw      │                     │
 │        │ Only PLC   │  │ Everything │ │        │ │ Only CNC   │ │ debug    │                     │
 │        │ data.      │  │ minus sys. │ │ Robots │ │ data.      │ │ output.  │                     │
 │        │            │  │            │ │ only.  │ │            │ │          │                     │
 │        └────────────┘  └────────────┘ └────────┘ └────────────┘ └──────────┘                     │
 │                                                                                                  │
-│   No routing tables. No message brokers. Every sink sees everything and picks what it needs.    │
-│   Add a new sink? It immediately receives every message. Remove a sink? Nothing else changes.   │
+│   No routing tables. No message brokers. Every sink sees everything and picks what it needs.     │
+│   Add a new sink? It immediately receives every message. Remove a sink? Nothing else changes.    │
 │                                                                                                  │
 │  ──────────────────────────────────────────────────────────────────────────────────────────────  │
 │                                                                                                  │
@@ -210,7 +210,7 @@
 │   │       org: my_org                                                                        │   │
 │   │       token: my_token                                                                    │   │
 │   │       include_filter: plc/.*     # regex: only keep matching paths                       │   │
-│   │       exclude_filter: .*\$SYS.* # regex: drop matching paths                            │   │
+│   │       exclude_filter: .*\$SYS.* # regex: drop matching paths                             │   │
 │   │       use_sink_transform: true   # apply source-side transform on sink                   │   │
 │   │       template: >                # output formatting template                            │   │
 │   │         {{ Message.Path }}: {{ Message.Data }}                                           │   │
@@ -218,7 +218,7 @@
 │   └──────────────────────────────────────────────────────────────────────────────────────────┘   │
 │                                                                                                  │
 │   include_filter and exclude_filter are regex patterns matching the message Path.                │
-│   If both are set, include is applied first, then exclude removes from the result.              │
+│   If both are set, include is applied first, then exclude removes from the result.               │
 │                                                                                                  │
 └──────────────────────────────────────────────────────────────────────────────────────────────────┘
 ```

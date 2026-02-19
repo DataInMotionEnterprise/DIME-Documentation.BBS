@@ -9,7 +9,7 @@ DIME_PAGES['19'] = {
   hotspots: [
     {
       id: 'multi-instance',
-      startLine: 43, startCol: 3, endLine: 76, endCol: 92,
+      startLine: 39, startCol: 3, endLine: 72, endCol: 92,
       label: 'Multi-Instance Management',
       panel: {
         title: 'Multi-Instance Management',
@@ -32,7 +32,7 @@ DIME_PAGES['19'] = {
     },
     {
       id: 'live-dashboard',
-      startLine: 86, startCol: 3, endLine: 103, endCol: 32,
+      startLine: 78, startCol: 3, endLine: 95, endCol: 32,
       label: 'Live Dashboard',
       panel: {
         title: 'Live Dashboard \u2014 Real-Time Health Cards',
@@ -57,7 +57,7 @@ DIME_PAGES['19'] = {
     },
     {
       id: 'yaml-editor',
-      startLine: 86, startCol: 33, endLine: 103, endCol: 63,
+      startLine: 78, startCol: 33, endLine: 95, endCol: 63,
       label: 'Monaco YAML Editor',
       panel: {
         title: 'Configuration Editor \u2014 Monaco YAML',
@@ -80,7 +80,7 @@ DIME_PAGES['19'] = {
     },
     {
       id: 'data-stream',
-      startLine: 105, startCol: 3, endLine: 122, endCol: 32,
+      startLine: 97, startCol: 3, endLine: 114, endCol: 32,
       label: 'Live Data Stream',
       panel: {
         title: 'Live Data Stream \u2014 Real-Time Message Viewer',
@@ -108,7 +108,7 @@ DIME_PAGES['19'] = {
     },
     {
       id: 'platforms',
-      startLine: 19, startCol: 3, endLine: 37, endCol: 92,
+      startLine: 17, startCol: 3, endLine: 35, endCol: 92,
       label: 'Platform Support',
       panel: {
         title: 'Cross-Platform via Tauri v2',

@@ -9,7 +9,7 @@ DIME_PAGES['11'] = {
   hotspots: [
     {
       id: 'sink-transform',
-      startLine: 28, startCol: 3, endLine: 45, endCol: 92,
+      startLine: 26, startCol: 3, endLine: 41, endCol: 92,
       label: 'use_sink_transform Flag',
       panel: {
         title: 'Enabling Templates with use_sink_transform',
@@ -35,7 +35,7 @@ DIME_PAGES['11'] = {
     },
     {
       id: 'template-engines',
-      startLine: 52, startCol: 3, endLine: 73, endCol: 92,
+      startLine: 48, startCol: 3, endLine: 67, endCol: 92,
       label: 'Liquid & Scriban Engines',
       panel: {
         title: 'Template Engines: Liquid vs Scriban',
@@ -54,7 +54,7 @@ DIME_PAGES['11'] = {
     },
     {
       id: 'context-vars',
-      startLine: 80, startCol: 3, endLine: 97, endCol: 92,
+      startLine: 74, startCol: 3, endLine: 89, endCol: 92,
       label: 'Template Context Variables',
       panel: {
         title: 'Template Context: Message, Connector, Configuration',
@@ -77,7 +77,7 @@ DIME_PAGES['11'] = {
     },
     {
       id: 'json-reshape',
-      startLine: 104, startCol: 3, endLine: 142, endCol: 92,
+      startLine: 96, startCol: 3, endLine: 131, endCol: 92,
       label: 'JSON Reshaping Example',
       panel: {
         title: 'Reshaping Flat Data into Nested JSON',
@@ -105,7 +105,7 @@ DIME_PAGES['11'] = {
     },
     {
       id: 'templates-vs-scripts',
-      startLine: 151, startCol: 3, endLine: 176, endCol: 92,
+      startLine: 139, startCol: 3, endLine: 162, endCol: 92,
       label: 'Templates vs Scripts',
       panel: {
         title: 'When to Use Templates vs Lua Scripts',

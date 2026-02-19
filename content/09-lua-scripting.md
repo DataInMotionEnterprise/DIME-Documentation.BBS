@@ -1,7 +1,7 @@
 ```
 ┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
 │                                                                                                  │
-│          ██████┐  ██┐ ███┐   ███┐ ███████┐        09 — Lua Scripting                            │
+│          ██████┐  ██┐ ███┐   ███┐ ███████┐        09 — Lua Scripting                             │
 │          ██┌──██┐ ██│ ████┐ ████│ ██┌────┘                                                       │
 │          ██│  ██│ ██│ ██┌████┌██│ █████┐          Transform, enrich, and fork                    │
 │          ██│  ██│ ██│ ██│└██┌┘██│ ██┌──┘          data with Lua or Python.                       │
@@ -10,13 +10,11 @@
 │                                                                                                  │
 │  ──────────────────────────────────────────────────────────────────────────────────────────────  │
 │                                                                                                  │
-│                                                                                                  │
-│   SCRIPT EXECUTION LIFECYCLE                                                                    │
-│   ──────────────────────────                                                                    │
+│   SCRIPT EXECUTION LIFECYCLE                                                                     │
+│   ──────────────────────────                                                                     │
 │                                                                                                  │
 │   Scripts hook into six points in the connector lifecycle.                                       │
 │   Each runs at a different stage — from startup to shutdown.                                     │
-│                                                                                                  │
 │                                                                                                  │
 │   ┌─────────────────────────────────────────────────────────────────────────────────────────┐    │
 │   │                                                                                         │    │
@@ -27,25 +25,25 @@
 │   │   │  init_script │   Set up caches, load lookup tables, initialize state.               │    │
 │   │   └──────┬───────┘                                                                      │    │
 │   │          │                                                                              │    │
-│   │          ▼                          ┌──────────────────────────────────────────┐         │    │
-│   │   ┌──────────────────┐              │                                          │         │    │
-│   │   │ loop_enter_script│              │   Runs ONCE per scan cycle, BEFORE       │         │    │
-│   │   └──────┬───────────┘              │   any items are read. Good for           │         │    │
-│   │          │                          │   resetting per-loop accumulators.        │         │    │
-│   │          ▼                          └──────────────────────────────────────────┘         │    │
+│   │          ▼                          ┌──────────────────────────────────────────┐         │   │
+│   │   ┌──────────────────┐              │                                          │         │   │
+│   │   │ loop_enter_script│              │   Runs ONCE per scan cycle, BEFORE       │         │   │
+│   │   └──────┬───────────┘              │   any items are read. Good for           │         │   │
+│   │          │                          │   resetting per-loop accumulators.        │         │  │
+│   │          ▼                          └──────────────────────────────────────────┘         │   │
 │   │   ┌──────────────────┐                                                                  │    │
 │   │   │ loop_item_script │◄──── Runs ONCE PER ITEM, every scan cycle.                       │    │
 │   │   │  (or "script")   │      This is where transforms happen.                            │    │
-│   │   │                  │      The "result" variable holds the raw value.                   │    │
+│   │   │                  │      The "result" variable holds the raw value.                  │    │
 │   │   └──────┬───────────┘      Return the transformed value.                               │    │
 │   │          │ (repeats                                                                     │    │
 │   │          │  for each item)                                                              │    │
-│   │          ▼                          ┌──────────────────────────────────────────┐         │    │
-│   │   ┌──────────────────┐              │                                          │         │    │
-│   │   │ loop_exit_script │              │   Runs ONCE per scan cycle, AFTER        │         │    │
-│   │   └──────┬───────────┘              │   all items are read. Good for           │         │    │
-│   │          │                          │   aggregations, summaries, batch emits.   │         │    │
-│   │          │                          └──────────────────────────────────────────┘         │    │
+│   │          ▼                          ┌──────────────────────────────────────────┐         │   │
+│   │   ┌──────────────────┐              │                                          │         │   │
+│   │   │ loop_exit_script │              │   Runs ONCE per scan cycle, AFTER        │         │   │
+│   │   └──────┬───────────┘              │   all items are read. Good for           │         │   │
+│   │          │                          │   aggregations, summaries, batch emits.  │         │   │
+│   │          │                          └──────────────────────────────────────────┘         │   │
 │   │          │                                                                              │    │
 │   │    (loop repeats every scan_interval)                                                   │    │
 │   │          │                                                                              │    │
@@ -56,16 +54,13 @@
 │   │                                                                                         │    │
 │   └─────────────────────────────────────────────────────────────────────────────────────────┘    │
 │                                                                                                  │
-│                                                                                                  │
 │  ──────────────────────────────────────────────────────────────────────────────────────────────  │
 │                                                                                                  │
-│                                                                                                  │
-│   THE "result" VARIABLE                                                                         │
-│   ─────────────────────                                                                         │
+│   THE "result" VARIABLE                                                                          │
+│   ─────────────────────                                                                          │
 │                                                                                                  │
 │   Inside loop_item_script (or "script"), the variable "result" holds the raw value               │
-│   read from the source device for the current item.                                             │
-│                                                                                                  │
+│   read from the source device for the current item.                                              │
 │                                                                                                  │
 │   ┌──────────────────────────────────────────────────────────────────────────────┐               │
 │   │                                                                              │               │
@@ -74,7 +69,7 @@
 │   │                                                                              │               │
 │   │   A number           72.5  (from a PLC register, OPC node, etc.)             │               │
 │   │   A string           "RUNNING"  (from a status tag)                          │               │
-│   │   A JSON string      '{"temp":72.5,"psi":14.7}'  (from MQTT, HTTP, etc.)    │               │
+│   │   A JSON string      '{"temp":72.5,"psi":14.7}'  (from MQTT, HTTP, etc.)     │               │
 │   │   A boolean          true / false                                            │               │
 │   │   nil                The source returned no data for this item               │               │
 │   │                                                                              │               │
@@ -83,12 +78,10 @@
 │   │                                                                              │               │
 │   └──────────────────────────────────────────────────────────────────────────────┘               │
 │                                                                                                  │
-│                                                                                                  │
 │  ──────────────────────────────────────────────────────────────────────────────────────────────  │
 │                                                                                                  │
-│                                                                                                  │
-│   BASIC TRANSFORMS                                                                              │
-│   ────────────────                                                                              │
+│   BASIC TRANSFORMS                                                                               │
+│   ────────────────                                                                               │
 │                                                                                                  │
 │   ┌──────────────────────────────────────────────────────────────────────────────┐               │
 │   │                                                                              │               │
@@ -115,22 +108,19 @@
 │   │                                                                              │               │
 │   └──────────────────────────────────────────────────────────────────────────────┘               │
 │                                                                                                  │
-│                                                                                                  │
 │  ──────────────────────────────────────────────────────────────────────────────────────────────  │
 │                                                                                                  │
+│   emit() — FORK ONE MESSAGE INTO MANY                                                            │
+│   ───────────────────────────────────                                                            │
 │                                                                                                  │
-│   emit() — FORK ONE MESSAGE INTO MANY                                                           │
-│   ───────────────────────────────────                                                           │
-│                                                                                                  │
-│   Use emit() to publish additional messages from within a script.                               │
-│   One source read can produce multiple output paths.                                            │
-│                                                                                                  │
+│   Use emit() to publish additional messages from within a script.                                │
+│   One source read can produce multiple output paths.                                             │
 │                                                                                                  │
 │   ┌────────────────────────────────────────────────────────────────────────────────────────┐     │
 │   │                                                                                        │     │
 │   │   Source reads one JSON payload:                                                       │     │
 │   │   ─────────────────────────────                                                        │     │
-│   │   result = '{"temp":72.5, "psi":14.7, "running":true}'                                │     │
+│   │   result = '{"temp":72.5, "psi":14.7, "running":true}'                                 │     │
 │   │                                                                                        │     │
 │   │                                                                                        │     │
 │   │   Script:                              Output:                                         │     │
@@ -147,7 +137,7 @@
 │   │                                                                                        │     │
 │   │                                                                                        │     │
 │   │   ┌───────────┐         ┌──────────────┐         ┌──────────────────────────┐          │     │
-│   │   │  Source    │         │   Script     │         │ Ring Buffer receives:    │          │     │
+│   │   │  Source   │         │   Script     │         │ Ring Buffer receives:    │          │     │
 │   │   │  reads    │────────▶│   from_json  │────────▶│   src/temperature = 72.5 │          │     │
 │   │   │  1 JSON   │         │   emit() x3  │         │   src/pressure = 14.7    │          │     │
 │   │   │  payload  │         │   return nil │         │   src/status = true      │          │     │
@@ -157,12 +147,10 @@
 │   │                                                                                        │     │
 │   └────────────────────────────────────────────────────────────────────────────────────────┘     │
 │                                                                                                  │
-│                                                                                                  │
 │  ──────────────────────────────────────────────────────────────────────────────────────────────  │
 │                                                                                                  │
-│                                                                                                  │
-│   BUILT-IN HELPER FUNCTIONS                                                                     │
-│   ─────────────────────────                                                                     │
+│   BUILT-IN HELPER FUNCTIONS                                                                      │
+│   ─────────────────────────                                                                      │
 │                                                                                                  │
 │   ┌──────────────────────────────────────────────────────────────────────────────┐               │
 │   │                                                                              │               │
@@ -174,7 +162,7 @@
 │   │   cache_ts(key)          Get the timestamp of a cached value                 │               │
 │   │                                                                              │               │
 │   │   set(path, value)       Set a value in the connector's item map             │               │
-│   │   env(name)              Read an environment variable                         │               │
+│   │   env(name)              Read an environment variable                        │               │
 │   │                                                                              │               │
 │   │   connector              Reference to the current connector object           │               │
 │   │   configuration          Reference to the connector's config object          │               │
@@ -188,17 +176,14 @@
 │   │                                                                              │               │
 │   └──────────────────────────────────────────────────────────────────────────────┘               │
 │                                                                                                  │
-│   The cache persists across scan cycles — use it to track state between reads.                  │
-│                                                                                                  │
+│   The cache persists across scan cycles — use it to track state between reads.                   │
 │                                                                                                  │
 │  ──────────────────────────────────────────────────────────────────────────────────────────────  │
 │                                                                                                  │
+│   PYTHON ALTERNATIVE                                                                             │
+│   ──────────────────                                                                             │
 │                                                                                                  │
-│   PYTHON ALTERNATIVE                                                                            │
-│   ──────────────────                                                                            │
-│                                                                                                  │
-│   Set lang_script to use Python instead of Lua. Same lifecycle hooks, same helpers.             │
-│                                                                                                  │
+│   Set lang_script to use Python instead of Lua. Same lifecycle hooks, same helpers.              │
 │                                                                                                  │
 │   ┌──────────────────────────────────────────────────────────────────────────────┐               │
 │   │                                                                              │               │
@@ -215,25 +200,23 @@
 │   │   KEY DIFFERENCES:                                                           │               │
 │   │   ────────────────                                                           │               │
 │   │                                                                              │               │
-│   │   ┌────────────────────┬────────────────────────────────────────┐             │               │
-│   │   │  Feature           │  Details                               │             │               │
-│   │   ├────────────────────┼────────────────────────────────────────┤             │               │
-│   │   │  Runtime           │  Embedded CLR Python (IronPython)      │             │               │
-│   │   │  Module imports    │  Standard library + custom modules     │             │               │
-│   │   │  Performance       │  Slower than Lua — use for complex     │             │               │
-│   │   │                    │  transforms only                       │             │               │
-│   │   │  Default (if not   │  Lua — faster startup, lower overhead  │             │               │
-│   │   │  specified)        │                                        │             │               │
-│   │   └────────────────────┴────────────────────────────────────────┘             │               │
+│   │   ┌────────────────────┬────────────────────────────────────────┐             │              │
+│   │   │  Feature           │  Details                               │             │              │
+│   │   ├────────────────────┼────────────────────────────────────────┤             │              │
+│   │   │  Runtime           │  Embedded CLR Python (IronPython)      │             │              │
+│   │   │  Module imports    │  Standard library + custom modules     │             │              │
+│   │   │  Performance       │  Slower than Lua — use for complex     │             │              │
+│   │   │                    │  transforms only                       │             │              │
+│   │   │  Default (if not   │  Lua — faster startup, lower overhead  │             │              │
+│   │   │  specified)        │                                        │             │              │
+│   │   └────────────────────┴────────────────────────────────────────┘             │              │
 │   │                                                                              │               │
 │   └──────────────────────────────────────────────────────────────────────────────┘               │
 │                                                                                                  │
-│                                                                                                  │
 │  ──────────────────────────────────────────────────────────────────────────────────────────────  │
 │                                                                                                  │
-│                                                                                                  │
-│   PRACTICAL EXAMPLES                                                                            │
-│   ──────────────────                                                                            │
+│   PRACTICAL EXAMPLES                                                                             │
+│   ──────────────────                                                                             │
 │                                                                                                  │
 │   ┌──────────────────────────────────────────────────────────────────────────────┐               │
 │   │                                                                              │               │
@@ -270,7 +253,6 @@
 │   │     return result                                                            │               │
 │   │                                                                              │               │
 │   └──────────────────────────────────────────────────────────────────────────────┘               │
-│                                                                                                  │
 │                                                                                                  │
 └──────────────────────────────────────────────────────────────────────────────────────────────────┘
 ```

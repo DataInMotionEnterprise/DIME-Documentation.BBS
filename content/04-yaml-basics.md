@@ -1,7 +1,7 @@
 ```
 ┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
 │                                                                                                  │
-│          ██████┐  ██┐ ███┐   ███┐ ███████┐        04 — YAML Configuration                       │
+│          ██████┐  ██┐ ███┐   ███┐ ███████┐        04 — YAML Configuration                        │
 │          ██┌──██┐ ██│ ████┐ ████│ ██┌────┘                                                       │
 │          ██│  ██│ ██│ ██┌████┌██│ █████┐          The three-section structure that               │
 │          ██│  ██│ ██│ ██│└██┌┘██│ ██┌──┘          powers everything.                             │
@@ -10,39 +10,34 @@
 │                                                                                                  │
 │  ──────────────────────────────────────────────────────────────────────────────────────────────  │
 │                                                                                                  │
-│                                                                                                  │
 │   THREE TOP-LEVEL SECTIONS                                                                       │
 │   ────────────────────────                                                                       │
 │                                                                                                  │
 │   Every DIME YAML config has exactly three sections:                                             │
 │                                                                                                  │
-│                                                                                                  │
-│   ┌──────────────────────────┐  ┌──────────────────────────┐  ┌──────────────────────────┐      │
-│   │                          │  │                          │  │                          │      │
-│   │   app:                   │  │   sources:               │  │   sinks:                 │      │
-│   │     license: XXXX-XXXX   │  │     - name: my_plc      │  │     - name: my_db        │      │
-│   │     ring_buffer: !!int   │  │       connector: OpcUA   │  │       connector: InfluxLP│      │
-│   │       4096               │  │       scan_interval: 1000│  │       include_filter: .*  │      │
-│   │     http_server_uri:     │  │       items:             │  │       exclude_filter: ""  │      │
-│   │       http://*:9999      │  │         - name: Temp     │  │                          │      │
-│   │     ws_server_uri:       │  │           address: ns=2  │  │                          │      │
-│   │       ws://*:9998        │  │                          │  │                          │      │
-│   │                          │  │                          │  │                          │      │
-│   └──────────────────────────┘  └──────────────────────────┘  └──────────────────────────┘      │
+│   ┌───────────────────────────┐  ┌───────────────────────────┐  ┌───────────────────────────┐    │
+│   │                           │  │                           │  │                           │    │
+│   │   app:                    │  │   sources:                │  │   sinks:                  │    │
+│   │     license: XXXX-XXXX    │  │     - name: my_plc        │  │     - name: my_db         │    │
+│   │     ring_buffer: !!int    │  │       connector: OpcUA    │  │       connector: InfluxLP │    │
+│   │       4096                │  │       scan_interval: 1000 │  │       include_filter: .*  │    │
+│   │     http_server_uri:      │  │       items:              │  │       exclude_filter: ""  │    │
+│   │       http://*:9999       │  │         - name: Temp      │  │                           │    │
+│   │     ws_server_uri:        │  │           address: ns=2   │  │                           │    │
+│   │       ws://*:9998         │  │                           │  │                           │    │
+│   │                           │  │                           │  │                           │    │
+│   └───────────────────────────┘  └───────────────────────────┘  └───────────────────────────┘    │
 │                                                                                                  │
 │    Global settings               Data producers              Data consumers                      │
-│    License, buffer,              Connectors that READ         Connectors that WRITE               │
-│    admin server URIs             from devices/protocols       to databases/APIs/files              │
-│                                                                                                  │
+│    License, buffer,              Connectors that READ         Connectors that WRITE              │
+│    admin server URIs             from devices/protocols       to databases/APIs/files            │
 │                                                                                                  │
 │  ──────────────────────────────────────────────────────────────────────────────────────────────  │
-│                                                                                                  │
 │                                                                                                  │
 │   SOURCE ANATOMY                                                                                 │
 │   ──────────────                                                                                 │
 │                                                                                                  │
 │   Every source connector follows the same structure:                                             │
-│                                                                                                  │
 │                                                                                                  │
 │   ┌────────────────────────────────────────────────────────────────────────────────────────┐     │
 │   │                                                                                        │     │
@@ -60,15 +55,12 @@
 │   │                                                                                        │     │
 │   └────────────────────────────────────────────────────────────────────────────────────────┘     │
 │                                                                                                  │
-│                                                                                                  │
 │  ──────────────────────────────────────────────────────────────────────────────────────────────  │
-│                                                                                                  │
 │                                                                                                  │
 │   SINK ANATOMY                                                                                   │
 │   ────────────                                                                                   │
 │                                                                                                  │
 │   Every sink connector follows the same structure:                                               │
-│                                                                                                  │
 │                                                                                                  │
 │   ┌────────────────────────────────────────────────────────────────────────────────────────┐     │
 │   │                                                                                        │     │
@@ -85,15 +77,12 @@
 │   │                                                                                        │     │
 │   └────────────────────────────────────────────────────────────────────────────────────────┘     │
 │                                                                                                  │
-│                                                                                                  │
 │  ──────────────────────────────────────────────────────────────────────────────────────────────  │
-│                                                                                                  │
 │                                                                                                  │
 │   ITEM ANATOMY                                                                                   │
 │   ────────────                                                                                   │
 │                                                                                                  │
 │   Items are the individual data points inside a source:                                          │
-│                                                                                                  │
 │                                                                                                  │
 │   ┌────────────────────────────────────────────────────────────────────────────────────────┐     │
 │   │                                                                                        │     │
@@ -110,32 +99,28 @@
 │   │                                                                                        │     │
 │   └────────────────────────────────────────────────────────────────────────────────────────┘     │
 │                                                                                                  │
-│                                                                                                  │
 │   YAML TYPE TAGS — Values that aren't strings need type hints:                                   │
 │                                                                                                  │
-│       !!bool true       !!bool false       !!int 4096       !!int 1000                          │
+│       !!bool true       !!bool false       !!int 4096       !!int 1000                           │
 │                                                                                                  │
 │   Without tags, YAML treats everything as a string. DIME requires typed values for               │
 │   booleans and integers in its configuration.                                                    │
 │                                                                                                  │
-│                                                                                                  │
 │  ──────────────────────────────────────────────────────────────────────────────────────────────  │
-│                                                                                                  │
 │                                                                                                  │
 │   FILE LOADING — Single-File vs Multi-File                                                       │
 │   ────────────────────────────────────────                                                       │
 │                                                                                                  │
 │   DIME reads ALL *.yaml files from the config directory and merges them:                         │
 │                                                                                                  │
-│                                                                                                  │
 │   ┌────────────────────────────────────────────────────────────────────────────────────────┐     │
 │   │                                                                                        │     │
 │   │   Configs/                                                                             │     │
-│   │   ├── main.yaml           ← loaded LAST (overrides all others)                        │     │
-│   │   ├── opcua-source.yaml   ← merged into sources[]                                     │     │
-│   │   ├── modbus-source.yaml  ← merged into sources[]                                     │     │
-│   │   ├── influx-sink.yaml    ← merged into sinks[]                                       │     │
-│   │   └── mqtt-sink.yaml      ← merged into sinks[]                                       │     │
+│   │   ├── main.yaml           ← loaded LAST (overrides all others)                        │      │
+│   │   ├── opcua-source.yaml   ← merged into sources[]                                     │      │
+│   │   ├── modbus-source.yaml  ← merged into sources[]                                     │      │
+│   │   ├── influx-sink.yaml    ← merged into sinks[]                                       │      │
+│   │   └── mqtt-sink.yaml      ← merged into sinks[]                                       │      │
 │   │                                                                                        │     │
 │   │   Merge order:                                                                         │     │
 │   │     1. All *.yaml files loaded alphabetically                                          │     │
@@ -148,15 +133,12 @@
 │   │                                                                                        │     │
 │   └────────────────────────────────────────────────────────────────────────────────────────┘     │
 │                                                                                                  │
-│                                                                                                  │
 │  ──────────────────────────────────────────────────────────────────────────────────────────────  │
-│                                                                                                  │
 │                                                                                                  │
 │   MINIMAL WORKING EXAMPLE                                                                        │
 │   ───────────────────────                                                                        │
 │                                                                                                  │
 │   The smallest possible config — a Script source writing to Console:                             │
-│                                                                                                  │
 │                                                                                                  │
 │   ┌────────────────────────────────────────────────────────────────────────────────────────┐     │
 │   │                                                                                        │     │
@@ -178,20 +160,17 @@
 │   │                                                                                        │     │
 │   └────────────────────────────────────────────────────────────────────────────────────────┘     │
 │                                                                                                  │
-│                                                                                                  │
 │       Script source ──────────▶ Ring Buffer ──────────▶ Console sink                             │
 │       (Lua: os.time())          (4096 slots)            (stdout)                                 │
 │                                                                                                  │
 │   Run: DIME.exe (or ./DIME run). You'll see timestamps printed every 5 seconds.                  │
 │   Replace "Script" with any real connector. Replace "Console" with your database.                │
 │                                                                                                  │
-│                                                                                                  │
 │   THE ENABLED FLAG — Disable without deleting:                                                   │
 │                                                                                                  │
-│       enabled: !!bool false     ← connector is skipped at startup                               │
+│       enabled: !!bool false     ← connector is skipped at startup                                │
 │                                                                                                  │
 │   Works on sources, sinks, AND individual items. Keep configs around for quick re-enable.        │
-│                                                                                                  │
 │                                                                                                  │
 └──────────────────────────────────────────────────────────────────────────────────────────────────┘
 ```

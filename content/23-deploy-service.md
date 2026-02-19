@@ -1,7 +1,7 @@
 ```
 ┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
 │                                                                                                  │
-│          ██████┐  ██┐ ███┐   ███┐ ███████┐        23 — Service Deployment                       │
+│          ██████┐  ██┐ ███┐   ███┐ ███████┐        23 — Service Deployment                        │
 │          ██┌──██┐ ██│ ████┐ ████│ ██┌────┘                                                       │
 │          ██│  ██│ ██│ ██┌████┌██│ █████┐          Windows Service. Linux systemd.                │
 │          ██│  ██│ ██│ ██│└██┌┘██│ ██┌──┘          Production-ready.                              │
@@ -10,33 +10,28 @@
 │                                                                                                  │
 │  ──────────────────────────────────────────────────────────────────────────────────────────────  │
 │                                                                                                  │
-│                                                                                                  │
 │   OVERVIEW — OS SERVICE MANAGEMENT                                                               │
 │   ────────────────────────────────                                                               │
 │                                                                                                  │
 │   DIME runs as a native OS service on both Windows and Linux. Start on boot, survive             │
 │   logouts, restart on failure — the OS manages the process lifecycle.                            │
 │                                                                                                  │
-│                                                                                                  │
-│   ┌─────────────────┐      ┌─────────────────┐      ┌─────────────────┐      ┌──────────────┐   │
-│   │                 │      │                 │      │                 │      │              │   │
-│   │  OS Service     │─────▶│  DIME Process   │─────▶│  YAML Configs  │      │  Log Files   │   │
-│   │  Manager        │      │                 │      │                 │      │              │   │
-│   │                 │      │  Sources        │      │  /Configs/*.yml │      │  Daily roll  │   │
-│   │  Windows SCM    │◀─────│  Ring Buffer    │      │  Merged at      │      │  nlog.config │   │
-│   │  or systemd     │ stat │  Sinks          │      │  startup        │      │  JSON / text │   │
-│   │                 │      │  Admin API      │      │                 │      │              │   │
-│   └─────────────────┘      └─────────────────┘      └─────────────────┘      └──────────────┘   │
-│                                                                                                  │
+│   ┌─────────────────┐      ┌─────────────────┐      ┌─────────────────┐      ┌──────────────┐    │
+│   │                 │      │                 │      │                 │      │              │    │
+│   │  OS Service     │─────▶│  DIME Process   │─────▶│  YAML Configs   │      │  Log Files   │    │
+│   │  Manager        │      │                 │      │                 │      │              │    │
+│   │                 │      │  Sources        │      │  /Configs/*.yml │      │  Daily roll  │    │
+│   │  Windows SCM    │◀─────│  Ring Buffer    │      │  Merged at      │      │  nlog.config │    │
+│   │  or systemd     │ stat │  Sinks          │      │  startup        │      │  JSON / text │    │
+│   │                 │      │  Admin API      │      │                 │      │              │    │
+│   └─────────────────┘      └─────────────────┘      └─────────────────┘      └──────────────┘    │
 │                                                                                                  │
 │  ──────────────────────────────────────────────────────────────────────────────────────────────  │
-│                                                                                                  │
 │                                                                                                  │
 │   WINDOWS SERVICE                                                                                │
 │   ───────────────                                                                                │
 │                                                                                                  │
 │   Install DIME as a Windows service using the built-in installer.                                │
-│                                                                                                  │
 │                                                                                                  │
 │   ┌──────────────────────────────────────────────────────────────────────────────────────────┐   │
 │   │                                                                                          │   │
@@ -60,23 +55,20 @@
 │   │                                                                                          │   │
 │   │   POWERSHELL                                                                             │   │
 │   │   ──────────                                                                             │   │
-│   │   > Get-Service DIME* | Format-Table Name, Status, StartType                            │   │
+│   │   > Get-Service DIME* | Format-Table Name, Status, StartType                             │   │
 │   │   > Restart-Service DIME                                                                 │   │
 │   │                                                                                          │   │
 │   └──────────────────────────────────────────────────────────────────────────────────────────┘   │
 │                                                                                                  │
 │   Named instances let you run multiple DIME services on one Windows machine,                     │
-│   each with different configs, different ports, different devices.                                │
-│                                                                                                  │
+│   each with different configs, different ports, different devices.                               │
 │                                                                                                  │
 │  ──────────────────────────────────────────────────────────────────────────────────────────────  │
-│                                                                                                  │
 │                                                                                                  │
 │   LINUX systemd                                                                                  │
 │   ─────────────                                                                                  │
 │                                                                                                  │
 │   Install DIME as a systemd service using the provided install script.                           │
-│                                                                                                  │
 │                                                                                                  │
 │   ┌──────────────────────────────────────────────────────────────────────────────────────────┐   │
 │   │                                                                                          │   │
@@ -97,11 +89,11 @@
 │   │   $ sudo systemctl stop    dime-connector                                                │   │
 │   │   $ sudo systemctl status  dime-connector                                                │   │
 │   │   $ sudo systemctl restart dime-connector                                                │   │
-│   │   $ sudo systemctl enable  dime-connector      # start on boot                          │   │
+│   │   $ sudo systemctl enable  dime-connector      # start on boot                           │   │
 │   │                                                                                          │   │
 │   │   LOGS                                                                                   │   │
 │   │   ────                                                                                   │   │
-│   │   $ sudo journalctl -u dime-connector -f       # live log stream                        │   │
+│   │   $ sudo journalctl -u dime-connector -f       # live log stream                         │   │
 │   │   $ ls /opt/dime-connector/Logs/                # file-based logs                        │   │
 │   │                                                                                          │   │
 │   │   UNINSTALL                                                                              │   │
@@ -113,15 +105,12 @@
 │   The -d flag points DIME to a custom config directory. Useful for running multiple              │
 │   instances with separate configurations on one Linux machine.                                   │
 │                                                                                                  │
-│                                                                                                  │
 │  ──────────────────────────────────────────────────────────────────────────────────────────────  │
-│                                                                                                  │
 │                                                                                                  │
 │   MULTIPLE INSTANCES ON ONE MACHINE                                                              │
 │   ─────────────────────────────────                                                              │
 │                                                                                                  │
 │   Run several DIME instances side by side. Each gets its own port, config, and logs.             │
-│                                                                                                  │
 │                                                                                                  │
 │   ┌──────────────────────────────────────────────────────────────────────────────────────────┐   │
 │   │                                                                                          │   │
@@ -136,9 +125,9 @@
 │   │   │  DIME$Plant1             │  │  DIME$Plant2             │                             │   │
 │   │   │  :9001 / :9002           │  │  :9003 / :9004           │                             │   │
 │   │   │                          │  │                          │                             │   │
-│   │   │  ┌─ Sources ─┐          │  │  ┌─ Sources ─┐          │                             │   │
-│   │   │  │ PLC Line 1│──▶ Ring  │  │  │ PLC Line 2│──▶ Ring  │                             │   │
-│   │   │  └───────────┘   ──▶MQTT│  │  └───────────┘   ──▶MQTT│                             │   │
+│   │   │  ┌─ Sources ─┐          │  │  ┌─ Sources ─┐          │                             │     │
+│   │   │  │ PLC Line 1│──▶ Ring  │  │  │ PLC Line 2│──▶ Ring  │                             │     │
+│   │   │  └───────────┘   ──▶MQTT│  │  └───────────┘   ──▶MQTT│                             │     │
 │   │   │                          │  │                          │                             │   │
 │   │   └──────────────────────────┘  └──────────────────────────┘                             │   │
 │   │                                                                                          │   │
@@ -147,52 +136,47 @@
 │   │                                                                                          │   │
 │   └──────────────────────────────────────────────────────────────────────────────────────────┘   │
 │                                                                                                  │
-│                                                                                                  │
 │  ──────────────────────────────────────────────────────────────────────────────────────────────  │
-│                                                                                                  │
 │                                                                                                  │
 │   DIRECTORY LAYOUT                                                                               │
 │   ────────────────                                                                               │
 │                                                                                                  │
-│   ┌──────────────────────────────────────────┐  ┌──────────────────────────────────────────┐    │
-│   │  WINDOWS                                  │  │  LINUX                                    │    │
-│   │                                           │  │                                           │    │
-│   │  C:\Program Files\DIME\                   │  │  /opt/dime-connector/                     │    │
-│   │  ├── DIME.exe                             │  │  ├── DIME                                 │    │
-│   │  ├── Configs\                             │  │  ├── Configs/                             │    │
-│   │  │   ├── main.yaml                        │  │  │   ├── main.yaml                        │    │
-│   │  │   ├── sources.yaml                     │  │  │   ├── sources.yaml                     │    │
-│   │  │   └── sinks.yaml                       │  │  │   └── sinks.yaml                       │    │
-│   │  ├── Logs\                                │  │  ├── Logs/                                │    │
-│   │  │   ├── dime-2026-02-19.log              │  │  │   ├── dime-2026-02-19.log              │    │
-│   │  │   └── dime-2026-02-18.log              │  │  │   └── dime-2026-02-18.log              │    │
-│   │  ├── Scripts\                             │  │  ├── Scripts/                             │    │
-│   │  └── nlog.config                          │  │  └── nlog.config                          │    │
-│   │                                           │  │                                           │    │
-│   └──────────────────────────────────────────┘  └──────────────────────────────────────────┘    │
-│                                                                                                  │
+│   ┌──────────────────────────────────────────┐  ┌──────────────────────────────────────────┐     │
+│   │  WINDOWS                                 │  │  LINUX                                   │     │
+│   │                                          │  │                                          │     │
+│   │  C:\Program Files\DIME\                  │  │  /opt/dime-connector/                    │     │
+│   │  ├── DIME.exe                             │  │  ├── DIME                                 │   │
+│   │  ├── Configs\                             │  │  ├── Configs/                             │   │
+│   │  │   ├── main.yaml                        │  │  │   ├── main.yaml                        │   │
+│   │  │   ├── sources.yaml                     │  │  │   ├── sources.yaml                     │   │
+│   │  │   └── sinks.yaml                       │  │  │   └── sinks.yaml                       │   │
+│   │  ├── Logs\                                │  │  ├── Logs/                                │   │
+│   │  │   ├── dime-2026-02-19.log              │  │  │   ├── dime-2026-02-19.log              │   │
+│   │  │   └── dime-2026-02-18.log              │  │  │   └── dime-2026-02-18.log              │   │
+│   │  ├── Scripts\                             │  │  ├── Scripts/                             │   │
+│   │  └── nlog.config                          │  │  └── nlog.config                          │   │
+│   │                                          │  │                                          │     │
+│   └──────────────────────────────────────────┘  └──────────────────────────────────────────┘     │
 │                                                                                                  │
 │  ──────────────────────────────────────────────────────────────────────────────────────────────  │
-│                                                                                                  │
 │                                                                                                  │
 │   LOG ROTATION & MANAGEMENT                                                                      │
 │   ─────────────────────────                                                                      │
 │                                                                                                  │
 │   DIME uses NLog. Logging is configured in nlog.config.                                          │
 │                                                                                                  │
-│                                                                                                  │
 │   ┌──────────────────────────────────────────────────────────────────────────────────────────┐   │
 │   │                                                                                          │   │
 │   │   nlog.config controls:                                                                  │   │
 │   │                                                                                          │   │
 │   │   ┌────────────────────┬────────────────────────────────────────────────────────┐        │   │
-│   │   │ Setting            │ Description                                             │        │   │
+│   │   │ Setting            │ Description                                            │        │   │
 │   │   ├────────────────────┼────────────────────────────────────────────────────────┤        │   │
 │   │   │ File target        │ Logs/dime-${shortdate}.log — daily rolling file        │        │   │
 │   │   ├────────────────────┼────────────────────────────────────────────────────────┤        │   │
 │   │   │ Min level          │ Info (default). Set to Debug or Trace for diagnostics  │        │   │
 │   │   ├────────────────────┼────────────────────────────────────────────────────────┤        │   │
-│   │   │ Archive            │ Max 30 days. Configurable retention.                    │        │   │
+│   │   │ Archive            │ Max 30 days. Configurable retention.                   │        │   │
 │   │   ├────────────────────┼────────────────────────────────────────────────────────┤        │   │
 │   │   │ JSON layout        │ Optional structured JSON format for log aggregation    │        │   │
 │   │   ├────────────────────┼────────────────────────────────────────────────────────┤        │   │
@@ -203,7 +187,6 @@
 │   │   No restart required.                                                                   │   │
 │   │                                                                                          │   │
 │   └──────────────────────────────────────────────────────────────────────────────────────────┘   │
-│                                                                                                  │
 │                                                                                                  │
 └──────────────────────────────────────────────────────────────────────────────────────────────────┘
 ```

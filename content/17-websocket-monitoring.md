@@ -1,7 +1,7 @@
 ```
 ┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
 │                                                                                                  │
-│          ██████┐  ██┐ ███┐   ███┐ ███████┐        17 — WebSocket Monitoring                     │
+│          ██████┐  ██┐ ███┐   ███┐ ███████┐        17 — WebSocket Monitoring                      │
 │          ██┌──██┐ ██│ ████┐ ████│ ██┌────┘                                                       │
 │          ██│  ██│ ██│ ██┌████┌██│ █████┐          Real-time data streaming.                      │
 │          ██│  ██│ ██│ ██│└██┌┘██│ ██┌──┘          Build live dashboards.                         │
@@ -17,30 +17,30 @@
 │                                                                                                  │
 │   ┌──────────────────────────────────────────────────────────────────────────────────────────┐   │
 │   │                                                                                          │   │
-│   │   Default endpoint:    ws://localhost:9998/                                               │   │
+│   │   Default endpoint:    ws://localhost:9998/                                              │   │
 │   │                                                                                          │   │
 │   │   What streams over this WebSocket:                                                      │   │
 │   │                                                                                          │   │
 │   │     ┌─────────────────────────────────────────────────────────────────────────────┐      │   │
 │   │     │                                                                             │      │   │
-│   │     │   Connector status    ── isConnected, isFaulted changes in real time       │      │   │
+│   │     │   Connector status    ── isConnected, isFaulted changes in real time        │      │   │
 │   │     │   Performance metrics ── totalLoopTime, deviceReadTime, scriptExecTime      │      │   │
-│   │     │   Fault notifications ── immediate alert when a connector errors           │      │   │
+│   │     │   Fault notifications ── immediate alert when a connector errors            │      │   │
 │   │     │   Live data values    ── current values flowing through ring buffer         │      │   │
 │   │     │   $SYSTEM paths       ── all $SYSTEM metadata for every connector           │      │   │
 │   │     │                                                                             │      │   │
 │   │     └─────────────────────────────────────────────────────────────────────────────┘      │   │
 │   │                                                                                          │   │
-│   │   ┌─────────────┐         ┌──────────────┐         ┌──────────────────────────┐         │   │
-│   │   │             │  data   │              │   WS    │                          │         │   │
-│   │   │   Sources   │───────▶│  Ring Buffer  │───────▶│   Admin WS :9998         │         │   │
-│   │   │             │         │              │         │                          │         │   │
-│   │   └─────────────┘         └──────────────┘         │   ┌──────────────────┐   │         │   │
-│   │                                                     │   │ Connected clients│   │         │   │
-│   │                                                     │   │   Browser        │   │         │   │
-│   │                                                     │   │   Dashboard      │   │         │   │
-│   │                                                     │   │   Monitoring app │   │         │   │
-│   │                                                     │   └──────────────────┘   │         │   │
+│   │   ┌─────────────┐         ┌──────────────┐         ┌──────────────────────────┐         │    │
+│   │   │             │  data   │              │   WS    │                          │         │    │
+│   │   │   Sources   │───────▶ │  Ring Buffer │───────▶ │   Admin WS :9998         │         │    │
+│   │   │             │         │              │         │                          │         │    │
+│   │   └─────────────┘         └──────────────┘         │   ┌───────────────────┐  │         │    │
+│   │                                                     │   │ Connected clients │  │         │   │
+│   │                                                     │   │   Browser         │  │         │   │
+│   │                                                     │   │   Dashboard       │  │         │   │
+│   │                                                     │   │   Monitoring app  │  │         │   │
+│   │                                                     │   └───────────────────┘  │         │   │
 │   │                                                     └──────────────────────────┘         │   │
 │   │                                                                                          │   │
 │   │   This is how DIME-Connector.UX (the built-in web dashboard) gets live data.             │   │
@@ -49,7 +49,7 @@
 │                                                                                                  │
 │  ──────────────────────────────────────────────────────────────────────────────────────────────  │
 │                                                                                                  │
-│   WEBSOCKET SERVER SINK — PUSH DATA TO EXTERNAL CONSUMERS                                       │
+│   WEBSOCKET SERVER SINK — PUSH DATA TO EXTERNAL CONSUMERS                                        │
 │   ────────────────────────────────────────────────────────                                       │
 │                                                                                                  │
 │   A sink connector that opens a WebSocket server. External clients connect and                   │
@@ -65,17 +65,17 @@
 │   │         - "plc1/.*"                                                                      │   │
 │   │         - "robot1/.*"                                                                    │   │
 │   │                                                                                          │   │
-│   │   ┌──────────┐      ┌──────────────┐      ┌───────────────────┐      ┌────────────┐     │   │
-│   │   │ plc1     │      │              │      │  WebSocketServer  │      │ External   │     │   │
-│   │   │ robot1   │─────▶│  Ring Buffer  │─────▶│  Sink :8092       │─────▶│ Clients    │     │   │
-│   │   │ mqtt     │      │              │      │                   │      │            │     │   │
-│   │   └──────────┘      └──────────────┘      │  Only plc1/* and  │      │ Dashboard  │     │   │
+│   │   ┌──────────┐      ┌──────────────┐      ┌───────────────────┐      ┌────────────┐     │    │
+│   │   │ plc1     │      │              │      │  WebSocketServer  │      │ External   │     │    │
+│   │   │ robot1   │─────▶│  Ring Buffer │─────▶│  Sink :8092       │─────▶│ Clients    │     │    │
+│   │   │ mqtt     │      │              │      │                   │      │            │     │    │
+│   │   └──────────┘      └──────────────┘      │  Only plc1/* and  │      │ Dashboard  │     │    │
 │   │                                            │  robot1/* pass    │      │ Mobile app │     │   │
 │   │                                            └───────────────────┘      │ Custom UI  │     │   │
 │   │                                                                       └────────────┘     │   │
 │   │                                                                                          │   │
-│   │   Unlike the admin WS (:9998), this is a configurable SINK — you choose the port,       │   │
-│   │   the data filter, and can run multiple WebSocket servers on different ports.             │   │
+│   │   Unlike the admin WS (:9998), this is a configurable SINK — you choose the port,        │   │
+│   │   the data filter, and can run multiple WebSocket servers on different ports.            │   │
 │   │                                                                                          │   │
 │   └──────────────────────────────────────────────────────────────────────────────────────────┘   │
 │                                                                                                  │
@@ -95,13 +95,13 @@
 │   │       path: ./www                              ◀── folder with your HTML/CSS/JS          │   │
 │   │                                                                                          │   │
 │   │   ┌──────────────────────┐                                                               │   │
-│   │   │  ./www/              │          ┌───────────────────────────────────────┐             │   │
-│   │   │  ├── index.html      │          │                                       │             │   │
-│   │   │  ├── style.css       │────────▶│   HttpServer Sink :8080               │             │   │
-│   │   │  ├── app.js          │          │                                       │             │   │
-│   │   │  └── chart.js        │          │   Serves static files at              │             │   │
-│   │   │                      │          │   http://localhost:8080/               │             │   │
-│   │   └──────────────────────┘          └───────────────────────────────────────┘             │   │
+│   │   │  ./www/              │          ┌───────────────────────────────────────┐             │  │
+│   │   │  ├── index.html      │          │                                       │             │  │
+│   │   │  ├── style.css       │────────▶ │   HttpServer Sink :8080               │             │  │
+│   │   │  ├── app.js          │          │                                       │             │  │
+│   │   │  └── chart.js        │          │   Serves static files at              │             │  │
+│   │   │                      │          │   http://localhost:8080/              │             │  │
+│   │   └──────────────────────┘          └───────────────────────────────────────┘             │  │
 │   │                                                                                          │   │
 │   │   Your dashboard HTML/JS files connect to a WebSocket sink for live data.                │   │
 │   │   The HttpServer sink serves those files — everything runs from DIME.                    │   │
@@ -121,7 +121,7 @@
 │   │                                                                                          │   │
 │   │   ┌────────────────────────────────────────────────────────────────────────────────┐     │   │
 │   │   │                                                                                │     │   │
-│   │   │   const ws = new WebSocket("ws://localhost:8092");                              │     │   │
+│   │   │   const ws = new WebSocket("ws://localhost:8092");                             │     │   │
 │   │   │                                                                                │     │   │
 │   │   │   ws.onmessage = (event) => {                                                  │     │   │
 │   │   │     const msg = JSON.parse(event.data);                                        │     │   │
@@ -136,25 +136,25 @@
 │   │   │                                                                                │     │   │
 │   │   └────────────────────────────────────────────────────────────────────────────────┘     │   │
 │   │                                                                                          │   │
-│   │   ┌─────────────────────────── Browser Dashboard ──────────────────────────────┐        │   │
-│   │   │                                                                            │        │   │
-│   │   │   ┌──────────────┐  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐  │        │   │
-│   │   │   │ Temperature  │  │ Pressure     │  │ Cycle Time   │  │ Fault Count  │  │        │   │
-│   │   │   │              │  │              │  │              │  │              │  │        │   │
-│   │   │   │    72.5 F    │  │   34.2 psi   │  │    23 ms     │  │      0       │  │        │   │
-│   │   │   │   ┌──────┐   │  │   ┌──────┐   │  │   ┌──────┐   │  │   ┌──────┐   │  │        │   │
-│   │   │   │   │ ▓▓▓░ │   │  │   │ ▓▓░░ │   │  │   │ ▓░░░ │   │  │   │ ░░░░ │   │  │        │   │
-│   │   │   │   └──────┘   │  │   └──────┘   │  │   └──────┘   │  │   └──────┘   │  │        │   │
-│   │   │   └──────────────┘  └──────────────┘  └──────────────┘  └──────────────┘  │        │   │
-│   │   │                                                                            │        │   │
-│   │   │   ┌────────────────────────────────────────────────────────────────────┐   │        │   │
-│   │   │   │  Live Trend  ╱╲    ╱╲                                             │   │        │   │
-│   │   │   │            ╱╱  ╲╱╱  ╲╲     ╱╲                                     │   │        │   │
-│   │   │   │          ╱╱          ╲╲  ╱╱  ╲╲                                   │   │        │   │
-│   │   │   │        ╱╱              ╲╱      ╲───                               │   │        │   │
-│   │   │   └────────────────────────────────────────────────────────────────────┘   │        │   │
-│   │   │                                                                            │        │   │
-│   │   └────────────────────────────────────────────────────────────────────────────┘        │   │
+│   │   ┌─────────────────────────── Browser Dashboard ──────────────────────────────┐        │    │
+│   │   │                                                                            │        │    │
+│   │   │   ┌──────────────┐  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐  │        │     │
+│   │   │   │ Temperature  │  │ Pressure     │  │ Cycle Time   │  │ Fault Count  │  │        │     │
+│   │   │   │              │  │              │  │              │  │              │  │        │     │
+│   │   │   │    72.5 F    │  │   34.2 psi   │  │    23 ms     │  │      0       │  │        │     │
+│   │   │   │   ┌──────┐   │  │   ┌──────┐   │  │   ┌──────┐   │  │   ┌──────┐   │  │        │     │
+│   │   │   │   │ ▓▓▓░ │   │  │   │ ▓▓░░ │   │  │   │ ▓░░░ │   │  │   │ ░░░░ │   │  │        │     │
+│   │   │   │   └──────┘   │  │   └──────┘   │  │   └──────┘   │  │   └──────┘   │  │        │     │
+│   │   │   └──────────────┘  └──────────────┘  └──────────────┘  └──────────────┘  │        │     │
+│   │   │                                                                            │        │    │
+│   │   │   ┌────────────────────────────────────────────────────────────────────┐   │        │    │
+│   │   │   │  Live Trend  ╱╲    ╱╲                                              │   │        │    │
+│   │   │   │            ╱╱  ╲╱╱  ╲╲     ╱╲                                      │   │        │    │
+│   │   │   │          ╱╱          ╲╲  ╱╱  ╲╲                                    │   │        │    │
+│   │   │   │        ╱╱              ╲╱      ╲───                                │   │        │    │
+│   │   │   └────────────────────────────────────────────────────────────────────┘   │        │    │
+│   │   │                                                                            │        │    │
+│   │   └────────────────────────────────────────────────────────────────────────────┘        │    │
 │   │                                                                                          │   │
 │   │   Every message arrives as JSON with path, data, and timestamp.                          │   │
 │   │   Route by path to update the correct gauge or chart.                                    │   │
@@ -173,7 +173,7 @@
 │   │                                                                                          │   │
 │   │   sinks:                                                                                 │   │
 │   │     - name: web_ui                              - name: live_feed                        │   │
-│   │       connector: HttpServer                       connector: WebSocketServer              │   │
+│   │       connector: HttpServer                       connector: WebSocketServer             │   │
 │   │       port: !!int 8080                            port: !!int 8092                       │   │
 │   │       path: ./www                                 include_filter:                        │   │
 │   │                                                     - "plc1/.*"                          │   │
@@ -182,8 +182,8 @@
 │   │                        │            DIME Instance                    │                   │   │
 │   │                        │                                             │                   │   │
 │   │   ┌──────────┐  data   │  ┌────────────┐    ┌────────────────────┐   │                   │   │
-│   │   │  Sources │────────▶│  │ Ring       │───▶│ WebSocketServer   │   │                   │   │
-│   │   │  plc1    │         │  │ Buffer     │    │ :8092 (live data) │   │                   │   │
+│   │   │  Sources │────────▶│  │ Ring       │───▶│ WebSocketServer    │   │                   │   │
+│   │   │  plc1    │         │  │ Buffer     │    │ :8092 (live data)  │   │                   │   │
 │   │   │  mqtt    │         │  └────────────┘    └─────────┬──────────┘   │                   │   │
 │   │   └──────────┘         │                              │  ws://       │                   │   │
 │   │                        │  ┌────────────────────┐      │              │                   │   │
@@ -191,10 +191,10 @@
 │   │                        │  │ :8080 (static)     │      │              │                   │   │
 │   │                        │  │ ./www/index.html   │      │              │                   │   │
 │   │                        │  └─────────┬──────────┘      │              │                   │   │
-│   │                        │            │  http://         │              │                   │   │
+│   │                        │            │  http://        │              │                   │   │
 │   │                        └────────────┼─────────────────┼──────────────┘                   │   │
-│   │                                     │                 │                                   │   │
-│   │                                     ▼                 ▼                                   │   │
+│   │                                     │                 │                                   │  │
+│   │                                     ▼                 ▼                                   │  │
 │   │                        ┌────────────────────────────────────────────┐                    │   │
 │   │                        │              Browser                       │                    │   │
 │   │                        │                                            │                    │   │

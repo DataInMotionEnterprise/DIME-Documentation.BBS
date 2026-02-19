@@ -9,7 +9,7 @@ DIME_PAGES['22'] = {
   hotspots: [
     {
       id: 'chaining',
-      startLine: 39, startCol: 3, endLine: 82, endCol: 90,
+      startLine: 35, startCol: 3, endLine: 75, endCol: 90,
       label: 'Instance Chaining Concept',
       panel: {
         title: 'Instance Chaining \u2014 Sink \u2192 Protocol \u2192 Source',
@@ -34,7 +34,7 @@ DIME_PAGES['22'] = {
     },
     {
       id: 'three-tier',
-      startLine: 87, startCol: 4, endLine: 111, endCol: 82,
+      startLine: 79, startCol: 4, endLine: 100, endCol: 82,
       label: 'Three-Tier Topology',
       panel: {
         title: 'Edge \u2192 Aggregator \u2192 Analytics',
@@ -54,7 +54,7 @@ DIME_PAGES['22'] = {
     },
     {
       id: 'edge-config',
-      startLine: 117, startCol: 3, endLine: 141, endCol: 90,
+      startLine: 106, startCol: 3, endLine: 129, endCol: 90,
       label: 'Edge Instance Config',
       panel: {
         title: 'Edge DIME \u2014 Collect, Normalize, Forward',
@@ -80,7 +80,7 @@ DIME_PAGES['22'] = {
     },
     {
       id: 'aggregator',
-      startLine: 147, startCol: 3, endLine: 177, endCol: 90,
+      startLine: 134, startCol: 3, endLine: 162, endCol: 90,
       label: 'Aggregator Instance Config',
       panel: {
         title: 'Aggregator DIME \u2014 Merge, Dashboard, Cloud',
@@ -112,7 +112,7 @@ DIME_PAGES['22'] = {
     },
     {
       id: 'hot-reconfig',
-      startLine: 183, startCol: 3, endLine: 208, endCol: 90,
+      startLine: 168, startCol: 3, endLine: 191, endCol: 90,
       label: 'Runtime Reconfiguration',
       panel: {
         title: 'Hot Reconfiguration \u2014 Zero Downtime',

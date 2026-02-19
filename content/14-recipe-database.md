@@ -1,7 +1,7 @@
 ```
 ┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
 │                                                                                                  │
-│          ██████┐  ██┐ ███┐   ███┐ ███████┐        14 — Database Logging                         │
+│          ██████┐  ██┐ ███┐   ███┐ ███████┐        14 — Database Logging                          │
 │          ██┌──██┐ ██│ ████┐ ████│ ██┌────┘                                                       │
 │          ██│  ██│ ██│ ██┌████┌██│ █████┐          Capture history.                               │
 │          ██│  ██│ ██│ ██│└██┌┘██│ ██┌──┘          InfluxDB, SQL, MongoDB, and CSV.               │
@@ -16,31 +16,31 @@
 │   DIME reads from any number of sources, buffers centrally, then writes                          │
 │   to any combination of databases simultaneously.                                                │
 │                                                                                                  │
-│    Sources                         Ring Buffer                     Database Sinks                 │
-│    ───────                         ───────────                     ──────────────                 │
+│    Sources                         Ring Buffer                     Database Sinks                │
+│    ───────                         ───────────                     ──────────────                │
 │                                                                                                  │
 │    ┌──────────┐                 ┌──────────────┐              ┌──────────────────┐               │
-│    │ PLC      │──────┐         │              │       ┌─────▶│ InfluxDB         │               │
-│    │ (OPC-UA) │      │         │  ┌────────┐  │       │      │ time-series      │               │
-│    └──────────┘      │         │  │  ····  │  │       │      │ bucket: factory  │               │
-│                      ├────────▶│  │  msgs  │  │───────┤      └──────────────────┘               │
+│    │ PLC      │──────┐         │              │       ┌─────▶│ InfluxDB         │                │
+│    │ (OPC-UA) │      │         │  ┌────────┐  │       │      │ time-series      │                │
+│    └──────────┘      │         │  │  ····  │  │       │      │ bucket: factory  │                │
+│                      ├────────▶│  │  msgs  │  │───────┤      └──────────────────┘                │
 │    ┌──────────┐      │         │  │  ····  │  │       │                                          │
-│    │ MQTT     │──────┤         │  └────────┘  │       ├─────▶┌──────────────────┐               │
-│    │ Sensors  │      │         │              │       │      │ SQL Server       │               │
-│    └──────────┘      │         │  4096 slots  │       │      │ relational       │               │
-│                      │         │              │       │      │ table: readings  │               │
-│    ┌──────────┐      │         └──────────────┘       │      └──────────────────┘               │
+│    │ MQTT     │──────┤         │  └────────┘  │       ├─────▶┌──────────────────┐                │
+│    │ Sensors  │      │         │              │       │      │ SQL Server       │                │
+│    └──────────┘      │         │  4096 slots  │       │      │ relational       │                │
+│                      │         │              │       │      │ table: readings  │                │
+│    ┌──────────┐      │         └──────────────┘       │      └──────────────────┘                │
 │    │ Modbus   │──────┘                                │                                          │
-│    │ RTU      │                                       ├─────▶┌──────────────────┐               │
-│    └──────────┘                                       │      │ MongoDB          │               │
-│                                                       │      │ documents        │               │
-│                                                       │      │ coll: readings   │               │
-│                                                       │      └──────────────────┘               │
+│    │ RTU      │                                       ├─────▶┌──────────────────┐                │
+│    └──────────┘                                       │      │ MongoDB          │                │
+│                                                       │      │ documents        │                │
+│                                                       │      │ coll: readings   │                │
+│                                                       │      └──────────────────┘                │
 │                                                       │                                          │
-│                                                       └─────▶┌──────────────────┐               │
-│                                                              │ CSV File         │               │
-│                                                              │ readings.csv     │               │
-│                                                              └──────────────────┘               │
+│                                                       └─────▶┌──────────────────┐                │
+│                                                              │ CSV File         │                │
+│                                                              │ readings.csv     │                │
+│                                                              └──────────────────┘                │
 │                                                                                                  │
 │   All sinks run in parallel. Each has its own filters, timing, and format.                       │
 │                                                                                                  │
@@ -168,13 +168,13 @@
 │   │   Output format:                                                             │               │
 │   │   ┌──────────────────────────────┐                                           │               │
 │   │   │ path,value,timestamp         │       Use Logger when you need:           │               │
-│   │   │ plc1/temp,72.5,17083008...  │         • Audit trail with rotation       │               │
-│   │   │ plc1/psi,14.7,17083008...   │         • Integration with log systems    │               │
+│   │   │ plc1/temp,72.5,17083008...   │         • Audit trail with rotation       │               │
+│   │   │ plc1/psi,14.7,17083008...    │         • Integration with log systems    │               │
 │   │   └──────────────────────────────┘         • NLog ecosystem support          │               │
 │   │                                                                              │               │
 │   │   filter_duplicate_paths:                                                    │               │
 │   │     true  ── only one row per unique path (latest value)                     │               │
-│   │     false ── append every reading (full history)                              │               │
+│   │     false ── append every reading (full history)                             │               │
 │   │                                                                              │               │
 │   └──────────────────────────────────────────────────────────────────────────────┘               │
 │                                                                                                  │
@@ -201,11 +201,11 @@
 │   │   Flow:                                                                      │               │
 │   │     Timer fires ──▶ Execute query ──▶ Iterate rows ──▶ Publish each          │               │
 │   │                                                                              │               │
-│   │   ┌─────────┐      ┌─────────────┐      ┌────────────┐      ┌──────────┐    │               │
-│   │   │  Timer  │─────▶│  SQL Query  │─────▶│  Row 1     │─────▶│ Ring     │    │               │
-│   │   │  fires  │      │  executes   │      │  Row 2     │      │ Buffer   │    │               │
-│   │   │         │      │             │      │  Row 3...  │      │          │    │               │
-│   │   └─────────┘      └─────────────┘      └────────────┘      └──────────┘    │               │
+│   │   ┌─────────┐      ┌─────────────┐      ┌────────────┐      ┌──────────┐    │                │
+│   │   │  Timer  │─────▶│  SQL Query  │─────▶│  Row 1     │─────▶│ Ring     │    │                │
+│   │   │  fires  │      │  executes   │      │  Row 2     │      │ Buffer   │    │                │
+│   │   │         │      │             │      │  Row 3...  │      │          │    │                │
+│   │   └─────────┘      └─────────────┘      └────────────┘      └──────────┘    │                │
 │   │                                                                              │               │
 │   │   Each column becomes a path:  db_reader/query1/col_name                     │               │
 │   │   scan_interval controls how often the query runs.                           │               │
@@ -222,7 +222,7 @@
 │   ├──────────────┼──────────────────┼──────────────────────────────────────────┤                 │
 │   │              │                  │                                          │                 │
 │   │  InfluxDB    │  Time-series     │  High-frequency sensor data. Grafana     │                 │
-│   │              │                  │  dashboards. Trend analysis. Downsampling │                 │
+│   │              │                  │  dashboards. Trend analysis. Downsampling│                 │
 │   │              │                  │                                          │                 │
 │   ├──────────────┼──────────────────┼──────────────────────────────────────────┤                 │
 │   │              │                  │                                          │                 │
@@ -247,7 +247,7 @@
 │   └──────────────┴──────────────────┴──────────────────────────────────────────┘                 │
 │                                                                                                  │
 │   You can run ALL of these simultaneously from a single DIME instance.                           │
-│   The ring buffer fans out to every sink in parallel — no performance penalty.                    │
+│   The ring buffer fans out to every sink in parallel — no performance penalty.                   │
 │                                                                                                  │
 └──────────────────────────────────────────────────────────────────────────────────────────────────┘
 ```

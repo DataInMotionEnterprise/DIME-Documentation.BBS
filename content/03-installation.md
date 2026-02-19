@@ -10,12 +10,10 @@
 │                                                                                                  │
 │  ──────────────────────────────────────────────────────────────────────────────────────────────  │
 │                                                                                                  │
-│                                                                                                  │
 │   PLATFORM MATRIX                                                                                │
 │   ───────────────                                                                                │
 │                                                                                                  │
 │   DIME runs anywhere .NET 9.0 runs. Self-contained — no runtime to install.                      │
-│                                                                                                  │
 │                                                                                                  │
 │   ┌──────────────────┬────────────┬───────────────────────────────────────────────┐              │
 │   │  Platform        │  Arch      │  Deployment                                   │              │
@@ -30,13 +28,10 @@
 │   │                  │            │                                               │              │
 │   └──────────────────┴────────────┴───────────────────────────────────────────────┘              │
 │                                                                                                  │
-│                                                                                                  │
 │  ──────────────────────────────────────────────────────────────────────────────────────────────  │
-│                                                                                                  │
 │                                                                                                  │
 │   WINDOWS INSTALLATION                                                                           │
 │   ─────────────────────────────────────────────────────────────────────────────────────────────  │
-│                                                                                                  │
 │                                                                                                  │
 │     OPTION A — Run standalone                                                                    │
 │                                                                                                  │
@@ -60,7 +55,6 @@
 │     │                                                                            │               │
 │     └────────────────────────────────────────────────────────────────────────────┘               │
 │                                                                                                  │
-│                                                                                                  │
 │     OPTION B — Install as a Windows Service                                                      │
 │                                                                                                  │
 │     ┌────────────────────────────────────────────────────────────────────────────┐               │
@@ -83,7 +77,6 @@
 │     │                                                                            │               │
 │     └────────────────────────────────────────────────────────────────────────────┘               │
 │                                                                                                  │
-│                                                                                                  │
 │     OPTION C — PowerShell management script                                                      │
 │                                                                                                  │
 │     ┌────────────────────────────────────────────────────────────────────────────┐               │
@@ -98,13 +91,10 @@
 │     │                                                                            │               │
 │     └────────────────────────────────────────────────────────────────────────────┘               │
 │                                                                                                  │
-│                                                                                                  │
 │  ──────────────────────────────────────────────────────────────────────────────────────────────  │
-│                                                                                                  │
 │                                                                                                  │
 │   LINUX INSTALLATION                                                                             │
 │   ──────────────────                                                                             │
-│                                                                                                  │
 │                                                                                                  │
 │     OPTION A — Run standalone                                                                    │
 │                                                                                                  │
@@ -120,7 +110,6 @@
 │     │   $ ./DIME run --config /etc/dime/my-configs                               │               │
 │     │                                                                            │               │
 │     └────────────────────────────────────────────────────────────────────────────┘               │
-│                                                                                                  │
 │                                                                                                  │
 │     OPTION B — Install as a systemd service                                                      │
 │                                                                                                  │
@@ -151,13 +140,10 @@
 │     │                                                                            │               │
 │     └────────────────────────────────────────────────────────────────────────────┘               │
 │                                                                                                  │
-│                                                                                                  │
 │  ──────────────────────────────────────────────────────────────────────────────────────────────  │
-│                                                                                                  │
 │                                                                                                  │
 │   DOCKER                                                                                         │
 │   ──────                                                                                         │
-│                                                                                                  │
 │                                                                                                  │
 │     ┌────────────────────────────────────────────────────────────────────────────┐               │
 │     │                                                                            │               │
@@ -188,93 +174,87 @@
 │     │                                                                            │               │
 │     └────────────────────────────────────────────────────────────────────────────┘               │
 │                                                                                                  │
-│                                                                                                  │
 │  ──────────────────────────────────────────────────────────────────────────────────────────────  │
-│                                                                                                  │
 │                                                                                                  │
 │   WHAT HAPPENS AT STARTUP                                                                        │
 │   ─────────────────────────────────────────────────────────────────────────────────────────────  │
 │                                                                                                  │
 │   When you run DIME, here's what happens inside — in order.                                      │
 │                                                                                                  │
-│                                                                                                  │
 │   ┌─ 1 ─────────────────────────────────────────────────────────────────────────────────────┐    │
-│   │                                                                                          │   │
-│   │  LOAD CONFIGURATION                                                                      │   │
-│   │                                                                                          │   │
-│   │  Read all *.yaml files from the config directory.                                        │   │
-│   │  Merge them together. Load main.yaml last (overrides others).                            │   │
-│   │  Parse app settings, source definitions, sink definitions.                               │   │
-│   │                                                                                          │   │
-│   │  Config directory:  --config flag, or ./Configs by default.                              │   │
-│   │                                                                                          │   │
-│   └──────────────────────────────────────────────────────────────────────────────────────────┘   │
+│   │                                                                                         │    │
+│   │  LOAD CONFIGURATION                                                                     │    │
+│   │                                                                                         │    │
+│   │  Read all *.yaml files from the config directory.                                       │    │
+│   │  Merge them together. Load main.yaml last (overrides others).                           │    │
+│   │  Parse app settings, source definitions, sink definitions.                              │    │
+│   │                                                                                         │    │
+│   │  Config directory:  --config flag, or ./Configs by default.                             │    │
+│   │                                                                                         │    │
+│   └─────────────────────────────────────────────────────────────────────────────────────────┘    │
 │                                                           │                                      │
 │                                                           v                                      │
 │   ┌─ 2 ─────────────────────────────────────────────────────────────────────────────────────┐    │
-│   │                                                                                          │   │
-│   │  VALIDATE LICENSE                                                                        │   │
-│   │                                                                                          │   │
-│   │  Check the license key in app.license.                                                   │   │
-│   │  Valid license ────── Full operation, no time limit.                                     │   │
+│   │                                                                                         │    │
+│   │  VALIDATE LICENSE                                                                       │    │
+│   │                                                                                         │    │
+│   │  Check the license key in app.license.                                                  │    │
+│   │  Valid license ────── Full operation, no time limit.                                    │    │
 │   │  No/invalid license ─ Demo mode: runs for 150 minutes, then stops.                      │    │
-│   │                                                                                          │   │
-│   └──────────────────────────────────────────────────────────────────────────────────────────┘   │
+│   │                                                                                         │    │
+│   └─────────────────────────────────────────────────────────────────────────────────────────┘    │
 │                                                           │                                      │
 │                                                           v                                      │
 │   ┌─ 3 ─────────────────────────────────────────────────────────────────────────────────────┐    │
-│   │                                                                                          │   │
-│   │  START DISRUPTOR RING BUFFER                                                             │   │
-│   │                                                                                          │   │
-│   │  Create the ring buffer (default 4096 slots).                                            │   │
-│   │  Register the SinkDispatcher as the event handler.                                       │   │
-│   │  This is the backbone — all messages flow through here.                                  │   │
-│   │                                                                                          │   │
-│   └──────────────────────────────────────────────────────────────────────────────────────────┘   │
+│   │                                                                                         │    │
+│   │  START DISRUPTOR RING BUFFER                                                            │    │
+│   │                                                                                         │    │
+│   │  Create the ring buffer (default 4096 slots).                                           │    │
+│   │  Register the SinkDispatcher as the event handler.                                      │    │
+│   │  This is the backbone — all messages flow through here.                                 │    │
+│   │                                                                                         │    │
+│   └─────────────────────────────────────────────────────────────────────────────────────────┘    │
 │                                                           │                                      │
 │                                                           v                                      │
 │   ┌─ 4 ─────────────────────────────────────────────────────────────────────────────────────┐    │
-│   │                                                                                          │   │
-│   │  CREATE CONNECTORS                                                                       │   │
-│   │                                                                                          │   │
-│   │  For each source in config ─── SourceConnectorFactory creates the right connector type.  │   │
-│   │  For each sink in config ───── SinkConnectorFactory creates it and registers with        │   │
-│   │                                SinkDispatcher so it receives messages.                   │   │
-│   │                                                                                          │   │
-│   └──────────────────────────────────────────────────────────────────────────────────────────┘   │
+│   │                                                                                         │    │
+│   │  CREATE CONNECTORS                                                                      │    │
+│   │                                                                                         │    │
+│   │  For each source in config ─── SourceConnectorFactory creates the right connector type. │    │
+│   │  For each sink in config ───── SinkConnectorFactory creates it and registers with       │    │
+│   │                                SinkDispatcher so it receives messages.                  │    │
+│   │                                                                                         │    │
+│   └─────────────────────────────────────────────────────────────────────────────────────────┘    │
 │                                                           │                                      │
 │                                                           v                                      │
 │   ┌─ 5 ─────────────────────────────────────────────────────────────────────────────────────┐    │
-│   │                                                                                          │   │
-│   │  INITIALIZE & START ALL CONNECTORS                                                       │   │
-│   │                                                                                          │   │
-│   │  Each connector wrapped in a ConnectorRunner.                                            │   │
-│   │  Each runner walks through: Initialize → Create → Connect → Read/Write loop.             │   │
-│   │  Sources begin polling. Sinks begin listening. Data flows.                               │   │
-│   │                                                                                          │   │
-│   └──────────────────────────────────────────────────────────────────────────────────────────┘   │
+│   │                                                                                         │    │
+│   │  INITIALIZE & START ALL CONNECTORS                                                      │    │
+│   │                                                                                         │    │
+│   │  Each connector wrapped in a ConnectorRunner.                                           │    │
+│   │  Each runner walks through: Initialize → Create → Connect → Read/Write loop.            │    │
+│   │  Sources begin polling. Sinks begin listening. Data flows.                              │    │
+│   │                                                                                         │    │
+│   └─────────────────────────────────────────────────────────────────────────────────────────┘    │
 │                                                           │                                      │
 │                                                           v                                      │
 │   ┌─ 6 ─────────────────────────────────────────────────────────────────────────────────────┐    │
-│   │                                                                                          │   │
-│   │  START ADMIN SERVER                                                                      │   │
-│   │                                                                                          │   │
-│   │  REST API ─── http://localhost:9999   (status, config, cache, runtime sink injection)    │   │
-│   │  WebSocket ── ws://localhost:9998     (real-time events, telemetry, state changes)       │   │
-│   │                                                                                          │   │
-│   │  DIME is now running. Data is flowing.                                                   │   │
-│   │                                                                                          │   │
-│   └──────────────────────────────────────────────────────────────────────────────────────────┘   │
-│                                                                                                  │
+│   │                                                                                         │    │
+│   │  START ADMIN SERVER                                                                     │    │
+│   │                                                                                         │    │
+│   │  REST API ─── http://localhost:9999   (status, config, cache, runtime sink injection)   │    │
+│   │  WebSocket ── ws://localhost:9998     (real-time events, telemetry, state changes)      │    │
+│   │                                                                                         │    │
+│   │  DIME is now running. Data is flowing.                                                  │    │
+│   │                                                                                         │    │
+│   └─────────────────────────────────────────────────────────────────────────────────────────┘    │
 │                                                                                                  │
 │  ──────────────────────────────────────────────────────────────────────────────────────────────  │
-│                                                                                                  │
 │                                                                                                  │
 │   DIRECTORY LAYOUT                                                                               │
 │   ────────────────                                                                               │
 │                                                                                                  │
 │   What you see after extracting and running DIME.                                                │
-│                                                                                                  │
 │                                                                                                  │
 │     DIME/                                                                                        │
 │     ├── DIME.exe                (or ./DIME on Linux)                                             │
@@ -295,15 +275,12 @@
 │     ├── nlog.config             Logging configuration                                            │
 │     └── ...                     Runtime dependencies                                             │
 │                                                                                                  │
-│                                                                                                  │
 │  ──────────────────────────────────────────────────────────────────────────────────────────────  │
-│                                                                                                  │
 │                                                                                                  │
 │   VERIFY IT WORKS                                                                                │
 │   ───────────────                                                                                │
 │                                                                                                  │
 │   Three ways to confirm DIME is running and healthy.                                             │
-│                                                                                                  │
 │                                                                                                  │
 │   ┌──────────────────────────────────────────────────────────────────────────────────────┐       │
 │   │                                                                                      │       │
@@ -337,34 +314,28 @@
 │   │                                                                                      │       │
 │   └──────────────────────────────────────────────────────────────────────────────────────┘       │
 │                                                                                                  │
-│                                                                                                  │
 │  ──────────────────────────────────────────────────────────────────────────────────────────────  │
-│                                                                                                  │
 │                                                                                                  │
 │   DEFAULT PORTS                                                                                  │
 │   ─────────────                                                                                  │
 │                                                                                                  │
-│                                                                                                  │
-│   ┌─────────┬─────────────────────────────────┬──────────────────────────────┐                   │
-│   │  Port   │  Service                        │  Configured In               │                   │
-│   ├─────────┼─────────────────────────────────┼──────────────────────────────┤                   │
-│   │  9999   │  Admin REST API (always on)     │  app.http_server_uri         │                   │
-│   │  9998   │  Admin WebSocket (always on)    │  app.ws_server_uri           │                   │
-│   │  5000   │  MTConnect Agent (if configured)│  sink: port                  │                   │
-│   │  7878   │  MTConnect SHDR (if configured) │  sink: port                  │                   │
-│   │  8080   │  HTTP Server (if configured)    │  sink: uri                   │                   │
-│   │  8092   │  WebSocket Server (if configured│  sink: uri                   │                   │
-│   └─────────┴─────────────────────────────────┴──────────────────────────────┘                   │
+│   ┌─────────┬──────────────────────────────────────┬─────────────────────────────┐               │
+│   │  Port   │  Service                             │  Configured In              │               │
+│   ├─────────┼──────────────────────────────────────┼─────────────────────────────┤               │
+│   │  9999   │  Admin REST API (always on)          │  app.http_server_uri        │               │
+│   │  9998   │  Admin WebSocket (always on)         │  app.ws_server_uri          │               │
+│   │  5000   │  MTConnect Agent (if configured)     │  sink: port                 │               │
+│   │  7878   │  MTConnect SHDR (if configured)      │  sink: port                 │               │
+│   │  8080   │  HTTP Server (if configured)         │  sink: uri                  │               │
+│   │  8092   │  WebSocket Server (if configured)    │  sink: uri                  │               │
+│   └─────────┴──────────────────────────────────────┴─────────────────────────────┘               │
 │                                                                                                  │
 │   Only 9999 and 9998 are always active. All others depend on your sink configuration.            │
 │                                                                                                  │
-│                                                                                                  │
 │  ──────────────────────────────────────────────────────────────────────────────────────────────  │
-│                                                                                                  │
 │                                                                                                  │
 │   QUICK START — ZERO TO RUNNING IN 60 SECONDS                                                    │
 │   ─────────────────────────────────────────────────────────────────────────────────────────────  │
-│                                                                                                  │
 │                                                                                                  │
 │       ┌───────────┐         ┌───────────┐         ┌───────────┐         ┌───────────┐            │
 │       │           │         │           │         │           │         │           │            │
@@ -377,9 +348,7 @@
 │       │           │         │           │         │  run      │         │  Done.    │            │
 │       └───────────┘         └───────────┘         └───────────┘         └───────────┘            │
 │                                                                                                  │
-│                                                                                                  │
 │       No installer.  No dependencies.  No runtime.  Just extract and run.                        │
-│                                                                                                  │
 │                                                                                                  │
 └──────────────────────────────────────────────────────────────────────────────────────────────────┘
 ```

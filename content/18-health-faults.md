@@ -1,7 +1,7 @@
 ```
 ┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
 │                                                                                                  │
-│          ██████┐  ██┐ ███┐   ███┐ ███████┐        18 — Health & Faults                          │
+│          ██████┐  ██┐ ███┐   ███┐ ███████┐        18 — Health & Faults                           │
 │          ██┌──██┐ ██│ ████┐ ████│ ██┌────┘                                                       │
 │          ██│  ██│ ██│ ██┌████┌██│ █████┐          Self-monitoring. Auto-recovery.                │
 │          ██│  ██│ ██│ ██│└██┌┘██│ ██┌──┘          Built-in resilience.                           │
@@ -14,7 +14,6 @@
 │   ───────────────────────                                                                        │
 │                                                                                                  │
 │   Every connector follows a deterministic state machine managed by ConnectorRunner.              │
-│                                                                                                  │
 │                                                                                                  │
 │   ┌─────────────────────────────────────────────────────────────────────────────────────────┐    │
 │   │                                                                                         │    │
@@ -32,12 +31,12 @@
 │   │                          └──────┬───────┘                          │                    │    │
 │   │                                 │                                  │  auto-retry        │    │
 │   │                                 ▼                                  │                    │    │
-│   │                          ┌──────────────┐       ┌──────────────┐  │                    │    │
-│   │                          │              │       │              │  │                    │    │
-│   │                          │  Read/Write  │──────▶│   Faulted    │──┘                    │    │
-│   │                          │   (loop)     │       │              │                       │    │
-│   │                          │              │       │  FaultCount++│                       │    │
-│   │                          └──────┬───────┘       └──────────────┘                       │    │
+│   │                          ┌──────────────┐       ┌──────────────┐  │                    │     │
+│   │                          │              │       │              │  │                    │     │
+│   │                          │  Read/Write  │──────▶│   Faulted    │──┘                    │     │
+│   │                          │   (loop)     │       │              │                       │     │
+│   │                          │              │       │  FaultCount++│                       │     │
+│   │                          └──────┬───────┘       └──────────────┘                       │     │
 │   │                                 │                                                       │    │
 │   │                                 ▼                                                       │    │
 │   │                          ┌──────────────┐                                               │    │
@@ -48,22 +47,19 @@
 │   │                                                                                         │    │
 │   │   Transitions:                                                                          │    │
 │   │     Initialized ──▶ Connected     Config loaded, connection opened                      │    │
-│   │     Connected   ──▶ Read/Write    Main loop begins                                     │    │
-│   │     Read/Write  ──▶ Faulted       Exception during read/write                          │    │
-│   │     Faulted     ──▶ Connected     Auto-retry: disconnect → reconnect                   │    │
-│   │     Read/Write  ──▶ Disconnected  Graceful shutdown                                    │    │
+│   │     Connected   ──▶ Read/Write    Main loop begins                                      │    │
+│   │     Read/Write  ──▶ Faulted       Exception during read/write                           │    │
+│   │     Faulted     ──▶ Connected     Auto-retry: disconnect → reconnect                    │    │
+│   │     Read/Write  ──▶ Disconnected  Graceful shutdown                                     │    │
 │   │                                                                                         │    │
 │   └─────────────────────────────────────────────────────────────────────────────────────────┘    │
 │                                                                                                  │
-│                                                                                                  │
 │  ──────────────────────────────────────────────────────────────────────────────────────────────  │
-│                                                                                                  │
 │                                                                                                  │
 │   $SYSTEM MESSAGES — AUTOMATIC HEALTH TELEMETRY                                                  │
 │   ─────────────────────────────────────────────                                                  │
 │                                                                                                  │
 │   Every connector automatically publishes status under $SYSTEM. No config needed.                │
-│                                                                                                  │
 │                                                                                                  │
 │   ┌──────────────────────────────────────────────────────────────────────────────────────────┐   │
 │   │                                                                                          │   │
@@ -74,7 +70,6 @@
 │   │   name/$SYSTEM/ConnectCount   int            name/$SYSTEM/FaultReason   string           │   │
 │   │   name/$SYSTEM/DisconnectCount int           name/$SYSTEM/FaultCount    int              │   │
 │   │                                                                                          │   │
-│   │                                                                                          │   │
 │   │   IsConnected = true     ── device is reachable and responding                           │   │
 │   │   ConnectCount = 5       ── connected 5 times (includes reconnections)                   │   │
 │   │   DisconnectCount = 4    ── disconnected 4 times (faults + graceful)                     │   │
@@ -84,22 +79,19 @@
 │   │                                                                                          │   │
 │   └──────────────────────────────────────────────────────────────────────────────────────────┘   │
 │                                                                                                  │
-│   These flow through the ring buffer like any data message. Sinks can filter on them.           │
-│                                                                                                  │
+│   These flow through the ring buffer like any data message. Sinks can filter on them.            │
 │                                                                                                  │
 │  ──────────────────────────────────────────────────────────────────────────────────────────────  │
-│                                                                                                  │
 │                                                                                                  │
 │   PERFORMANCE METRICS PER CONNECTOR                                                              │
 │   ─────────────────────────────────                                                              │
 │                                                                                                  │
 │   Every source connector publishes timing data so you can spot slow devices.                     │
 │                                                                                                  │
-│                                                                                                  │
 │   ┌──────────────────────────────────────────────────────────────────────────────────────────┐   │
 │   │                                                                                          │   │
 │   │   TIMING METRICS                             THROUGHPUT METRICS                          │   │
-│   │   ──────────────                             ───────────────────                          │   │
+│   │   ──────────────                             ───────────────────                         │   │
 │   │                                                                                          │   │
 │   │   name/$SYSTEM/MinReadTime     ms            name/$SYSTEM/MessagesAttempted   int        │   │
 │   │   name/$SYSTEM/MaxReadTime     ms            name/$SYSTEM/MessagesAccepted    int        │   │
@@ -107,13 +99,12 @@
 │   │   name/$SYSTEM/ScriptTime      ms            Attempted = total reads from device         │   │
 │   │   name/$SYSTEM/TotalLoopTime   ms            Accepted  = values that passed RBE          │   │
 │   │                                                                                          │   │
-│   │                                                                                          │   │
 │   │   ┌──────────── One Loop Cycle ────────────────────────────────────────┐                 │   │
 │   │   │                                                                    │                 │   │
-│   │   │  ┌───────────┐  ┌────────────┐  ┌──────────┐  ┌───────────────┐   │                 │   │
-│   │   │  │ ReadTime   │  │ ScriptTime │  │  RBE     │  │ Publish to   │   │                 │   │
-│   │   │  │ (device)   │  │ (Lua/Py)   │  │  Filter  │  │ Ring Buffer  │   │                 │   │
-│   │   │  └───────────┘  └────────────┘  └──────────┘  └───────────────┘   │                 │   │
+│   │   │  ┌───────────┐  ┌────────────┐  ┌──────────┐  ┌───────────────┐   │                 │    │
+│   │   │  │ ReadTime  │  │ ScriptTime │  │  RBE     │  │ Publish to    │   │                 │    │
+│   │   │  │ (device)  │  │ (Lua/Py)   │  │  Filter  │  │ Ring Buffer   │   │                 │    │
+│   │   │  └───────────┘  └────────────┘  └──────────┘  └───────────────┘   │                 │    │
 │   │   │                                                                    │                 │   │
 │   │   │  ◄────────────── TotalLoopTime ──────────────────────────────────▶ │                 │   │
 │   │   └────────────────────────────────────────────────────────────────────┘                 │   │
@@ -122,29 +113,24 @@
 │   │   A growing MaxReadTime signals device latency or network issues.                        │   │
 │   │                                                                                          │   │
 │   │   MessagesAttempted vs MessagesAccepted reveals RBE effectiveness:                       │   │
-│   │     Attempted=1000, Accepted=50 → 95% of values unchanged → RBE working well            │   │
+│   │     Attempted=1000, Accepted=50 → 95% of values unchanged → RBE working well             │   │
 │   │                                                                                          │   │
 │   └──────────────────────────────────────────────────────────────────────────────────────────┘   │
 │                                                                                                  │
-│                                                                                                  │
 │  ──────────────────────────────────────────────────────────────────────────────────────────────  │
-│                                                                                                  │
 │                                                                                                  │
 │   AUTO-RECOVERY — BUILT-IN FAULT TOLERANCE                                                       │
 │   ────────────────────────────────────────                                                       │
 │                                                                                                  │
 │   ConnectorRunner handles faults automatically. No watchdog scripts needed.                      │
 │                                                                                                  │
-│                                                                                                  │
 │   ┌──────────────────────────────────────────────────────────────────────────────────────────┐   │
 │   │                                                                                          │   │
-│   │                                                                                          │   │
 │   │    ┌──────────┐     exception      ┌───────────┐     disconnect     ┌──────────────┐     │   │
-│   │    │          │ ──────────────────▶ │           │ ──────────────────▶│              │     │   │
-│   │    │ Reading  │                     │  Faulted  │                    │ Disconnected │     │   │
-│   │    │          │ ◄────────────────── │           │ ◄──────────────────│              │     │   │
-│   │    └──────────┘     reconnect       └───────────┘     reconnect     └──────────────┘     │   │
-│   │                                                                                          │   │
+│   │    │          │ ──────────────────▶│           │ ──────────────────▶│              │     │   │
+│   │    │ Reading  │                    │  Faulted  │                    │ Disconnected │     │   │
+│   │    │          │ ◄──────────────────│           │ ◄──────────────────│              │     │   │
+│   │    └──────────┘     reconnect      └───────────┘     reconnect      └──────────────┘     │   │
 │   │                                                                                          │   │
 │   │    What happens on fault:                                                                │   │
 │   │                                                                                          │   │
@@ -158,32 +144,29 @@
 │   │      8. IsFaulted = false on successful reconnect                                        │   │
 │   │                                                                                          │   │
 │   │    This cycle repeats indefinitely. DIME never gives up on a connector.                  │   │
-│   │    All fault transitions are published as $SYSTEM messages in real time.                  │   │
+│   │    All fault transitions are published as $SYSTEM messages in real time.                 │   │
 │   │                                                                                          │   │
 │   └──────────────────────────────────────────────────────────────────────────────────────────┘   │
 │                                                                                                  │
-│                                                                                                  │
 │  ──────────────────────────────────────────────────────────────────────────────────────────────  │
 │                                                                                                  │
-│                                                                                                  │
-│   MONITORING & ALERTING — ROUTE $SYSTEM TO ANALYTICS                                            │
-│   ──────────────────────────────────────────────────                                            │
+│   MONITORING & ALERTING — ROUTE $SYSTEM TO ANALYTICS                                             │
+│   ──────────────────────────────────────────────────                                             │
 │                                                                                                  │
 │   $SYSTEM messages are normal ring buffer messages. Route them to any sink for alerting.         │
 │                                                                                                  │
-│                                                                                                  │
 │   ┌──────────────────────────────────────────────────────────────────────────────────────────┐   │
 │   │                                                                                          │   │
-│   │    Connectors              Ring Buffer                   Analytics Sinks                  │   │
-│   │    ──────────              ───────────                   ───────────────                  │   │
+│   │    Connectors              Ring Buffer                   Analytics Sinks                 │   │
+│   │    ──────────              ───────────                   ───────────────                 │   │
 │   │                                                                                          │   │
 │   │    ┌──────────┐         ┌──────────────┐         ┌───────────────────────┐               │   │
 │   │    │ plc1     │────┐    │              │    ┌───▶│ Splunk                │               │   │
 │   │    │ $SYSTEM  │    │    │  ┌────────┐  │    │    │                       │               │   │
 │   │    └──────────┘    ├───▶│  │ $SYS   │  │────┤    │ include_filter:       │               │   │
-│   │                    │    │  │ msgs   │  │    │    │   - ".*\\$SYSTEM.*"    │               │   │
+│   │                    │    │  │ msgs   │  │    │    │   - ".*\\$SYSTEM.*"    │               │  │
 │   │    ┌──────────┐    │    │  └────────┘  │    │    │                       │               │   │
-│   │    │ mqtt1    │────┘    │              │    │    │ Dashboard: fault rate  │               │   │
+│   │    │ mqtt1    │────┘    │              │    │    │ Dashboard: fault rate  │               │  │
 │   │    │ $SYSTEM  │         └──────────────┘    │    │ alerts, uptime graphs │               │   │
 │   │    └──────────┘                             │    └───────────────────────┘               │   │
 │   │                                             │                                            │   │
@@ -191,7 +174,7 @@
 │   │                                             └───▶│ InfluxDB              │               │   │
 │   │                                                  │                       │               │   │
 │   │                                                  │ include_filter:       │               │   │
-│   │                                                  │   - ".*\\$SYSTEM.*"    │               │   │
+│   │                                                  │   - ".*\\$SYSTEM.*"   │               │   │
 │   │                                                  │                       │               │   │
 │   │                                                  │ Grafana: read times,  │               │   │
 │   │                                                  │ loop times, fault cnt │               │   │
@@ -202,8 +185,7 @@
 │   │                                                                                          │   │
 │   └──────────────────────────────────────────────────────────────────────────────────────────┘   │
 │                                                                                                  │
-│   Every DIME instance is self-monitoring. No external agents. No sidecars. Just YAML.           │
-│                                                                                                  │
+│   Every DIME instance is self-monitoring. No external agents. No sidecars. Just YAML.            │
 │                                                                                                  │
 └──────────────────────────────────────────────────────────────────────────────────────────────────┘
 ```

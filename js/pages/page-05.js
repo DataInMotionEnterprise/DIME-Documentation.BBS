@@ -9,7 +9,7 @@ DIME_PAGES['05'] = {
   hotspots: [
     {
       id: 'big-picture',
-      startLine: 19, startCol: 3, endLine: 34, endCol: 85,
+      startLine: 17, startCol: 3, endLine: 32, endCol: 85,
       label: 'Three-Layer Architecture',
       panel: {
         title: 'Read \u2192 Route \u2192 Write',
@@ -24,7 +24,7 @@ DIME_PAGES['05'] = {
     },
     {
       id: 'data-flow',
-      startLine: 44, startCol: 4, endLine: 72, endCol: 88,
+      startLine: 39, startCol: 4, endLine: 67, endCol: 88,
       label: 'Detailed Data Flow',
       panel: {
         title: 'Following a Data Point End-to-End',
@@ -46,7 +46,7 @@ DIME_PAGES['05'] = {
     },
     {
       id: 'message-format',
-      startLine: 82, startCol: 3, endLine: 101, endCol: 72,
+      startLine: 74, startCol: 3, endLine: 93, endCol: 72,
       label: 'MessageBoxMessage Format',
       panel: {
         title: 'MessageBoxMessage \u2014 The Data Envelope',
@@ -66,7 +66,7 @@ DIME_PAGES['05'] = {
     },
     {
       id: 'lifecycle',
-      startLine: 115, startCol: 5, endLine: 153, endCol: 58,
+      startLine: 104, startCol: 5, endLine: 142, endCol: 58,
       label: 'Connector Lifecycle',
       panel: {
         title: 'Six-Stage Connector Lifecycle',
@@ -89,7 +89,7 @@ DIME_PAGES['05'] = {
     },
     {
       id: 'source-types',
-      startLine: 167, startCol: 3, endLine: 203, endCol: 87,
+      startLine: 153, startCol: 3, endLine: 189, endCol: 87,
       label: 'Source Connector Base Classes',
       panel: {
         title: 'Four Source Connector Types',
@@ -108,7 +108,7 @@ DIME_PAGES['05'] = {
     },
     {
       id: 'admin-server',
-      startLine: 214, startCol: 3, endLine: 229, endCol: 78,
+      startLine: 197, startCol: 3, endLine: 212, endCol: 78,
       label: 'Admin REST & WebSocket APIs',
       panel: {
         title: 'The Admin Server',
@@ -128,7 +128,7 @@ DIME_PAGES['05'] = {
     },
     {
       id: 'system-diagram',
-      startLine: 240, startCol: 3, endLine: 274, endCol: 90,
+      startLine: 220, startCol: 3, endLine: 254, endCol: 90,
       label: 'DimeService System Overview',
       panel: {
         title: 'Putting It All Together',
@@ -150,7 +150,7 @@ DIME_PAGES['05'] = {
     },
     {
       id: 'performance',
-      startLine: 282, startCol: 3, endLine: 294, endCol: 87,
+      startLine: 259, startCol: 3, endLine: 271, endCol: 87,
       label: 'Performance Design',
       panel: {
         title: 'Performance by Design',

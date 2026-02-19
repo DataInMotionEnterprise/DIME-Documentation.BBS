@@ -9,7 +9,7 @@ DIME_PAGES['29'] = {
   hotspots: [
     {
       id: 'ring-buffer',
-      startLine: 17, startCol: 3, endLine: 44, endCol: 87,
+      startLine: 16, startCol: 3, endLine: 42, endCol: 87,
       label: 'Ring Buffer Sizing',
       panel: {
         title: 'Ring Buffer \u2014 Size It Right',
@@ -36,7 +36,7 @@ DIME_PAGES['29'] = {
     },
     {
       id: 'scan-interval',
-      startLine: 51, startCol: 3, endLine: 83, endCol: 87,
+      startLine: 47, startCol: 3, endLine: 77, endCol: 87,
       label: 'Scan Interval Tuning',
       panel: {
         title: 'scan_interval \u2014 Frequency vs. CPU',
@@ -64,7 +64,7 @@ DIME_PAGES['29'] = {
     },
     {
       id: 'double-buffer',
-      startLine: 99, startCol: 3, endLine: 134, endCol: 87,
+      startLine: 91, startCol: 3, endLine: 123, endCol: 87,
       label: 'Double-Buffer Pattern',
       panel: {
         title: 'Double-Buffer \u2014 Decoupling Read and Write Speeds',
@@ -89,7 +89,7 @@ DIME_PAGES['29'] = {
     },
     {
       id: 'backpressure',
-      startLine: 141, startCol: 3, endLine: 170, endCol: 87,
+      startLine: 130, startCol: 3, endLine: 156, endCol: 87,
       label: 'Backpressure \u2014 Slow Sinks',
       panel: {
         title: 'Backpressure \u2014 When Sinks Cannot Keep Up',
@@ -118,7 +118,7 @@ DIME_PAGES['29'] = {
     },
     {
       id: 'bottlenecks',
-      startLine: 177, startCol: 3, endLine: 215, endCol: 87,
+      startLine: 163, startCol: 3, endLine: 198, endCol: 87,
       label: 'Finding Bottlenecks with $SYSTEM',
       panel: {
         title: '$SYSTEM Metrics \u2014 Built-In Performance Diagnostics',

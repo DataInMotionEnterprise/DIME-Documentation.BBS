@@ -9,7 +9,7 @@ DIME_PAGES['20'] = {
   hotspots: [
     {
       id: 'before-after',
-      startLine: 19, startCol: 3, endLine: 63, endCol: 86,
+      startLine: 17, startCol: 3, endLine: 61, endCol: 86,
       label: 'Before & After RBE',
       panel: {
         title: 'Report By Exception \u2014 98% Data Reduction',
@@ -35,7 +35,7 @@ DIME_PAGES['20'] = {
     },
     {
       id: 'connector-rbe',
-      startLine: 105, startCol: 3, endLine: 120, endCol: 86,
+      startLine: 94, startCol: 3, endLine: 109, endCol: 86,
       label: 'Connector-Level RBE',
       panel: {
         title: 'Connector-Level RBE \u2014 One Flag, All Items',
@@ -58,7 +58,7 @@ DIME_PAGES['20'] = {
     },
     {
       id: 'item-rbe',
-      startLine: 132, startCol: 3, endLine: 150, endCol: 86,
+      startLine: 118, startCol: 3, endLine: 136, endCol: 86,
       label: 'Item-Level RBE Override',
       panel: {
         title: 'Item-Level RBE \u2014 Per-Item Control',
@@ -84,7 +84,7 @@ DIME_PAGES['20'] = {
     },
     {
       id: 'force-emit',
-      startLine: 162, startCol: 3, endLine: 178, endCol: 86,
+      startLine: 145, startCol: 3, endLine: 161, endCol: 86,
       label: 'Force Emit (Bypass RBE)',
       panel: {
         title: 'emit(path, value, true) \u2014 Force Publish',
@@ -113,7 +113,7 @@ DIME_PAGES['20'] = {
     },
     {
       id: 'execute-every',
-      startLine: 190, startCol: 3, endLine: 210, endCol: 86,
+      startLine: 169, startCol: 3, endLine: 189, endCol: 86,
       label: 'execute_every Throttle',
       panel: {
         title: 'execute_every \u2014 Skip Scan Cycles',

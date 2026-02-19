@@ -9,7 +9,7 @@ DIME_PAGES['15'] = {
   hotspots: [
     {
       id: 'mtconnect-source',
-      startLine: 77, startCol: 3, endLine: 102, endCol: 78,
+      startLine: 71, startCol: 3, endLine: 94, endCol: 78,
       label: 'MTConnect Source \u2014 Poll an Agent',
       panel: {
         title: 'MTConnect Source \u2014 Polling an Existing Agent',
@@ -36,7 +36,7 @@ DIME_PAGES['15'] = {
     },
     {
       id: 'shdr-haas',
-      startLine: 108, startCol: 3, endLine: 135, endCol: 78,
+      startLine: 98, startCol: 3, endLine: 124, endCol: 78,
       label: 'SHDR / Haas Direct Connection',
       panel: {
         title: 'SHDR & Haas Source \u2014 Direct Machine Connection',
@@ -58,7 +58,7 @@ DIME_PAGES['15'] = {
     },
     {
       id: 'agent-sink',
-      startLine: 176, startCol: 3, endLine: 205, endCol: 78,
+      startLine: 160, startCol: 3, endLine: 188, endCol: 78,
       label: 'MTConnect Agent Sink',
       panel: {
         title: 'DIME as an MTConnect Agent',
@@ -90,7 +90,7 @@ DIME_PAGES['15'] = {
     },
     {
       id: 'emit-mtconnect',
-      startLine: 240, startCol: 3, endLine: 275, endCol: 78,
+      startLine: 218, startCol: 3, endLine: 252, endCol: 78,
       label: 'emit_mtconnect() Lua Function',
       panel: {
         title: 'emit_mtconnect() \u2014 Semantic Mapping in Lua',
@@ -121,7 +121,7 @@ DIME_PAGES['15'] = {
     },
     {
       id: 'robot-sources',
-      startLine: 141, startCol: 3, endLine: 170, endCol: 78,
+      startLine: 128, startCol: 3, endLine: 156, endCol: 78,
       label: 'FANUC & Yaskawa Robot Sources',
       panel: {
         title: 'Direct Robot Connectivity \u2014 FANUC & Yaskawa',

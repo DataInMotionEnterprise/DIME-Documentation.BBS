@@ -1,7 +1,7 @@
 ```
 ┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
 │                                                                                                  │
-│          ██████┐  ██┐ ███┐   ███┐ ███████┐        12 — PLC to Dashboard                         │
+│          ██████┐  ██┐ ███┐   ███┐ ███████┐        12 — PLC to Dashboard                          │
 │          ██┌──██┐ ██│ ████┐ ████│ ██┌────┘                                                       │
 │          ██│  ██│ ██│ ██┌████┌██│ █████┐          End-to-end walkthrough.                        │
 │          ██│  ██│ ██│ ██│└██┌┘██│ ██┌──┘          From OPC-UA to live charts.                    │
@@ -13,7 +13,7 @@
 │   SCENARIO                                                                                       │
 │   ────────                                                                                       │
 │                                                                                                  │
-│   Read Temperature and Pressure from an OPC-UA PLC.                                             │
+│   Read Temperature and Pressure from an OPC-UA PLC.                                              │
 │   Display values on a live web dashboard via WebSocket.                                          │
 │   Store history in InfluxDB for trending and alerting.                                           │
 │   Print to console while debugging.                                                              │
@@ -42,7 +42,7 @@
 │   │                                                                                        │     │
 │   └────────────────────────────────────────────────────────────────────────────────────────┘     │
 │                                                                                                  │
-│   Paths created:  plc1/Temperature  and  plc1/Pressure                                          │
+│   Paths created:  plc1/Temperature  and  plc1/Pressure                                           │
 │                                                                                                  │
 │  ──────────────────────────────────────────────────────────────────────────────────────────────  │
 │                                                                                                  │
@@ -132,21 +132,21 @@
 │   │               │       │               │       │                                        │     │
 │   │   OPC-UA PLC  │       │  Ring Buffer  │       │  ┌─────────────┐  historian            │     │
 │   │               │       │               │       │  │  InfluxDB   │  (InfluxLP sink)      │     │
-│   │  Temperature ─┼──────▶│  plc1/Temp ───┼──────▶│  └─────────────┘                      │     │
+│   │  Temperature ─┼──────▶│  plc1/Temp ───┼──────▶│  └─────────────┘                       │     │
 │   │  (+ Lua: C→F) │       │               │       │                                        │     │
-│   │               │       │               │       │  ┌─────────────┐  dashboard             │     │
-│   │  Pressure ────┼──────▶│  plc1/Press ──┼──────▶│  │  WebSocket  │  (WS sink :8092)      │     │
-│   │               │       │               │       │  └─────────────┘                      │     │
+│   │               │       │               │       │  ┌─────────────┐  dashboard             │    │
+│   │  Pressure ────┼──────▶│  plc1/Press ──┼──────▶│  │  WebSocket  │  (WS sink :8092)       │    │
+│   │               │       │               │       │  └─────────────┘                        │    │
 │   │  192.168.1.10 │       │  (4096 slots) │       │                                        │     │
-│   │  :4840        │       │               │       │  ┌─────────────┐  debug                 │     │
-│   │               │       │               │──────▶│  │  Console    │  (stdout)              │     │
-│   │               │       │               │       │  └─────────────┘                      │     │
+│   │  :4840        │       │               │       │  ┌─────────────┐  debug                 │    │
+│   │               │       │               │──────▶│  │  Console    │  (stdout)              │    │
+│   │               │       │               │       │  └─────────────┘                        │    │
 │   │               │       │               │       │                                        │     │
 │   └───────────────┘       └───────────────┘       └────────────────────────────────────────┘     │
 │                                                                                                  │
 │     SOURCE (1)              BUFFER                  SINKS (3)                                    │
 │     Reads every 1s          Routes to all sinks     Each gets every message                      │
-│                              simultaneously          Filters select what to keep                  │
+│                              simultaneously          Filters select what to keep                 │
 │                                                                                                  │
 │  ──────────────────────────────────────────────────────────────────────────────────────────────  │
 │                                                                                                  │
@@ -164,7 +164,7 @@
 │   │                                          │  │                                          │     │
 │   └──────────────────────────────────────────┘  └──────────────────────────────────────────┘     │
 │                                                                                                  │
-│   The sinks already use "plc1/.*" filters.  Change to "plc.*/.*" to capture both.               │
+│   The sinks already use "plc1/.*" filters.  Change to "plc.*/.*" to capture both.                │
 │   Or add a new sink with "plc2/.*" for separate handling.                                        │
 │                                                                                                  │
 │   50 machines?  50 source blocks.  Same sinks.  Same YAML file.                                  │

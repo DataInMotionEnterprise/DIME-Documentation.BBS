@@ -1,7 +1,7 @@
 ```
 ┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
 │                                                                                                  │
-│          ██████┐  ██┐ ███┐   ███┐ ███████┐        30 — Troubleshooting                          │
+│          ██████┐  ██┐ ███┐   ███┐ ███████┐        30 — Troubleshooting                           │
 │          ██┌──██┐ ██│ ████┐ ████│ ██┌────┘                                                       │
 │          ██│  ██│ ██│ ██┌████┌██│ █████┐          Fix it fast. The most common                   │
 │          ██│  ██│ ██│ ██│└██┌┘██│ ██┌──┘          issues and how to solve them.                  │
@@ -10,68 +10,64 @@
 │                                                                                                  │
 │  ──────────────────────────────────────────────────────────────────────────────────────────────  │
 │                                                                                                  │
-│                                                                                                  │
 │   NO DATA FLOWING — 5-STEP CHECKLIST                                                             │
 │   ──────────────────────────────────                                                             │
 │                                                                                                  │
 │   Work through these in order. Most problems are in step 1 or 2.                                 │
 │                                                                                                  │
-│                                                                                                  │
 │   ┌────────────────────────────────────────────────────────────────────────────────────────┐     │
 │   │                                                                                        │     │
 │   │                                                                                        │     │
 │   │   ┌──────────────────────────────────────┐                                             │     │
-│   │   │  1. Is the connector enabled?         │                                             │     │
-│   │   │                                       │                                             │     │
-│   │   │  Check: enabled: !!bool true          │                                             │     │
-│   │   │  A missing !!bool tag means it is     │                                             │     │
-│   │   │  a string "true", not boolean true.   │                                             │     │
+│   │   │  1. Is the connector enabled?        │                                             │     │
+│   │   │                                      │                                             │     │
+│   │   │  Check: enabled: !!bool true         │                                             │     │
+│   │   │  A missing !!bool tag means it is    │                                             │     │
+│   │   │  a string "true", not boolean true.  │                                             │     │
 │   │   └──────────────┬───────────────────────┘                                             │     │
-│   │                  │ YES                                                                  │     │
-│   │                  ▼                                                                      │     │
+│   │                  │ YES                                                                  │    │
+│   │                  ▼                                                                      │    │
 │   │   ┌──────────────────────────────────────┐                                             │     │
-│   │   │  2. Is the source connected?          │                                             │     │
-│   │   │                                       │                                             │     │
-│   │   │  Check: GET /status                   │                                             │     │
-│   │   │  Look for IsConnected = true          │                                             │     │
-│   │   │  If false: wrong IP, port, or creds   │                                             │     │
+│   │   │  2. Is the source connected?         │                                             │     │
+│   │   │                                      │                                             │     │
+│   │   │  Check: GET /status                  │                                             │     │
+│   │   │  Look for IsConnected = true         │                                             │     │
+│   │   │  If false: wrong IP, port, or creds  │                                             │     │
 │   │   └──────────────┬───────────────────────┘                                             │     │
-│   │                  │ YES                                                                  │     │
-│   │                  ▼                                                                      │     │
+│   │                  │ YES                                                                  │    │
+│   │                  ▼                                                                      │    │
 │   │   ┌──────────────────────────────────────┐                                             │     │
-│   │   │  3. Are item addresses correct?       │                                             │     │
-│   │   │                                       │                                             │     │
+│   │   │  3. Are item addresses correct?      │                                             │     │
+│   │   │                                      │                                             │     │
 │   │   │  OPC-UA: ns=2;s=PLC.Tag              │                                             │     │
-│   │   │  Modbus: 40001 (holding register)     │                                             │     │
-│   │   │  S7: DB1.DBD0 (data block)            │                                             │     │
-│   │   │  Check device docs for exact syntax.  │                                             │     │
+│   │   │  Modbus: 40001 (holding register)    │                                             │     │
+│   │   │  S7: DB1.DBD0 (data block)           │                                             │     │
+│   │   │  Check device docs for exact syntax. │                                             │     │
 │   │   └──────────────┬───────────────────────┘                                             │     │
-│   │                  │ YES                                                                  │     │
-│   │                  ▼                                                                      │     │
+│   │                  │ YES                                                                  │    │
+│   │                  ▼                                                                      │    │
 │   │   ┌──────────────────────────────────────┐                                             │     │
-│   │   │  4. Is RBE hiding unchanged values?   │                                             │     │
-│   │   │                                       │                                             │     │
-│   │   │  Temporarily set: rbe: !!bool false   │                                             │     │
-│   │   │  If data appears, the value is not    │                                             │     │
-│   │   │  changing. RBE is working correctly.  │                                             │     │
+│   │   │  4. Is RBE hiding unchanged values?  │                                             │     │
+│   │   │                                      │                                             │     │
+│   │   │  Temporarily set: rbe: !!bool false  │                                             │     │
+│   │   │  If data appears, the value is not   │                                             │     │
+│   │   │  changing. RBE is working correctly. │                                             │     │
 │   │   └──────────────┬───────────────────────┘                                             │     │
-│   │                  │ YES                                                                  │     │
-│   │                  ▼                                                                      │     │
+│   │                  │ YES                                                                  │    │
+│   │                  ▼                                                                      │    │
 │   │   ┌──────────────────────────────────────┐                                             │     │
-│   │   │  5. Are sink filters too restrictive? │                                             │     │
-│   │   │                                       │                                             │     │
-│   │   │  Check include_filter and             │                                             │     │
-│   │   │  exclude_filter regex patterns.       │                                             │     │
-│   │   │  Try removing filters temporarily.    │                                             │     │
-│   │   │  Add a Console sink with no filters   │                                             │     │
-│   │   │  to verify data is in the ring buffer.│                                             │     │
+│   │   │  5. Are sink filters too restrictive?│                                             │     │
+│   │   │                                      │                                             │     │
+│   │   │  Check include_filter and            │                                             │     │
+│   │   │  exclude_filter regex patterns.      │                                             │     │
+│   │   │  Try removing filters temporarily.   │                                             │     │
+│   │   │  Add a Console sink with no filters  │                                             │     │
+│   │   │  to verify data is in the ring buffer│                                             │     │
 │   │   └──────────────────────────────────────┘                                             │     │
 │   │                                                                                        │     │
 │   └────────────────────────────────────────────────────────────────────────────────────────┘     │
 │                                                                                                  │
-│                                                                                                  │
 │  ──────────────────────────────────────────────────────────────────────────────────────────────  │
-│                                                                                                  │
 │                                                                                                  │
 │   CONNECTOR KEEPS FAULTING                                                                       │
 │   ────────────────────────                                                                       │
@@ -79,13 +75,13 @@
 │   ┌────────────────────────────────────────────────────────────────────────────────────────┐     │
 │   │                                                                                        │     │
 │   │   ┌─────────────────┐        ┌─────────────────┐        ┌─────────────────┐            │     │
-│   │   │ Check           │        │ Verify           │        │ Look at         │            │     │
-│   │   │ FaultReason     │───────▶│ network &        │───────▶│ FaultCount      │            │     │
-│   │   │                 │        │ credentials      │        │                 │            │     │
-│   │   │ GET /status     │        │                  │        │ Growing = the   │            │     │
-│   │   │ IsFaulted: true │        │ Ping device?     │        │ device keeps    │            │     │
-│   │   │ FaultReason:    │        │ Firewall open?   │        │ dropping. Check │            │     │
-│   │   │ "timeout"       │        │ Creds correct?   │        │ device health.  │            │     │
+│   │   │ Check           │        │ Verify          │        │ Look at         │            │     │
+│   │   │ FaultReason     │───────▶│ network &       │───────▶│ FaultCount      │            │     │
+│   │   │                 │        │ credentials     │        │                 │            │     │
+│   │   │ GET /status     │        │                 │        │ Growing = the   │            │     │
+│   │   │ IsFaulted: true │        │ Ping device?    │        │ device keeps    │            │     │
+│   │   │ FaultReason:    │        │ Firewall open?  │        │ dropping. Check │            │     │
+│   │   │ "timeout"       │        │ Creds correct?  │        │ device health.  │            │     │
 │   │   └─────────────────┘        └─────────────────┘        └─────────────────┘            │     │
 │   │                                                                                        │     │
 │   │   DIME auto-retries on fault. If FaultCount stabilizes, the device recovered.          │     │
@@ -93,9 +89,7 @@
 │   │                                                                                        │     │
 │   └────────────────────────────────────────────────────────────────────────────────────────┘     │
 │                                                                                                  │
-│                                                                                                  │
 │  ──────────────────────────────────────────────────────────────────────────────────────────────  │
-│                                                                                                  │
 │                                                                                                  │
 │   LUA SCRIPT ERRORS                                                                              │
 │   ─────────────────                                                                              │
@@ -111,28 +105,25 @@
 │   │   Common Lua mistakes:                                                                 │     │
 │   │   ────────────────────                                                                 │     │
 │   │   - Nil access: msg.data is nil when device returns nothing                            │     │
-│   │   - Type mismatch: tonumber() on a string that is not a number                        │     │
+│   │   - Type mismatch: tonumber() on a string that is not a number                         │     │
 │   │   - Missing return: script must return a value or use emit()                           │     │
 │   │   - Infinite loop: while true without break kills the scan cycle                       │     │
 │   │                                                                                        │     │
 │   │   Debugging strategy:                                                                  │     │
 │   │   ───────────────────                                                                  │     │
-│   │   1. Add a Console sink with no filters — see everything in stdout                    │     │
-│   │   2. Simplify script to just "return msg.data" — confirm raw data arrives             │     │
+│   │   1. Add a Console sink with no filters — see everything in stdout                     │     │
+│   │   2. Simplify script to just "return msg.data" — confirm raw data arrives              │     │
 │   │   3. Add logic back one line at a time                                                 │     │
-│   │   4. Use emit('debug/info', value) for printf-style debugging                         │     │
+│   │   4. Use emit('debug/info', value) for printf-style debugging                          │     │
 │   │                                                                                        │     │
 │   └────────────────────────────────────────────────────────────────────────────────────────┘     │
 │                                                                                                  │
-│                                                                                                  │
 │  ──────────────────────────────────────────────────────────────────────────────────────────────  │
-│                                                                                                  │
 │                                                                                                  │
 │   COMMON YAML MISTAKES                                                                           │
 │   ────────────────────                                                                           │
 │                                                                                                  │
 │   YAML looks simple, but these gotchas trip up everyone.                                         │
-│                                                                                                  │
 │                                                                                                  │
 │   ┌────────────────────────────────────────────────────────────────────────────────────────┐     │
 │   │                                                                                        │     │
@@ -148,16 +139,16 @@
 │   │                                                                                        │     │
 │   │     WRONG:   sources:               ── items must be indented under the source         │     │
 │   │              - name: plc1                                                              │     │
-│   │              items:                  ── same level as name = sibling, not child!        │     │
+│   │              items:                  ── same level as name = sibling, not child!       │     │
 │   │                                                                                        │     │
 │   │     RIGHT:   sources:                                                                  │     │
 │   │                - name: plc1                                                            │     │
-│   │                  items:              ── indented under name = child of source           │     │
+│   │                  items:              ── indented under name = child of source          │     │
 │   │                                                                                        │     │
 │   │                                                                                        │     │
 │   │   MISTAKE #3: Anchor / alias mismatches                                                │     │
 │   │                                                                                        │     │
-│   │     Anchor defined:   &my_defaults { scan_interval: !!int 1000 }                      │     │
+│   │     Anchor defined:   &my_defaults { scan_interval: !!int 1000 }                       │     │
 │   │     Alias used:       <<: *my_default    ── typo! missing 's'                          │     │
 │   │                                                                                        │     │
 │   │     YAML will silently fail or throw a cryptic error.                                  │     │
@@ -171,15 +162,12 @@
 │   │                                                                                        │     │
 │   └────────────────────────────────────────────────────────────────────────────────────────┘     │
 │                                                                                                  │
-│                                                                                                  │
 │  ──────────────────────────────────────────────────────────────────────────────────────────────  │
 │                                                                                                  │
-│                                                                                                  │
 │   THE CONSOLE SINK — YOUR BEST DEBUGGING FRIEND                                                  │
-│   ──────────────────────────────────────────────                                                  │
+│   ──────────────────────────────────────────────                                                 │
 │                                                                                                  │
 │   Add a Console sink during development. It prints every message to stdout.                      │
-│                                                                                                  │
 │                                                                                                  │
 │   ┌────────────────────────────────────────────────────────────────────────────────────────┐     │
 │   │                                                                                        │     │
@@ -206,23 +194,21 @@
 │   │   THREE KEY DIAGNOSTICS                                                                │     │
 │   │   ─────────────────────                                                                │     │
 │   │                                                                                        │     │
-│   │   ┌─────────────────────┐  ┌─────────────────────┐  ┌─────────────────────┐           │     │
-│   │   │ Console sink        │  │ GET /status          │  │ GET /config         │           │     │
-│   │   │                     │  │                      │  │                     │           │     │
-│   │   │ See what data is    │  │ See connector state, │  │ See what DIME       │           │     │
-│   │   │ flowing through     │  │ fault info, timing   │  │ actually loaded     │           │     │
-│   │   │ the ring buffer.    │  │ metrics, counts.     │  │ (after merge).      │           │     │
-│   │   │                     │  │                      │  │                     │           │     │
-│   │   │ "Is data there?"    │  │ "Is it healthy?"     │  │ "Is config right?"  │           │     │
-│   │   └─────────────────────┘  └─────────────────────┘  └─────────────────────┘           │     │
+│   │   ┌─────────────────────┐  ┌─────────────────────┐  ┌─────────────────────┐           │      │
+│   │   │ Console sink        │  │ GET /status         │  │ GET /config         │           │      │
+│   │   │                     │  │                     │  │                     │           │      │
+│   │   │ See what data is    │  │ See connector state,│  │ See what DIME       │           │      │
+│   │   │ flowing through     │  │ fault info, timing  │  │ actually loaded     │           │      │
+│   │   │ the ring buffer.    │  │ metrics, counts.    │  │ (after merge).      │           │      │
+│   │   │                     │  │                     │  │                     │           │      │
+│   │   │ "Is data there?"    │  │ "Is it healthy?"    │  │ "Is config right?"  │           │      │
+│   │   └─────────────────────┘  └─────────────────────┘  └─────────────────────┘           │      │
 │   │                                                                                        │     │
 │   │   Remove the Console sink before deploying to production.                              │     │
 │   │                                                                                        │     │
 │   └────────────────────────────────────────────────────────────────────────────────────────┘     │
 │                                                                                                  │
-│                                                                                                  │
 │  ──────────────────────────────────────────────────────────────────────────────────────────────  │
-│                                                                                                  │
 │                                                                                                  │
 │   QUICK REFERENCE — OTHER COMMON ISSUES                                                          │
 │   ─────────────────────────────────────                                                          │
@@ -250,7 +236,6 @@
 │   └──────────────────────────────────────────────────────────────────────────────────────┘       │
 │                                                                                                  │
 │   When all else fails: GET /status is the single most useful diagnostic.                         │
-│                                                                                                  │
 │                                                                                                  │
 └──────────────────────────────────────────────────────────────────────────────────────────────────┘
 ```

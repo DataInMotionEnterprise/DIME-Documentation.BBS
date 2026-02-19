@@ -9,7 +9,7 @@ DIME_PAGES['14'] = {
   hotspots: [
     {
       id: 'influxdb',
-      startLine: 51, startCol: 3, endLine: 79, endCol: 78,
+      startLine: 47, startCol: 3, endLine: 74, endCol: 78,
       label: 'InfluxDB Time-Series Sink',
       panel: {
         title: 'InfluxDB Sink \u2014 Line Protocol',
@@ -39,7 +39,7 @@ DIME_PAGES['14'] = {
     },
     {
       id: 'sql-sink',
-      startLine: 85, startCol: 3, endLine: 115, endCol: 78,
+      startLine: 78, startCol: 3, endLine: 107, endCol: 78,
       label: 'SQL Server & PostgreSQL Sinks',
       panel: {
         title: 'Relational Database Sinks',
@@ -66,7 +66,7 @@ DIME_PAGES['14'] = {
     },
     {
       id: 'mongodb',
-      startLine: 121, startCol: 3, endLine: 154, endCol: 78,
+      startLine: 111, startCol: 3, endLine: 143, endCol: 78,
       label: 'MongoDB Document Sink',
       panel: {
         title: 'MongoDB Sink \u2014 Document Storage',
@@ -94,7 +94,7 @@ DIME_PAGES['14'] = {
     },
     {
       id: 'csv-logger',
-      startLine: 160, startCol: 3, endLine: 193, endCol: 78,
+      startLine: 147, startCol: 3, endLine: 179, endCol: 78,
       label: 'CSV Writer & Logger Sinks',
       panel: {
         title: 'File-Based Output \u2014 CSV & Logger',
@@ -119,7 +119,7 @@ DIME_PAGES['14'] = {
     },
     {
       id: 'db-as-source',
-      startLine: 199, startCol: 3, endLine: 228, endCol: 78,
+      startLine: 183, startCol: 3, endLine: 211, endCol: 78,
       label: 'Database as Source (BatchPolling)',
       panel: {
         title: 'Reading FROM Databases \u2014 BatchPolling',

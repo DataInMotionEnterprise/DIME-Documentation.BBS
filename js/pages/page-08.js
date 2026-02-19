@@ -9,7 +9,7 @@ DIME_PAGES['08'] = {
   hotspots: [
     {
       id: 'paths',
-      startLine: 18, startCol: 3, endLine: 36, endCol: 82,
+      startLine: 16, startCol: 3, endLine: 34, endCol: 82,
       label: 'Message Path Format',
       panel: {
         title: 'Message Path Anatomy \u2014 sourceName/itemName',
@@ -35,7 +35,7 @@ DIME_PAGES['08'] = {
     },
     {
       id: 'system-paths',
-      startLine: 50, startCol: 3, endLine: 64, endCol: 82,
+      startLine: 45, startCol: 3, endLine: 59, endCol: 82,
       label: '$SYSTEM Automatic Metadata',
       panel: {
         title: '$SYSTEM Paths \u2014 Connector Health Metadata',
@@ -60,7 +60,7 @@ DIME_PAGES['08'] = {
     },
     {
       id: 'exclude-filter',
-      startLine: 79, startCol: 8, endLine: 105, endCol: 52,
+      startLine: 71, startCol: 8, endLine: 97, endCol: 52,
       label: 'Exclude Filter (Regex Blacklist)',
       panel: {
         title: 'exclude_filter \u2014 Drop Matching Messages',
@@ -90,7 +90,7 @@ DIME_PAGES['08'] = {
     },
     {
       id: 'include-filter',
-      startLine: 117, startCol: 8, endLine: 142, endCol: 52,
+      startLine: 106, startCol: 8, endLine: 131, endCol: 52,
       label: 'Include Filter (Regex Whitelist)',
       panel: {
         title: 'include_filter \u2014 Accept Only Matching Messages',
@@ -120,7 +120,7 @@ DIME_PAGES['08'] = {
     },
     {
       id: 'strip-prefix',
-      startLine: 156, startCol: 3, endLine: 169, endCol: 82,
+      startLine: 142, startCol: 3, endLine: 155, endCol: 82,
       label: 'strip_path_prefix',
       panel: {
         title: 'strip_path_prefix \u2014 Remove Source Name',

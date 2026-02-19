@@ -72,6 +72,29 @@ body {
   animation: flicker 5s infinite;
 }
 
+/* === Sidebar Toggle === */
+#sidebar-toggle {
+  display: none;
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  z-index: 200;
+  background: var(--sidebar-bg);
+  border: 1px solid var(--border);
+  color: var(--amber);
+  font-family: var(--font);
+  font-size: 18px;
+  padding: 4px 8px;
+  cursor: pointer;
+  line-height: 1;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+#sidebar-toggle:hover {
+  background: rgba(255, 176, 0, 0.1);
+  border-color: var(--amber);
+}
+
 /* === Shell Grid === */
 #shell {
   display: grid;
@@ -180,7 +203,7 @@ kbd {
   overflow: auto;
   padding: 20px 24px;
   display: flex;
-  justify-content: flex-start;
+  flex-direction: column;
   align-items: flex-start;
 }
 
@@ -199,6 +222,35 @@ kbd {
   -webkit-font-feature-settings: 'liga' 0, 'calt' 0;
 }
 
+/* === Page Nav === */
+#page-nav {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  padding: 16px 0;
+  margin-top: 12px;
+  border-top: 1px solid var(--border);
+}
+
+#page-nav a {
+  color: var(--amber-dim);
+  text-decoration: none;
+  font-size: 12px;
+  transition: color 0.15s;
+}
+
+#page-nav a:hover {
+  color: var(--amber);
+}
+
+#page-nav .page-nav-prev::before {
+  content: "\2190  ";
+}
+
+#page-nav .page-nav-next::after {
+  content: "  \2192";
+}
+
 /* === Hotspots === */
 .hotspot {
   cursor: pointer;
@@ -208,10 +260,7 @@ kbd {
 }
 
 .hotspot:hover {
-  color: var(--cyan);
-  border-bottom-color: var(--cyan);
-  text-shadow: 0 0 6px var(--cyan-glow);
-  background: rgba(0, 229, 255, 0.05);
+  border-bottom-color: var(--cyan-dim);
 }
 
 .hotspot:focus {
@@ -220,20 +269,7 @@ kbd {
 }
 
 .hotspot.active {
-  color: var(--cyan);
-  border-bottom: 1px solid var(--cyan);
-  background: rgba(0, 229, 255, 0.08);
-  text-shadow: 0 0 10px var(--cyan-glow);
-}
-
-@keyframes hotspot-pulse {
-  0%   { background: rgba(0, 229, 255, 0.08); }
-  50%  { background: rgba(0, 229, 255, 0.14); }
-  100% { background: rgba(0, 229, 255, 0.08); }
-}
-
-.hotspot.active {
-  animation: hotspot-pulse 2s ease-in-out infinite;
+  border-bottom: 1px dotted var(--cyan-dim);
 }
 
 /* === Panel === */
@@ -439,4 +475,79 @@ kbd {
 * {
   scrollbar-width: thin;
   scrollbar-color: var(--amber-dim) var(--bg);
+}
+
+/* === Mobile / Collapsible Sidebar === */
+@media (max-width: 768px) {
+  :root {
+    --sidebar-w: 200px;
+  }
+
+  #sidebar-toggle {
+    display: block;
+  }
+
+  #shell {
+    display: block;
+    height: 100vh;
+  }
+
+  #shell.panel-open {
+    display: block;
+  }
+
+  #panel {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    z-index: 100;
+    pointer-events: none;
+  }
+
+  #shell.panel-open #panel {
+    pointer-events: auto;
+  }
+
+  #sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: var(--sidebar-w);
+    z-index: 150;
+    transform: translateX(-100%);
+    transition: transform 0.25s ease;
+  }
+
+  #shell.sidebar-open #sidebar {
+    transform: translateX(0);
+  }
+
+  #canvas-wrap {
+    padding: 40px 4px 20px;
+    height: 100vh;
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  #sidebar {
+    pointer-events: none;
+  }
+
+  #shell.sidebar-open #sidebar {
+    pointer-events: auto;
+  }
+
+  #ascii-canvas {
+    font-size: 1.55vw;
+  }
+
+  #scanlines,
+  #vignette {
+    display: none;
+  }
+
+  body {
+    animation: none;
+  }
 }

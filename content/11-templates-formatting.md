@@ -1,10 +1,10 @@
 ```
 ┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
 │                                                                                                  │
-│          ██████┐  ██┐ ███┐   ███┐ ███████┐        11 — Templates                                │
+│          ██████┐  ██┐ ███┐   ███┐ ███████┐        11 — Templates                                 │
 │          ██┌──██┐ ██│ ████┐ ████│ ██┌────┘                                                       │
-│          ██│  ██│ ██│ ██┌████┌██│ █████┐          Reshape output for any format.                  │
-│          ██│  ██│ ██│ ██│└██┌┘██│ ██┌──┘          Liquid and Scriban engines.                     │
+│          ██│  ██│ ██│ ██┌████┌██│ █████┐          Reshape output for any format.                 │
+│          ██│  ██│ ██│ ██│└██┌┘██│ ██┌──┘          Liquid and Scriban engines.                    │
 │          ██████┌┘ ██│ ██│ └─┘ ██│ ███████┐                                                       │
 │          └─────┘  └─┘ └─┘     └─┘ └──────┘                                                       │
 │                                                                                                  │
@@ -15,15 +15,15 @@
 │                                                                                                  │
 │   Sources produce raw data. Sinks need specific formats. Templates bridge the gap.               │
 │                                                                                                  │
-│    ┌────────────┐      ┌────────────────┐      ┌───────────────┐      ┌────────────────┐        │
-│    │            │      │                │      │               │      │                │        │
-│    │  Raw Data  │─────▶│   Template     │─────▶│  Formatted    │─────▶│     Sink       │        │
-│    │            │      │   Engine       │      │  Output       │      │                │        │
-│    │ Path: ...  │      │                │      │               │      │ HTTP, MQTT,    │        │
-│    │ Data: 72.5 │      │ Liquid/Scriban │      │ {"device":    │      │ InfluxDB, ...  │        │
-│    │ Time: ...  │      │ expressions    │      │  "plc1", ...} │      │                │        │
-│    │            │      │                │      │               │      │                │        │
-│    └────────────┘      └────────────────┘      └───────────────┘      └────────────────┘        │
+│    ┌────────────┐      ┌────────────────┐      ┌───────────────┐      ┌────────────────┐         │
+│    │            │      │                │      │               │      │                │         │
+│    │  Raw Data  │─────▶│   Template     │─────▶│  Formatted    │─────▶│     Sink       │         │
+│    │            │      │   Engine       │      │  Output       │      │                │         │
+│    │ Path: ...  │      │                │      │               │      │ HTTP, MQTT,    │         │
+│    │ Data: 72.5 │      │ Liquid/Scriban │      │ {"device":    │      │ InfluxDB, ...  │         │
+│    │ Time: ...  │      │ expressions    │      │  "plc1", ...} │      │                │         │
+│    │            │      │                │      │               │      │                │         │
+│    └────────────┘      └────────────────┘      └───────────────┘      └────────────────┘         │
 │                                                                                                  │
 │  ──────────────────────────────────────────────────────────────────────────────────────────────  │
 │                                                                                                  │
@@ -58,14 +58,14 @@
 │                                                                                                  │
 │   ┌─────────────────────────────────────────┐  ┌─────────────────────────────────────────┐       │
 │   │                                         │  │                                         │       │
-│   │   LIQUID                                │  │   SCRIBAN                                │       │
+│   │   LIQUID                                │  │   SCRIBAN                               │       │
 │   │                                         │  │                                         │       │
 │   │   {{ Message.Data }}                    │  │   {{ Message.Data }}                    │       │
 │   │   {{ Message.Path | upcase }}           │  │   {{ Message.Path | string.upcase }}    │       │
 │   │                                         │  │                                         │       │
 │   │   {% if Message.Data > 100 %}           │  │   {{ if Message.Data > 100 }}           │       │
 │   │     ALARM                               │  │     ALARM                               │       │
-│   │   {% endif %}                           │  │   {{ end }}                              │       │
+│   │   {% endif %}                           │  │   {{ end }}                             │       │
 │   │                                         │  │                                         │       │
 │   │   Ruby-inspired syntax.                 │  │   .NET-native expressions.              │       │
 │   │   Widely known from Shopify,            │  │   Supports math, functions,             │       │
@@ -78,22 +78,22 @@
 │   TEMPLATE CONTEXT VARIABLES                                                                     │
 │   ──────────────────────────                                                                     │
 │                                                                                                  │
-│   Every template has access to these objects:                                                     │
+│   Every template has access to these objects:                                                    │
 │                                                                                                  │
 │   ┌──────────────────────────────────────────────────────────────────────────────────────────┐   │
 │   │                                                                                          │   │
 │   │   OBJECT              PROPERTY             DESCRIPTION                                   │   │
-│   │   ────────────────    ────────────────     ──────────────────────────────────────────     │   │
+│   │   ────────────────    ────────────────     ──────────────────────────────────────────    │   │
 │   │                                                                                          │   │
 │   │   Message              .Path               Source path, e.g. "plc1/temperature"          │   │
 │   │                        .Data               The raw value (number, string, JSON)          │   │
-│   │                        .Timestamp           Unix epoch timestamp of the reading           │   │
+│   │                        .Timestamp           Unix epoch timestamp of the reading          │   │
 │   │                                                                                          │   │
 │   │   Connector            .Name               Name of the sink connector                    │   │
 │   │                        .Type               Connector type, e.g. "HttpClient"             │   │
 │   │                                                                                          │   │
-│   │   Configuration        .Address             Sink address / URL                            │   │
-│   │                        (varies)             Other sink-specific settings                  │   │
+│   │   Configuration        .Address             Sink address / URL                           │   │
+│   │                        (varies)             Other sink-specific settings                 │   │
 │   │                                                                                          │   │
 │   └──────────────────────────────────────────────────────────────────────────────────────────┘   │
 │                                                                                                  │
@@ -114,18 +114,18 @@
 │                                                       "unit": "F"                                │
 │                                                   },                                             │
 │    ┌───────────────────────────┐                  "meta": {                                      │
-│    │  template: |              │                      "ts": 1700000000,                           │
-│    │    {                      │                      "source": "dime-edge-01"                    │
+│    │  template: |              │                      "ts": 1700000000,                          │
+│    │    {                      │                      "source": "dime-edge-01"                   │
 │    │      "device":            │ ────────────▶    }                                              │
-│    │        "{{ Message.Path }}",│                }                                               │
+│    │      "{{ Message.Path }}",│                }                                                │
 │    │      "readings": {        │                                                                 │
 │    │        "value":           │                                                                 │
-│    │          {{ Message.Data }},│                                                                │
+│    │        {{ Message.Data }},│                                                                 │
 │    │        "unit": "F"        │                                                                 │
 │    │      },                   │                                                                 │
 │    │      "meta": {            │                                                                 │
 │    │        "ts":              │                                                                 │
-│    │          {{ Message.Timestamp }},│                                                           │
+│    │          {{ Message.Timestamp }},│                                                          │
 │    │        "source":          │                                                                 │
 │    │          "dime-edge-01"   │                                                                 │
 │    │      }                    │                                                                 │
@@ -155,7 +155,7 @@
 │   │                                          │  │                                          │     │
 │   │   Best for OUTPUT FORMATTING:            │  │   Best for DATA LOGIC:                   │     │
 │   │                                          │  │                                          │     │
-│   │   ✓ Reshaping JSON structure             │  │   ✓ Math and unit conversions             │     │
+│   │   ✓ Reshaping JSON structure             │  │   ✓ Math and unit conversions            │     │
 │   │   ✓ Building CSV or log lines            │  │   ✓ Conditional branching                │     │
 │   │   ✓ Protocol-specific payloads           │  │   ✓ State machines and counters          │     │
 │   │   ✓ Adding static metadata               │  │   ✓ Parsing complex input                │     │

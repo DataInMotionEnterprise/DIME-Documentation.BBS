@@ -1,7 +1,7 @@
 ```
 ┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
 │                                                                                                  │
-│          ██████┐  ██┐ ███┐   ███┐ ███████┐        15 — MTConnect & CNC                          │
+│          ██████┐  ██┐ ███┐   ███┐ ███████┐        15 — MTConnect & CNC                           │
 │          ██┌──██┐ ██│ ████┐ ████│ ██┌────┘                                                       │
 │          ██│  ██│ ██│ ██┌████┌██│ █████┐          Read from machines.                            │
 │          ██│  ██│ ██│ ██│└██┌┘██│ ██┌──┘          Serve as an MTConnect agent.                   │
@@ -10,14 +10,12 @@
 │                                                                                                  │
 │  ──────────────────────────────────────────────────────────────────────────────────────────────  │
 │                                                                                                  │
-│                                                                                                  │
 │   WHAT IS MTCONNECT?                                                                             │
 │   ──────────────────                                                                             │
 │                                                                                                  │
-│   MTConnect is an open, royalty-free standard for monitoring manufacturing                        │
-│   equipment. It provides a common vocabulary for machine data — spindle speed,                    │
+│   MTConnect is an open, royalty-free standard for monitoring manufacturing                       │
+│   equipment. It provides a common vocabulary for machine data — spindle speed,                   │
 │   axis positions, tool states, and alarms — over HTTP/XML.                                       │
-│                                                                                                  │
 │                                                                                                  │
 │   ┌──────────────────────────────────────────────────────────────────────────────┐               │
 │   │                                                                              │               │
@@ -36,19 +34,16 @@
 │                                                                                                  │
 │   DIME speaks MTConnect natively — both as a consumer and as a producer.                         │
 │                                                                                                  │
-│                                                                                                  │
 │  ──────────────────────────────────────────────────────────────────────────────────────────────  │
-│                                                                                                  │
 │                                                                                                  │
 │   END-TO-END FLOW — CNC TO DASHBOARD                                                             │
 │   ───────────────────────────────────                                                            │
-│                                                                                                  │
 │                                                                                                  │
 │    CNC Machines            DIME                          Consumers                               │
 │    ────────────            ────                          ─────────                               │
 │                                                                                                  │
 │    ┌───────────┐      ┌─────────────────────────────┐      ┌────────────────┐                    │
-│    │ Haas CNC  │─SHDR─▶│                             │      │ MTConnect      │                    │
+│    │ Haas CNC  │SHDR─▶│                             │      │ MTConnect      │                    │
 │    │ (direct)  │      │  ┌──────┐     ┌──────────┐  │      │ Agent on :5000 │                    │
 │    └───────────┘      │  │Source│────▶│          │  ├─────▶│                │                    │
 │                       │  └──────┘     │   Ring   │  │      └───────┬────────┘                    │
@@ -63,7 +58,7 @@
 │    └───────────┘      │                             ├─────▶│ InfluxDB /     │                    │
 │                       │         Lua transforms      │      │ SQL Server     │                    │
 │    ┌───────────┐      │         emit_mtconnect()    │      └────────────────┘                    │
-│    │ Existing  │─HTTP─▶│                             │                                            │
+│    │ Existing  │─HTTP─▶│                             │                                           │
 │    │ MTConnect │      │  ┌──────┐     ┌──────────┐  │      ┌────────────────┐                    │
 │    │ Agent     │      │  │Source│────▶│  SHDR    │  ├─────▶│ External       │                    │
 │    └───────────┘      │  └──────┘     │  Sink    │  │      │ MTConnect      │                    │
@@ -72,16 +67,13 @@
 │                                                                                                  │
 │   DIME bridges protocols: read SHDR from Haas, serve MTConnect to dashboards.                    │
 │                                                                                                  │
-│                                                                                                  │
 │  ──────────────────────────────────────────────────────────────────────────────────────────────  │
-│                                                                                                  │
 │                                                                                                  │
 │   MTCONNECT SOURCE — POLL AN EXISTING AGENT                                                      │
 │   ──────────────────────────────────────────                                                     │
 │                                                                                                  │
 │   Connect to any standard MTConnect agent over HTTP. DIME polls the                              │
 │   /current endpoint at the configured interval.                                                  │
-│                                                                                                  │
 │                                                                                                  │
 │   ┌──────────────────────────────────────────────────────────────────────────────┐               │
 │   │                                                                              │               │
@@ -103,16 +95,13 @@
 │   │                                                                              │               │
 │   └──────────────────────────────────────────────────────────────────────────────┘               │
 │                                                                                                  │
-│                                                                                                  │
 │  ──────────────────────────────────────────────────────────────────────────────────────────────  │
-│                                                                                                  │
 │                                                                                                  │
 │   SHDR & HAAS SOURCE — DIRECT MACHINE CONNECTION                                                 │
 │   ───────────────────────────────────────────────                                                │
 │                                                                                                  │
 │   For machines that speak SHDR (Simple Haas Data Relay) natively,                                │
 │   DIME connects directly — no intermediate MTConnect agent needed.                               │
-│                                                                                                  │
 │                                                                                                  │
 │   ┌──────────────────────────────────────────────────────────────────────────────┐               │
 │   │                                                                              │               │
@@ -122,7 +111,7 @@
 │   │   port ────────────── !!int 7878           SHDR port                         │               │
 │   │                                                                              │               │
 │   │   SHDR is a pipe-delimited text protocol:                                    │               │
-│   │     2024-02-19T10:30:00|Xact|125.002|Yact|87.551|SspeedAct|12000            │               │
+│   │     2024-02-19T10:30:00|Xact|125.002|Yact|87.551|SspeedAct|12000             │               │
 │   │                                                                              │               │
 │   │   DIME parses this into individual data items:                               │               │
 │   │     haas1/Xact      ── 125.002                                               │               │
@@ -136,34 +125,31 @@
 │   │                                                                              │               │
 │   └──────────────────────────────────────────────────────────────────────────────┘               │
 │                                                                                                  │
-│                                                                                                  │
 │  ──────────────────────────────────────────────────────────────────────────────────────────────  │
 │                                                                                                  │
-│                                                                                                  │
-│   FANUC & YASKAWA SOURCES — DIRECT ROBOT CONNECTIVITY                                           │
+│   FANUC & YASKAWA SOURCES — DIRECT ROBOT CONNECTIVITY                                            │
 │   ────────────────────────────────────────────────────                                           │
 │                                                                                                  │
 │   Purpose-built connectors for industrial robots.                                                │
 │                                                                                                  │
-│                                                                                                  │
 │   ┌──────────────────────────────────────────────────────────────────────────────┐               │
 │   │                                                                              │               │
-│   │   FANUC Source                             Yaskawa Source                     │               │
-│   │   ────────────                             ──────────────                     │               │
+│   │   FANUC Source                             Yaskawa Source                    │               │
+│   │   ────────────                             ──────────────                    │               │
 │   │                                                                              │               │
 │   │   connector: FANUC                         connector: Yaskawa                │               │
 │   │                                                                              │               │
 │   │   Reads directly from FANUC               Reads directly from Yaskawa        │               │
-│   │   robot controllers via the               robot controllers via native        │               │
+│   │   robot controllers via the               robot controllers via native       │               │
 │   │   FANUC FOCAS library.                    communication protocol.            │               │
 │   │                                                                              │               │
-│   │   Typical data:                            Typical data:                      │               │
-│   │     • Joint positions (J1-J6)                • Joint positions                │               │
+│   │   Typical data:                            Typical data:                     │               │
+│   │     • Joint positions (J1-J6)                • Joint positions               │               │
 │   │     • TCP position (X,Y,Z,W,P,R)            • I/O registers                  │               │
-│   │     • Program number & status                • Alarm states                   │               │
-│   │     • Override percentage                    • Cycle counters                 │               │
-│   │     • Alarm history                          • Program status                 │               │
-│   │     • I/O registers                          • Speed override                 │               │
+│   │     • Program number & status                • Alarm states                  │               │
+│   │     • Override percentage                    • Cycle counters                │               │
+│   │     • Alarm history                          • Program status                │               │
+│   │     • I/O registers                          • Speed override                │               │
 │   │                                                                              │               │
 │   │   Both are PollingSourceConnectors — timer-driven with scan_interval.        │               │
 │   │                                                                              │               │
@@ -171,16 +157,13 @@
 │                                                                                                  │
 │   These connectors let DIME act as a universal robot-data gateway.                               │
 │                                                                                                  │
-│                                                                                                  │
 │  ──────────────────────────────────────────────────────────────────────────────────────────────  │
 │                                                                                                  │
-│                                                                                                  │
-│   MTCONNECT AGENT SINK — DIME BECOMES THE AGENT                                                 │
+│   MTCONNECT AGENT SINK — DIME BECOMES THE AGENT                                                  │
 │   ───────────────────────────────────────────────                                                │
 │                                                                                                  │
 │   DIME can serve as a full MTConnect agent, exposing data on an HTTP port.                       │
 │   Any MTConnect-compliant client can read from DIME.                                             │
-│                                                                                                  │
 │                                                                                                  │
 │   ┌──────────────────────────────────────────────────────────────────────────────┐               │
 │   │                                                                              │               │
@@ -192,7 +175,7 @@
 │   │   Endpoints exposed:                                                         │               │
 │   │     http://dime-host:5000/probe     ── Device metadata & capabilities        │               │
 │   │     http://dime-host:5000/current   ── Current data item values              │               │
-│   │     http://dime-host:5000/sample    ── Historical data stream               │               │
+│   │     http://dime-host:5000/sample    ── Historical data stream                │               │
 │   │                                                                              │               │
 │   │   Flow:                                                                      │               │
 │   │     Any DIME source ──▶ Ring Buffer ──▶ MTConnect Agent Sink                 │               │
@@ -206,16 +189,13 @@
 │   │                                                                              │               │
 │   └──────────────────────────────────────────────────────────────────────────────┘               │
 │                                                                                                  │
-│                                                                                                  │
 │  ──────────────────────────────────────────────────────────────────────────────────────────────  │
-│                                                                                                  │
 │                                                                                                  │
 │   SHDR SINK — FEED EXTERNAL AGENTS                                                               │
 │   ────────────────────────────────                                                               │
 │                                                                                                  │
 │   If you already have an MTConnect agent (e.g. the MTConnect C++ Agent),                         │
 │   DIME can feed it via SHDR output.                                                              │
-│                                                                                                  │
 │                                                                                                  │
 │   ┌──────────────────────────────────────────────────────────────────────────────┐               │
 │   │                                                                              │               │
@@ -224,10 +204,10 @@
 │   │   DIME formats each message as a pipe-delimited SHDR string                  │               │
 │   │   and sends it to the external agent's adapter port.                         │               │
 │   │                                                                              │               │
-│   │   ┌─────────┐      ┌──────────┐      ┌──────────┐      ┌──────────────┐     │               │
-│   │   │ Any     │─────▶│  Ring    │─────▶│  SHDR   │─────▶│  External    │     │               │
-│   │   │ Source  │      │  Buffer  │      │  Sink   │      │  MTConnect   │     │               │
-│   │   └─────────┘      └──────────┘      └──────────┘      │  Agent       │     │               │
+│   │   ┌─────────┐      ┌──────────┐      ┌──────────┐      ┌──────────────┐     │                │
+│   │   │ Any     │─────▶│  Ring    │─────▶│  SHDR    │─────▶│  External    │     │                │
+│   │   │ Source  │      │  Buffer  │      │  Sink    │      │  MTConnect   │     │                │
+│   │   └─────────┘      └──────────┘      └──────────┘      │  Agent       │     │                │
 │   │                                                         └──────────────┘     │               │
 │   │                                                                              │               │
 │   │   Use this when your organization mandates a specific MTConnect agent        │               │
@@ -235,9 +215,7 @@
 │   │                                                                              │               │
 │   └──────────────────────────────────────────────────────────────────────────────┘               │
 │                                                                                                  │
-│                                                                                                  │
 │  ──────────────────────────────────────────────────────────────────────────────────────────────  │
-│                                                                                                  │
 │                                                                                                  │
 │   emit_mtconnect() — SEMANTIC MAPPING IN LUA                                                     │
 │   ───────────────────────────────────────────                                                    │
@@ -245,16 +223,15 @@
 │   Use the Lua emit_mtconnect() function to map raw device data                                   │
 │   to named MTConnect data items with proper types.                                               │
 │                                                                                                  │
-│                                                                                                  │
 │   ┌──────────────────────────────────────────────────────────────────────────────┐               │
 │   │                                                                              │               │
 │   │   emit_mtconnect( data_item_name, value, mtconnect_type, is_condition )      │               │
 │   │                                                                              │               │
 │   │   Parameters:                                                                │               │
 │   │     data_item_name ── "SpindleSpeed"         Name in MTConnect XML           │               │
-│   │     value ─────────── result                  The value to publish            │               │
-│   │     mtconnect_type ── "SpindleSpeed"          MTConnect type category         │               │
-│   │     is_condition ──── false                   true if Condition type          │               │
+│   │     value ─────────── result                  The value to publish           │               │
+│   │     mtconnect_type ── "SpindleSpeed"          MTConnect type category        │               │
+│   │     is_condition ──── false                   true if Condition type         │               │
 │   │                                                                              │               │
 │   │   Example Lua script:                                                        │               │
 │   │   ┌─────────────────────────────────────────────────────────────────┐        │               │
@@ -263,11 +240,11 @@
 │   │   │   emit_mtconnect('spindle_speed', result, 'SpindleSpeed', false)│        │               │
 │   │   │                                                                 │        │               │
 │   │   │   -- Map alarm register to MTConnect condition                  │        │               │
-│   │   │   if result > 0 then                                           │        │               │
-│   │   │     emit_mtconnect('system_cond', 'FAULT', 'System', true)     │        │               │
-│   │   │   else                                                         │        │               │
-│   │   │     emit_mtconnect('system_cond', 'NORMAL', 'System', true)    │        │               │
-│   │   │   end                                                          │        │               │
+│   │   │   if result > 0 then                                            │        │               │
+│   │   │     emit_mtconnect('system_cond', 'FAULT', 'System', true)      │        │               │
+│   │   │   else                                                          │        │               │
+│   │   │     emit_mtconnect('system_cond', 'NORMAL', 'System', true)     │        │               │
+│   │   │   end                                                           │        │               │
 │   │   │                                                                 │        │               │
 │   │   └─────────────────────────────────────────────────────────────────┘        │               │
 │   │                                                                              │               │
@@ -275,7 +252,6 @@
 │   │   device with proper semantic data item names and types.                     │               │
 │   │                                                                              │               │
 │   └──────────────────────────────────────────────────────────────────────────────┘               │
-│                                                                                                  │
 │                                                                                                  │
 └──────────────────────────────────────────────────────────────────────────────────────────────────┘
 ```

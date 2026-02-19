@@ -1,7 +1,7 @@
 ```
 ┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
 │                                                                                                  │
-│          ██████┐  ██┐ ███┐   ███┐ ███████┐        29 — Performance Tuning                       │
+│          ██████┐  ██┐ ███┐   ███┐ ███████┐        29 — Performance Tuning                        │
 │          ██┌──██┐ ██│ ████┐ ████│ ██┌────┘                                                       │
 │          ██│  ██│ ██│ ██┌████┌██│ █████┐          Optimize for throughput, latency,              │
 │          ██│  ██│ ██│ ██│└██┌┘██│ ██┌──┘          or resource constraints.                       │
@@ -10,12 +10,10 @@
 │                                                                                                  │
 │  ──────────────────────────────────────────────────────────────────────────────────────────────  │
 │                                                                                                  │
-│                                                                                                  │
 │   RING BUFFER SIZING                                                                             │
 │   ──────────────────                                                                             │
 │                                                                                                  │
 │   The ring buffer is the heart of DIME. Size it correctly for your workload.                     │
-│                                                                                                  │
 │                                                                                                  │
 │   ┌────────────────────────────────────────────────────────────────────────────────────────┐     │
 │   │                                                                                        │     │
@@ -24,7 +22,7 @@
 │   │                                                                                        │     │
 │   │                                                                                        │     │
 │   │   VALID SIZES                    WHY POWER OF 2?                                       │     │
-│   │   ───────────                    ────────────────                                       │     │
+│   │   ───────────                    ────────────────                                      │     │
 │   │   1024  — low-memory edge        The Disruptor pattern uses                            │     │
 │   │   2048  — constrained ARM        bitwise AND for index wrapping:                       │     │
 │   │   4096  — default (recommended)    index = sequence & (size - 1)                       │     │
@@ -44,15 +42,12 @@
 │   │                                                                                        │     │
 │   └────────────────────────────────────────────────────────────────────────────────────────┘     │
 │                                                                                                  │
-│                                                                                                  │
 │  ──────────────────────────────────────────────────────────────────────────────────────────────  │
-│                                                                                                  │
 │                                                                                                  │
 │   SCAN INTERVAL TUNING                                                                           │
 │   ────────────────────                                                                           │
 │                                                                                                  │
 │   scan_interval controls how often a source reads from its device. Choose wisely.                │
-│                                                                                                  │
 │                                                                                                  │
 │   ┌────────────────────────────────────────────────────────────────────────────────────────┐     │
 │   │                                                                                        │     │
@@ -76,26 +71,23 @@
 │   │     - name: slow_humidity                                                              │     │
 │   │       execute_every: !!int 30     ── Every 30th cycle = once per 30s                   │     │
 │   │                                                                                        │     │
-│   │   One source, two items, two different effective rates.                                 │     │
+│   │   One source, two items, two different effective rates.                                │     │
 │   │                                                                                        │     │
 │   └────────────────────────────────────────────────────────────────────────────────────────┘     │
 │                                                                                                  │
-│                                                                                                  │
 │  ──────────────────────────────────────────────────────────────────────────────────────────────  │
-│                                                                                                  │
 │                                                                                                  │
 │   RBE IMPACT ON RING BUFFER PRESSURE                                                             │
 │   ──────────────────────────────────                                                             │
 │                                                                                                  │
 │   Report By Exception dramatically reduces messages flowing through the ring buffer.             │
 │                                                                                                  │
-│                                                                                                  │
 │   ┌────────────────────────────────────────────────────────────────────────────────────────┐     │
 │   │                                                                                        │     │
 │   │   100 items, 1-second scan, typical industrial data:                                   │     │
 │   │                                                                                        │     │
-│   │   WITHOUT RBE   ████████████████████████████████████████████  6,000 msg/min             │     │
-│   │   WITH RBE      ███                                             300 msg/min             │     │
+│   │   WITHOUT RBE   ████████████████████████████████████████████  6,000 msg/min            │     │
+│   │   WITH RBE      ███                                             300 msg/min            │     │
 │   │                                                                                        │     │
 │   │   95% reduction = ring buffer stays nearly empty = no backpressure risk.               │     │
 │   │                                                                                        │     │
@@ -104,33 +96,30 @@
 │   │                                                                                        │     │
 │   └────────────────────────────────────────────────────────────────────────────────────────┘     │
 │                                                                                                  │
-│                                                                                                  │
 │  ──────────────────────────────────────────────────────────────────────────────────────────────  │
-│                                                                                                  │
 │                                                                                                  │
 │   DOUBLE-BUFFER PATTERN                                                                          │
 │   ─────────────────────                                                                          │
 │                                                                                                  │
 │   Sinks use a double-buffer to decouple ring buffer speed from write speed.                      │
 │                                                                                                  │
-│                                                                                                  │
 │   ┌────────────────────────────────────────────────────────────────────────────────────────┐     │
 │   │                                                                                        │     │
-│   │                          RING BUFFER (producer side)                                    │     │
+│   │                          RING BUFFER (producer side)                                   │     │
 │   │                                  │                                                     │     │
 │   │                           SinkDispatcher                                               │     │
 │   │                           pushes messages                                              │     │
 │   │                                  │                                                     │     │
 │   │                                  ▼                                                     │     │
 │   │                      ┌─────────────────────┐                                           │     │
-│   │                      │  RECEIVE BUFFER  [A] │◄── Messages accumulate here              │     │
+│   │                      │  RECEIVE BUFFER  [A]│◄── Messages accumulate here               │     │
 │   │                      └──────────┬──────────┘                                           │     │
 │   │                                 │                                                      │     │
 │   │                          ATOMIC SWAP                                                   │     │
 │   │                      (on sink timer tick)                                              │     │
 │   │                                 │                                                      │     │
 │   │                      ┌──────────┴──────────┐                                           │     │
-│   │                      │  WRITE BUFFER    [B] │──── Sink writes from here                │     │
+│   │                      │  WRITE BUFFER    [B]│──── Sink writes from here                 │     │
 │   │                      └─────────────────────┘                                           │     │
 │   │                                 │                                                      │     │
 │   │                                 ▼                                                      │     │
@@ -142,31 +131,28 @@
 │   │     - Ring buffer is never blocked by slow sinks                                       │     │
 │   │     - Receive buffer fills while write buffer drains                                   │     │
 │   │     - Atomic swap is O(1) — just pointer exchange                                      │     │
-│   │     - Each sink has its own buffer pair — full isolation                                │     │
+│   │     - Each sink has its own buffer pair — full isolation                               │     │
 │   │                                                                                        │     │
 │   └────────────────────────────────────────────────────────────────────────────────────────┘     │
 │                                                                                                  │
-│                                                                                                  │
 │  ──────────────────────────────────────────────────────────────────────────────────────────────  │
-│                                                                                                  │
 │                                                                                                  │
 │   BACKPRESSURE                                                                                   │
 │   ────────────                                                                                   │
 │                                                                                                  │
 │   When a slow sink cannot keep up, the receive buffer grows.                                     │
 │                                                                                                  │
-│                                                                                                  │
 │   ┌────────────────────────────────────────────────────────────────────────────────────────┐     │
 │   │                                                                                        │     │
 │   │   Normal operation:                                                                    │     │
 │   │                                                                                        │     │
 │   │   Sources ───▶ Ring Buffer ───▶ Sink Receive Buffer ───▶ Sink Write ───▶ Destination   │     │
-│   │                                  [small, drains fast]                                   │     │
+│   │                                  [small, drains fast]                                  │     │
 │   │                                                                                        │     │
 │   │   Backpressure (slow sink):                                                            │     │
 │   │                                                                                        │     │
 │   │   Sources ───▶ Ring Buffer ───▶ Sink Receive Buffer ──X──▶ Slow Sink ···▶ Destination  │     │
-│   │                                  [growing!]              write takes too long           │     │
+│   │                                  [growing!]              write takes too long          │     │
 │   │                                                                                        │     │
 │   │   Symptoms:                                                                            │     │
 │   │     - Memory usage grows steadily                                                      │     │
@@ -182,28 +168,25 @@
 │   │                                                                                        │     │
 │   └────────────────────────────────────────────────────────────────────────────────────────┘     │
 │                                                                                                  │
-│                                                                                                  │
 │  ──────────────────────────────────────────────────────────────────────────────────────────────  │
-│                                                                                                  │
 │                                                                                                  │
 │   FINDING BOTTLENECKS WITH $SYSTEM METRICS                                                       │
 │   ────────────────────────────────────────                                                       │
 │                                                                                                  │
 │   Every source publishes timing data automatically. Use it to find what is slow.                 │
 │                                                                                                  │
-│                                                                                                  │
 │   ┌────────────────────────────────────────────────────────────────────────────────────────┐     │
 │   │                                                                                        │     │
-│   │   GET http://localhost:9999/status                                                      │     │
+│   │   GET http://localhost:9999/status                                                     │     │
 │   │                                                                                        │     │
 │   │   Key metrics per source connector:                                                    │     │
 │   │                                                                                        │     │
 │   │   ┌──────────── One Scan Cycle ──────────────────────────────────────────┐             │     │
 │   │   │                                                                      │             │     │
-│   │   │  ┌───────────┐  ┌────────────┐  ┌──────────┐  ┌───────────────┐     │             │     │
-│   │   │  │ ReadTime   │  │ ScriptTime │  │  RBE     │  │ Publish to   │     │             │     │
-│   │   │  │ (device)   │  │ (Lua/Py)   │  │  check   │  │ ring buffer  │     │             │     │
-│   │   │  └───────────┘  └────────────┘  └──────────┘  └───────────────┘     │             │     │
+│   │   │  ┌───────────┐  ┌────────────┐  ┌──────────┐  ┌───────────────┐     │             │      │
+│   │   │  │ ReadTime  │  │ ScriptTime │  │  RBE     │  │ Publish to    │     │             │      │
+│   │   │  │ (device)  │  │ (Lua/Py)   │  │  check   │  │ ring buffer   │     │             │      │
+│   │   │  └───────────┘  └────────────┘  └──────────┘  └───────────────┘     │             │      │
 │   │   │                                                                      │             │     │
 │   │   │  ◄─────────────── TotalLoopTime ───────────────────────────────────▶ │             │     │
 │   │   │                                                                      │             │     │
@@ -213,24 +196,22 @@
 │   │   WHAT TO LOOK FOR                                                                     │     │
 │   │   ────────────────                                                                     │     │
 │   │                                                                                        │     │
-│   │   TotalLoopTime > scan_interval  ── Source cannot keep up! Reduce items or increase   │     │
+│   │   TotalLoopTime > scan_interval  ── Source cannot keep up! Reduce items or increase    │     │
 │   │                                      scan_interval.                                    │     │
 │   │                                                                                        │     │
-│   │   MaxReadTime >> MinReadTime     ── Device has intermittent latency. Check network    │     │
+│   │   MaxReadTime >> MinReadTime     ── Device has intermittent latency. Check network     │     │
 │   │                                      or device load.                                   │     │
 │   │                                                                                        │     │
-│   │   ScriptTime is high             ── Lua/Python script is too complex. Optimize or     │     │
+│   │   ScriptTime is high             ── Lua/Python script is too complex. Optimize or      │     │
 │   │                                      move heavy logic to a downstream service.         │     │
 │   │                                                                                        │     │
-│   │   MessagesAttempted >> Accepted  ── RBE is working well. Most values unchanged.       │     │
+│   │   MessagesAttempted >> Accepted  ── RBE is working well. Most values unchanged.        │     │
 │   │                                                                                        │     │
-│   │   MessagesAttempted == Accepted  ── RBE not effective. Data is volatile or RBE is off.│     │
+│   │   MessagesAttempted == Accepted  ── RBE not effective. Data volatile or RBE is off.    │     │
 │   │                                                                                        │     │
 │   └────────────────────────────────────────────────────────────────────────────────────────┘     │
 │                                                                                                  │
-│                                                                                                  │
 │  ──────────────────────────────────────────────────────────────────────────────────────────────  │
-│                                                                                                  │
 │                                                                                                  │
 │   LUA OPTIMIZATION TIPS                                                                          │
 │   ─────────────────────                                                                          │
@@ -239,13 +220,12 @@
 │                                                                                                  │
 │     1. Avoid heavy computation  ──  Move complex math to a downstream service                    │
 │     2. Cache globals locally    ──  local floor = math.floor (avoids table lookups)              │
-│     3. Minimize string concat   ──  Use table.concat() for building strings                     │
-│     4. No file I/O in scripts   ──  Disk reads block the scan loop                              │
-│     5. No HTTP calls in scripts ──  Network latency kills scan timing                           │
-│     6. Prefer emit() over return──  emit() gives you path control                               │
+│     3. Minimize string concat   ──  Use table.concat() for building strings                      │
+│     4. No file I/O in scripts   ──  Disk reads block the scan loop                               │
+│     5. No HTTP calls in scripts ──  Network latency kills scan timing                            │
+│     6. Prefer emit() over return──  emit() gives you path control                                │
 │                                                                                                  │
-│   Target: ScriptTime < 1ms for most transforms.                                                 │
-│                                                                                                  │
+│   Target: ScriptTime < 1ms for most transforms.                                                  │
 │                                                                                                  │
 └──────────────────────────────────────────────────────────────────────────────────────────────────┘
 ```

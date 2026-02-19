@@ -9,7 +9,7 @@ DIME_PAGES['23'] = {
   hotspots: [
     {
       id: 'windows-svc',
-      startLine: 34, startCol: 3, endLine: 67, endCol: 90,
+      startLine: 30, startCol: 3, endLine: 62, endCol: 90,
       label: 'Windows Service',
       panel: {
         title: 'Windows Service \u2014 Install, Control, Named Instances',
@@ -38,7 +38,7 @@ DIME_PAGES['23'] = {
     },
     {
       id: 'linux-systemd',
-      startLine: 75, startCol: 3, endLine: 115, endCol: 90,
+      startLine: 68, startCol: 3, endLine: 106, endCol: 90,
       label: 'Linux systemd Service',
       panel: {
         title: 'Linux systemd \u2014 Install Script, systemctl, Logs',
@@ -72,7 +72,7 @@ DIME_PAGES['23'] = {
     },
     {
       id: 'multi-instance',
-      startLine: 122, startCol: 3, endLine: 157, endCol: 90,
+      startLine: 112, startCol: 3, endLine: 144, endCol: 90,
       label: 'Multiple Instances',
       panel: {
         title: 'Multiple Instances on One Machine',
@@ -94,7 +94,7 @@ DIME_PAGES['23'] = {
     },
     {
       id: 'directories',
-      startLine: 163, startCol: 3, endLine: 185, endCol: 90,
+      startLine: 150, startCol: 3, endLine: 169, endCol: 90,
       label: 'Directory Layout',
       panel: {
         title: 'Directory Layout \u2014 Windows & Linux',
@@ -116,7 +116,7 @@ DIME_PAGES['23'] = {
     },
     {
       id: 'log-management',
-      startLine: 193, startCol: 3, endLine: 220, endCol: 90,
+      startLine: 177, startCol: 3, endLine: 203, endCol: 90,
       label: 'Log Rotation & Management',
       panel: {
         title: 'Logging \u2014 NLog Configuration',

@@ -1,7 +1,7 @@
 ```
 ┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
 │                                                                                                  │
-│          ██████┐  ██┐ ███┐   ███┐ ███████┐        13 — MQTT Integration                         │
+│          ██████┐  ██┐ ███┐   ███┐ ███████┐        13 — MQTT Integration                          │
 │          ██┌──██┐ ██│ ████┐ ████│ ██┌────┘                                                       │
 │          ██│  ██│ ██│ ██┌████┌██│ █████┐          Subscribe, transform, republish.               │
 │          ██│  ██│ ██│ ██│└██┌┘██│ ██┌──┘          The most common pattern.                       │
@@ -26,12 +26,12 @@
 │   │       username: user                         # broker credentials                      │     │
 │   │       password: pass                                                                   │     │
 │   │       base_topic: factory/sensors            # subscribe to factory/sensors/#          │     │
-│   │       qos: !!int 1                           # 0=at most once, 1=at least once        │     │
+│   │       qos: !!int 1                           # 0=at most once, 1=at least once         │     │
 │   │       clean_session: !!bool true             # no persistent session state             │     │
 │   │                                                                                        │     │
 │   └────────────────────────────────────────────────────────────────────────────────────────┘     │
 │                                                                                                  │
-│   DIME subscribes to base_topic/# (wildcard).  Each sub-topic becomes an item path.             │
+│   DIME subscribes to base_topic/# (wildcard).  Each sub-topic becomes an item path.              │
 │   Message: factory/sensors/line1/temp  →  Ring buffer path: sensors/line1/temp                   │
 │                                                                                                  │
 │   MQTT CONFIG FIELDS                                                                             │
@@ -64,9 +64,9 @@
 │   │                                                                                        │     │
 │   │   ┌─────────────────────────────────────────────────────────────────────────────┐      │     │
 │   │   │                                                                             │      │     │
-│   │   │  tls: false  +  port 1883   =  Plain TCP           (dev / internal)        │      │     │
-│   │   │  tls: true   +  port 8883   =  TLS encrypted       (production)            │      │     │
-│   │   │  tls: true   +  tls_insecure  =  TLS, skip verify  (self-signed certs)     │      │     │
+│   │   │  tls: false  +  port 1883   =  Plain TCP           (dev / internal)         │      │     │
+│   │   │  tls: true   +  port 8883   =  TLS encrypted       (production)             │      │     │
+│   │   │  tls: true   +  tls_insecure  =  TLS, skip verify  (self-signed certs)      │      │     │
 │   │   │                                                                             │      │     │
 │   │   └─────────────────────────────────────────────────────────────────────────────┘      │     │
 │   │                                                                                        │     │
@@ -97,7 +97,7 @@
 │   │                                                                                        │     │
 │   └────────────────────────────────────────────────────────────────────────────────────────┘     │
 │                                                                                                  │
-│   Ring buffer path sensors/line1/temp  →  Published to normalized/data/line1/temp               │
+│   Ring buffer path sensors/line1/temp  →  Published to normalized/data/line1/temp                │
 │   The retain flag means new subscribers immediately get the last known value.                    │
 │                                                                                                  │
 │  ──────────────────────────────────────────────────────────────────────────────────────────────  │
@@ -138,13 +138,13 @@
 │   │                                                                                        │     │
 │   │   clean_session: !!bool true                                                           │     │
 │   │   ┌────────────────────────────────────────────────────────────────────────────┐       │     │
-│   │   │  true  = Start fresh on every connect. No queued messages. No state.      │       │     │
+│   │   │  true  = Start fresh on every connect. No queued messages. No state.       │       │     │
 │   │   │  false = Broker remembers subscriptions and queues messages while offline. │       │     │
 │   │   └────────────────────────────────────────────────────────────────────────────┘       │     │
 │   │                                                                                        │     │
 │   │   retain: !!bool true  (sink only)                                                     │     │
 │   │   ┌────────────────────────────────────────────────────────────────────────────┐       │     │
-│   │   │  true  = Broker stores the LAST message per topic. New subs get it.       │       │     │
+│   │   │  true  = Broker stores the LAST message per topic. New subs get it.        │       │     │
 │   │   │  false = Messages are transient. Only delivered to active subscribers.     │       │     │
 │   │   └────────────────────────────────────────────────────────────────────────────┘       │     │
 │   │                                                                                        │     │
@@ -162,15 +162,15 @@
 │   ┌──────────┐    ┌─────────────┐    ┌────────────────────────────┐    ┌─────────────────┐       │
 │   │          │    │             │    │         D I M E            │    │                 │       │
 │   │ Devices  │    │   Local     │    │                            │    │   Cloud         │       │
-│   │          │    │   Broker    │    │  ┌────────┐  ┌─────────┐  │    │   Broker        │       │
-│   │ Sensor ──┼───▶│             │    │  │ Source │  │  Sink   │  │    │                 │       │
-│   │          │    │  mqtt.local │───▶│  │ (MQTT) │─▶│ (MQTT)  │──┼───▶│  mqtt.cloud.com │       │
-│   │ Sensor ──┼───▶│  :1883     │    │  └────────┘  └─────────┘  │    │  :8883 (TLS)    │       │
+│   │          │    │   Broker    │    │  ┌────────┐  ┌─────────┐  │    │   Broker        │        │
+│   │ Sensor ──┼───▶│             │    │  │ Source │  │  Sink   │  │    │                 │        │
+│   │          │    │  mqtt.local │───▶│  │ (MQTT) │─▶│ (MQTT)  │──┼───▶│  mqtt.cloud.com │        │
+│   │ Sensor ──┼───▶│  :1883      │    │  └────────┘  └─────────┘  │    │  :8883 (TLS)    │        │
 │   │          │    │             │    │       │                    │    │                 │       │
-│   │ Sensor ──┼───▶│             │    │  ┌────┴────────────────┐  │    │                 │       │
-│   │          │    │             │    │  │    Ring Buffer      │  │    │                 │       │
-│   │          │    │             │    │  │    Transform/Filter │  │    │                 │       │
-│   │          │    │             │    │  └─────────────────────┘  │    │                 │       │
+│   │ Sensor ──┼───▶│             │    │  ┌────┴────────────────┐  │    │                 │        │
+│   │          │    │             │    │  │    Ring Buffer      │  │    │                 │        │
+│   │          │    │             │    │  │    Transform/Filter │  │    │                 │        │
+│   │          │    │             │    │  └─────────────────────┘  │    │                 │        │
 │   │          │    │             │    │                            │    │                 │       │
 │   └──────────┘    └─────────────┘    └────────────────────────────┘    └─────────────────┘       │
 │                                                                                                  │

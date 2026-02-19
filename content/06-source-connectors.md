@@ -1,7 +1,7 @@
 ```
 ┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
 │                                                                                                  │
-│          ██████┐  ██┐ ███┐   ███┐ ███████┐        06 — Source Connectors                        │
+│          ██████┐  ██┐ ███┐   ███┐ ███████┐        06 — Source Connectors                         │
 │          ██┌──██┐ ██│ ████┐ ████│ ██┌────┘                                                       │
 │          ██│  ██│ ██│ ██┌████┌██│ █████┐          50+ ways to read data.                         │
 │          ██│  ██│ ██│ ██│└██┌┘██│ ██┌──┘          Every protocol, one YAML config.               │
@@ -29,11 +29,11 @@
 │                                                                                                  │
 │   ┌──────────────────────┐                                                                       │
 │   │                      │                                                                       │
-│   │  Modbus TCP          │     All industrial connectors are PollingSourceConnector.              │
+│   │  Modbus TCP          │     All industrial connectors are PollingSourceConnector.             │
 │   │                      │     Timer-driven. scan_interval sets the read frequency.              │
 │   │  address: host       │     Each item has an address native to the protocol.                  │
 │   │  port: 502           │                                                                       │
-│   │  unit_id: 1          │     Supports RBE (Report By Exception) per connector or item.        │
+│   │  unit_id: 1          │     Supports RBE (Report By Exception) per connector or item.         │
 │   │  Items: register     │                                                                       │
 │   │  address + type      │                                                                       │
 │   │                      │                                                                       │
@@ -75,20 +75,20 @@
 │   │  address: broker     │  │  Industrial MQTT.    │  │  address: broker     │                   │
 │   │  port: 1883          │  │  Birth/death certs.  │  │  port: 61616         │                   │
 │   │  base_topic: #       │  │  Metric payloads.    │  │  topic: queue.name   │                   │
-│   │  qos: 0 | 1 | 2     │  │                      │  │                      │                   │
-│   │  tls: true/false     │  │  address: broker     │  │  JMS protocol.      │                   │
-│   │  client_id: dime     │  │  group_id: plant1    │  │  Durable subs.      │                   │
+│   │  qos: 0 | 1 | 2      │  │                      │  │                      │                   │
+│   │  tls: true/false     │  │  address: broker     │  │  JMS protocol.       │                   │
+│   │  client_id: dime     │  │  group_id: plant1    │  │  Durable subs.       │                   │
 │   │  username / password │  │  edge_node: line1    │  │                      │                   │
 │   │                      │  │                      │  │                      │                   │
 │   └──────────────────────┘  └──────────────────────┘  └──────────────────────┘                   │
 │                                                                                                  │
 │   ┌──────────────────────┐                                                                       │
-│   │                      │     All messaging connectors are QueuingSourceConnector.               │
+│   │                      │     All messaging connectors are QueuingSourceConnector.              │
 │   │  Redis Pub/Sub       │     Messages arrive asynchronously, are queued in an inbox,           │
 │   │                      │     and drained to the ring buffer on timer.                          │
 │   │  address: host       │                                                                       │
-│   │  port: 6379          │     MQTT is the most common source in IoT and IIoT.                  │
-│   │  channels: ch1,ch2   │     SparkplugB adds industrial semantics on top of MQTT.             │
+│   │  port: 6379          │     MQTT is the most common source in IoT and IIoT.                   │
+│   │  channels: ch1,ch2   │     SparkplugB adds industrial semantics on top of MQTT.              │
 │   │                      │                                                                       │
 │   └──────────────────────┘                                                                       │
 │                                                                                                  │
@@ -99,12 +99,12 @@
 │                                                                                                  │
 │   ┌──────────────────────────────────────────────────────────────────────────────────────────┐   │
 │   │                                                                                          │   │
-│   │   SQL Server Source                         PostgreSQL Source                             │   │
+│   │   SQL Server Source                         PostgreSQL Source                            │   │
 │   │   ─────────────────                         ────────────────                             │   │
 │   │                                                                                          │   │
 │   │   connection_string: Server=...;Database=... connection_string: Host=...;Database=...    │   │
 │   │   query: SELECT col1, col2 FROM table        query: SELECT col1, col2 FROM table         │   │
-│   │          WHERE timestamp > @last_read               WHERE timestamp > $1                  │   │
+│   │          WHERE timestamp > @last_read               WHERE timestamp > $1                 │   │
 │   │                                                                                          │   │
 │   │   BatchPollingSourceConnector: timer fires, execute query, iterate result set,           │   │
 │   │   publish each row as a message. Use parameterized queries for incremental reads.        │   │
@@ -127,8 +127,8 @@
 │   └───────────────────┘ └───────────────────┘ └───────────────────┘ └───────────────────┘        │
 │                                                                                                  │
 │   ┌───────────────────┐ ┌───────────────────┐                                                    │
-│   │  UDP Server       │ │  SNMP             │     Web/API connectors are PollingSourceConnector   │
-│   │                   │ │                   │     except UDP Server (QueuingSourceConnector).     │
+│   │  UDP Server       │ │  SNMP             │     Web/API connectors are PollingSourceConnector  │
+│   │                   │ │                   │     except UDP Server (QueuingSourceConnector).    │
 │   │  Listens on a UDP │ │  SNMP GET on OIDs │                                                    │
 │   │  port. Receives   │ │  from network     │     JSON/XML Scrapers are useful for pulling       │
 │   │  datagrams as     │ │  devices. v1/v2c  │     data from web APIs and converting it into      │
@@ -173,8 +173,8 @@
 │                                                                                                  │
 │   Four base classes. Pick the one that matches how your device delivers data.                    │
 │                                                                                                  │
-│           ┌───────────────────────────────────────────────────────────────┐                       │
-│           │              SourceConnector (abstract)                       │                       │
+│           ┌───────────────────────────────────────────────────────────────┐                      │
+│           │              SourceConnector (abstract)                       │                      │
 │           └─────────┬────────────────┬───────────────┬───────────────────┘                       │
 │                     │                │               │                                           │
 │           ┌─────────▼──────┐ ┌───────▼────────┐ ┌───▼───────────────┐                            │
@@ -182,9 +182,9 @@
 │           │   Polling      │ │   Queuing      │ │  BatchPolling     │                            │
 │           │                │ │                │ │                   │                            │
 │           │  Timer fires   │ │  Msgs arrive   │ │  Timer fires      │                            │
-│           │  → read all    │ │  → queue inbox  │ │  → run query      │                            │
-│           │  → publish     │ │  → drain timer  │ │  → iterate rows   │                            │
-│           │                │ │  → publish      │ │  → publish each   │                            │
+│           │  → read all    │ │  → queue inbox │ │  → run query      │                            │
+│           │  → publish     │ │  → drain timer │ │  → iterate rows   │                            │
+│           │                │ │  → publish     │ │  → publish each   │                            │
 │           │  OPC-UA        │ │                │ │                   │                            │
 │           │  Modbus        │ │  MQTT          │ │  SQL Server       │                            │
 │           │  S7            │ │  SparkplugB    │ │  PostgreSQL       │                            │
@@ -196,7 +196,7 @@
 │           │                │ │                │ │  └───────────────┘│                            │
 │           └────────────────┘ └────────────────┘ └───────────────────┘                            │
 │                                                                                                  │
-│   Polling is the most common: timer → read → publish. Queuing is for push protocols.            │
+│   Polling is the most common: timer → read → publish. Queuing is for push protocols.             │
 │   BatchPolling is for SQL queries that return result sets.                                       │
 │                                                                                                  │
 │  ──────────────────────────────────────────────────────────────────────────────────────────────  │
@@ -227,8 +227,8 @@
 │   │                                                                                          │   │
 │   └──────────────────────────────────────────────────────────────────────────────────────────┘   │
 │                                                                                                  │
-│   The name becomes the first segment of the message path: "my_source/Temperature".              │
-│   Sinks filter on this path. Dashboards subscribe to it. It's how all routing works.            │
+│   The name becomes the first segment of the message path: "my_source/Temperature".               │
+│   Sinks filter on this path. Dashboards subscribe to it. It's how all routing works.             │
 │                                                                                                  │
 └──────────────────────────────────────────────────────────────────────────────────────────────────┘
 ```

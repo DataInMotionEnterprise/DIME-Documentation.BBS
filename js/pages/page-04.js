@@ -9,7 +9,7 @@ DIME_PAGES['04'] = {
   hotspots: [
     {
       id: 'app-section',
-      startLine: 18, startCol: 3, endLine: 29, endCol: 31,
+      startLine: 16, startCol: 3, endLine: 27, endCol: 31,
       label: 'App Configuration Block',
       panel: {
         title: 'The app Section \u2014 Global Settings',
@@ -36,7 +36,7 @@ DIME_PAGES['04'] = {
     },
     {
       id: 'source-anatomy',
-      startLine: 45, startCol: 3, endLine: 59, endCol: 89,
+      startLine: 40, startCol: 3, endLine: 54, endCol: 89,
       label: 'Source Configuration Structure',
       panel: {
         title: 'Source Connector Anatomy',
@@ -70,7 +70,7 @@ DIME_PAGES['04'] = {
     },
     {
       id: 'sink-anatomy',
-      startLine: 71, startCol: 3, endLine: 84, endCol: 89,
+      startLine: 63, startCol: 3, endLine: 76, endCol: 89,
       label: 'Sink Configuration Structure',
       panel: {
         title: 'Sink Connector Anatomy',
@@ -101,7 +101,7 @@ DIME_PAGES['04'] = {
     },
     {
       id: 'item-anatomy',
-      startLine: 96, startCol: 3, endLine: 117, endCol: 89,
+      startLine: 85, startCol: 3, endLine: 106, endCol: 89,
       label: 'Item Configuration & Type Tags',
       panel: {
         title: 'Item Anatomy & YAML Type Tags',
@@ -137,7 +137,7 @@ DIME_PAGES['04'] = {
     },
     {
       id: 'file-loading',
-      startLine: 129, startCol: 3, endLine: 147, endCol: 89,
+      startLine: 114, startCol: 3, endLine: 132, endCol: 89,
       label: 'Multi-File Configuration',
       panel: {
         title: 'File Loading & Merge Order',
@@ -178,7 +178,7 @@ DIME_PAGES['04'] = {
     },
     {
       id: 'minimal-example',
-      startLine: 159, startCol: 3, endLine: 177, endCol: 89,
+      startLine: 141, startCol: 3, endLine: 159, endCol: 89,
       label: 'Minimal Working Config',
       panel: {
         title: 'Minimal Working Example \u2014 Script \u2192 Console',

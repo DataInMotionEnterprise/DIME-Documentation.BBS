@@ -9,7 +9,7 @@ DIME_PAGES['18'] = {
   hotspots: [
     {
       id: 'states',
-      startLine: 12, startCol: 3, endLine: 55, endCol: 92,
+      startLine: 11, startCol: 3, endLine: 54, endCol: 92,
       label: 'Connector State Machine',
       panel: {
         title: 'Connector State Machine',
@@ -34,7 +34,7 @@ DIME_PAGES['18'] = {
     },
     {
       id: 'system-msgs',
-      startLine: 61, startCol: 3, endLine: 84, endCol: 92,
+      startLine: 57, startCol: 3, endLine: 80, endCol: 92,
       label: '$SYSTEM Messages',
       panel: {
         title: '$SYSTEM Messages \u2014 Automatic Health Telemetry',
@@ -59,7 +59,7 @@ DIME_PAGES['18'] = {
     },
     {
       id: 'metrics',
-      startLine: 92, startCol: 3, endLine: 126, endCol: 92,
+      startLine: 84, startCol: 3, endLine: 118, endCol: 92,
       label: 'Performance Metrics',
       panel: {
         title: 'Performance Metrics Per Connector',
@@ -88,7 +88,7 @@ DIME_PAGES['18'] = {
     },
     {
       id: 'auto-recovery',
-      startLine: 132, startCol: 3, endLine: 162, endCol: 92,
+      startLine: 120, startCol: 3, endLine: 150, endCol: 92,
       label: 'Auto-Recovery',
       panel: {
         title: 'Auto-Recovery \u2014 Built-In Fault Tolerance',
@@ -116,7 +116,7 @@ DIME_PAGES['18'] = {
     },
     {
       id: 'alerting',
-      startLine: 168, startCol: 3, endLine: 202, endCol: 92,
+      startLine: 151, startCol: 3, endLine: 185, endCol: 92,
       label: 'Monitoring & Alerting',
       panel: {
         title: 'Monitoring & Alerting \u2014 Route $SYSTEM to Analytics',

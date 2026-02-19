@@ -9,7 +9,7 @@ DIME_PAGES['03'] = {
   hotspots: [
     {
       id: 'platforms',
-      startLine: 18, startCol: 3, endLine: 30, endCol: 82,
+      startLine: 16, startCol: 3, endLine: 28, endCol: 82,
       label: 'Supported Platforms',
       panel: {
         title: 'Platform Matrix',
@@ -30,7 +30,7 @@ DIME_PAGES['03'] = {
     },
     {
       id: 'windows',
-      startLine: 39, startCol: 5, endLine: 99, endCol: 82,
+      startLine: 34, startCol: 5, endLine: 92, endCol: 82,
       label: 'Windows Installation',
       panel: {
         title: 'Windows Installation',
@@ -55,7 +55,7 @@ DIME_PAGES['03'] = {
     },
     {
       id: 'linux',
-      startLine: 107, startCol: 5, endLine: 151, endCol: 82,
+      startLine: 97, startCol: 5, endLine: 140, endCol: 82,
       label: 'Linux Installation',
       panel: {
         title: 'Linux Installation',
@@ -80,7 +80,7 @@ DIME_PAGES['03'] = {
     },
     {
       id: 'docker',
-      startLine: 160, startCol: 5, endLine: 188, endCol: 82,
+      startLine: 146, startCol: 5, endLine: 174, endCol: 82,
       label: 'Docker Deployment',
       panel: {
         title: 'Docker Deployment',
@@ -106,7 +106,7 @@ DIME_PAGES['03'] = {
     },
     {
       id: 'startup',
-      startLine: 199, startCol: 3, endLine: 266, endCol: 87,
+      startLine: 182, startCol: 3, endLine: 249, endCol: 87,
       label: 'Startup Sequence',
       panel: {
         title: 'What Happens at Startup',
@@ -128,7 +128,7 @@ DIME_PAGES['03'] = {
     },
     {
       id: 'directories',
-      startLine: 277, startCol: 5, endLine: 296, endCol: 62,
+      startLine: 257, startCol: 5, endLine: 276, endCol: 62,
       label: 'Directory Layout',
       panel: {
         title: 'Directory Layout',
@@ -149,7 +149,7 @@ DIME_PAGES['03'] = {
     },
     {
       id: 'verify',
-      startLine: 306, startCol: 3, endLine: 337, endCol: 82,
+      startLine: 283, startCol: 3, endLine: 314, endCol: 82,
       label: 'Verification Methods',
       panel: {
         title: 'Verify It Works',
@@ -171,7 +171,7 @@ DIME_PAGES['03'] = {
     },
     {
       id: 'ports',
-      startLine: 346, startCol: 3, endLine: 357, endCol: 82,
+      startLine: 320, startCol: 3, endLine: 331, endCol: 82,
       label: 'Default Ports',
       panel: {
         title: 'Default Port Reference',
@@ -196,7 +196,7 @@ DIME_PAGES['03'] = {
     },
     {
       id: 'quick-start',
-      startLine: 367, startCol: 7, endLine: 378, endCol: 82,
+      startLine: 338, startCol: 7, endLine: 349, endCol: 82,
       label: 'Quick Start Guide',
       panel: {
         title: 'Zero to Running in 60 Seconds',

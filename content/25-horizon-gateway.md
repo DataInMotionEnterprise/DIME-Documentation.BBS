@@ -1,32 +1,28 @@
 ```
 ┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
 │                                                                                                  │
-│          ██████┐  ██┐ ███┐   ███┐ ███████┐        25 — Horizon Gateway                         │
+│          ██████┐  ██┐ ███┐   ███┐ ███████┐        25 — Horizon Gateway                           │
 │          ██┌──██┐ ██│ ████┐ ████│ ██┌────┘                                                       │
 │          ██│  ██│ ██│ ██┌████┌██│ █████┐          Site manager. Bridges edge to cloud.           │
-│          ██│  ██│ ██│ ██│└██┌┘██│ ██┌──┘          No inbound firewall.                          │
+│          ██│  ██│ ██│ ██│└██┌┘██│ ██┌──┘          No inbound firewall.                           │
 │          ██████┌┘ ██│ ██│ └─┘ ██│ ███████┐                                                       │
 │          └─────┘  └─┘ └─┘     └─┘ └──────┘                                                       │
 │                                                                                                  │
 │  ──────────────────────────────────────────────────────────────────────────────────────────────  │
 │                                                                                                  │
-│                                                                                                  │
 │   WHAT IS HORIZON?                                                                               │
 │   ────────────────                                                                               │
 │                                                                                                  │
-│   Horizon is the site-level gateway that manages all DIME Connectors at a physical location.    │
-│   It bridges the factory floor (edge) to the cloud (Zenith) without requiring any inbound       │
-│   firewall rules. One Horizon per site. Dozens of Connectors per Horizon.                       │
-│                                                                                                  │
+│   Horizon is the site-level gateway that manages all DIME Connectors at a physical location.     │
+│   It bridges the factory floor (edge) to the cloud (Zenith) without requiring any inbound        │
+│   firewall rules. One Horizon per site. Dozens of Connectors per Horizon.                        │
 │                                                                                                  │
 │  ──────────────────────────────────────────────────────────────────────────────────────────────  │
 │                                                                                                  │
-│                                                                                                  │
-│   PULL-BASED ARCHITECTURE — NO INBOUND FIREWALL RULES                                           │
+│   PULL-BASED ARCHITECTURE — NO INBOUND FIREWALL RULES                                            │
 │   ────────────────────────────────────────────────────                                           │
 │                                                                                                  │
-│   Horizon always reaches OUT. Zenith never reaches in. No ports to open on site.                │
-│                                                                                                  │
+│   Horizon always reaches OUT. Zenith never reaches in. No ports to open on site.                 │
 │                                                                                                  │
 │   ┌──────────────────────────────────────────────────────────────────────────────────────────┐   │
 │   │                                                                                          │   │
@@ -37,26 +33,24 @@
 │   │   │ DIME #1    │──┐                                          ┌──────────────┐            │   │
 │   │   │ (PLC)      │  │                                          │              │            │   │
 │   │   └────────────┘  │     ┌──────────────────┐    OUTBOUND     │    ZENITH    │            │   │
-│   │                    ├────▶│                  │ ══════════════▶ │              │            │   │
+│   │                    ├────▶│                  │ ══════════════▶ │              │            │  │
 │   │   ┌────────────┐  │     │    HORIZON       │    HTTPS only   │  Fleet C2    │            │   │
 │   │   │ DIME #2    │──┤     │    Gateway       │ ◀══════════════ │              │            │   │
-│   │   │ (MQTT)     │  │     │                  │    responses     │              │            │   │
-│   │   └────────────┘  │     └──────────────────┘                  └──────────────┘            │   │
-│   │                    │           │                                                          │   │
+│   │   │ (MQTT)     │  │     │                  │    responses    │              │            │   │
+│   │   └────────────┘  │     └──────────────────┘                 └──────────────┘            │   │
+│   │                    │           │                                                          │  │
 │   │   ┌────────────┐  │           │ Horizon calls each                                       │   │
 │   │   │ DIME #3    │──┘           │ Connector's Admin API                                    │   │
 │   │   │ (OPC-UA)   │              │ locally (localhost)                                      │   │
 │   │   └────────────┘              ▼                                                          │   │
 │   │                                                                                          │   │
-│   │   ██████████████████████████████████████████████████████████                              │   │
-│   │   █  FIREWALL — NO INBOUND RULES NEEDED — ALL OUTBOUND  █                               │   │
-│   │   ██████████████████████████████████████████████████████████                              │   │
+│   │   ██████████████████████████████████████████████████████████                             │   │
+│   │   █  FIREWALL — NO INBOUND RULES NEEDED — ALL OUTBOUND  █                                │   │
+│   │   ██████████████████████████████████████████████████████████                             │   │
 │   │                                                                                          │   │
 │   └──────────────────────────────────────────────────────────────────────────────────────────┘   │
 │                                                                                                  │
-│                                                                                                  │
 │  ──────────────────────────────────────────────────────────────────────────────────────────────  │
-│                                                                                                  │
 │                                                                                                  │
 │   HORIZON CONFIGURATION                                                                          │
 │   ─────────────────────                                                                          │
@@ -82,55 +76,49 @@
 │   │                                                                                          │   │
 │   └──────────────────────────────────────────────────────────────────────────────────────────┘   │
 │                                                                                                  │
-│                                                                                                  │
 │  ──────────────────────────────────────────────────────────────────────────────────────────────  │
-│                                                                                                  │
 │                                                                                                  │
 │   CHECK-IN CYCLE — 5 STEPS                                                                       │
 │   ────────────────────────                                                                       │
 │                                                                                                  │
 │   Every checkin_interval milliseconds, Horizon runs this cycle:                                  │
 │                                                                                                  │
-│                                                                                                  │
 │   ┌──────────────────────────────────────────────────────────────────────────────────────────┐   │
 │   │                                                                                          │   │
-│   │   ┌─────────────┐     ┌─────────────┐     ┌─────────────┐     ┌─────────────────────┐   │   │
-│   │   │             │     │             │     │             │     │                     │   │   │
-│   │   │ 1. CONTACT  │────▶│ 2. SEND     │────▶│ 3. RECEIVE  │────▶│ 4. EXECUTE          │   │   │
-│   │   │    ZENITH   │     │    STATUS   │     │    TASKS    │     │    LOCALLY          │   │   │
-│   │   │             │     │             │     │             │     │                     │   │   │
-│   │   └─────────────┘     └─────────────┘     └─────────────┘     └──────────┬──────────┘   │   │
-│   │                                                                          │              │   │
-│   │         Horizon calls          Sends summary        Zenith returns       │              │   │
-│   │         POST /horizon/         of all local         pending task         │              │   │
-│   │         {key}/checkin          connector health     queue for this       ▼              │   │
-│   │                                                     Horizon                             │   │
-│   │                                                                   ┌─────────────────┐   │   │
-│   │                                                                   │                 │   │   │
-│   │         ┌──────────────────────────────────────────────────────── │ 5. REPORT       │   │   │
-│   │         │                                                         │    RESULTS      │   │   │
-│   │         │  Horizon posts task results back to Zenith              │                 │   │   │
-│   │         │  POST /horizon/{key}/task/{id}                         └─────────────────┘   │   │
-│   │         ▼                                                                               │   │
+│   │   ┌─────────────┐     ┌─────────────┐     ┌─────────────┐     ┌─────────────────────┐   │    │
+│   │   │             │     │             │     │             │     │                     │   │    │
+│   │   │ 1. CONTACT  │────▶│ 2. SEND     │────▶│ 3. RECEIVE  │────▶│ 4. EXECUTE          │   │    │
+│   │   │    ZENITH   │     │    STATUS   │     │    TASKS    │     │    LOCALLY          │   │    │
+│   │   │             │     │             │     │             │     │                     │   │    │
+│   │   └─────────────┘     └─────────────┘     └─────────────┘     └──────────┬──────────┘   │    │
+│   │                                                                          │              │    │
+│   │         Horizon calls          Sends summary        Zenith returns       │              │    │
+│   │         POST /horizon/         of all local         pending task         │              │    │
+│   │         {key}/checkin          connector health     queue for this       ▼              │    │
+│   │                                                     Horizon                             │    │
+│   │                                                                   ┌─────────────────┐   │    │
+│   │                                                                   │                 │   │    │
+│   │         ┌──────────────────────────────────────────────────────── │ 5. REPORT       │   │    │
+│   │         │                                                         │    RESULTS      │   │    │
+│   │         │  Horizon posts task results back to Zenith              │                 │   │    │
+│   │         │  POST /horizon/{key}/task/{id}                          └─────────────────┘   │    │
+│   │         ▼                                                                                │   │
 │   │                                                                                          │   │
 │   └──────────────────────────────────────────────────────────────────────────────────────────┘   │
 │                                                                                                  │
-│   The cycle repeats on a timer. Missed check-ins cause Zenith to flag the site as stale.        │
-│                                                                                                  │
+│   The cycle repeats on a timer. Missed check-ins cause Zenith to flag the site as stale.         │
 │                                                                                                  │
 │  ──────────────────────────────────────────────────────────────────────────────────────────────  │
-│                                                                                                  │
 │                                                                                                  │
 │   SUPPORTED TASKS                                                                                │
 │   ───────────────                                                                                │
 │                                                                                                  │
-│   Tasks are commands that Zenith queues for Horizon to execute on local Connectors.             │
-│                                                                                                  │
+│   Tasks are commands that Zenith queues for Horizon to execute on local Connectors.              │
 │                                                                                                  │
 │   ┌──────────────────────────────────────────────────────────────────────────────────────────┐   │
 │   │                                                                                          │   │
 │   │   CONNECTOR TASKS                          HORIZON SELF-MANAGEMENT                       │   │
-│   │   ───────────────                          ────────────────────────                       │   │
+│   │   ───────────────                          ────────────────────────                      │   │
 │   │                                                                                          │   │
 │   │   ┌──────────────────────┬──────────────────────────────────────────┐                    │   │
 │   │   │ Task                 │ Description                              │                    │   │
@@ -161,30 +149,27 @@
 │   │                                                                                          │   │
 │   └──────────────────────────────────────────────────────────────────────────────────────────┘   │
 │                                                                                                  │
-│                                                                                                  │
 │  ──────────────────────────────────────────────────────────────────────────────────────────────  │
-│                                                                                                  │
 │                                                                                                  │
 │   DEPLOYMENT OPTIONS                                                                             │
 │   ──────────────────                                                                             │
 │                                                                                                  │
 │   ┌──────────────────────────────────────────────────────────────────────────────────────────┐   │
 │   │                                                                                          │   │
-│   │   ┌──────────────────┐   ┌──────────────────┐   ┌──────────────────┐                    │   │
-│   │   │                  │   │                  │   │                  │                    │   │
-│   │   │  WINDOWS         │   │  LINUX           │   │  DOCKER          │                    │   │
-│   │   │  SERVICE         │   │  SYSTEMD         │   │  CONTAINER       │                    │   │
-│   │   │                  │   │                  │   │                  │                    │   │
-│   │   │  Horizon.exe     │   │  systemctl       │   │  docker run     │                    │   │
-│   │   │  install         │   │  start horizon   │   │  -v config:/app │                    │   │
-│   │   │                  │   │                  │   │                  │                    │   │
-│   │   └──────────────────┘   └──────────────────┘   └──────────────────┘                    │   │
+│   │   ┌──────────────────┐   ┌──────────────────┐   ┌──────────────────┐                    │    │
+│   │   │                  │   │                  │   │                  │                    │    │
+│   │   │  WINDOWS         │   │  LINUX           │   │  DOCKER          │                    │    │
+│   │   │  SERVICE         │   │  SYSTEMD         │   │  CONTAINER       │                    │    │
+│   │   │                  │   │                  │   │                  │                    │    │
+│   │   │  Horizon.exe     │   │  systemctl       │   │  docker run      │                    │    │
+│   │   │  install         │   │  start horizon   │   │  -v config:/app  │                    │    │
+│   │   │                  │   │                  │   │                  │                    │    │
+│   │   └──────────────────┘   └──────────────────┘   └──────────────────┘                    │    │
 │   │                                                                                          │   │
-│   │   Horizon runs alongside DIME Connectors on the same machine or a dedicated gateway.    │   │
-│   │   It only needs outbound HTTPS access to Zenith and local access to Connector APIs.     │   │
+│   │   Horizon runs alongside DIME Connectors on the same machine or a dedicated gateway.     │   │
+│   │   It only needs outbound HTTPS access to Zenith and local access to Connector APIs.      │   │
 │   │                                                                                          │   │
 │   └──────────────────────────────────────────────────────────────────────────────────────────┘   │
-│                                                                                                  │
 │                                                                                                  │
 └──────────────────────────────────────────────────────────────────────────────────────────────────┘
 ```

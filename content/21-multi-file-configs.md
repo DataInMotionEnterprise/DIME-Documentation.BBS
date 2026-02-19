@@ -1,7 +1,7 @@
 ```
 ┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
 │                                                                                                  │
-│          ██████┐  ██┐ ███┐   ███┐ ███████┐        21 — Multi-File Configs                       │
+│          ██████┐  ██┐ ███┐   ███┐ ███████┐        21 — Multi-File Configs                        │
 │          ██┌──██┐ ██│ ████┐ ████│ ██┌────┘                                                       │
 │          ██│  ██│ ██│ ██┌████┌██│ █████┐          Organize complex setups.                       │
 │          ██│  ██│ ██│ ██│└██┌┘██│ ██┌──┘          Anchors, references, and overrides.            │
@@ -20,14 +20,14 @@
 │   │   SINGLE FILE                        │    │   MULTI-FILE                         │           │
 │   │                                      │    │                                      │           │
 │   │   Configs/                           │    │   Configs/                           │           │
-│   │   └── main.yaml                     │    │   ├── mqtt-settings.yaml             │           │
-│   │       ├── app:                      │    │   ├── plc-sources.yaml               │           │
-│   │       ├── sources:                  │    │   ├── database-sinks.yaml            │           │
-│   │       │   ├── plc1                  │    │   ├── dashboard-sinks.yaml           │           │
-│   │       │   ├── plc2                  │    │   └── main.yaml                      │           │
-│   │       │   └── mqtt                  │    │       └── app:                       │           │
+│   │   └── main.yaml                     │    │   ├── mqtt-settings.yaml             │            │
+│   │       ├── app:                      │    │   ├── plc-sources.yaml               │            │
+│   │       ├── sources:                  │    │   ├── database-sinks.yaml            │            │
+│   │       │   ├── plc1                  │    │   ├── dashboard-sinks.yaml           │            │
+│   │       │   ├── plc2                  │    │   └── main.yaml                      │            │
+│   │       │   └── mqtt                  │    │       └── app:                       │            │
 │   │       └── sinks:                    │    │           └── (overrides only)        │           │
-│   │           ├── influx                │    │                                      │           │
+│   │           ├── influx                │    │                                       │           │
 │   │           └── splunk                │    │   Each file contains part of the      │           │
 │   │                                      │    │   configuration. All are merged.     │           │
 │   │   Everything in one place.           │    │                                      │           │
@@ -45,19 +45,19 @@
 │   ┌───────────────────────────────────────────────────────────────────────────────────────┐      │
 │   │                                                                                       │      │
 │   │   Configs/                                                                            │      │
-│   │   ├── 01-mqtt.yaml          ─┐                                                       │      │
-│   │   ├── 02-opcua.yaml          │── loaded alphabetically                               │      │
-│   │   ├── 03-influx.yaml         │   and merged together                                 │      │
-│   │   ├── 04-splunk.yaml        ─┘                                                       │      │
-│   │   └── main.yaml             ◀── loaded LAST, wins on conflicts                       │      │
+│   │   ├── 01-mqtt.yaml          ─┐                                                       │       │
+│   │   ├── 02-opcua.yaml          │── loaded alphabetically                               │       │
+│   │   ├── 03-influx.yaml         │   and merged together                                 │       │
+│   │   ├── 04-splunk.yaml        ─┘                                                       │       │
+│   │   └── main.yaml             ◀── loaded LAST, wins on conflicts                       │       │
 │   │                                                                                       │      │
 │   │                                                                                       │      │
-│   │   ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌──────────┐         ┌──────────┐        │      │
-│   │   │01-mqtt   │  │02-opcua  │  │03-influx │  │04-splunk │         │ main     │        │      │
-│   │   │.yaml     │  │.yaml     │  │.yaml     │  │.yaml     │         │ .yaml    │        │      │
-│   │   └────┬─────┘  └────┬─────┘  └────┬─────┘  └────┬─────┘         └────┬─────┘        │      │
-│   │        │              │              │              │                   │              │      │
-│   │        └──────────────┴──────────────┴──────────────┘                   │              │      │
+│   │   ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌──────────┐         ┌──────────┐        │       │
+│   │   │01-mqtt   │  │02-opcua  │  │03-influx │  │04-splunk │         │ main     │        │       │
+│   │   │.yaml     │  │.yaml     │  │.yaml     │  │.yaml     │         │ .yaml    │        │       │
+│   │   └────┬─────┘  └────┬─────┘  └────┬─────┘  └────┬─────┘         └────┬─────┘        │       │
+│   │        │              │              │              │                   │              │     │
+│   │        └──────────────┴──────────────┴──────────────┘                   │              │     │
 │   │                       │                                                │              │      │
 │   │                       ▼                                                │              │      │
 │   │              ┌─────────────────┐                                       │              │      │
@@ -142,7 +142,7 @@
 │   └──────────────────────────────┘  └──────────────────────────────┘  └───────────────────────┘  │
 │                                                                                                  │
 │   All three patterns work the same way — DIME loads and merges all *.yaml files.                 │
-│   Choose what makes your team's workflow easiest.                                                 │
+│   Choose what makes your team's workflow easiest.                                                │
 │                                                                                                  │
 │  ──────────────────────────────────────────────────────────────────────────────────────────────  │
 │                                                                                                  │
@@ -175,12 +175,12 @@
 │   │                                                                                     │        │
 │   │   LOADED AT STARTUP                                                                 │        │
 │   │                                                                                     │        │
-│   │   ┌────────────┐  ┌────────────┐  ┌────────────┐                                   │        │
-│   │   │ active_plc │  │ old_plc    │  │ test_mqtt  │                                   │        │
-│   │   │            │  │            │  │            │                                   │        │
-│   │   │  RUNNING   │  │  SKIPPED   │  │  SKIPPED   │                                   │        │
-│   │   │  ✓         │  │  ✗ (false) │  │  ✗ (false) │                                   │        │
-│   │   └────────────┘  └────────────┘  └────────────┘                                   │        │
+│   │   ┌────────────┐  ┌────────────┐  ┌────────────┐                                   │         │
+│   │   │ active_plc │  │ old_plc    │  │ test_mqtt  │                                   │         │
+│   │   │            │  │            │  │            │                                   │         │
+│   │   │  RUNNING   │  │  SKIPPED   │  │  SKIPPED   │                                   │         │
+│   │   │  ✓         │  │  ✗ (false) │  │  ✗ (false) │                                   │         │
+│   │   └────────────┘  └────────────┘  └────────────┘                                   │         │
 │   │                                                                                     │        │
 │   │   Disabled connectors use zero resources. Re-enable anytime by setting true.        │        │
 │   │                                                                                     │        │
@@ -191,25 +191,25 @@
 │   VISUAL: MULTIPLE FILES → ONE RUNNING CONFIG                                                    │
 │   ───────────────────────────────────────────                                                    │
 │                                                                                                  │
-│      ┌─────────────┐                                                                            │
-│      │ mqtt.yaml   │──┐                                                                         │
-│      │ sources: 2  │  │                                                                         │
-│      └─────────────┘  │                                                                         │
-│      ┌─────────────┐  │     ┌────────────────────────────────┐     ┌───────────────────────┐    │
-│      │ opcua.yaml  │──┼────▶│         YAML MERGER            │────▶│   RUNNING CONFIG      │    │
-│      │ sources: 3  │  │     │                                │     │                       │    │
-│      └─────────────┘  │     │  Concatenate sources arrays    │     │  sources: 7           │    │
-│      ┌─────────────┐  │     │  Concatenate sinks arrays      │     │  sinks: 4             │    │
-│      │ sinks.yaml  │──┤     │  Last-wins for scalar keys     │     │  anchors: resolved    │    │
-│      │ sinks: 4    │  │     │  Resolve all anchors           │     │                       │    │
-│      └─────────────┘  │     └────────────────────────────────┘     └───────────┬───────────┘    │
-│      ┌─────────────┐  │                     ▲                                  │                │
-│      │ main.yaml   │──┘                     │                                  ▼                │
-│      │ app: + wins │          main.yaml loaded last                   ┌────────────────┐        │
-│      └─────────────┘          overrides on conflict                   │  DimeService   │        │
-│                                                                       │  starts all    │        │
-│                                                                       │  connectors    │        │
-│                                                                       └────────────────┘        │
+│      ┌─────────────┐                                                                             │
+│      │ mqtt.yaml   │──┐                                                                          │
+│      │ sources: 2  │  │                                                                          │
+│      └─────────────┘  │                                                                          │
+│      ┌─────────────┐  │     ┌────────────────────────────────┐     ┌───────────────────────┐     │
+│      │ opcua.yaml  │──┼────▶│         YAML MERGER            │────▶│   RUNNING CONFIG      │     │
+│      │ sources: 3  │  │     │                                │     │                       │     │
+│      └─────────────┘  │     │  Concatenate sources arrays    │     │  sources: 7           │     │
+│      ┌─────────────┐  │     │  Concatenate sinks arrays      │     │  sinks: 4             │     │
+│      │ sinks.yaml  │──┤     │  Last-wins for scalar keys     │     │  anchors: resolved    │     │
+│      │ sinks: 4    │  │     │  Resolve all anchors           │     │                       │     │
+│      └─────────────┘  │     └────────────────────────────────┘     └───────────┬───────────┘     │
+│      ┌─────────────┐  │                     ▲                                  │                 │
+│      │ main.yaml   │──┘                     │                                  ▼                 │
+│      │ app: + wins │          main.yaml loaded last                   ┌────────────────┐         │
+│      └─────────────┘          overrides on conflict                   │  DimeService   │         │
+│                                                                       │  starts all    │         │
+│                                                                       │  connectors    │         │
+│                                                                       └────────────────┘         │
 │                                                                                                  │
 │  ──────────────────────────────────────────────────────────────────────────────────────────────  │
 │                                                                                                  │

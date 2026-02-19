@@ -76,7 +76,7 @@ DIME_PAGES['28'] = {
     },
     {
       id: 'data-up',
-      startLine: 91, startCol: 4, endLine: 104, endCol: 90,
+      startLine: 91, startCol: 4, endLine: 103, endCol: 90,
       label: 'Data Flows Up \u2014 Device to Cloud',
       panel: {
         title: 'Upward Data Flow \u2014 Device to Dashboard',

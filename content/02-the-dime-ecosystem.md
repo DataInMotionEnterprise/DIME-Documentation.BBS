@@ -1,7 +1,7 @@
 ```
 ┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
 │                                                                                                  │
-│          ██████┐  ██┐ ███┐   ███┐ ███████┐        02 — The DIME Ecosystem                       │
+│          ██████┐  ██┐ ███┐   ███┐ ███████┐        02 — The DIME Ecosystem                        │
 │          ██┌──██┐ ██│ ████┐ ████│ ██┌────┘                                                       │
 │          ██│  ██│ ██│ ██┌████┌██│ █████┐          Three tiers. Two apps.                         │
 │          ██│  ██│ ██│ ██│└██┌┘██│ ██┌──┘          One unified platform.                          │
@@ -65,31 +65,31 @@
 │   All communication is pull-based from the edge outward.                                         │
 │   No inbound firewall rules required at any tier.                                                │
 │                                                                                                  │
-│     Connector ◀────────────── Horizon ──────────────▶ Zenith                                    │
-│          │    pushes config        │   pulls config      │                                       │
-│          │    & commands           │   & updates          │                                       │
-│          │                         │                      │                                       │
-│          ▼                         ▼                      ▼                                       │
+│     Connector ◀────────────── Horizon ──────────────▶ Zenith                                     │
+│          │    pushes config        │   pulls config       │                                      │
+│          │    & commands           │   & updates          │                                      │
+│          │                         │                      │                                      │
+│          ▼                         ▼                      ▼                                      │
 │     Factory Floor             Site Gateway           Cloud C2                                    │
 │     50+ protocols             Bridges edge           Fleet-wide                                  │
-│     sub-ms latency            to cloud               command                                    │
+│     sub-ms latency            to cloud               command                                     │
 │                                                                                                  │
 │  ──────────────────────────────────────────────────────────────────────────────────────────────  │
 │                                                                                                  │
 │   ENTERPRISE SCALE                                                                               │
 │   ────────────────                                                                               │
 │                                                                                                  │
-│    ┌────────┐         ┌────────┐  ┌────────┐  ┌────────┐         ┌─────┐┌─────┐┌─────┐          │
-│    │        │         │        │  │        │  │        │         │     ││     ││     │          │
-│    │ ZENITH │────────▶│HORIZON │  │HORIZON │  │HORIZON │────────▶│ CON ││ CON ││ CON │          │
-│    │        │    ...  │  Site1 │  │  Site2 │  │  SiteN │   ...  │     ││     ││     │          │
-│    │ 1 inst │         │        │  │        │  │        │         │     ││     ││     │          │
-│    └────────┘         └───┬────┘  └───┬────┘  └───┬────┘         └─────┘└─────┘└─────┘          │
+│    ┌────────┐         ┌────────┐  ┌────────┐  ┌────────┐         ┌─────┐┌─────┐┌─────┐           │
+│    │        │         │        │  │        │  │        │         │     ││     ││     │           │
+│    │ ZENITH │────────▶│HORIZON │  │HORIZON │  │HORIZON │────────▶│ CON ││ CON ││ CON │           │
+│    │        │    ...  │  Site1 │  │  Site2 │  │  SiteN │   ...   │     ││     ││     │           │
+│    │ 1 inst │         │        │  │        │  │        │         │     ││     ││     │           │
+│    └────────┘         └───┬────┘  └───┬────┘  └───┬────┘         └─────┘└─────┘└─────┘           │
 │                           │           │           │                                              │
-│                      10-50 CON   10-50 CON   10-50 CON                                          │
+│                      10-50 CON   10-50 CON   10-50 CON                                           │
 │                      per site    per site    per site                                            │
 │                                                                                                  │
-│    1 Zenith  ──▶  100s of Horizons  ──▶  Dozens of Connectors per Horizon                       │
+│    1 Zenith  ──▶  100s of Horizons  ──▶  Dozens of Connectors per Horizon                        │
 │                                                                                                  │
 └──────────────────────────────────────────────────────────────────────────────────────────────────┘
 ```

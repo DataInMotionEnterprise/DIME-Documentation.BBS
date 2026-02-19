@@ -9,7 +9,7 @@ DIME_PAGES['09'] = {
   hotspots: [
     {
       id: 'lifecycle',
-      startLine: 19, startCol: 3, endLine: 55, endCol: 87,
+      startLine: 17, startCol: 3, endLine: 53, endCol: 87,
       label: 'Script Execution Lifecycle',
       panel: {
         title: 'Six Script Hooks in the Connector Lifecycle',
@@ -32,7 +32,7 @@ DIME_PAGES['09'] = {
     },
     {
       id: 'result-var',
-      startLine: 68, startCol: 3, endLine: 82, endCol: 82,
+      startLine: 63, startCol: 3, endLine: 77, endCol: 82,
       label: 'The "result" Variable',
       panel: {
         title: 'result \u2014 Raw Data from the Source',
@@ -55,7 +55,7 @@ DIME_PAGES['09'] = {
     },
     {
       id: 'emit',
-      startLine: 127, startCol: 3, endLine: 156, endCol: 86,
+      startLine: 117, startCol: 3, endLine: 146, endCol: 86,
       label: 'emit() \u2014 Fork Messages',
       panel: {
         title: 'emit() \u2014 One Input, Many Outputs',
@@ -81,7 +81,7 @@ DIME_PAGES['09'] = {
     },
     {
       id: 'helpers',
-      startLine: 165, startCol: 3, endLine: 187, endCol: 82,
+      startLine: 153, startCol: 3, endLine: 175, endCol: 82,
       label: 'Built-in Helper Functions',
       panel: {
         title: 'Helper Functions Available in Scripts',
@@ -111,7 +111,7 @@ DIME_PAGES['09'] = {
     },
     {
       id: 'python',
-      startLine: 201, startCol: 3, endLine: 227, endCol: 82,
+      startLine: 186, startCol: 3, endLine: 212, endCol: 82,
       label: 'Python Alternative',
       panel: {
         title: 'Python Scripts via lang_script: python',
@@ -143,7 +143,7 @@ DIME_PAGES['09'] = {
     },
     {
       id: 'examples',
-      startLine: 236, startCol: 3, endLine: 270, endCol: 82,
+      startLine: 219, startCol: 3, endLine: 253, endCol: 82,
       label: 'Practical Script Examples',
       panel: {
         title: 'Practical Lua Script Examples',

@@ -1,7 +1,7 @@
 ```
 ┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
 │                                                                                                  │
-│          ██████┐  ██┐ ███┐   ███┐ ███████┐        16 — Admin REST API                           │
+│          ██████┐  ██┐ ███┐   ███┐ ███████┐        16 — Admin REST API                            │
 │          ██┌──██┐ ██│ ████┐ ████│ ██┌────┘                                                       │
 │          ██│  ██│ ██│ ██┌████┌██│ █████┐          Manage a running instance.                     │
 │          ██│  ██│ ██│ ██│└██┌┘██│ ██┌──┘          Swagger UI included.                           │
@@ -17,13 +17,13 @@
 │                                                                                                  │
 │   ┌──────────────────────────────────────────────────────────────────────────────────────────┐   │
 │   │                                                                                          │   │
-│   │   Default endpoint:    http://localhost:9999/                                             │   │
-│   │   Swagger UI:          http://localhost:9999/swagger                                      │   │
+│   │   Default endpoint:    http://localhost:9999/                                            │   │
+│   │   Swagger UI:          http://localhost:9999/swagger                                     │   │
 │   │                                                                                          │   │
 │   │   ┌──────────────┐          ┌───────────────┐          ┌──────────────────────┐          │   │
 │   │   │              │   HTTP   │               │  control │                      │          │   │
-│   │   │  Browser /   │────────▶│   REST API    │────────▶│    DIME Engine        │          │   │
-│   │   │  curl / app  │◀────────│   :9999       │◀────────│                      │          │   │
+│   │   │  Browser /   │────────▶ │   REST API    │────────▶ │    DIME Engine       │          │   │
+│   │   │  curl / app  │◀──────── │   :9999       │◀──────── │                      │          │   │
 │   │   │              │   JSON   │               │  status  │  Sources ←→ Sinks    │          │   │
 │   │   └──────────────┘          └───────────────┘          └──────────────────────┘          │   │
 │   │                                                                                          │   │
@@ -61,7 +61,7 @@
 │                                                                                                  │
 │   ┌──────────────────────────────────────────────────────────────────────────────────────────┐   │
 │   │                                                                                          │   │
-│   │   $ curl http://localhost:9999/status                                                     │   │
+│   │   $ curl http://localhost:9999/status                                                    │   │
 │   │                                                                                          │   │
 │   │   {                                                                                      │   │
 │   │     "connectors": [                                                                      │   │
@@ -89,7 +89,7 @@
 │                                                                                                  │
 │  ──────────────────────────────────────────────────────────────────────────────────────────────  │
 │                                                                                                  │
-│   GET/POST /config/yaml — CONFIGURATION MANAGEMENT                                              │
+│   GET/POST /config/yaml — CONFIGURATION MANAGEMENT                                               │
 │   ────────────────────────────────────────────────                                               │
 │                                                                                                  │
 │   ┌──────────────────────────────────────────────────────────────────────────────────────────┐   │
@@ -137,16 +137,16 @@
 │   │       -d '{"name":"debug","connector":"Console"}'                                        │   │
 │   │                                                                                          │   │
 │   │   ┌─────────────────────────────────────────────────────────────────────────────────┐    │   │
-│   │   │                     CONNECTOR LIFECYCLE VIA API                                  │    │   │
+│   │   │                     CONNECTOR LIFECYCLE VIA API                                 │    │   │
 │   │   │                                                                                 │    │   │
 │   │   │   POST /connector/stop/plc1         POST /connector/start/plc1                  │    │   │
-│   │   │          │                                    │                                  │    │   │
-│   │   │          ▼                                    ▼                                  │    │   │
-│   │   │   ┌─────────────┐                      ┌─────────────┐                          │    │   │
-│   │   │   │  DISCONNECT │                      │  INITIALIZE │                          │    │   │
+│   │   │          │                                    │                                  │    │  │
+│   │   │          ▼                                    ▼                                  │    │  │
+│   │   │   ┌──────────────┐                     ┌─────────────┐                          │    │   │
+│   │   │   │  DISCONNECT  │                     │  INITIALIZE │                          │    │   │
 │   │   │   │  DEINITIALIZE│                     │  CREATE     │                          │    │   │
 │   │   │   │  (graceful)  │                     │  CONNECT    │                          │    │   │
-│   │   │   └─────────────┘                      │  READ/WRITE │                          │    │   │
+│   │   │   └──────────────┘                     │  READ/WRITE │                          │    │   │
 │   │   │                                        └─────────────┘                          │    │   │
 │   │   │                                                                                 │    │   │
 │   │   └─────────────────────────────────────────────────────────────────────────────────┘    │   │
@@ -164,24 +164,24 @@
 │   │                                                                                          │   │
 │   │   ┌────────────────────────────────────────────────────────────────────────────────┐     │   │
 │   │   │  ┌──────────────────────────────────────────────────────────────────────────┐  │     │   │
-│   │   │  │  DIME Admin API                                                 v1.0    │  │     │   │
+│   │   │  │  DIME Admin API                                                 v1.0     │  │     │   │
 │   │   │  └──────────────────────────────────────────────────────────────────────────┘  │     │   │
 │   │   │                                                                                │     │   │
 │   │   │  ┌─ GET ───┐  /status                    All connector health and metrics      │     │   │
 │   │   │  └─────────┘                                                                   │     │   │
-│   │   │  ┌─ GET ───┐  /config/yaml               Current running YAML                 │     │   │
+│   │   │  ┌─ GET ───┐  /config/yaml               Current running YAML                  │     │   │
 │   │   │  └─────────┘                                                                   │     │   │
-│   │   │  ┌─ POST ──┐  /config/yaml               Push new configuration               │     │   │
+│   │   │  ┌─ POST ──┐  /config/yaml               Push new configuration                │     │   │
 │   │   │  └─────────┘                                                                   │     │   │
 │   │   │  ┌─ POST ──┐  /service/restart            Restart entire service               │     │   │
 │   │   │  └─────────┘                                                                   │     │   │
-│   │   │  ┌─ POST ──┐  /connector/start/{name}    Start one connector                  │     │   │
+│   │   │  ┌─ POST ──┐  /connector/start/{name}    Start one connector                   │     │   │
 │   │   │  └─────────┘                                                                   │     │   │
-│   │   │  ┌─ POST ──┐  /connector/stop/{name}     Stop one connector                   │     │   │
+│   │   │  ┌─ POST ──┐  /connector/stop/{name}     Stop one connector                    │     │   │
 │   │   │  └─────────┘                                                                   │     │   │
-│   │   │  ┌─ POST ──┐  /connector/add/source      Add source at runtime                │     │   │
+│   │   │  ┌─ POST ──┐  /connector/add/source      Add source at runtime                 │     │   │
 │   │   │  └─────────┘                                                                   │     │   │
-│   │   │  ┌─ POST ──┐  /connector/add/sink        Add sink at runtime                  │     │   │
+│   │   │  ┌─ POST ──┐  /connector/add/sink        Add sink at runtime                   │     │   │
 │   │   │  └─────────┘                                                                   │     │   │
 │   │   │                                                                                │     │   │
 │   │   │  Try it out — send real requests directly from the browser.                    │     │   │
@@ -203,7 +203,7 @@
 │   │   ┌────────────────────────────────────────────────────────────────┐                     │   │
 │   │   │                                                                │                     │   │
 │   │   │   [plc1]  ──▶  Ring Buffer  ──▶  [influxdb]                    │   All running.      │   │
-│   │   │   [mqtt]  ──▶              ──▶  [splunk]                      │   No interruption.  │   │
+│   │   │   [mqtt]  ──▶              ──▶  [splunk]                       │   No interruption.  │   │
 │   │   │                                                                │                     │   │
 │   │   └────────────────────────────────────────────────────────────────┘                     │   │
 │   │                            │                                                             │   │
@@ -213,8 +213,8 @@
 │   │   ┌────────────────────────────────────────────────────────────────┐                     │   │
 │   │   │                                                                │                     │   │
 │   │   │   [plc1]  ──▶  Ring Buffer  ──▶  [influxdb]                    │   Console sink      │   │
-│   │   │   [mqtt]  ──▶              ──▶  [splunk]                      │   added live.       │   │
-│   │   │                            ──▶  [debug]  ◀── NEW              │   Zero downtime.    │   │
+│   │   │   [mqtt]  ──▶              ──▶  [splunk]                       │   added live.       │   │
+│   │   │                            ──▶  [debug]  ◀── NEW               │   Zero downtime.    │   │
 │   │   │                                                                │                     │   │
 │   │   └────────────────────────────────────────────────────────────────┘                     │   │
 │   │                                                                                          │   │

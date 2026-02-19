@@ -9,7 +9,7 @@ DIME_PAGES['12'] = {
   hotspots: [
     {
       id: 'opcua-source',
-      startLine: 27, startCol: 3, endLine: 47, endCol: 90,
+      startLine: 24, startCol: 3, endLine: 43, endCol: 90,
       label: 'Step 1 \u2014 OPC-UA Source Config',
       panel: {
         title: 'Step 1 \u2014 OPC-UA Source Configuration',
@@ -42,7 +42,7 @@ DIME_PAGES['12'] = {
     },
     {
       id: 'lua-transform',
-      startLine: 53, startCol: 3, endLine: 70, endCol: 90,
+      startLine: 47, startCol: 3, endLine: 63, endCol: 90,
       label: 'Step 2 \u2014 Lua Transform',
       panel: {
         title: 'Step 2 \u2014 Lua Transform (Unit Conversion)',
@@ -68,7 +68,7 @@ DIME_PAGES['12'] = {
     },
     {
       id: 'influx-sink',
-      startLine: 76, startCol: 3, endLine: 96, endCol: 90,
+      startLine: 67, startCol: 3, endLine: 86, endCol: 90,
       label: 'Step 3 \u2014 InfluxDB Sink',
       panel: {
         title: 'Step 3 \u2014 InfluxDB Sink (Historian)',
@@ -99,7 +99,7 @@ DIME_PAGES['12'] = {
     },
     {
       id: 'websocket-sink',
-      startLine: 102, startCol: 3, endLine: 120, endCol: 90,
+      startLine: 90, startCol: 3, endLine: 107, endCol: 90,
       label: 'Step 4 \u2014 WebSocket Sink',
       panel: {
         title: 'Step 4 \u2014 WebSocket Sink (Live Dashboard)',
@@ -126,7 +126,7 @@ DIME_PAGES['12'] = {
     },
     {
       id: 'complete-flow',
-      startLine: 133, startCol: 3, endLine: 161, endCol: 90,
+      startLine: 117, startCol: 3, endLine: 142, endCol: 90,
       label: 'Complete Data Flow Diagram',
       panel: {
         title: 'Complete Flow \u2014 Device to Multiple Destinations',

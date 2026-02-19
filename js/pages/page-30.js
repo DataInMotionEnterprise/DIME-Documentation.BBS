@@ -9,7 +9,7 @@ DIME_PAGES['30'] = {
   hotspots: [
     {
       id: 'no-data',
-      startLine: 18, startCol: 3, endLine: 73, endCol: 87,
+      startLine: 16, startCol: 3, endLine: 69, endCol: 87,
       label: 'No Data Flowing \u2014 5-Step Checklist',
       panel: {
         title: 'No Data Flowing \u2014 Systematic Diagnosis',
@@ -32,7 +32,7 @@ DIME_PAGES['30'] = {
     },
     {
       id: 'faulting',
-      startLine: 80, startCol: 3, endLine: 97, endCol: 87,
+      startLine: 76, startCol: 3, endLine: 91, endCol: 87,
       label: 'Connector Keeps Faulting',
       panel: {
         title: 'Diagnosing Persistent Faults',
@@ -66,7 +66,7 @@ DIME_PAGES['30'] = {
     },
     {
       id: 'script-errors',
-      startLine: 104, startCol: 3, endLine: 136, endCol: 87,
+      startLine: 98, startCol: 3, endLine: 127, endCol: 87,
       label: 'Lua Script Errors',
       panel: {
         title: 'Diagnosing Lua & Python Script Issues',
@@ -95,7 +95,7 @@ DIME_PAGES['30'] = {
     },
     {
       id: 'yaml-mistakes',
-      startLine: 143, startCol: 3, endLine: 188, endCol: 87,
+      startLine: 134, startCol: 3, endLine: 176, endCol: 87,
       label: 'Common YAML Mistakes',
       panel: {
         title: 'YAML Gotchas That Trip Everyone Up',
@@ -125,7 +125,7 @@ DIME_PAGES['30'] = {
     },
     {
       id: 'console-sink',
-      startLine: 195, startCol: 3, endLine: 244, endCol: 87,
+      startLine: 183, startCol: 3, endLine: 230, endCol: 87,
       label: 'Console Sink \u2014 Best Debugging Friend',
       panel: {
         title: 'The Console Sink \u2014 See Everything',
