@@ -3,7 +3,7 @@
   EX26 — PYTHON SCRIPTING                                                DIME EXAMPLE SERIES
 ═══════════════════════════════════════════════════════════════════════════════════════════════
 
-  ┌─ WHAT THIS EXAMPLE DOES ──────────────────────────────────────────────────────────────┐
+  ┌─ WHAT THIS EXAMPLE DOES ───────────────────────────────────────────────────────────────┐
   │                                                                                        │
   │  Demonstrates DIME's embedded Python runtime as an alternative to Lua. Uses .NET CLR   │
   │  interop (System.Random), Python standard library modules (random, math, sys), custom  │
@@ -16,8 +16,8 @@
   ─────────
 
       ┌────────────────────────────┐
-      │   Script Source (Python)    │
-      │   lang_script: python       │
+      │   Script Source (Python)   │
+      │   lang_script: python      │
       │                            │       ┌─────────────────────┐
       │   init: import clr,        │       │  Console Sink       │
       │     System.Random          │       │                     │
@@ -72,7 +72,7 @@
   │          None                                                                          │
   │      - name: CLRRandom                           # .NET System.Random via CLR          │
   │        script: |                                                                       │
-  │          Random().NextDouble()                   # Call .NET method directly            │
+  │          Random().NextDouble()                   # Call .NET method directly           │
   │      - name: PyRandom                            # Python standard random              │
   │        script: |                                                                       │
   │          import random                                                                 │
@@ -83,11 +83,11 @@
   │      - name: Module                              # Import custom module                │
   │        script: |                                                                       │
   │          from example import add                 # example.py in Python/ directory     │
-  │          add(100, 100)                           # Call exported function               │
+  │          add(100, 100)                           # Call exported function              │
   │      - name: Math                                # Python math library                 │
   │        script: |                                                                       │
   │          import math as m                                                              │
-  │          m.pi                                    # Returns 3.14159...                   │
+  │          m.pi                                    # Returns 3.14159...                  │
   │      - name: CacheSet                            # Store value in DIME cache           │
   │        script: |                                                                       │
   │          dime.set('cacheTest', 555)              # Python cache API                    │
@@ -134,25 +134,25 @@
   ┌────────────────────────────────────────────────────────────────────────────────────────┐
   │                                                                                        │
   │  * Python Runtime (lang_script: python) -- DIME embeds a Python runtime alongside      │
-  │    Lua. Set lang_script: python at the connector level. All items in that connector     │
+  │    Lua. Set lang_script: python at the connector level. All items in that connector    │
   │    then execute Python instead of Lua. The last expression in each script block        │
-  │    becomes the return value (no explicit return needed).                                │
+  │    becomes the return value (no explicit return needed).                               │
   │                                                                                        │
-  │  * .NET CLR Interop -- The clr module bridges Python to the .NET runtime. Use           │
-  │    clr.AddReference("System") to load assemblies, then import classes directly:         │
+  │  * .NET CLR Interop -- The clr module bridges Python to the .NET runtime. Use          │
+  │    clr.AddReference("System") to load assemblies, then import classes directly:        │
   │    from System import Random. This gives Python scripts access to the full .NET        │
   │    ecosystem including System, LINQ, and custom assemblies.                            │
   │                                                                                        │
-  │  * Python Cache API -- In Python, the DIME cache uses the dime module:                  │
+  │  * Python Cache API -- In Python, the DIME cache uses the dime module:                 │
   │    dime.set('key', value) to store, dime.cache('key', default) to retrieve. This       │
   │    differs from Lua's set()/cache() syntax but provides identical functionality.       │
-  │    Cache entries persist across scan cycles for stateful processing.                    │
+  │    Cache entries persist across scan cycles for stateful processing.                   │
   │                                                                                        │
-  │  * Custom Modules -- Place .py files in DIME's Python/ directory. Import them with      │
-  │    standard Python syntax: from example import add. The paths_script property can       │
-  │    add additional module search paths if needed.                                        │
+  │  * Custom Modules -- Place .py files in DIME's Python/ directory. Import them with     │
+  │    standard Python syntax: from example import add. The paths_script property can      │
+  │    add additional module search paths if needed.                                       │
   │                                                                                        │
-  │  * Global Variables -- Variables defined in init_script (like counter = 0) persist      │
+  │  * Global Variables -- Variables defined in init_script (like counter = 0) persist     │
   │    across scan cycles in the Python runtime. Item scripts can read and modify them.    │
   │    This enables stateful computation without the cache API.                            │
   │                                                                                        │

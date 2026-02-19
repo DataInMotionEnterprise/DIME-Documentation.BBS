@@ -3,9 +3,9 @@
   EX23 — WEATHER API                                                      DIME EXAMPLE SERIES
 ═══════════════════════════════════════════════════════════════════════════════════════════════
 
-  ┌─ WHAT THIS EXAMPLE DOES ──────────────────────────────────────────────────────────────┐
+  ┌─ WHAT THIS EXAMPLE DOES ───────────────────────────────────────────────────────────────┐
   │                                                                                        │
-  │  Connects to the US National Weather Service public API to fetch real-time weather      │
+  │  Connects to the US National Weather Service public API to fetch real-time weather     │
   │  forecasts. Demonstrates the NwsWeather connector with lat/lon coordinates, daily vs   │
   │  hourly forecast types, and Lua scripting to extract temperature values.               │
   │  Single-file YAML config with multiple city items.                                     │
@@ -16,13 +16,13 @@
   ─────────
 
       ┌──────────────────────────┐
-      │   NwsWeather Source       │
+      │   NwsWeather Source      │
       │                          │
       │   address: api.weather   │         ┌─────────────────────┐
       │     .gov                 │    ┌───▶│  Console Sink       │  stdout
       │                          │    │    └─────────────────────┘
       │   Items:                 │    │
-      │   · NewYork   (daily)   ├────┘
+      │   · NewYork   (daily)    ├────┘
       │     40.7128, -74.0060    │
       │   · LosAngeles (hourly)  │
       │     34.0522, -118.2437   │
@@ -87,18 +87,18 @@
   │                                                                                        │
   │  * NwsWeather Connector -- Purpose-built connector for the US National Weather         │
   │    Service API. Handles the two-step NWS lookup: first resolves lat/lon to a grid      │
-  │    point, then fetches the forecast for that grid. The agent property sets the          │
+  │    point, then fetches the forecast for that grid. The agent property sets the         │
   │    required User-Agent header (NWS blocks requests without one).                       │
   │                                                                                        │
   │  * Lat/Lon Addressing -- Each item's address is "latitude, longitude" as a string.     │
   │    The connector parses these and calls the correct NWS grid endpoint. You can add     │
-  │    as many city items as needed, each with different coordinates.                       │
+  │    as many city items as needed, each with different coordinates.                      │
   │                                                                                        │
-  │  * Forecast Types -- The forecast property selects "daily" (7-day periods) or           │
-  │    "hourly" (detailed hourly). The response structure differs: daily has fewer, longer  │
-  │    periods; hourly has many short periods. Your script must match the structure.        │
+  │  * Forecast Types -- The forecast property selects "daily" (7-day periods) or          │
+  │    "hourly" (detailed hourly). The response structure differs: daily has fewer, longer │
+  │    periods; hourly has many short periods. Your script must match the structure.       │
   │                                                                                        │
-  │  * Lua Result Processing -- The result variable contains the parsed JSON response       │
+  │  * Lua Result Processing -- The result variable contains the parsed JSON response      │
   │    from the NWS API. The script navigates the response tree:                           │
   │    result.properties.periods[0].temperature extracts the first period's temp.          │
   │    The print() call logs to DIME console for debugging.                                │

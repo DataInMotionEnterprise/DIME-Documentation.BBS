@@ -3,7 +3,7 @@
   EX01 — BASIC COUNTER                                                 DIME EXAMPLE SERIES
 ═══════════════════════════════════════════════════════════════════════════════════════════════
 
-  ┌─ WHAT THIS EXAMPLE DOES ──────────────────────────────────────────────────────────────┐
+  ┌─ WHAT THIS EXAMPLE DOES ───────────────────────────────────────────────────────────────┐
   │                                                                                        │
   │  The "hello world" of DIME. A Lua script source increments a counter every second      │
   │  and publishes to three sinks: Console, HTTP Server, and WebSocket Server.             │
@@ -15,7 +15,7 @@
   ─────────
 
        ┌────────────────────┐
-       │   Script Source     │         ┌─────────────────┐
+       │   Script Source    │         ┌─────────────────┐
        │                    │    ┌───▶│  Console Sink   │  stdout
        │  counter = 0       │    │    └─────────────────┘
        │  counter = counter │    │
@@ -79,13 +79,13 @@
   ┌────────────────────────────────────────────────────────────────────────────────────────┐
   │                                                                                        │
   │  • Script Connector — Lua scripting without external hardware. Ideal for testing,      │
-  │    simulation, and data generation. init_script runs once, item scripts run every       │
+  │    simulation, and data generation. init_script runs once, item scripts run every      │
   │    scan_interval.                                                                      │
   │                                                                                        │
   │  • Three Sink Types — Console for debugging, HTTP for REST API consumers, WebSocket    │
   │    for real-time push to browser dashboards.                                           │
   │                                                                                        │
-  │  • Report By Exception (RBE) — When rbe: true, the source only publishes when the     │
+  │  • Report By Exception (RBE) — When rbe: true, the source only publishes when the      │
   │    value changes. The counter increments every cycle so every scan produces output.    │
   │                                                                                        │
   │  • Ring Buffer — All sources publish to a shared 4096-slot Disruptor ring buffer.      │

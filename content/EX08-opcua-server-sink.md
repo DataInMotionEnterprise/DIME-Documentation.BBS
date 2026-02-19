@@ -3,29 +3,29 @@
   EX08 — OPC-UA SERVER SINK                                              DIME EXAMPLE SERIES
 ═══════════════════════════════════════════════════════════════════════════════════════════════
 
-  ┌─ WHAT THIS EXAMPLE DOES ──────────────────────────────────────────────────────────────┐
+  ┌─ WHAT THIS EXAMPLE DOES ───────────────────────────────────────────────────────────────┐
   │                                                                                        │
   │  DIME as an OPC-UA server. A Lua script generates random data, and an OPC-UA Server    │
-  │  sink exposes it to external OPC-UA clients (UaExpert, Ignition, Kepware, etc.).        │
-  │  This turns DIME into a standards-compliant OPC-UA endpoint — any OPC-UA client         │
-  │  can browse and subscribe to live data on port 4840.                                    │
+  │  sink exposes it to external OPC-UA clients (UaExpert, Ignition, Kepware, etc.).       │
+  │  This turns DIME into a standards-compliant OPC-UA endpoint — any OPC-UA client        │
+  │  can browse and subscribe to live data on port 4840.                                   │
   │                                                                                        │
   └────────────────────────────────────────────────────────────────────────────────────────┘
 
   DATA FLOW
   ─────────
 
-      ┌──────────────────────┐
-      │   Script Source       │          ┌─────────────────────┐
-      │                       │     ┌───▶│  Console Sink       │  stdout
-      │  random1 =            │     │    └─────────────────────┘
+      ┌───────────────────────┐
+      │   Script Source       │          ┌───────────────────────┐
+      │                       │     ┌───▶│  Console Sink         │  stdout
+      │  random1 =            │     │    └───────────────────────┘
       │    math.random(200)   │     │
       │                       ├─────┤
-      │  scan: 2000ms         │     │    ┌─────────────────────┐
-      │  RBE: true            │     └───▶│  OPC-UA Server      │  opc.tcp://localhost:4840
-      └──────────────────────┘          │  namespace: Production│
-                                         │  root: Production    │
-             SOURCE                      └─────────────────────┘
+      │  scan: 2000ms         │     │    ┌───────────────────────┐
+      │  RBE: true            │     └───▶│  OPC-UA Server        │  opc.tcp://localhost:4840
+      └───────────────────────┘          │  namespace: Production│
+                                         │  root: Production     │
+             SOURCE                      └───────────────────────┘
        (Lua random data)           RING BUFFER          SINKS
                                   (4096 slots)     (2 destinations)
 
@@ -92,8 +92,8 @@
   │    namespace_uri: "urn:dime:production:data"      # Custom namespace URI               │
   │    root_folder: "Production"                      # Browse tree root node              │
   │    max_sessions: 50                               # Concurrent client limit            │
-  │    session_timeout: 60000                          # Session timeout (ms)               │
-  │    max_subscriptions: 20                           # Subscription limit per session     │
+  │    session_timeout: 60000                          # Session timeout (ms)              │
+  │    max_subscriptions: 20                           # Subscription limit per session    │
   │    exclude_filter:                                                                     │
   │      - /\$SYSTEM                                  # Hide system messages from clients  │
   │                                                                                        │
@@ -112,11 +112,11 @@
   │    other OPC-UA servers on the network.                                                │
   │                                                                                        │
   │  * Session Management — max_sessions limits concurrent clients. session_timeout        │
-  │    (60s) cleans up idle connections. max_subscriptions bounds per-session data          │
+  │    (60s) cleans up idle connections. max_subscriptions bounds per-session data         │
   │    subscriptions for resource control.                                                 │
   │                                                                                        │
   │  * System Message Filtering — The exclude_filter regex /\$SYSTEM hides DIME            │
-  │    internal system messages ($SYSTEM) from OPC-UA clients. Only real data items         │
+  │    internal system messages ($SYSTEM) from OPC-UA clients. Only real data items        │
   │    appear in the browse tree.                                                          │
   │                                                                                        │
   │  * OPC-UA vs OPC-DA — This uses OPC-UA (Unified Architecture), the modern              │

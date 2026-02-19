@@ -3,7 +3,7 @@
   EX17 — INFLUXDB TIME-SERIES                                            DIME EXAMPLE SERIES
 ═══════════════════════════════════════════════════════════════════════════════════════════════
 
-  ┌─ WHAT THIS EXAMPLE DOES ──────────────────────────────────────────────────────────────┐
+  ┌─ WHAT THIS EXAMPLE DOES ───────────────────────────────────────────────────────────────┐
   │                                                                                        │
   │  Collects data from industrial sources (Rockwell EthernetIP PLC and Modbus TCP)        │
   │  and writes to InfluxDB Cloud using the InfluxLP (Line Protocol) sink connector.       │
@@ -25,7 +25,7 @@
       │   Items:                ├─────┤    └──────────────────┘
       │   · boolFromCache       │     │
       │   · Execution           │     │    ┌──────────────────┐
-      │   · GoodPartCount       │     └───▶│  Console Sink   │  stdout
+      │   · GoodPartCount       │     └───▶│  Console Sink    │  stdout
       └─────────────────────────┘          └──────────────────┘
 
       ┌─────────────────────────┐
@@ -73,8 +73,8 @@
   │        type: bool                                                                      │
   │        address: B3:0/2                           # PLC memory address                  │
   │        script: |                                                                       │
-  │          set('boolTag', result);                  # Cache for other items               │
-  │          return nil;                              # Don't publish this item             │
+  │          set('boolTag', result);                  # Cache for other items              │
+  │          return nil;                              # Don't publish this item            │
   │      - name: boolFromCache                       # Read from cache instead             │
   │        enabled: !!bool true                                                            │
   │        script: |                                                                       │
@@ -114,7 +114,7 @@
   │        address: !!int 16                                                               │
   │        count: !!int 12                                                                 │
   │        script: |                                                                       │
-  │          set('outputs', result);                  # Cache array for sub-items           │
+  │          set('outputs', result);                  # Cache array for sub-items          │
   │          return nil;                                                                   │
   │      - name: DO0                                                                       │
   │        script: return cache('outputs', nil)[0];                                        │
@@ -125,8 +125,8 @@
   │        address: !!int 24                                                               │
   │        count: !!int 2                                                                  │
   │        script: |                                                                       │
-  │          return struct.unpack('<I',                                                     │
-  │            struct.pack('<HH', result[0], result[1]));                                   │
+  │          return struct.unpack('<I',                                                    │
+  │            struct.pack('<HH', result[0], result[1]));                                  │
   │                                                                                        │
   └────────────────────────────────────────────────────────────────────────────────────────┘
 
@@ -139,7 +139,7 @@
   │    scan_interval: !!int 1000                                                           │
   │    connector: InfluxLP                           # InfluxDB Line Protocol sink         │
   │    address: https://us-east-1-1.aws.cloud2.influxdata.com   # Cloud endpoint           │
-  │    token: holjd83YjHjuQg7n...Yy4Lg==             # API token (truncated)              │
+  │    token: holjd83YjHjuQg7n...Yy4Lg==             # API token (truncated)               │
   │    bucket_name: DIME                             # Target bucket                       │
   │    exclude_filter:                                                                     │
   │      - rockwell/$SYSTEM                          # Skip system messages                │
@@ -193,7 +193,7 @@
   │    set('boolTag', result) and return nil (suppressing direct publish). Other items     │
   │    read from cache('boolTag', false) to transform and publish derived values.          │
   │                                                                                        │
-  │  • Multiple Sources, One Sink — Both Modbus and Rockwell sources feed the same        │
+  │  • Multiple Sources, One Sink — Both Modbus and Rockwell sources feed the same         │
   │    InfluxDB sink. The ring buffer merges all source data; the sink writes it all.      │
   │    This is the standard DIME fan-in pattern.                                           │
   │                                                                                        │

@@ -3,19 +3,19 @@
   EX11 — MQTT TO WEBSOCKET BRIDGE                                        DIME EXAMPLE SERIES
 ═══════════════════════════════════════════════════════════════════════════════════════════════
 
-  ┌─ WHAT THIS EXAMPLE DOES ──────────────────────────────────────────────────────────────┐
+  ┌─ WHAT THIS EXAMPLE DOES ───────────────────────────────────────────────────────────────┐
   │                                                                                        │
-  │  Bridge MQTT topics to WebSocket clients. Subscribes to MQTT topics using wildcard      │
-  │  patterns, parses JSON payloads with Lua, and pushes data to both console and a         │
-  │  WebSocket server. Uses itemized_read: false for event-driven MQTT message handling.    │
-  │  Demonstrates MQTT wildcards (+/#) and real-time data bridging to browser clients.      │
+  │  Bridge MQTT topics to WebSocket clients. Subscribes to MQTT topics using wildcard     │
+  │  patterns, parses JSON payloads with Lua, and pushes data to both console and a        │
+  │  WebSocket server. Uses itemized_read: false for event-driven MQTT message handling.   │
+  │  Demonstrates MQTT wildcards (+/#) and real-time data bridging to browser clients.     │
   │                                                                                        │
   └────────────────────────────────────────────────────────────────────────────────────────┘
 
   DATA FLOW
   ─────────
 
-      ┌──────────────────────────┐
+      ┌───────────────────────────┐
       │   MQTT Source             │
       │                           │        ┌──────────────────┐
       │  Broker: wss.sharc.tech   │   ┌───▶│  Console Sink    │  stdout
@@ -30,7 +30,7 @@
       │  scan: 500ms              │
       │  RBE: true                │
       │  itemized_read: false     │
-      └──────────────────────────┘
+      └───────────────────────────┘
              SOURCE                       RING BUFFER             SINKS
        (MQTT subscriber)                (4096 slots)         (2 destinations)
 
@@ -105,23 +105,23 @@
   ┌────────────────────────────────────────────────────────────────────────────────────────┐
   │                                                                                        │
   │  * MQTT Wildcards — The topic address sharc/+/evt/# uses two MQTT wildcard types:      │
-  │    + matches exactly one level (any device ID), # matches all remaining levels          │
+  │    + matches exactly one level (any device ID), # matches all remaining levels         │
   │    (any event path). This subscribes to all events from all SHARC devices.             │
   │                                                                                        │
   │  * itemized_read: false — Switches the MQTT connector to queuing (event-driven)        │
-  │    mode. Messages arrive asynchronously from the broker. scan_interval controls         │
-  │    how often queued messages are drained and published to the ring buffer.              │
+  │    mode. Messages arrive asynchronously from the broker. scan_interval controls        │
+  │    how often queued messages are drained and published to the ring buffer.             │
   │                                                                                        │
   │  * JSON Parsing with Lua — init_script loads the json library once at startup.         │
-  │    item_script applies from_json(result) to every incoming message, converting          │
-  │    raw JSON strings into structured Lua tables that sinks receive as objects.           │
+  │    item_script applies from_json(result) to every incoming message, converting         │
+  │    raw JSON strings into structured Lua tables that sinks receive as objects.          │
   │                                                                                        │
   │  * item_script vs script — item_script runs for ALL items in the source (shared        │
-  │    transform). Per-item script runs only for that specific item. Use item_script        │
+  │    transform). Per-item script runs only for that specific item. Use item_script       │
   │    when all items need the same processing (like JSON parsing).                        │
   │                                                                                        │
   │  * Protocol Bridge — MQTT (pub/sub) to WebSocket (push) is a common IoT pattern.       │
-  │    DIME acts as the bridge: factory-floor devices publish MQTT, browser dashboards      │
+  │    DIME acts as the bridge: factory-floor devices publish MQTT, browser dashboards     │
   │    consume WebSocket. No custom code needed — just YAML configuration.                 │
   │                                                                                        │
   └────────────────────────────────────────────────────────────────────────────────────────┘

@@ -3,11 +3,11 @@
   EX12 — SECURE MQTT (TLS)                                               DIME EXAMPLE SERIES
 ═══════════════════════════════════════════════════════════════════════════════════════════════
 
-  ┌─ WHAT THIS EXAMPLE DOES ──────────────────────────────────────────────────────────────┐
+  ┌─ WHAT THIS EXAMPLE DOES ───────────────────────────────────────────────────────────────┐
   │                                                                                        │
-  │  Encrypted MQTT with TLS and client certificates. Both source and sink connect to       │
+  │  Encrypted MQTT with TLS and client certificates. Both source and sink connect to      │
   │  the same broker over port 8883 (MQTTS). The source subscribes to all topics (#),      │
-  │  while the sink republishes to a base topic. Demonstrates certificate-based mutual      │
+  │  while the sink republishes to a base topic. Demonstrates certificate-based mutual     │
   │  authentication — client PFX cert, CA cert, and TLS configuration for secure MQTT.     │
   │                                                                                        │
   └────────────────────────────────────────────────────────────────────────────────────────┘
@@ -15,22 +15,22 @@
   DATA FLOW
   ─────────
 
-                                        ┌──────────────────┐
-      ┌──────────────────────┐     ┌───▶│  Console Sink    │  stdout
-      │   MQTT Source (TLS)   │     │    │  transform: true │
-      │                       │     │    └──────────────────┘
-      │  Broker: localhost    │     │
-      │  Port:   8883 (MQTTS) │     │
-      │  TLS:    true         ├─────┤
-      │  Client cert: PFX    │     │
-      │  CA cert: ca.crt      │     │    ┌──────────────────┐
-      │                       │     └───▶│  MQTT Sink (TLS) │  localhost:8883
-      │  Subscribe: #         │          │  base_topic:      │
-      │  (all topics)         │          │  MqttSecure1      │
-      │                       │          │  retain: true     │
-      │  scan: 2000ms         │          └──────────────────┘
+                                          ┌──────────────────┐
+      ┌───────────────────────┐      ┌───▶│  Console Sink    │  stdout
+      │   MQTT Source (TLS)   │      │    │  transform: true │
+      │                       │      │    └──────────────────┘
+      │  Broker: localhost    │      │
+      │  Port:   8883 (MQTTS) │      │
+      │  TLS:    true         ├──────┤
+      │  Client cert: PFX     │      │
+      │  CA cert: ca.crt      │      │    ┌───────────────────┐
+      │                       │      └───▶│  MQTT Sink (TLS)  │  localhost:8883
+      │  Subscribe: #         │           │  base_topic:      │
+      │  (all topics)         │           │  MqttSecure1      │
+      │                       │           │  retain: true     │
+      │  scan: 2000ms         │           └───────────────────┘
       │  RBE: true            │
-      └──────────────────────┘
+      └───────────────────────┘
              SOURCE                      RING BUFFER              SINKS
        (MQTTS subscriber)             (4096 slots)          (2 destinations)
 
@@ -122,26 +122,26 @@
   ┌────────────────────────────────────────────────────────────────────────────────────────┐
   │                                                                                        │
   │  * TLS Encryption — tls: true enables encrypted transport. Port 8883 is the standard   │
-  │    MQTTS port. All data between DIME and the broker is encrypted in transit.            │
+  │    MQTTS port. All data between DIME and the broker is encrypted in transit.           │
   │                                                                                        │
-  │  * Client Certificates — client_cert_path points to a PKCS#12 (.pfx) file containing  │
-  │    the client's private key and certificate. client_cert_password unlocks it.           │
+  │  * Client Certificates — client_cert_path points to a PKCS#12 (.pfx) file containing   │
+  │    the client's private key and certificate. client_cert_password unlocks it.          │
   │    ca_cert_path provides the CA certificate for the trust chain.                       │
   │                                                                                        │
   │  * tls_insecure: true — Skips server certificate hostname validation. Useful for       │
-  │    development with self-signed certificates. Set to false in production and ensure     │
+  │    development with self-signed certificates. Set to false in production and ensure    │
   │    the CA cert properly validates the broker's server certificate.                     │
   │                                                                                        │
-  │  * MQTT Source + Sink — Both source and sink connect to the same broker. The source     │
-  │    subscribes to # (all topics) and the sink republishes under base_topic. This         │
+  │  * MQTT Source + Sink — Both source and sink connect to the same broker. The source    │
+  │    subscribes to # (all topics) and the sink republishes under base_topic. This        │
   │    creates a message relay with DIME as the processing layer in between.               │
   │                                                                                        │
   │  * Retain Flag — retain: true on the sink tells the broker to keep the last message    │
-  │    for each topic. New subscribers immediately receive the latest value without         │
+  │    for each topic. New subscribers immediately receive the latest value without        │
   │    waiting for the next publish cycle.                                                 │
   │                                                                                        │
-  │  * clean_session — When true, the broker discards any previous session state.           │
-  │    Subscriptions are re-established on each connection. Set to false for persistent     │
+  │  * clean_session — When true, the broker discards any previous session state.          │
+  │    Subscriptions are re-established on each connection. Set to false for persistent    │
   │    sessions where the broker queues messages during disconnects.                       │
   │                                                                                        │
   └────────────────────────────────────────────────────────────────────────────────────────┘

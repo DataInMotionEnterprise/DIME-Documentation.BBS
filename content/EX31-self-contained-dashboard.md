@@ -3,9 +3,9 @@
   EX31 — SELF-CONTAINED DASHBOARD                                     DIME EXAMPLE SERIES
 ═══════════════════════════════════════════════════════════════════════════════════════════════
 
-  ┌─ WHAT THIS EXAMPLE DOES ──────────────────────────────────────────────────────────────┐
+  ┌─ WHAT THIS EXAMPLE DOES ───────────────────────────────────────────────────────────────┐
   │                                                                                        │
-  │  Builds a zero-dependency monitoring dashboard using DIME's WebServer and WebSocket     │
+  │  Builds a zero-dependency monitoring dashboard using DIME's WebServer and WebSocket    │
   │  sinks. A Script source simulates a sheet-metal press brake machine (GWB/Ultiform)     │
   │  with 50+ OPC-UA-style variables: machine state, job tracking, part quality,           │
   │  hydraulics, maintenance timers, and remote diagnostics. The browser connects to       │
@@ -16,7 +16,7 @@
   DATA FLOW
   ─────────
 
-       ┌───────────────────────────┐
+       ┌────────────────────────────┐
        │  gwb00_simulator (Script)  │  1000ms
        │                            │
        │  50+ items simulating      │         ┌──────────────────────────────┐
@@ -28,11 +28,11 @@
        │  Maintenance/*/Overdue     │     │              │
        │  RemoteDiagnosis/Hydr/*    │     │    ┌─────────┼────────────────┐
        │  RemoteDiagnosis/EFL/*     │     │    │         │        │       │
-       └───────────────────────────┘     │    ▼         ▼        ▼       ▼
-                                          │  ┌──────┐ ┌──────┐ ┌────┐ ┌──────┐
-            1 SOURCE                      │  │WebSrv│ │  WS  │ │HTTP│ │ Con- │
+       └────────────────────────────┘     │    ▼         ▼        ▼       ▼
+                                          │  ┌──────┐ ┌──────┐ ┌─────┐ ┌──────┐
+            1 SOURCE                      │  │WebSrv│ │  WS  │ │HTTP │ │ Con- │
         (Lua state machine)               │  │:8080 │ │:8082 │ │:8081│ │ sole │
-                                          │  └──────┘ └──────┘ └────┘ └──────┘
+                                          │  └──────┘ └──────┘ └─────┘ └──────┘
                                           │   Static   Real-    REST    Debug
                                           │   HTML/JS  time     API
                                           │            push
@@ -40,7 +40,7 @@
   CONFIGURATION                                                    [7 files, 1 web/ folder]
   ─────────────
 
-  ┌─ gwb00_simulator.yaml (abbreviated -- 50+ items) ──────────────────────────────────────┐
+  ┌─ gwb00_simulator.yaml (abbreviated -- 50+ items) ────────────────────────────────────────┐
   │                                                                                          │
   │  gwb00_simulator: &gwb00_simulator                                                       │
   │    name: gwb00_simulator                                                                 │
@@ -63,7 +63,7 @@
   │      # State Machine: OFF -> SETUP -> EXECUTING -> SETUP (90%) or DOWN (10%)             │
   │      - name: MachineStatus/Active                                                        │
   │        script: |                                                                         │
-  │          local states = {"OFF","SETUP","STARVED","EXECUTING","DOWN"}                      │
+  │          local states = {"OFF","SETUP","STARVED","EXECUTING","DOWN"}                     │
   │          local current_state = cache('./internal/machine_state', 1)                      │
   │          -- Transitions every ~15 seconds based on execution count                       │
   │          ...                                                                             │
@@ -74,7 +74,7 @@
   │                                                                                          │
   │      # Job tracking: quantities, timing, estimated vs actual                             │
   │      - name: ActiveJob/Quantity/Completed                                                │
-  │        script: |                          # 2% chance per scan during EXECUTING           │
+  │        script: |                          # 2% chance per scan during EXECUTING          │
   │          if machine_state == "EXECUTING" and math.random() < 0.02 then                   │
   │            completed = completed + 1      # 95% good rate                                │
   │          end                                                                             │
@@ -82,7 +82,7 @@
   │      # Maintenance timers: lubrication (168h), audit (720h), cartridge (2160h)           │
   │      - name: Maintenance/Lubrication/Overdue                                             │
   │        script: |                                                                         │
-  │          local last = cache('./maintenance/last_lubrication', os.time())                  │
+  │          local last = cache('./maintenance/last_lubrication', os.time())                 │
   │          return (os.time() - last) > 168 * 60 * 60                                       │
   │                                                                                          │
   │      # Remote diagnostics: hydraulics, PLC inputs, PCSS, EFL                             │
@@ -92,7 +92,7 @@
   │                                                                                          │
   └──────────────────────────────────────────────────────────────────────────────────────────┘
 
-  ┌─ webserver_sink.yaml ───────────────────────────────────────────────────────────────────┐
+  ┌─ webserver_sink.yaml ────────────────────────────────────────────────────────────────────┐
   │                                                                                          │
   │  web_server: &web_server                                                                 │
   │    connector: WebServer                   # Built-in HTTP file server                    │
@@ -103,20 +103,20 @@
   │                                                                                          │
   └──────────────────────────────────────────────────────────────────────────────────────────┘
 
-  ┌─ websocket_sink.yaml ──────────────────────────────────────────────────────────────────┐
+  ┌─ websocket_sink.yaml ────────────────────────────────────────────────────────────────────┐
   │                                                                                          │
   │  websocket_stream: &websocket_stream                                                     │
   │    connector: WebsocketServer             # Real-time push to browsers                   │
-  │    uri: ws://localhost:8082/              # Different port from HTTP server               │
+  │    uri: ws://localhost:8082/              # Different port from HTTP server              │
   │    scan_interval: !!int 1000                                                             │
   │                                                                                          │
   └──────────────────────────────────────────────────────────────────────────────────────────┘
 
-  ┌─ httpserver_sink.yaml / console_sink.yaml ──────────────────────────────────────────────┐
+  ┌─ httpserver_sink.yaml / console_sink.yaml ───────────────────────────────────────────────┐
   │                                                                                          │
   │  http_server: &http_server                # REST API for latest values                   │
   │    connector: HTTPServer                                                                 │
-  │    uri: http://localhost:8081/                                                            │
+  │    uri: http://localhost:8081/                                                           │
   │                                                                                          │
   │  console_output: &console_output          # Debug output                                 │
   │    connector: Console                                                                    │
@@ -124,7 +124,7 @@
   │                                                                                          │
   └──────────────────────────────────────────────────────────────────────────────────────────┘
 
-  ┌─ main.yaml ─────────────────────────────────────────────────────────────────────────────┐
+  ┌─ main.yaml ──────────────────────────────────────────────────────────────────────────────┐
   │                                                                                          │
   │  app:                                                                                    │
   │    license: 0000-0000-0000-0000-0000-0000-0000-0000                                      │
@@ -162,8 +162,8 @@
   │    720h, 2160h). Real OPC-UA machines expose identical data structures.                │
   │                                                                                        │
   │  * Four Sink Architecture -- Console for development, HTTP for polling clients,        │
-  │    WebSocket for real-time dashboards, WebServer for hosting the dashboard itself.      │
-  │    Each sink serves a different consumption pattern from the same ring buffer.          │
+  │    WebSocket for real-time dashboards, WebServer for hosting the dashboard itself.     │
+  │    Each sink serves a different consumption pattern from the same ring buffer.         │
   │                                                                                        │
   └────────────────────────────────────────────────────────────────────────────────────────┘
 

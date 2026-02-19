@@ -3,11 +3,11 @@
   EX13 — SPARKPLUGB INDUSTRIAL MQTT                                      DIME EXAMPLE SERIES
 ═══════════════════════════════════════════════════════════════════════════════════════════════
 
-  ┌─ WHAT THIS EXAMPLE DOES ──────────────────────────────────────────────────────────────┐
+  ┌─ WHAT THIS EXAMPLE DOES ───────────────────────────────────────────────────────────────┐
   │                                                                                        │
   │  SparkplugB protocol for industrial MQTT. A SparkplugB source decodes Protobuf         │
   │  metrics from an MQTT broker, while an EthernetIP source reads Rockwell PLC data.      │
-  │  The SparkplugB sink publishes birth/death certificates and metric updates to an        │
+  │  The SparkplugB sink publishes birth/death certificates and metric updates to an       │
   │  Ignition SCADA gateway. An InfluxDB sink stores time-series data. Demonstrates        │
   │  the full SparkplugB lifecycle with multi-source, multi-sink industrial architecture.  │
   │                                                                                        │
@@ -16,28 +16,28 @@
   DATA FLOW
   ─────────
 
-      ┌────────────────────────┐
+      ┌─────────────────────────┐
       │  SparkplugB Source      │          ┌───────────────────┐
       │  (MQTT + Protobuf)      │     ┌───▶│  Console Sink     │  stdout
       │                         │     │    │  exclude: rockwell│
       │  Broker: localhost:1883 │     │    │  exclude: spb/SYS │
       │  Topic: spBv1.0/...     │     │    └───────────────────┘
       │  DDATA/Factory1/DIME1   │     │
-      │                         │     │    ┌───────────────────┐
-      │  Lua: decode Protobuf   ├─────┼───▶│  SparkplugB Sink  │  localhost:1883
+      │                         │     │    ┌────────────────────┐
+      │  Lua: decode Protobuf   ├─────┼───▶│  SparkplugB Sink   │  localhost:1883
       │  metrics via emit()     │     │    │  (Ignition SCADA)  │
       │                         │     │    │  host: Acme        │
-      └────────────────────────┘     │    │  group: Chicago    │
+      └─────────────────────────┘     │    │  group: Chicago    │
                                       │    │  node: Factory1    │
-      ┌────────────────────────┐     │    └───────────────────┘
+      ┌─────────────────────────┐     │    └────────────────────┘
       │  EthernetIP Source      │     │
-      │  (Rockwell PLC)         │     │    ┌───────────────────┐
+      │  (Rockwell PLC)         │     │    ┌────────────────────┐
       │                         │     └───▶│  InfluxDB Sink     │  cloud InfluxDB
-      │  PLC: 192.168.111.20   ├─────┘    │  bucket: DIME      │
-      │  Tags: B3:0, N7:1      │          │  exclude: rockwell│
-      │  type: micrologix       │          └───────────────────┘
+      │  PLC: 192.168.111.20    ├─────┘    │  bucket: DIME      │
+      │  Tags: B3:0, N7:1       │          │  exclude: rockwell │
+      │  type: micrologix       │          └────────────────────┘
       │  scan: 1500ms           │
-      └────────────────────────┘
+      └─────────────────────────┘
            2 SOURCES                     RING BUFFER             3 SINKS
     (SparkplugB + EthernetIP)          (4096 slots)      (Console + SPB + Influx)
 
@@ -70,7 +70,7 @@
   │    scan_interval: !!int 1000                                                           │
   │    connector: SparkplugB                          # SparkplugB source connector        │
   │    rbe: !!bool true                                                                    │
-  │    itemized_read: !!bool false                    # Event-driven message handling       │
+  │    itemized_read: !!bool false                    # Event-driven message handling      │
   │    address: localhost                                                                  │
   │    port: !!int 1883                                                                    │
   │    username: user                                                                      │
@@ -78,7 +78,7 @@
   │    clean_session: !!bool true                                                          │
   │    qos: !!int 0                                                                        │
   │    init_script: |                                                                      │
-  │      import('System');                            # Import .NET System namespace        │
+  │      import('System');                            # Import .NET System namespace       │
   │      json = require('json');                                                           │
   │      get_metric_value = function(metric)          # Helper: extract typed value        │
   │        local dt = Convert.ToInt32(metric.Datatype);                                    │
@@ -133,11 +133,11 @@
   │        type: bool                                                                      │
   │        address: B3:0/2                            # Bit-level PLC address              │
   │        script: |                                                                       │
-  │          set('boolTag', result);                   # Cache for cross-item use           │
+  │          set('boolTag', result);                   # Cache for cross-item use          │
   │          return nil;                                                                   │
   │      - name: boolFromCache                                                             │
   │        script: |                                                                       │
-  │          return cache('boolTag', false);           # Read cached value                  │
+  │          return cache('boolTag', false);           # Read cached value                 │
   │      - name: Execution                                                                 │
   │        type: bool                                                                      │
   │        address: B3:0/3                                                                 │
@@ -215,20 +215,20 @@
   │    (int, float, bool, string) with datatype IDs defined by the SparkplugB spec.        │
   │                                                                                        │
   │  * Protobuf Metric Decoding — The init_script defines get_metric_value() which         │
-  │    switches on metric.Datatype to extract the correct typed value. The Lua script       │
-  │    accesses .NET objects directly via NLua interop (Convert.ToInt32, etc.).             │
+  │    switches on metric.Datatype to extract the correct typed value. The Lua script      │
+  │    accesses .NET objects directly via NLua interop (Convert.ToInt32, etc.).            │
   │                                                                                        │
   │  * emit() for Multiple Items — A single MQTT message contains multiple metrics. The    │
   │    script loops over result.Metrics and calls emit("./metricName", value) for each.    │
-  │    return nil suppresses the raw message. Each metric becomes its own ring buffer       │
+  │    return nil suppresses the raw message. Each metric becomes its own ring buffer      │
   │    item under the source connector's namespace.                                        │
   │                                                                                        │
   │  * Birth/Death Certificates — The SparkplugB sink (ignition) publishes NBIRTH on       │
-  │    connect and NDEATH on disconnect. birth_delay gives time for metric discovery.       │
+  │    connect and NDEATH on disconnect. birth_delay gives time for metric discovery.      │
   │    host_id/group_id/node_id/device_id define the SparkplugB namespace hierarchy.       │
   │                                                                                        │
-  │  * Multi-Source Filtering — Each sink uses exclude_filter to receive only relevant      │
-  │    data. Console shows SparkplugB only, Ignition excludes PLC system messages and       │
+  │  * Multi-Source Filtering — Each sink uses exclude_filter to receive only relevant     │
+  │    data. Console shows SparkplugB only, Ignition excludes PLC system messages and      │
   │    SparkplugB source loopback, InfluxDB stores only SparkplugB metrics.                │
   │                                                                                        │
   └────────────────────────────────────────────────────────────────────────────────────────┘

@@ -3,40 +3,40 @@
   EX28 — UNIFIED NAMESPACE (UNS)                                       DIME EXAMPLE SERIES
 ═══════════════════════════════════════════════════════════════════════════════════════════════
 
-  ┌─ WHAT THIS EXAMPLE DOES ──────────────────────────────────────────────────────────────┐
+  ┌─ WHAT THIS EXAMPLE DOES ───────────────────────────────────────────────────────────────┐
   │                                                                                        │
   │  Demonstrates Industry 4.0 Unified Namespace (UNS) principles using DIME. Three        │
-  │  simulated sources (PLC, Robot, Sensors) publish to an MQTT broker following ISA-95     │
-  │  hierarchical topics. An analytics engine computes OEE, production rate, and            │
-  │  environmental health from cached data. 10-file multi-file configuration.               │
+  │  simulated sources (PLC, Robot, Sensors) publish to an MQTT broker following ISA-95    │
+  │  hierarchical topics. An analytics engine computes OEE, production rate, and           │
+  │  environmental health from cached data. 10-file multi-file configuration.              │
   │                                                                                        │
   └────────────────────────────────────────────────────────────────────────────────────────┘
 
   DATA FLOW
   ─────────
 
-       ┌──────────────┐
+       ┌───────────────┐
        │  plc1         │  1000ms   Machine state, part counts,
        │  (Script)     │           quality rate, cycle time, temp
-       └──────┬───────┘
-              │         ┌────────────────────────────┐
-       ┌──────┴───────┐│                              │
+       └──────┬────────┘
+              │         ┌─────────────────────────────┐
+       ┌──────┴────────┐│                             │
        │  robot1       ││   Disruptor Ring Buffer     │    ┌──────────────────┐
        │  (Script)     ││   4096 slots                ├───▶│  unsMqtt (MQTT)  │  :1883
        │  500ms        │├─────────────────────────────┤    └──────────────────┘
-       └──────┬───────┘│                              │    ┌──────────────────┐
-              │         │                              ├───▶│  consoleSink     │  stdout
-       ┌──────┴───────┐│                              │    └──────────────────┘
-       │  envSensors   ││                              │    ┌──────────────────┐
+       └──────┬────────┘│                             │    ┌──────────────────┐
+              │         │                             ├───▶│  consoleSink     │  stdout
+       ┌──────┴────────┐│                             │    └──────────────────┘
+       │  envSensors   ││                             │    ┌──────────────────┐
        │  (Script)     │├─────────────────────────────┤───▶│  webHttpServer   │  :8090
-       │  5000ms       ││                              │    └──────────────────┘
-       └──────┬───────┘│                              │    ┌──────────────────┐
-              │         │                              ├───▶│  webWsServer     │  ws:8092
-       ┌──────┴───────┐│                              │    └──────────────────┘
-       │analyticsEngine││                              │
-       │  (Script)     ││                              │
-       │  5000ms       ││                              │
-       └──────────────┘└────────────────────────────┘
+       │  5000ms       ││                             │    └──────────────────┘
+       └──────┬────────┘│                             │    ┌──────────────────┐
+              │         │                             ├───▶│  webWsServer     │  ws:8092
+       ┌──────┴────────┐│                             │    └──────────────────┘
+       │analyticsEngine││                             │
+       │  (Script)     ││                             │
+       │  5000ms       ││                             │
+       └───────────────┘└─────────────────────────────┘
 
          4 SOURCES              RING BUFFER                    4 SINKS
      (Lua simulation)         (4096 slots)            (MQTT + Console + Web)
@@ -55,7 +55,7 @@
   CONFIGURATION                                                          [10 files, 1 folder]
   ─────────────
 
-  ┌─ plc1_source.yaml ──────────────────────────────────────────────────────────────────────┐
+  ┌─ plc1_source.yaml ───────────────────────────────────────────────────────────────────────┐
   │                                                                                          │
   │  plc1: &plc1                                                                             │
   │    name: plc1                                                                            │
@@ -87,11 +87,11 @@
   │      - name: QualityRate                  # (good/total) * 100                           │
   │      - name: CycleTime                    # 1800ms +/- 200ms                             │
   │      - name: Temperature                  # State-dependent range                        │
-  │      - name: Pressure                     # 90 +/- 5 PSI                                │
+  │      - name: Pressure                     # 90 +/- 5 PSI                                 │
   │                                                                                          │
   └──────────────────────────────────────────────────────────────────────────────────────────┘
 
-  ┌─ robot1_source.yaml ────────────────────────────────────────────────────────────────────┐
+  ┌─ robot1_source.yaml ─────────────────────────────────────────────────────────────────────┐
   │                                                                                          │
   │  robot1: &robot1                                                                         │
   │    name: robot1                                                                          │
@@ -115,11 +115,11 @@
   │                                                                                          │
   └──────────────────────────────────────────────────────────────────────────────────────────┘
 
-  ┌─ sensors_source.yaml ───────────────────────────────────────────────────────────────────┐
+  ┌─ sensors_source.yaml ────────────────────────────────────────────────────────────────────┐
   │                                                                                          │
   │  envSensors: &envSensors                                                                 │
   │    name: envSensors                                                                      │
-  │    scan_interval: !!int 5000              # Environmental data changes slowly             │
+  │    scan_interval: !!int 5000              # Environmental data changes slowly            │
   │    connector: Script                                                                     │
   │    rbe: !!bool true                                                                      │
   │    items:                                                                                │
@@ -127,7 +127,7 @@
   │      - name: RelativeHumidity             # 30-60% drift                                 │
   │      - name: AirQuality                   # Index 70-95                                  │
   │      - name: VibrationLevel               # Cross-connector: cache('plc1/Execution')     │
-  │        script: |                          #   higher vibration when PLC is RUNNING        │
+  │        script: |                          #   higher vibration when PLC is RUNNING       │
   │          local plc_status = cache('plc1/Execution', 'IDLE')                              │
   │          if plc_status == 'RUNNING' then                                                 │
   │            vibration = 2.0 + math.random() * 1.5                                         │
@@ -138,7 +138,7 @@
   │                                                                                          │
   └──────────────────────────────────────────────────────────────────────────────────────────┘
 
-  ┌─ analytics_source.yaml ─────────────────────────────────────────────────────────────────┐
+  ┌─ analytics_source.yaml ──────────────────────────────────────────────────────────────────┐
   │                                                                                          │
   │  analyticsEngine: &analyticsEngine                                                       │
   │    name: analyticsEngine                                                                 │
@@ -155,7 +155,7 @@
   │          local cycle_time = cache('plc1/CycleTime', 2000)                                │
   │          local performance = math.min(1800 / cycle_time, 1.0)                            │
   │          local quality = cache('plc1/QualityRate', 100.0) / 100.0                        │
-  │          return math.floor(availability * performance * quality * 1000) / 10              │
+  │          return math.floor(availability * performance * quality * 1000) / 10             │
   │      - name: ProductionRate               # Parts per minute from delta                  │
   │      - name: QualityTrend                 # "improving" / "stable" / "declining"         │
   │      - name: LineEfficiency               # Robot cycles vs PLC parts sync               │
@@ -163,18 +163,18 @@
   │                                                                                          │
   └──────────────────────────────────────────────────────────────────────────────────────────┘
 
-  ┌─ uns_mqtt_sink.yaml ────────────────────────────────────────────────────────────────────┐
+  ┌─ uns_mqtt_sink.yaml ─────────────────────────────────────────────────────────────────────┐
   │                                                                                          │
   │  unsMqtt: &unsMqtt                                                                       │
   │    name: unsMqtt                                                                         │
   │    scan_interval: !!int 100               # Fast publish for real-time UNS               │
   │    connector: MQTT                                                                       │
   │    use_sink_transform: !!bool true                                                       │
-  │    address: localhost                                                                     │
+  │    address: localhost                                                                    │
   │    port: !!int 1883                                                                      │
   │    base_topic: Acme/Dallas/Assembly       # ISA-95 hierarchy root                        │
   │    qos: !!int 1                           # At-least-once delivery                       │
-  │    retain: !!bool true                    # Late subscribers get current state            │
+  │    retain: !!bool true                    # Late subscribers get current state           │
   │    clean_session: !!bool true                                                            │
   │    exclude_filter:                                                                       │
   │      - plc1/\$SYSTEM                                                                     │
@@ -183,7 +183,7 @@
   │                                                                                          │
   └──────────────────────────────────────────────────────────────────────────────────────────┘
 
-  ┌─ console_sink.yaml ─────────────────────────────────────────────────────────────────────┐
+  ┌─ console_sink.yaml ──────────────────────────────────────────────────────────────────────┐
   │                                                                                          │
   │  consoleSink: &consoleSink                                                               │
   │    name: consoleSink                                                                     │
@@ -198,14 +198,14 @@
   │                                                                                          │
   └──────────────────────────────────────────────────────────────────────────────────────────┘
 
-  ┌─ web_http_server.yaml / web_ws_server.yaml ─────────────────────────────────────────────┐
+  ┌─ web_http_server.yaml / web_ws_server.yaml ──────────────────────────────────────────────┐
   │                                                                                          │
   │  webHttpServer: &webHttpServer            # Static file server                           │
   │    connector: WebServer                                                                  │
   │    uri: http://localhost:8090/                                                           │
   │    web_root: ./Configs/Examples/UNS01/web                                                │
   │                                                                                          │
-  │  webWsServer: &webWsServer                # Real-time data push                         │
+  │  webWsServer: &webWsServer                # Real-time data push                          │
   │    connector: WebsocketServer                                                            │
   │    uri: ws://0.0.0.0:8092/                                                               │
   │    use_sink_transform: !!bool false                                                      │
@@ -214,7 +214,7 @@
   │                                                                                          │
   └──────────────────────────────────────────────────────────────────────────────────────────┘
 
-  ┌─ main.yaml ─────────────────────────────────────────────────────────────────────────────┐
+  ┌─ main.yaml ──────────────────────────────────────────────────────────────────────────────┐
   │                                                                                          │
   │  app:                                                                                    │
   │    license: DEMO-0000-0000-0000-0000-0000-0000-0000                                      │
@@ -256,7 +256,7 @@
   │    ideal cycle time) x Quality (good parts ratio). The moses library provides          │
   │    functional helpers like moses.last() and moses.mean() for rolling windows.          │
   │                                                                                        │
-  │  * Multi-Rate Sources -- PLC at 1s, robot at 500ms, sensors at 5s. Each source        │
+  │  * Multi-Rate Sources -- PLC at 1s, robot at 500ms, sensors at 5s. Each source         │
   │    polls at the rate appropriate for its data. The ring buffer accepts them all.       │
   │                                                                                        │
   └────────────────────────────────────────────────────────────────────────────────────────┘

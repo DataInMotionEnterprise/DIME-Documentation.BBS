@@ -3,9 +3,9 @@
   EX29 — MULTI-MACHINE SHOP FLOOR                                     DIME EXAMPLE SERIES
 ═══════════════════════════════════════════════════════════════════════════════════════════════
 
-  ┌─ WHAT THIS EXAMPLE DOES ──────────────────────────────────────────────────────────────┐
+  ┌─ WHAT THIS EXAMPLE DOES ───────────────────────────────────────────────────────────────┐
   │                                                                                        │
-  │  Connects diverse CNC machines from a real shop floor into a single ring buffer.        │
+  │  Connects diverse CNC machines from a real shop floor into a single ring buffer.       │
   │  Haas via SHDR, TCP-ASCII, and XML scraping. Mazak via MTConnect Agent. Rockwell PLC   │
   │  via EtherNet/IP. Output to Console, MQTT, SHDR, CSV, HTTP, and WebSocket sinks.       │
   │  14-file config demonstrating multi-protocol, multi-vendor integration.                │
@@ -15,26 +15,26 @@
   DATA FLOW
   ─────────
 
-       ┌──────────────┐ SHDR
-       │  haas1        │ :9998       ┌───────────────────────────────┐
-       │  HaasSHDR     │────────┐    │                               │
-       └──────────────┘         │    │    Disruptor Ring Buffer      │
-       ┌──────────────┐ XML     │    │    4096 slots                 │
-       │  haas2        │ :8082  │    │                               │
-       │  XMLWebScraper│────────┤    │  ┌─────────────────────────┐  │
-       └──────────────┘         ├───▶│  │  One unified data model │  │
-       ┌──────────────┐ TCP     │    │  │  from 5 diverse sources │  │
-       │  haas5        │ :5051  │    │  └─────────────────────────┘  │
-       │  TcpASCII     │────────┤    │                               │
-       └──────────────┘         │    └──────────┬────────────────────┘
-       ┌──────────────┐ HTTP    │               │
-       │  mazak1       │ :5719  │          ┌────┴────┐
-       │  MTConnectAgent────────┤          │ Routing │
-       └──────────────┘         │          └────┬────┘
-       ┌──────────────┐ EIP     │               │
-       │  rock1        │        │    ┌──────────┼──────────────┐
-       │  EthernetIP   │────────┘    │          │              │
-       └──────────────┘              ▼          ▼              ▼
+       ┌──────────────────┐ SHDR
+       │  haas1           │ :9998    ┌───────────────────────────────┐
+       │  HaasSHDR        │──────┐   │                               │
+       └──────────────────┘      │   │    Disruptor Ring Buffer      │
+       ┌──────────────────┐ XML  │   │    4096 slots                 │
+       │  haas2           │ :8082│   │                               │
+       │  XMLWebScraper   │──────┤   │  ┌─────────────────────────┐  │
+       └──────────────────┘      ├──▶│  │  One unified data model │  │
+       ┌──────────────────┐ TCP  │   │  │  from 5 diverse sources │  │
+       │  haas5           │ :5051│   │  └─────────────────────────┘  │
+       │  TcpASCII        │──────┤   │                               │
+       └──────────────────┘      │   └──────────┬────────────────────┘
+       ┌──────────────────┐ HTTP │              │
+       │  mazak1          │ :5719│         ┌────┴────┐
+       │  MTConnectAgent  │──────┤         │ Routing │
+       └──────────────────┘      │         └────┬────┘
+       ┌──────────────────┐ EIP  │              │
+       │  rock1           │      │   ┌──────────┼──────────────┐
+       │  EthernetIP      │──────┘   │          │              │
+       └──────────────────┘           ▼          ▼              ▼
                                ┌─────────┐ ┌────────┐ ┌──────────┐
                                │ Console │ │  MQTT  │ │   SHDR   │
                                └─────────┘ └────────┘ └──────────┘
@@ -46,7 +46,7 @@
   CONFIGURATION                                                         [14 files, 0 folders]
   ─────────────
 
-  ┌─ haas1.yaml — HaasSHDR connector ──────────────────────────────────────────────────────┐
+  ┌─ haas1.yaml — HaasSHDR connector ────────────────────────────────────────────────────────┐
   │                                                                                          │
   │  haas1: &haas1                                                                           │
   │    name: haas1                                                                           │
@@ -69,7 +69,7 @@
   │                                                                                          │
   └──────────────────────────────────────────────────────────────────────────────────────────┘
 
-  ┌─ haas2.yaml — XMLWebScraper connector ──────────────────────────────────────────────────┐
+  ┌─ haas2.yaml — XMLWebScraper connector ───────────────────────────────────────────────────┐
   │                                                                                          │
   │  haas2: &haas2                                                                           │
   │    connector: XMLWebScraper               # Scrape MTConnect XML endpoint                │
@@ -84,7 +84,7 @@
   │                                                                                          │
   └──────────────────────────────────────────────────────────────────────────────────────────┘
 
-  ┌─ haas5.yaml — TcpASCII connector ──────────────────────────────────────────────────────┐
+  ┌─ haas5.yaml — TcpASCII connector ────────────────────────────────────────────────────────┐
   │                                                                                          │
   │  haas5: &haas5                                                                           │
   │    connector: TcpASCII                    # Raw TCP Q-commands to Haas                   │
@@ -93,7 +93,7 @@
   │    read_delay: !!int 600                                                                 │
   │    scan_interval: !!int 7000              # Slow poll for macro variables                │
   │    init_script: |                                                                        │
-  │      stringx = require('pl.stringx')      # Penlight string utilities                   │
+  │      stringx = require('pl.stringx')      # Penlight string utilities                    │
   │      clean_response = function(response) ... end                                         │
   │      get_value = function(response) ... end                                              │
   │    items:                                 # Q-codes: ?Q100=serial, ?Q104=mode, etc.      │
@@ -111,10 +111,10 @@
   │                                                                                          │
   └──────────────────────────────────────────────────────────────────────────────────────────┘
 
-  ┌─ mazak1.yaml — MTConnectAgent connector ────────────────────────────────────────────────┐
+  ┌─ mazak1.yaml — MTConnectAgent connector ─────────────────────────────────────────────────┐
   │                                                                                          │
   │  mazak1: &mazak1                                                                         │
-  │    connector: MTConnectAgent              # Standard MTConnect HTTP agent                 │
+  │    connector: MTConnectAgent              # Standard MTConnect HTTP agent                │
   │    address: mtconnect.mazakcorp.com                                                      │
   │    port: !!int 5719                                                                      │
   │    itemized_read: !!bool true                                                            │
@@ -129,10 +129,10 @@
   │                                                                                          │
   └──────────────────────────────────────────────────────────────────────────────────────────┘
 
-  ┌─ rock1.yaml — EthernetIP connector ────────────────────────────────────────────────────┐
+  ┌─ rock1.yaml — EthernetIP connector ──────────────────────────────────────────────────────┐
   │                                                                                          │
   │  rock1: &rock1                                                                           │
-  │    connector: EthernetIP                  # Allen-Bradley MicroLogix PLC                  │
+  │    connector: EthernetIP                  # Allen-Bradley MicroLogix PLC                 │
   │    type: micrologix                                                                      │
   │    address: 192.168.111.20                                                               │
   │    path: 1,0                                                                             │
@@ -147,7 +147,7 @@
   │                                                                                          │
   └──────────────────────────────────────────────────────────────────────────────────────────┘
 
-  ┌─ sink files: console.yaml, mqtt1.yaml, shdr.yaml, csv1.yaml, etc. ─────────────────────┐
+  ┌─ sink files: console.yaml, mqtt1.yaml, shdr.yaml, csv1.yaml, etc. ───────────────────────┐
   │                                                                                          │
   │  console: &console                        # Debug output                                 │
   │    connector: Console                                                                    │
@@ -169,7 +169,7 @@
   │                                                                                          │
   └──────────────────────────────────────────────────────────────────────────────────────────┘
 
-  ┌─ main.yaml ─────────────────────────────────────────────────────────────────────────────┐
+  ┌─ main.yaml ──────────────────────────────────────────────────────────────────────────────┐
   │                                                                                          │
   │  app:                                                                                    │
   │    license: 0000-0000-0000-0000-0000-0000-0000-0000                                      │

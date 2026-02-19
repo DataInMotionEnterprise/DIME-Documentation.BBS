@@ -3,7 +3,7 @@
   EX20 — SQL SERVER READS                                                DIME EXAMPLE SERIES
 ═══════════════════════════════════════════════════════════════════════════════════════════════
 
-  ┌─ WHAT THIS EXAMPLE DOES ──────────────────────────────────────────────────────────────┐
+  ┌─ WHAT THIS EXAMPLE DOES ───────────────────────────────────────────────────────────────┐
   │                                                                                        │
   │  Polls a Microsoft SQL Server database on a timer, reading manufacturing order         │
   │  data with encrypted connections. Uses standard ADO.NET connection strings with        │
@@ -16,10 +16,10 @@
   DATA FLOW
   ─────────
 
-      ┌─────────────────────────┐
+      ┌──────────────────────────┐
       │   MSSQL Source           │
       │                          │          ┌──────────────────┐
-      │   172.16.10.5            │     ┌───▶│  Console Sink   │  stdout
+      │   172.16.10.5            │     ┌───▶│  Console Sink    │  stdout
       │   Database: Tykma        ├─────┘    └──────────────────┘
       │   Encrypt: True          │
       │                          │
@@ -33,7 +33,7 @@
       │   · OrderQuantity        │
       │                          │
       │   scan: 1000ms           │
-      └─────────────────────────┘
+      └──────────────────────────┘
               SOURCE                        RING BUFFER              SINK
         (SQL Server polling)              (4096 slots)           (Console)
 
@@ -113,12 +113,12 @@
   │    encryption and TrustServerCertificate=True to accept self-signed certificates.      │
   │    In production, use proper CA-signed certificates and remove TrustServerCert.        │
   │                                                                                        │
-  │  • Column-to-Item Mapping — Each item's address field corresponds to a SQL column     │
-  │    name. The script: return result[0] extracts the first row's value. For multiple    │
-  │    rows, use result[n] to access the nth row.                                         │
+  │  • Column-to-Item Mapping — Each item's address field corresponds to a SQL column      │
+  │    name. The script: return result[0] extracts the first row's value. For multiple     │
+  │    rows, use result[n] to access the nth row.                                          │
   │                                                                                        │
   │  • Lifecycle Scripts — All four lifecycle scripts (init, deinit, enter, exit) are      │
-  │    set to ~ (null), meaning no custom logic. Compare with EX19 where enter_script     │
+  │    set to ~ (null), meaning no custom logic. Compare with EX19 where enter_script      │
   │    dynamically modifies the SQL query each cycle.                                      │
   │                                                                                        │
   │  • Minimal Sink — The Console sink has no filters, receiving all messages including    │

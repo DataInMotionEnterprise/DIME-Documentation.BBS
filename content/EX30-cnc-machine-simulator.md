@@ -3,38 +3,38 @@
   EX30 — CNC MACHINE SIMULATOR                                        DIME EXAMPLE SERIES
 ═══════════════════════════════════════════════════════════════════════════════════════════════
 
-  ┌─ WHAT THIS EXAMPLE DOES ──────────────────────────────────────────────────────────────┐
+  ┌─ WHAT THIS EXAMPLE DOES ───────────────────────────────────────────────────────────────┐
   │                                                                                        │
   │  Simulates a full CNC machine with state machine (IDLE/SETUP/RUNNING/FAULT), power     │
-  │  consumption, temperature, vibration, and production tracking. An analytics processor   │
+  │  consumption, temperature, vibration, and production tracking. An analytics processor  │
   │  computes moving averages, cycle detection, anomaly detection, OEE, and predictive     │
-  │  maintenance scores. Test a complete monitoring pipeline without hardware.              │
+  │  maintenance scores. Test a complete monitoring pipeline without hardware.             │
   │                                                                                        │
   └────────────────────────────────────────────────────────────────────────────────────────┘
 
   DATA FLOW
   ─────────
 
-       ┌──────────────────────┐
+       ┌───────────────────────┐
        │  machine_simulator    │ 1000ms
        │  (Script)             │ State machine: IDLE -> SETUP -> RUNNING -> IDLE
        │                       │ Outputs: Power, Temp, Vibration, Status, Fault
-       └──────────┬───────────┘
+       └──────────┬────────────┘
                   │
-       ┌──────────┴───────────┐              ┌─────────────────────────┐
-       │  production_simulator │ 5000ms       │                         │
-       │  (Script)             │──────────┐   │    Disruptor Ring       │
-       │  Reads machine_       │          │   │    Buffer (4096)        │
-       │  simulator cache      │          ├──▶│                         │
-       └──────────────────────┘          │   │                         │
-                                          │   └──────────┬──────────────┘
-       ┌──────────────────────┐          │              │
+       ┌──────────┴────────────┐              ┌──────────────────────────┐
+       │  production_simulator │ 5000ms       │                          │
+       │  (Script)             │──────────┐   │    Disruptor Ring        │
+       │  Reads machine_       │          │   │    Buffer (4096)         │
+       │  simulator cache      │          ├──▶│                          │
+       └───────────────────────┘          │   │                          │
+                                          │   └──────────┬───────────────┘
+       ┌───────────────────────┐          │              │
        │  analytics_processor  │ 1000ms   │         ┌────┴─────┐
        │  (Script)             │──────────┘         │          │
        │  Power/Temp/Vibration │              ┌─────┴──┐  ┌────┴───────┐
        │  analysis, OEE calc,  │              │Console │  │ MTConnect  │
        │  predictive maint.    │              │  Sink  │  │   Agent    │
-       └──────────────────────┘              └────────┘  └────────────┘
+       └───────────────────────┘              └────────┘  └────────────┘
 
          3 SOURCES                   RING BUFFER              2 SINKS
      (machine + production       (4096 slots)            (console + MTC)
@@ -43,7 +43,7 @@
   CONFIGURATION                                                           [7 files, 0 folders]
   ─────────────
 
-  ┌─ machine_simulator.yaml ────────────────────────────────────────────────────────────────┐
+  ┌─ machine_simulator.yaml ─────────────────────────────────────────────────────────────────┐
   │                                                                                          │
   │  machine_simulator: &machine_simulator                                                   │
   │    connector: Script                                                                     │
@@ -76,7 +76,7 @@
   │                                                                                          │
   └──────────────────────────────────────────────────────────────────────────────────────────┘
 
-  ┌─ production_simulator.yaml ─────────────────────────────────────────────────────────────┐
+  ┌─ production_simulator.yaml ──────────────────────────────────────────────────────────────┐
   │                                                                                          │
   │  production_simulator: &production_simulator                                             │
   │    connector: Script                                                                     │
@@ -98,7 +98,7 @@
   │                                                                                          │
   └──────────────────────────────────────────────────────────────────────────────────────────┘
 
-  ┌─ analytics.yaml (abbreviated -- full file is ~600 lines) ──────────────────────────────┐
+  ┌─ analytics.yaml (abbreviated -- full file is ~600 lines) ────────────────────────────────┐
   │                                                                                          │
   │  analytics_processor: &analytics_processor                                               │
   │    name: analytics                                                                       │
@@ -127,11 +127,11 @@
   │      - name: MachineHealthStatus          # Composite health score 0-100                 │
   │      - name: OEEDashboard                 # Availability/Performance/Quality             │
   │      - name: PredictiveMaintenance        # Wear index, days until maintenance           │
-  │      - name: AnomalyDetection             # Active anomaly summary                      │
+  │      - name: AnomalyDetection             # Active anomaly summary                       │
   │                                                                                          │
   └──────────────────────────────────────────────────────────────────────────────────────────┘
 
-  ┌─ main.yaml ─────────────────────────────────────────────────────────────────────────────┐
+  ┌─ main.yaml ──────────────────────────────────────────────────────────────────────────────┐
   │                                                                                          │
   │  app:                                                                                    │
   │    license: 0000-0000-0000-0000-0000-0000-0000-0000                                      │
@@ -149,24 +149,24 @@
   ────────────
   ┌────────────────────────────────────────────────────────────────────────────────────────┐
   │                                                                                        │
-  │  * State Machine Simulation -- The machine_simulator enter_script implements a full     │
+  │  * State Machine Simulation -- The machine_simulator enter_script implements a full    │
   │    state machine with probabilistic transitions. The set("./current_state", value)     │
-  │    pattern persists state between scans. Other sources read it via cache().             │
+  │    pattern persists state between scans. Other sources read it via cache().            │
   │                                                                                        │
-  │  * Analytics Pipeline -- The analytics source reads machine_simulator data through      │
-  │    the cache, computes moving averages, detects power cycles using threshold            │
-  │    crossing, and runs linear regression for trend detection. All in embedded Lua.       │
+  │  * Analytics Pipeline -- The analytics source reads machine_simulator data through     │
+  │    the cache, computes moving averages, detects power cycles using threshold           │
+  │    crossing, and runs linear regression for trend detection. All in embedded Lua.      │
   │                                                                                        │
   │  * emit() for Multiple Observations -- The analytics source uses emit('./PowerTrend',  │
-  │    trend) to publish derived metrics as separate items. The enter_script uses emit()    │
+  │    trend) to publish derived metrics as separate items. The enter_script uses emit()   │
   │    for periodic OEE calculations. The exit_script uses emit() for alert conditions.    │
   │                                                                                        │
-  │  * Cross-Source Dependencies -- production_simulator reads machine_simulator cache      │
-  │    for part counts and state. analytics reads both for comprehensive analysis. This     │
+  │  * Cross-Source Dependencies -- production_simulator reads machine_simulator cache     │
+  │    for part counts and state. analytics reads both for comprehensive analysis. This    │
   │    three-source pipeline demonstrates DIME's data combination pattern.                 │
   │                                                                                        │
   │  * Predictive Maintenance -- The wear index combines vibration band analysis,          │
-  │    temperature, and power anomaly counts to estimate days until maintenance. A          │
+  │    temperature, and power anomaly counts to estimate days until maintenance. A         │
   │    simple but illustrative ML-adjacent pattern using pure Lua.                         │
   │                                                                                        │
   └────────────────────────────────────────────────────────────────────────────────────────┘

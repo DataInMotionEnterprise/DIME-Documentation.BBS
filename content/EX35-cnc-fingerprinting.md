@@ -3,12 +3,12 @@
   EX35 — CNC FINGERPRINTING                                           DIME EXAMPLE SERIES
 ═══════════════════════════════════════════════════════════════════════════════════════════════
 
-  ┌─ WHAT THIS EXAMPLE DOES ──────────────────────────────────────────────────────────────┐
+  ┌─ WHAT THIS EXAMPLE DOES ───────────────────────────────────────────────────────────────┐
   │                                                                                        │
-  │  Implements CNC part identification through spindle current pattern analysis. A         │
+  │  Implements CNC part identification through spindle current pattern analysis. A        │
   │  current transformer simulator generates realistic power draw profiles for 4 part      │
-  │  types (aluminum bracket, steel shaft, cast iron housing, precision gear). An           │
-  │  analytics processor learns fingerprints, detects cycles, and identifies parts.         │
+  │  types (aluminum bracket, steel shaft, cast iron housing, precision gear). An          │
+  │  analytics processor learns fingerprints, detects cycles, and identifies parts.        │
   │  A productivity module tracks OEE, parts per hour, and identification accuracy.        │
   │  ~600 lines of embedded Lua analytics across 3 source connectors.                      │
   │                                                                                        │
@@ -17,47 +17,47 @@
   DATA FLOW
   ─────────
 
-       ┌───────────────────────────────┐
+       ┌────────────────────────────────┐
        │  currentTransformer (Script)   │  1000ms, rbe: false
        │                                │  Simulates 4 part types:
        │  PartA: Aluminum (10-12s)      │  - startup/running/shutdown phases
        │  PartB: Steel (23-26s)         │  - 12 pattern generators (steady,
        │  PartC: Cast Iron (36-40s)     │    ramping, pulsed, gear_cutting...)
        │  PartD: Precision (22-25s)     │  - idle between parts
-       └──────────────┬────────────────┘
+       └──────────────┬─────────────────┘
                       │
-       ┌──────────────┴────────────────┐         ┌───────────────────┐
-       │  analyticsProcessor (Script)   │  1000ms │  Disruptor Ring   │
-       │                                │         │  Buffer (4096)    │
-       │  Signal processing:            │────────▶│                   │
-       │  - 3-sample moving average     │         └─────────┬─────────┘
-       │  - Cycle detection (2.5A start,│                   │
-       │    1.8A end thresholds)        │         ┌─────────┼──────────────┐
-       │  - 10-segment fingerprinting   │         │         │              │
-       │  - Pattern correlation (60%    │         ▼         ▼              ▼
-       │    mean + 30% range + 10% std) │   ┌──────────┐ ┌──────┐ ┌────────────┐
-       │  - Fingerprint library (3-cycle│   │ WebSocket│ │ Web  │ │  Console   │
-       │    learning per part type)     │   │  :8092   │ │Server│ │  (opt.)    │
-       └──────────────────────────────┘   └──────────┘ │:8090 │ └────────────┘
-                                                         └──────┘
-       ┌──────────────────────────────┐                  ┌────────────┐
-       │  productivityMetrics (Script)  │  2000ms          │  CSV Sink  │
-       │                                │                  │  (opt.)    │
-       │  OEE = Avail x Perf x Quality │                  └────────────┘
+       ┌──────────────┴─────────────────┐          ┌───────────────────┐
+       │  analyticsProcessor (Script)   │  1000ms  │  Disruptor Ring   │
+       │                                │          │  Buffer (4096)    │
+       │  Signal processing:            │────────▶ │                   │
+       │  - 3-sample moving average     │          └─────────┬─────────┘
+       │  - Cycle detection (2.5A start,│                    │
+       │    1.8A end thresholds)        │          ┌─────────┼──────────────┐
+       │  - 10-segment fingerprinting   │          │         │              │
+       │  - Pattern correlation (60%    │          ▼         ▼              ▼
+       │    mean + 30% range + 10% std) │    ┌──────────┐ ┌──────┐ ┌────────────┐
+       │  - Fingerprint library (3-cycle│    │ WebSocket│ │ Web  │ │  Console   │
+       │    learning per part type)     │    │  :8092   │ │Server│ │  (opt.)    │
+       └────────────────────────────────┘    └──────────┘ │:8090 │ └────────────┘
+                                                          └──────┘
+       ┌────────────────────────────────┐                 ┌────────────┐
+       │  productivityMetrics (Script)  │  2000ms         │  CSV Sink  │
+       │                                │                 │  (opt.)    │
+       │  OEE = Avail x Perf x Quality  │                 └────────────┘
        │  Parts per hour, part mix,     │
        │  cycle time variance,          │          3 SOURCES, 4+ SINKS
        │  identification accuracy       │
-       └──────────────────────────────┘
+       └────────────────────────────────┘
 
   CONFIGURATION                                                    [10 files, 1 web/ folder]
   ─────────────
 
-  ┌─ currentTransformer.yaml (abbreviated -- ~300 lines Lua) ──────────────────────────────┐
+  ┌─ currentTransformer.yaml (abbreviated -- ~300 lines Lua) ────────────────────────────────┐
   │                                                                                          │
   │  currentTransformer: &currentTransformer                                                 │
   │    connector: Script                                                                     │
   │    scan_interval: !!int 1000              # 1Hz sampling rate                            │
-  │    rbe: !!bool false                      # Continuous -- every reading matters           │
+  │    rbe: !!bool false                      # Continuous -- every reading matters          │
   │    init_script: |                                                                        │
   │      PART_TYPES = {                       # 4 part definitions                           │
   │        { name = "PartA_Aluminum_Bracket",                                                │
@@ -77,8 +77,8 @@
   │      -- 12 pattern generators: steady, varying, ramping, pulsed, periodic,               │
   │      --   spiking, heavy_cutting, smooth, drilling_cycle, tapping,                       │
   │      --   gear_cutting, light_cut, idle                                                  │
-  │    enter_script: |                        # State machine: idle -> startup ->             │
-  │                                           #   running phases -> shutdown -> idle          │
+  │    enter_script: |                        # State machine: idle -> startup ->            │
+  │                                           #   running phases -> shutdown -> idle         │
   │    items:                                                                                │
   │      - name: CurrentDraw                  # rbe: false -- stream every reading           │
   │      - name: CyclePhase                   # Current operation name                       │
@@ -91,7 +91,7 @@
   │                                                                                          │
   └──────────────────────────────────────────────────────────────────────────────────────────┘
 
-  ┌─ analyticsProcessor.yaml (abbreviated -- ~350 lines Lua) ──────────────────────────────┐
+  ┌─ analyticsProcessor.yaml (abbreviated -- ~350 lines Lua) ────────────────────────────────┐
   │                                                                                          │
   │  analyticsProcessor: &analyticsProcessor                                                 │
   │    connector: Script                                                                     │
@@ -106,22 +106,22 @@
   │      SIMILARITY_THRESHOLD = 0.55          # Minimum correlation for match                │
   │      LEARNING_CYCLES = 3                  # Cycles needed before identification          │
   │                                                                                          │
-  │      -- Functions: calculate_moving_average, calculate_statistics,                        │
+  │      -- Functions: calculate_moving_average, calculate_statistics,                       │
   │      --   normalize_data, calculate_correlation, extract_fingerprint,                    │
-  │      --   identify_part, compare_fingerprints (60% mean, 30% range, 10% std),           │
+  │      --   identify_part, compare_fingerprints (60% mean, 30% range, 10% std),            │
   │      --   update_library, calculate_average_fingerprint                                  │
   │                                                                                          │
   │    enter_script: |                        # Per-scan cycle detection                     │
   │      -- Read current from cache("currentTransformer/CurrentDraw")                        │
   │      -- Smooth with moving average                                                       │
   │      -- Detect rising edge (start) and falling edge (end)                                │
-  │      -- On cycle complete: extract fingerprint, identify part, update library             │
+  │      -- On cycle complete: extract fingerprint, identify part, update library            │
   │                                                                                          │
   │    items:                                                                                │
   │      - name: SmoothedCurrent              # Moving-average filtered value                │
   │      - name: CycleDetected                # Boolean: currently in cycle?                 │
-  │      - name: IdentifiedPart               # Best match from library                     │
-  │      - name: IdentificationConfidence     # 0.0 - 1.0 correlation score                 │
+  │      - name: IdentifiedPart               # Best match from library                      │
+  │      - name: IdentificationConfidence     # 0.0 - 1.0 correlation score                  │
   │      - name: ActualPart                   # Ground truth from simulator                  │
   │      - name: IdentificationAccuracy       # Running accuracy percentage                  │
   │      - name: CycleAnalysisResults         # JSON: duration, ID, confidence               │
@@ -130,7 +130,7 @@
   │                                                                                          │
   └──────────────────────────────────────────────────────────────────────────────────────────┘
 
-  ┌─ productivityMetrics.yaml (abbreviated -- ~250 lines Lua) ─────────────────────────────┐
+  ┌─ productivityMetrics.yaml (abbreviated -- ~250 lines Lua) ───────────────────────────────┐
   │                                                                                          │
   │  productivityMetrics: &productivityMetrics                                               │
   │    connector: Script                                                                     │
@@ -157,7 +157,7 @@
   │                                                                                          │
   └──────────────────────────────────────────────────────────────────────────────────────────┘
 
-  ┌─ Sink files ────────────────────────────────────────────────────────────────────────────┐
+  ┌─ Sink files ─────────────────────────────────────────────────────────────────────────────┐
   │                                                                                          │
   │  webServerSink: &webServerSink            # Dashboard hosting                            │
   │    connector: WebServer                                                                  │
@@ -168,7 +168,7 @@
   │  websocketServerSink: &websocketServerSink                                               │
   │    connector: WebsocketServer                                                            │
   │    uri: ws://0.0.0.0:8092/                                                               │
-  │    include_filter:                        # Selective real-time streaming                 │
+  │    include_filter:                        # Selective real-time streaming                │
   │      - "currentTransformer/CurrentDraw"                                                  │
   │      - "analyticsProcessor/IdentifiedPart"                                               │
   │      - "productivityMetrics/OverallEquipmentEffectiveness"                               │
@@ -176,7 +176,7 @@
   │                                                                                          │
   │  consoleSink: &consoleSink                # Filtered console output                      │
   │    connector: Console                                                                    │
-  │    include_filter:                        # Only key metrics                              │
+  │    include_filter:                        # Only key metrics                             │
   │      - "currentTransformer/CurrentDraw"                                                  │
   │      - "analyticsProcessor/IdentifiedPart"                                               │
   │      - "productivityMetrics/ProductionSummary"                                           │
@@ -188,7 +188,7 @@
   │                                                                                          │
   └──────────────────────────────────────────────────────────────────────────────────────────┘
 
-  ┌─ main.yaml ─────────────────────────────────────────────────────────────────────────────┐
+  ┌─ main.yaml ──────────────────────────────────────────────────────────────────────────────┐
   │                                                                                          │
   │  app:                                                                                    │
   │    ring_buffer: !!int 4096                                                               │
@@ -212,12 +212,12 @@
   │                                                                                        │
   │  * Pattern Correlation -- Fingerprints are compared using weighted similarity:         │
   │    60% mean pattern (are current levels similar?), 30% range shape (are variations     │
-  │    similar?), 10% standard deviation (is noise similar?). Scores above 0.55 are       │
+  │    similar?), 10% standard deviation (is noise similar?). Scores above 0.55 are        │
   │    considered matches.                                                                 │
   │                                                                                        │
   │  * Learning Library -- The system requires 3 completed cycles of a part type before    │
   │    it can identify that type. Fingerprints are averaged across samples (up to 10       │
-  │    stored per type) to create robust reference patterns. The library builds             │
+  │    stored per type) to create robust reference patterns. The library builds            │
   │    automatically from the ground-truth labels.                                         │
   │                                                                                        │
   │  * Three-Source Pipeline -- currentTransformer generates raw data and phase info.      │
@@ -225,7 +225,7 @@
   │    productivityMetrics reads both for OEE calculation. Each runs at its own rate.      │
   │                                                                                        │
   │  * rbe: false for Streaming -- The current transformer disables Report By Exception    │
-  │    because every sample matters for pattern analysis. Even identical consecutive        │
+  │    because every sample matters for pattern analysis. Even identical consecutive       │
   │    readings are meaningful in a current waveform. Other connectors use rbe: true       │
   │    since they only output when derived metrics actually change.                        │
   │                                                                                        │

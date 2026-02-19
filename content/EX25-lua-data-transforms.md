@@ -3,11 +3,11 @@
   EX25 — LUA DATA TRANSFORMS                                             DIME EXAMPLE SERIES
 ═══════════════════════════════════════════════════════════════════════════════════════════════
 
-  ┌─ WHAT THIS EXAMPLE DOES ──────────────────────────────────────────────────────────────┐
+  ┌─ WHAT THIS EXAMPLE DOES ───────────────────────────────────────────────────────────────┐
   │                                                                                        │
-  │  The simplest multi-file configuration. A Lua Script source generates two random        │
+  │  The simplest multi-file configuration. A Lua Script source generates two random       │
   │  numbers via math.random() and publishes them to a Console sink. Demonstrates          │
-  │  modular YAML with anchors, minimal Script connector setup, and system message          │
+  │  modular YAML with anchors, minimal Script connector setup, and system message         │
   │  filtering. Three files — the building blocks of every multi-file DIME config.         │
   │                                                                                        │
   └────────────────────────────────────────────────────────────────────────────────────────┘
@@ -16,7 +16,7 @@
   ─────────
 
       ┌──────────────────────────┐
-      │   Script Source           │
+      │   Script Source          │
       │                          │         ┌─────────────────────┐
       │   Items:                 │         │  Console Sink       │
       │   · number1              ├────────▶│                     │  stdout
@@ -82,20 +82,20 @@
   │  * Minimal Multi-File Config -- This is the simplest possible multi-file setup:        │
   │    one source file, one sink file, one main.yaml. Each file defines an anchor          │
   │    (&name) and main.yaml references them with aliases (*name). DIME loads all YAML     │
-  │    files in the directory and merges them automatically.                                │
+  │    files in the directory and merges them automatically.                               │
   │                                                                                        │
-  │  * Config Defaults -- When properties like scan_interval, enabled, or rbe are           │
-  │    omitted, DIME applies sensible defaults. The Script source here uses default         │
+  │  * Config Defaults -- When properties like scan_interval, enabled, or rbe are          │
+  │    omitted, DIME applies sensible defaults. The Script source here uses default        │
   │    scan_interval (1000ms) and default rbe (true). This keeps minimal configs clean     │
   │    while still being fully functional.                                                 │
   │                                                                                        │
   │  * Lua math.random() -- The Script connector's embedded Lua runtime provides the       │
   │    full Lua standard library. math.random(n) returns an integer from 1 to n. No        │
-  │    init_script is needed here because no libraries or state are required.               │
+  │    init_script is needed here because no libraries or state are required.              │
   │                                                                                        │
   │  * System Message Filtering -- Every connector publishes to a $SYSTEM path             │
-  │    (e.g. script/$SYSTEM) with health data like IsConnected and FaultCount. The          │
-  │    Console sink uses exclude_filter to suppress these, showing only data items.         │
+  │    (e.g. script/$SYSTEM) with health data like IsConnected and FaultCount. The         │
+  │    Console sink uses exclude_filter to suppress these, showing only data items.        │
   │                                                                                        │
   │  * Modular YAML Pattern -- Separating connectors into individual files makes it easy   │
   │    to add, remove, or swap connectors. To add an HTTP sink, create a new YAML file     │

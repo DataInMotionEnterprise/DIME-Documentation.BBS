@@ -15,7 +15,7 @@
   DATA FLOW
   ─────────
 
-      ┌─────────────────────────┐
+      ┌──────────────────────────┐
       │   OPC-UA Source          │          ┌──────────────────┐
       │   (opcUaSource1)         │     ┌───▶│  Console Sink    │  stdout
       │                          │     │    │  (consoleSink1)  │
@@ -48,7 +48,7 @@
   │    scan_interval: !!int 2000                     # Poll every 2 seconds                │
   │    connector: OpcUA                              # OPC-UA client connector             │
   │    rbe: !!bool true                              # Source-level RBE default            │
-  │    address: localhost                             # OPC server hostname                 │
+  │    address: localhost                             # OPC server hostname                │
   │    port: !!int 49320                             # OPC server port                     │
   │    timeout: !!int 1000                           # Connection timeout (ms)             │
   │    anonymous: !!bool false                       # Require authentication              │
@@ -67,15 +67,15 @@
   │      - name: Random1                                                                   │
   │        enabled: !!bool false                     # Disabled — enable as needed         │
   │        namespace: !!int 2                                                              │
-  │        address: Simulation Examples.Functions.Random1                                   │
+  │        address: Simulation Examples.Functions.Random1                                  │
   │      - name: Sine1                                                                     │
   │        enabled: !!bool false                                                           │
   │        namespace: !!int 2                                                              │
-  │        address: Simulation Examples.Functions.Sine1                                     │
+  │        address: Simulation Examples.Functions.Sine1                                    │
   │      - name: Ramp1                                                                     │
   │        enabled: !!bool false                                                           │
   │        namespace: !!int 2                                                              │
-  │        address: Simulation Examples.Functions.Ramp1                                     │
+  │        address: Simulation Examples.Functions.Ramp1                                    │
   │      # ... additional Random2-8, Sine2-4, Ramp2-8, User1-4 items follow                │
   │                                                                                        │
   └────────────────────────────────────────────────────────────────────────────────────────┘
@@ -98,7 +98,7 @@
   │  app:                                                                                  │
   │    license: 0000-0000-0000-0000-0000-0000-0000-0000                                    │
   │    ring_buffer: !!int 4096                                                             │
-  │    http_server_uri: http://127.0.0.1:9999/       # Admin REST API                     │
+  │    http_server_uri: http://127.0.0.1:9999/       # Admin REST API                      │
   │    ws_server_uri: ws://127.0.0.1:9998/            # Admin WebSocket                    │
   │                                                                                        │
   │  sinks:                                                                                │
@@ -117,8 +117,8 @@
   │    from any OPC-UA server. Each item specifies a namespace index and node address.     │
   │    Supports both anonymous and authenticated connections.                              │
   │                                                                                        │
-  │  • item_script vs script — item_script runs for EVERY item in the source and is       │
-  │    ideal for common transformations. Each item can also have its own script that        │
+  │  • item_script vs script — item_script runs for EVERY item in the source and is        │
+  │    ideal for common transformations. Each item can also have its own script that       │
   │    runs after item_script. Here, item_script unwraps the OPC DataValue wrapper to      │
   │    extract the raw .Value property.                                                    │
   │                                                                                        │

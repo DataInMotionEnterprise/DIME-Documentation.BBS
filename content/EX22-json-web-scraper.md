@@ -3,7 +3,7 @@
   EX22 — JSON WEB SCRAPER                                                DIME EXAMPLE SERIES
 ═══════════════════════════════════════════════════════════════════════════════════════════════
 
-  ┌─ WHAT THIS EXAMPLE DOES ──────────────────────────────────────────────────────────────┐
+  ┌─ WHAT THIS EXAMPLE DOES ───────────────────────────────────────────────────────────────┐
   │                                                                                        │
   │  Scrapes a public JSON REST API using the JSONWebScraper connector. Extracts nested    │
   │  values with JSON path queries ($.catalog.manifestID), transforms them via Lua, and    │
@@ -16,7 +16,7 @@
   ─────────
 
       ┌──────────────────────────┐
-      │   JSONWebScraper Source   │         ┌─────────────────────┐
+      │   JSONWebScraper Source  │         ┌─────────────────────┐
       │                          │    ┌────▶│  Console Sink       │  stdout
       │   uri: GitHub raw JSON   │    │     └─────────────────────┘
       │                          │    │
@@ -54,7 +54,7 @@
   │        type: script                                                                    │
   │        template: Message.Data                    # Extract raw data for sinks          │
   │    init_script: |                                                                      │
-  │      json = require('json');                     # Load JSON library once               │
+  │      json = require('json');                     # Load JSON library once              │
   │    items:                                                                              │
   │      - name: node1                                                                     │
   │        enabled: !!bool true                                                            │
@@ -90,10 +90,10 @@
   │    enabled: !!bool true                                                                │
   │    scan_interval: !!int 1000                                                           │
   │    connector: MTConnectSHDR                      # SHDR adapter (pipe-delimited)       │
-  │    port: !!int 7878                              # TCP port for agent connection        │
-  │    device_key: ~                                 # Null = default device                │
+  │    port: !!int 7878                              # TCP port for agent connection       │
+  │    device_key: ~                                 # Null = default device               │
   │    heartbeat_interval: !!int 10000               # Keep-alive every 10 seconds         │
-  │    filter_duplicates: !!bool true                # Suppress duplicate values            │
+  │    filter_duplicates: !!bool true                # Suppress duplicate values           │
   │    use_sink_transform: !!bool true                                                     │
   │    exclude_filter:                                                                     │
   │      - xml1/$SYSTEM                                                                    │
@@ -135,24 +135,24 @@
   ────────────
   ┌────────────────────────────────────────────────────────────────────────────────────────┐
   │                                                                                        │
-  │  * JSONWebScraper Connector -- Polls any HTTP endpoint returning JSON. The uri          │
-  │    property specifies the target URL. Each item's address uses JSON path syntax         │
+  │  * JSONWebScraper Connector -- Polls any HTTP endpoint returning JSON. The uri         │
+  │    property specifies the target URL. Each item's address uses JSON path syntax        │
   │    ($.path.to.field) to extract nested values from the response.                       │
   │                                                                                        │
-  │  * JSON Path Queries -- The address "$.catalog.manifestID" navigates into the JSON      │
+  │  * JSON Path Queries -- The address "$.catalog.manifestID" navigates into the JSON     │
   │    response tree. The result variable in the item script contains the matched value.   │
   │    When the path returns an array, Lua json.decode(result)[1] extracts the first       │
   │    element.                                                                            │
   │                                                                                        │
-  │  * MTConnect Sink Mapping -- The sink.mtconnect property on each item maps data to      │
-  │    the MTConnect information model. The path Device[name=device1]/Controller/           │
+  │  * MTConnect Sink Mapping -- The sink.mtconnect property on each item maps data to     │
+  │    the MTConnect information model. The path Device[name=device1]/Controller/          │
   │    Load[category=Sample] places the value into a specific MTConnect data item.         │
   │                                                                                        │
-  │  * MTConnect SHDR -- The SHDR sink produces pipe-delimited output on a TCP port.        │
-  │    An external MTConnect Agent can connect to this port to collect adapter data.        │
-  │    filter_duplicates and heartbeat_interval manage connection health.                   │
+  │  * MTConnect SHDR -- The SHDR sink produces pipe-delimited output on a TCP port.       │
+  │    An external MTConnect Agent can connect to this port to collect adapter data.       │
+  │    filter_duplicates and heartbeat_interval manage connection health.                  │
   │                                                                                        │
-  │  * Lua JSON Library -- The init_script loads json = require('json') once at startup.    │
+  │  * Lua JSON Library -- The init_script loads json = require('json') once at startup.   │
   │    Item scripts then use json.decode() and json.encode() for parsing and formatting.   │
   │    Libraries should always be loaded in init_script, not per-item scripts.             │
   │                                                                                        │

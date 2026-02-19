@@ -3,7 +3,7 @@
   EX33 — ROS2 ROBOTICS                                                DIME EXAMPLE SERIES
 ═══════════════════════════════════════════════════════════════════════════════════════════════
 
-  ┌─ WHAT THIS EXAMPLE DOES ──────────────────────────────────────────────────────────────┐
+  ┌─ WHAT THIS EXAMPLE DOES ───────────────────────────────────────────────────────────────┐
   │                                                                                        │
   │  Bridges ROS2 (Robot Operating System 2) topics into MQTT for non-ROS systems. A       │
   │  single Ros2 connector subscribes to topics like /chatter, /emergency_stop, and        │
@@ -15,7 +15,7 @@
   DATA FLOW
   ─────────
 
-       ┌─────────────────────────────────────┐
+       ┌──────────────────────────────────────┐
        │           ROS2 Network               │
        │                                      │
        │  /chatter           (std_msgs/String)│
@@ -24,9 +24,9 @@
        │                      BatteryState)   │
        │  /A300/motors/status (clearpath_msgs/│
        │                      LynxMultiStatus)│
-       └─────────────┬───────────────────────┘
+       └─────────────┬────────────────────────┘
                      │  DDS subscription
-       ┌─────────────┴───────────────────────┐
+       ┌─────────────┴────────────────────────┐
        │  ros2 (Ros2 connector)               │         ┌───────────────────┐
        │  scan_interval: 1000ms               │         │  Disruptor Ring   │
        │                                      │────────▶│  Buffer (4096)    │
@@ -45,10 +45,10 @@
   CONFIGURATION                                                    [1 file + 3 DLLs + 1 .so]
   ─────────────
 
-  ┌─ main.yaml ─────────────────────────────────────────────────────────────────────────────┐
+  ┌─ main.yaml ──────────────────────────────────────────────────────────────────────────────┐
   │                                                                                          │
   │  app:                                                                                    │
-  │    license: 410D-32D3-D7C0-62B1-8AF2-86D5-BE53-2260                                     │
+  │    license: 410D-32D3-D7C0-62B1-8AF2-86D5-BE53-2260                                      │
   │    ring_buffer: !!int 4096                                                               │
   │    http_server_uri: http://0.0.0.0:9999/                                                 │
   │    ws_server_uri: ws://0.0.0.0:9998/                                                     │
@@ -96,9 +96,9 @@
   │          script: return result            # Full BatteryState object                     │
   │                                                                                          │
   │        - name: MotorStatus                                                               │
-  │          enabled: !!bool false            # Disabled -- needs Clearpath hardware          │
+  │          enabled: !!bool false            # Disabled -- needs Clearpath hardware         │
   │          type: Ros2cs.Messages.ClearpathMotor.LynxMultiStatus,                           │
-  │                Ros2cs-clearpathrobotics-clearpath_msgs                                    │
+  │                Ros2cs-clearpathrobotics-clearpath_msgs                                   │
   │          address: /A300_XXXXX/platform/motors/status                                     │
   │          script: return result                                                           │
   │                                                                                          │
@@ -108,24 +108,24 @@
   ────────────
   ┌────────────────────────────────────────────────────────────────────────────────────────┐
   │                                                                                        │
-  │  * ROS2 Connector -- DIME subscribes to ROS2 DDS topics using the Ros2 connector.     │
-  │    Each item specifies a fully-qualified .NET type for message deserialization and a    │
+  │  * ROS2 Connector -- DIME subscribes to ROS2 DDS topics using the Ros2 connector.      │
+  │    Each item specifies a fully-qualified .NET type for message deserialization and a   │
   │    ROS2 topic address. DIME handles DDS discovery, subscription, and message decoding  │
   │    automatically.                                                                      │
   │                                                                                        │
   │  * External Message Libraries -- ROS2 message types are loaded from DLLs at runtime    │
-  │    via message_libraries. Standard messages (std_msgs, sensor_msgs) and vendor          │
-  │    messages (Clearpath) are in separate assemblies. The type field references the       │
+  │    via message_libraries. Standard messages (std_msgs, sensor_msgs) and vendor         │
+  │    messages (Clearpath) are in separate assemblies. The type field references the      │
   │    assembly: "Ros2cs.Messages.Sensor.BatteryState, Ros2cs-ros2-sensor_msgs".           │
   │                                                                                        │
-  │  * ROS2-to-MQTT Bridge -- This is the core use case: subscribe to ROS2 topics on a    │
+  │  * ROS2-to-MQTT Bridge -- This is the core use case: subscribe to ROS2 topics on a     │
   │    robot, republish to MQTT for enterprise systems (SCADA, dashboards, cloud) that     │
   │    do not speak DDS. The MQTT sink publishes under base_topic "ros2" so topics         │
   │    become ros2/ros2/Chatter, ros2/ros2/BatteryStatus, etc.                             │
   │                                                                                        │
   │  * Typed Message Access -- The script receives the deserialized ROS2 message as        │
   │    result. For std_msgs/String, result.Data extracts the string payload. For complex   │
-  │    types like BatteryState, returning the full object preserves all fields (voltage,    │
+  │    types like BatteryState, returning the full object preserves all fields (voltage,   │
   │    current, charge, etc.) for downstream consumers.                                    │
   │                                                                                        │
   │  * RBE Override -- The Chatter item uses rbe: false to forward every message, even     │

@@ -3,9 +3,9 @@
   EX34 — UDP BINARY PROTOCOL                                          DIME EXAMPLE SERIES
 ═══════════════════════════════════════════════════════════════════════════════════════════════
 
-  ┌─ WHAT THIS EXAMPLE DOES ──────────────────────────────────────────────────────────────┐
+  ┌─ WHAT THIS EXAMPLE DOES ───────────────────────────────────────────────────────────────┐
   │                                                                                        │
-  │  Parses binary UDP packets from an overhead crane controller using Lua bitwise          │
+  │  Parses binary UDP packets from an overhead crane controller using Lua bitwise         │
   │  operations. A 30-byte binary message encodes microspeed, anti-sway, crane status,     │
   │  3-axis motion (bridge/trolley/hoist), motor current, frequency, and load cell data.   │
   │  The script uses emit() to fan out 20+ observations from one packet, with deadzone     │
@@ -16,7 +16,7 @@
   DATA FLOW
   ─────────
 
-       ┌────────────────────────────┐
+       ┌─────────────────────────────┐
        │   Crane Controller          │
        │   (UDP binary packets)      │
        │                             │
@@ -33,13 +33,13 @@
        │   [14-15] move up/down      │         │  Disruptor Ring       │
        │   [16-27] freq + current    │────────▶│  Buffer (4096)        │
        │   [28-29] hoist load cell   │  UDP    │                       │
-       └────────────────────────────┘  :2232   └───────────┬───────────┘
+       └─────────────────────────────┘  :2232  └───────────┬───────────┘
                                                            │
             1 SOURCE                                       ▼
-        (UdpServer connector                         ┌──────────┐
-         100ms scan)                                 │  Console  │
-                                                     │  Sink     │
-                 Lua emit() fans out:                └──────────┘
+        (UdpServer connector                         ┌────────────┐
+         100ms scan)                                 │  Console   │
+                                                     │  Sink      │
+                 Lua emit() fans out:                └────────────┘
                  ./X/Current, ./X/Frequency,
                  ./X/State, ./X/Direction,              1 SINK
                  ./X/Velocity, ./X/Condition,
@@ -48,21 +48,21 @@
   CONFIGURATION                                                          [3 files, 0 folders]
   ─────────────
 
-  ┌─ udp.yaml ──────────────────────────────────────────────────────────────────────────────┐
+  ┌─ udp.yaml ───────────────────────────────────────────────────────────────────────────────┐
   │                                                                                          │
   │  udp: &udp                                                                               │
   │    name: 2232                              # Named after the port number                 │
   │    connector: UdpServer                                                                  │
   │    address: 127.0.0.1                                                                    │
   │    port: !!int 2232                                                                      │
-  │    scan_interval: !!int 100                # 10Hz polling for responsive crane control    │
+  │    scan_interval: !!int 100                # 10Hz polling for responsive crane control   │
   │    itemized_read: !!bool true                                                            │
   │    sink:                                                                                 │
   │      transform:                                                                          │
   │        type: script                                                                      │
   │        template: Message.Data                                                            │
   │    init_script: |                                                                        │
-  │      moses = require('moses')              # Utility library for table operations         │
+  │      moses = require('moses')              # Utility library for table operations        │
   │                                                                                          │
   │      filter = function(variable_name, current_value, deadzone)                           │
   │        if not _G[variable_name] then                                                     │
@@ -71,10 +71,10 @@
   │        local difference = math.abs(current_value - _G[variable_name])                    │
   │        if difference > deadzone then                                                     │
   │          _G[variable_name] = current_value                                               │
-  │          return false                      # NOT filtered -- value changed significantly  │
+  │          return false                      # NOT filtered -- value changed significantly │
   │        else                                                                              │
   │          _G[variable_name] = current_value                                               │
-  │          return true                       # Filtered -- change within deadzone           │
+  │          return true                       # Filtered -- change within deadzone          │
   │        end                                                                               │
   │      end                                                                                 │
   │                                                                                          │
@@ -106,7 +106,7 @@
   │          -- BRIDGE (Y axis): move North/South   (similar pattern)                        │
   │          -- HOIST (Z axis): move Up/Down + load cell + mass                              │
   │          local z_mass = ((result[28] << 8) + result[29]) / 2.205                         │
-  │          local z_load = (z_mass / 5500) * 100   # Load as percentage                    │
+  │          local z_load = (z_mass / 5500) * 100   # Load as percentage                     │
   │          ...                                                                             │
   │          emit('./Z/Mass', z_mass)                                                        │
   │          emit('./Z/Load', z_load)                                                        │
@@ -115,7 +115,7 @@
   │                                                                                          │
   └──────────────────────────────────────────────────────────────────────────────────────────┘
 
-  ┌─ console.yaml ──────────────────────────────────────────────────────────────────────────┐
+  ┌─ console.yaml ───────────────────────────────────────────────────────────────────────────┐
   │                                                                                          │
   │  console: &console                                                                       │
   │    connector: Console                                                                    │
@@ -125,7 +125,7 @@
   │                                                                                          │
   └──────────────────────────────────────────────────────────────────────────────────────────┘
 
-  ┌─ main.yaml ─────────────────────────────────────────────────────────────────────────────┐
+  ┌─ main.yaml ──────────────────────────────────────────────────────────────────────────────┐
   │                                                                                          │
   │  app:                                                                                    │
   │    ring_buffer: !!int 4096                                                               │
@@ -139,7 +139,7 @@
   BINARY MESSAGE FORMAT
   ─────────────────────
 
-  ┌─ Byte Map ──────────────────────────────────────────────────────────────────────────────┐
+  ┌─ Byte Map ───────────────────────────────────────────────────────────────────────────────┐
   │                                                                                          │
   │  Byte  Description                    Values                                             │
   │  ────  ────────────────────────────── ──────────────────────────                         │
@@ -151,8 +151,8 @@
   │  [5]   receiver_status                0=idle, 1=active, 2=not released                   │
   │  [6]   group_control_switch           0=all, 1=north, 2=center, 3=south                  │
   │  [7]   tandem_status                  0=inactive, 1=single, 2=two pt, 3=three pt         │
-  │  [8]   fault                          0=none, 3=bridge, 4=trolley, 5=hoist ...            │
-  │  [9]   mode                           10=normal, 20=latching, 80=recovery ...             │
+  │  [8]   fault                          0=none, 3=bridge, 4=trolley, 5=hoist ...           │
+  │  [9]   mode                           10=normal, 20=latching, 80=recovery ...            │
   │  [10]  move north (speed 0-5)                                                            │
   │  [11]  move south (speed 0-5)                                                            │
   │  [12]  move east  (speed 0-5)                                                            │
@@ -189,7 +189,7 @@
   │                                                                                        │
   │  * Fault Code Mapping -- The fault byte (result[8]) maps to specific drive faults.     │
   │    moses.include({4}, result[8]) checks if the fault code is trolley-specific.         │
-  │    Different fault codes map to different axis Condition items.                         │
+  │    Different fault codes map to different axis Condition items.                        │
   │                                                                                        │
   │  * UdpServer Connector -- DIME listens as a UDP server on the specified port. The      │
   │    100ms scan_interval provides responsive crane control monitoring. Unlike TCP,       │

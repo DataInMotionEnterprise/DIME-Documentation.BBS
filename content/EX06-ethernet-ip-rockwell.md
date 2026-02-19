@@ -3,7 +3,7 @@
   EX06 — ETHERNET/IP (ROCKWELL)                                          DIME EXAMPLE SERIES
 ═══════════════════════════════════════════════════════════════════════════════════════════════
 
-  ┌─ WHAT THIS EXAMPLE DOES ──────────────────────────────────────────────────────────────┐
+  ┌─ WHAT THIS EXAMPLE DOES ───────────────────────────────────────────────────────────────┐
   │                                                                                        │
   │  Multi-source to multi-sink integration. Reads Allen-Bradley PLC data via EtherNet/IP  │
   │  (CIP protocol) and SHARC IoT sensor data via MQTT, then publishes to Console, MQTT    │
@@ -16,7 +16,7 @@
   DATA FLOW
   ─────────
 
-      ┌──────────────────────────┐           ┌──────────────────┐
+      ┌───────────────────────────┐           ┌──────────────────┐
       │   EtherNet/IP Source      │      ┌───▶│  Console Sink    │  stdout
       │   (rockwell)              │      │    └──────────────────┘
       │                           │      │
@@ -29,7 +29,7 @@
       │   · GoodPartCount N7:1    │      └───▶│  Sparkplug B     │  localhost:1883
       └───────────────────────────┘           │  (ignition)      │
                                               └──────────────────┘
-      ┌──────────────────────────┐                     │
+      ┌───────────────────────────┐                     │
       │   MQTT Source             │                     │
       │   (sharcs)                ├─────────────────────┘
       │                           │
@@ -38,7 +38,7 @@
       │                           │
       │   Items:                  │
       │   · AllSharcs (wildcard)  │
-      │   · emit() per serial #  │
+      │   · emit() per serial #   │
       └───────────────────────────┘
           2 SOURCES                       RING BUFFER             3 SINKS
     (EtherNet/IP + MQTT)               (4096 slots)        (Console+MQTT+SpB)
@@ -83,7 +83,7 @@
   │    scan_interval: !!int 500                                                            │
   │    connector: MQTT                               # MQTT subscriber source              │
   │    rbe: !!bool true                                                                    │
-  │    itemized_read: !!bool false                   # Event-driven, not polled             │
+  │    itemized_read: !!bool false                   # Event-driven, not polled            │
   │    address: wss.sharc.tech                       # MQTT broker hostname                │
   │    port: !!int 1883                                                                    │
   │    qos: !!int 0                                  # QoS 0: at most once                 │
@@ -96,11 +96,11 @@
   │      local sharc_event = path_slugs[4];                                                │
   │      local payload = json.decode(result).v;                                            │
   │      if sharc_event == "avail" then                                                    │
-  │        emit("./" .. sharc_serial .. "/available", payload==true and true or false);     │
+  │        emit("./" .. sharc_serial .. "/available", payload==true and true or false);    │
   │      elseif sharc_event == "net" then                                                  │
-  │        emit("./" .. sharc_serial .. "/network/interface", payload.type);                │
+  │        emit("./" .. sharc_serial .. "/network/interface", payload.type);               │
   │        emit("./" .. sharc_serial .. "/network/ip", payload.ip);                        │
-  │        emit("./" .. sharc_serial .. "/network/subnet_mask", payload.mask);              │
+  │        emit("./" .. sharc_serial .. "/network/subnet_mask", payload.mask);             │
   │        emit("./" .. sharc_serial .. "/network/gateway", payload.gw);                   │
   │        emit("./" .. sharc_serial .. "/network/mac", payload.mac);                      │
   │      end                                                                               │
@@ -108,7 +108,7 @@
   │    items:                                                                              │
   │      - name: AllSharcs                                                                 │
   │        enabled: !!bool true                                                            │
-  │        address: sharc/+/evt/#                    # MQTT wildcard subscription           │
+  │        address: sharc/+/evt/#                    # MQTT wildcard subscription          │
   │                                                                                        │
   └────────────────────────────────────────────────────────────────────────────────────────┘
 
@@ -138,7 +138,7 @@
   │    port: !!int 1883                                                                    │
   │    base_topic: DimeTutorial                      # Topic prefix for all items          │
   │    qos: !!int 0                                                                        │
-  │    retain: !!bool true                           # Retain last message on broker        │
+  │    retain: !!bool true                           # Retain last message on broker       │
   │    use_sink_transform: !!bool true                                                     │
   │    exclude_filter:                                                                     │
   │      - rockwell/$SYSTEM                          # Suppress system messages            │
@@ -153,7 +153,7 @@
   │    enabled: !!bool true                                                                │
   │    scan_interval: !!int 1000                                                           │
   │    connector: SparkplugB                         # Sparkplug B for Ignition SCADA      │
-  │    address: localhost                             # MQTT broker for Sparkplug           │
+  │    address: localhost                             # MQTT broker for Sparkplug          │
   │    port: !!int 1883                                                                    │
   │    username: user                                                                      │
   │    password: password                                                                  │
@@ -193,12 +193,12 @@
   ────────────
   ┌────────────────────────────────────────────────────────────────────────────────────────┐
   │                                                                                        │
-  │  • EtherNet/IP Connector — DIME's EthernetIP connector uses CIP (Common Industrial    │
-  │    Protocol) to read Allen-Bradley PLCs. The type field selects the PLC family          │
+  │  • EtherNet/IP Connector — DIME's EthernetIP connector uses CIP (Common Industrial     │
+  │    Protocol) to read Allen-Bradley PLCs. The type field selects the PLC family         │
   │    (micrologix, logix, etc.) and path sets the CIP routing (backplane, slot).          │
   │                                                                                        │
-  │  • AB Address Notation — MicroLogix uses file-based addressing: B3:0/3 = bit file 3,  │
-  │    word 0, bit 3. N7:1 = integer file 7, element 1. CompactLogix/ControlLogix uses    │
+  │  • AB Address Notation — MicroLogix uses file-based addressing: B3:0/3 = bit file 3,   │
+  │    word 0, bit 3. N7:1 = integer file 7, element 1. CompactLogix/ControlLogix uses     │
   │    tag-based addressing instead (e.g., Program:Main.MyTag).                            │
   │                                                                                        │
   │  • emit() API — The SHARC source uses emit("./path", value) to publish multiple        │
@@ -209,7 +209,7 @@
   │    extracts just the data payload. Sinks with use_sink_transform: true apply this      │
   │    transform; others receive the full MessageBoxMessage envelope.                      │
   │                                                                                        │
-  │  • Sparkplug B — The SparkplugB sink publishes to Ignition SCADA using the Sparkplug  │
+  │  • Sparkplug B — The SparkplugB sink publishes to Ignition SCADA using the Sparkplug   │
   │    B specification over MQTT. It manages birth/death certificates and uses             │
   │    host_id/group_id/node_id/device_id for the topic namespace hierarchy.               │
   │                                                                                        │

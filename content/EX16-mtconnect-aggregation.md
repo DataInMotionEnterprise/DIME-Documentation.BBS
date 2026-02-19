@@ -3,7 +3,7 @@
   EX16 — MTCONNECT AGGREGATION                                           DIME EXAMPLE SERIES
 ═══════════════════════════════════════════════════════════════════════════════════════════════
 
-  ┌─ WHAT THIS EXAMPLE DOES ──────────────────────────────────────────────────────────────┐
+  ┌─ WHAT THIS EXAMPLE DOES ───────────────────────────────────────────────────────────────┐
   │                                                                                        │
   │  Reads data from a remote MTConnect agent (Mazak demo server) and re-publishes it      │
   │  through a local MTConnect Agent sink. This is the agent-to-agent aggregation          │
@@ -15,21 +15,21 @@
   DATA FLOW
   ─────────
 
-      ┌─────────────────────────┐
+      ┌──────────────────────────┐
       │   MTConnect Source       │          ┌──────────────────┐
       │                          │     ┌───▶│  MTConnect Agent │  http://localhost:5000
       │   Remote agent:          │     │    │  (local agent)   │
       │   mtconnect.mazakcorp    │     │    └──────────────────┘
       │   .com:5719              ├─────┤
       │                          │     │    ┌──────────────────┐
-      │   Items:                 │     └───▶│  Console Sink   │  stdout (commented out)
+      │   Items:                 │     └───▶│  Console Sink    │  stdout (commented out)
       │   · Availability         │          └──────────────────┘
       │   · Execution            │
       │   · XLoad                │
       │                          │
       │   strip_path_prefix:     │
       │     true                 │
-      └─────────────────────────┘
+      └──────────────────────────┘
               SOURCE                        RING BUFFER              SINKS
       (remote MTConnect agent)            (4096 slots)          (local agent)
 
@@ -59,17 +59,17 @@
   │          Message.Data[0].Value                                                         │
   │    items:                                                                              │
   │      - name: Availability                                                              │
-  │        address: avail                            # MTConnect DataItem address           │
+  │        address: avail                            # MTConnect DataItem address          │
   │        sink:                                                                           │
-  │          mtconnect: Device[Name=device1]/Availability[Category=Event]                   │
+  │          mtconnect: Device[Name=device1]/Availability[Category=Event]                  │
   │      - name: Execution                                                                 │
   │        address: execution                                                              │
   │        sink:                                                                           │
-  │          mtconnect: Device[Name=device1]/Controller/Path/Execution[Category=Event]      │
+  │          mtconnect: Device[Name=device1]/Controller/Path/Execution[Category=Event]     │
   │      - name: XLoad                                                                     │
   │        address: Xload                                                                  │
   │        sink:                                                                           │
-  │          mtconnect: Device[Name=device1]/Axes/Linear[Name=X]/Load[Category=Sample]      │
+  │          mtconnect: Device[Name=device1]/Axes/Linear[Name=X]/Load[Category=Sample]     │
   │                                                                                        │
   └────────────────────────────────────────────────────────────────────────────────────────┘
 
@@ -130,14 +130,14 @@
   │    from item paths. Without it, items arrive as mtConnectSource1/Availability.         │
   │    With it, they arrive as just Availability, which simplifies path remapping.         │
   │                                                                                        │
-  │  • Sink Transform — The source defines a transform template Message.Data[0].Value     │
+  │  • Sink Transform — The source defines a transform template Message.Data[0].Value      │
   │    to extract the raw value from the MTConnect response array. The sink sets           │
   │    use_sink_transform: true to apply it before writing to the local agent.             │
   │                                                                                        │
-  │  • itemized_read — When true, each item is read individually from the remote agent    │
+  │  • itemized_read — When true, each item is read individually from the remote agent     │
   │    using its address field. This gives per-item control vs. bulk reads.                │
   │                                                                                        │
-  │  • Path Remapping — Each source item's sink.mtconnect annotation defines where it     │
+  │  • Path Remapping — Each source item's sink.mtconnect annotation defines where it      │
   │    appears in the local agent's device model, allowing complete restructuring.         │
   │                                                                                        │
   └────────────────────────────────────────────────────────────────────────────────────────┘

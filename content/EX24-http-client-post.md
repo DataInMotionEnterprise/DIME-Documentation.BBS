@@ -3,11 +3,11 @@
   EX24 — HTTP CLIENT POST                                                DIME EXAMPLE SERIES
 ═══════════════════════════════════════════════════════════════════════════════════════════════
 
-  ┌─ WHAT THIS EXAMPLE DOES ──────────────────────────────────────────────────────────────┐
+  ┌─ WHAT THIS EXAMPLE DOES ───────────────────────────────────────────────────────────────┐
   │                                                                                        │
-  │  Posts data to an external HTTP endpoint using the HTTPClient sink. A Lua Script        │
-  │  source simulates a machine press generating Execution, SystemCondition, and Position   │
-  │  data. A Scriban template formats the combined state into a custom payload before       │
+  │  Posts data to an external HTTP endpoint using the HTTPClient sink. A Lua Script       │
+  │  source simulates a machine press generating Execution, SystemCondition, and Position  │
+  │  data. A Scriban template formats the combined state into a custom payload before      │
   │  POSTing. Demonstrates custom headers, Authorization, and template formatting.         │
   │  Multi-file YAML config — 3 files composed with anchors.                               │
   │                                                                                        │
@@ -17,7 +17,7 @@
   ─────────
 
       ┌──────────────────────────┐
-      │   Script Source (press1)  │
+      │   Script Source (press1) │
       │                          │
       │   Items:                 │         ┌──────────────────────────┐
       │   · Execution            │         │  HTTPClient Sink         │
@@ -26,7 +26,7 @@
       │     (Fault/Normal)       │         │  Content-Type: text/plain│
       │   · Position             │         │  Authorization: None     │
       │     (-100 to 100)        │         │                          │
-      │   · ModelInstance         │         │  Scriban template        │
+      │   · ModelInstance        │         │  Scriban template        │
       │     (combined state)     │         │  formats payload         │
       │                          │         └──────────────────────────┘
       │   scan: 1000ms           │
@@ -40,7 +40,7 @@
   ── mtInstance1.yaml (source) ─────────────────────────────────────────────────────────────
   ┌────────────────────────────────────────────────────────────────────────────────────────┐
   │                                                                                        │
-  │  mtInstance1: &mtInstance1                                                              │
+  │  mtInstance1: &mtInstance1                                                             │
   │    name: press1                                                                        │
   │    enabled: !!bool true                                                                │
   │    scan_interval: !!int 1000                     # 1-second scan cycle                 │
@@ -55,7 +55,7 @@
   │        script: |                                                                       │
   │          local n = math.random(0, 1);                                                  │
   │          set("Execution", n==1 and 'Active' or 'Ready');                               │
-  │          return nil;                             # set() stores; nil suppresses output  │
+  │          return nil;                             # set() stores; nil suppresses output │
   │      - name: SystemCondition                                                           │
   │        enabled: !!bool true                                                            │
   │        rbe: !!bool true                                                                │
@@ -76,17 +76,17 @@
   │          return {                                                                      │
   │            type = "press",                                                             │
   │            name = configuration().Name,          # Connector name from config          │
-  │            available = cache("./$SYSTEM/IsConnected", false),                           │
+  │            available = cache("./$SYSTEM/IsConnected", false),                          │
   │            execution = cache("./Execution", false),                                    │
-  │            system = cache("./SystemCondition", "NORMAL"),                               │
+  │            system = cache("./SystemCondition", "NORMAL"),                              │
   │            position = cache("./Position", 0)                                           │
   │          }                                                                             │
   │        sink:                                                                           │
   │          transform:                                                                    │
-  │            type: scriban                         # Scriban template engine              │
+  │            type: scriban                         # Scriban template engine             │
   │            template: >-                                                                │
-  │              {{-Message.Data["type"]}},name={{Message.Data["name"]}}                    │
-  │              {{for o in Message.Data}}{{o.Key}}={{o.Value}}                             │
+  │              {{-Message.Data["type"]}},name={{Message.Data["name"]}}                   │
+  │              {{for o in Message.Data}}{{o.Key}}={{o.Value}}                            │
   │              {{if !for.last}},{{end}}{{end}}                                           │
   │              {{Message.Timestamp}}                                                     │
   │                                                                                        │
@@ -100,7 +100,7 @@
   │    enabled: !!bool true                                                                │
   │    scan_interval: !!int 1000                                                           │
   │    connector: HTTPClient                         # HTTP POST sink                      │
-  │    uri: https://webhook-test.com/...             # Target webhook endpoint              │
+  │    uri: https://webhook-test.com/...             # Target webhook endpoint             │
   │    headers:                                      # Custom HTTP headers                 │
   │      Content-Type: text/plain                                                          │
   │      Authorization: None                         # Placeholder for Bearer token        │
@@ -115,8 +115,8 @@
   │  app:                                                                                  │
   │    license: 0000-0000-0000-0000-0000-0000-0000-0000                                    │
   │    ring_buffer: !!int 4096                                                             │
-  │    http_server_uri: http://localhost:9999/                                              │
-  │    ws_server_uri: ws://localhost:9998/                                                  │
+  │    http_server_uri: http://localhost:9999/                                             │
+  │    ws_server_uri: ws://localhost:9998/                                                 │
   │  sinks:                                                                                │
   │    - *httpClientSink1                            # HTTP POST to webhook                │
   │  sources:                                                                              │
@@ -128,25 +128,25 @@
   ────────────
   ┌────────────────────────────────────────────────────────────────────────────────────────┐
   │                                                                                        │
-  │  * HTTPClient Sink -- Posts data to an external HTTP endpoint. Unlike HTTPServer        │
+  │  * HTTPClient Sink -- Posts data to an external HTTP endpoint. Unlike HTTPServer       │
   │    (which listens), HTTPClient actively sends outbound requests. Set the uri to any    │
   │    REST endpoint, webhook, or API gateway.                                             │
   │                                                                                        │
-  │  * Custom Headers -- The headers map adds HTTP headers to every request. Use            │
-  │    Content-Type to set the payload format. The Authorization header supports Bearer     │
+  │  * Custom Headers -- The headers map adds HTTP headers to every request. Use           │
+  │    Content-Type to set the payload format. The Authorization header supports Bearer    │
   │    tokens, API keys, or any auth scheme your target API requires.                      │
   │                                                                                        │
-  │  * Scriban Templates -- The sink.transform.type "scriban" enables the Scriban           │
+  │  * Scriban Templates -- The sink.transform.type "scriban" enables the Scriban          │
   │    template engine. Access message data with {{Message.Data["key"]}}. Loop over        │
   │    key-value pairs with {{for o in Message.Data}}. Use {{if !for.last}} for            │
   │    conditional separators. Scriban uses {{- for whitespace trimming.                   │
   │                                                                                        │
-  │  * Cache-Based State Assembly -- Individual items use set() to cache values (and        │
-  │    return nil to suppress direct output). The ModelInstance item then assembles all     │
+  │  * Cache-Based State Assembly -- Individual items use set() to cache values (and       │
+  │    return nil to suppress direct output). The ModelInstance item then assembles all    │
   │    cached values into a single Lua table. This pattern produces one combined message   │
-  │    per scan cycle from multiple independent data points.                                │
+  │    per scan cycle from multiple independent data points.                               │
   │                                                                                        │
-  │  * configuration() API -- The Lua configuration() function returns the current          │
+  │  * configuration() API -- The Lua configuration() function returns the current         │
   │    connector's config object. configuration().Name yields the connector name. This     │
   │    lets scripts adapt to their runtime context without hardcoded values.               │
   │                                                                                        │

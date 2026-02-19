@@ -86,7 +86,7 @@
   │      set("./BRotation", 0.0)                                                           │
   │    enter_script: |                                                                     │
   │      -- State machine: smooth interpolation between target positions                   │
-  │      -- Cycles through: rapid → plunge → face mill → retract → chamfer → repeat       │
+  │      -- Cycles through: rapid → plunge → face mill → retract → chamfer → repeat        │
   │      -- ~300 lines of Lua state machine logic (see full file)                          │
   │    items:                                                                              │
   │      - name: XPositionCurrent                                                          │
@@ -124,7 +124,7 @@
   │    uri: ws://0.0.0.0:8092/                                                             │
   │    scan_interval: !!int 20                        # Match source for smooth updates    │
   │    use_sink_transform: !!bool false                                                    │
-  │    include_filter:                                # Only send position data             │
+  │    include_filter:                                # Only send position data            │
   │      - "machineSimulator/XPositionCurrent"                                             │
   │      - "machineSimulator/YPositionCurrent"                                             │
   │      - "machineSimulator/ZPositionCurrent"                                             │
@@ -151,23 +151,23 @@
   ┌────────────────────────────────────────────────────────────────────────────────────────┐
   │                                                                                        │
   │  • Multi-File YAML — Each connector lives in its own file with an anchor (&name).      │
-  │    The main.yaml uses aliases (*name) to compose the full config. DIME merges all       │
-  │    YAML files in the directory automatically; main.yaml is loaded last.                 │
+  │    The main.yaml uses aliases (*name) to compose the full config. DIME merges all      │
+  │    YAML files in the directory automatically; main.yaml is loaded last.                │
   │                                                                                        │
   │  • YAML Anchors & Aliases — The &machineSimulator anchor defines the source config.    │
   │    In main.yaml, *machineSimulator references it. This lets you reuse connector        │
-  │    definitions across multiple configs without duplication.                             │
+  │    definitions across multiple configs without duplication.                            │
   │                                                                                        │
   │  • High-Frequency Scanning — scan_interval: 20 gives 50Hz update rate. The WebSocket   │
-  │    sink matches this rate for smooth browser animation. The HTTP sink stays at 1000ms   │
+  │    sink matches this rate for smooth browser animation. The HTTP sink stays at 1000ms  │
   │    since REST polling doesn't need 50Hz.                                               │
   │                                                                                        │
   │  • Include/Exclude Filters — The WebSocket sink uses include_filter to send only       │
-  │    position items. The WebServer sink uses exclude_filter: ".*" to block all data       │
+  │    position items. The WebServer sink uses exclude_filter: ".*" to block all data      │
   │    (it only serves static files).                                                      │
   │                                                                                        │
   │  • Cache API — The Lua set()/cache() functions store and retrieve state between scan   │
-  │    cycles. The state machine uses "./" prefix paths for source-scoped cache entries.    │
+  │    cycles. The state machine uses "./" prefix paths for source-scoped cache entries.   │
   │                                                                                        │
   └────────────────────────────────────────────────────────────────────────────────────────┘
 

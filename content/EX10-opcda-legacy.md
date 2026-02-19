@@ -3,10 +3,10 @@
   EX10 — OPC-DA LEGACY                                                   DIME EXAMPLE SERIES
 ═══════════════════════════════════════════════════════════════════════════════════════════════
 
-  ┌─ WHAT THIS EXAMPLE DOES ──────────────────────────────────────────────────────────────┐
+  ┌─ WHAT THIS EXAMPLE DOES ───────────────────────────────────────────────────────────────┐
   │                                                                                        │
   │  Classic OPC-DA (COM/DCOM-based) connectivity for legacy systems. Reads tags from a    │
-  │  Kepware KEPServerEX OPC-DA server using the traditional Windows COM interface.         │
+  │  Kepware KEPServerEX OPC-DA server using the traditional Windows COM interface.        │
   │  This is the simplest OPC-DA config — one source, one sink, one tag. Essential for     │
   │  brownfield factories still running Kepware, Wonderware, or RSLinx OPC-DA servers.     │
   │                                                                                        │
@@ -15,20 +15,20 @@
   DATA FLOW
   ─────────
 
-      ┌──────────────────────────┐
+      ┌───────────────────────────┐
       │   OPC-DA Source           │
-      │                           │        ┌──────────────────┐
+      │                           │        ┌───────────────────┐
       │  Server ProgID:           │        │  Console Sink     │  stdout
       │  Kepware.KEPServerEX.V6   │        │                   │
       │                           │   ┌───▶│  use_sink_        │
       │  Tags:                    │   │    │  transform: true  │
-      │  · _System._DateTime     ├───┘    └──────────────────┘
+      │  · _System._DateTime      ├───┘    └───────────────────┘
       │                           │
       │  COM/DCOM on localhost    │
       │                           │
       │  scan: 1000ms             │
       │  RBE: true                │
-      └──────────────────────────┘
+      └───────────────────────────┘
              SOURCE                       RING BUFFER            SINK
        (OPC-DA COM interface)           (4096 slots)        (1 destination)
 
@@ -87,23 +87,23 @@
   ┌────────────────────────────────────────────────────────────────────────────────────────┐
   │                                                                                        │
   │  * OPC-DA (Data Access) — The original OPC standard from the 1990s, built on Windows   │
-  │    COM/DCOM. Still widely deployed in legacy Kepware, Wonderware InTouch, RSLinx, and   │
-  │    FactoryTalk installations. Requires Windows and local or DCOM network access.        │
+  │    COM/DCOM. Still widely deployed in legacy Kepware, Wonderware InTouch, RSLinx, and  │
+  │    FactoryTalk installations. Requires Windows and local or DCOM network access.       │
   │                                                                                        │
   │  * COM ProgID Addressing — The address field takes the server's COM ProgID, not a      │
   │    URL. Common examples: Kepware.KEPServerEX.V6, RSLinx.OPCServer,                     │
-  │    InTouch.OPC. Use OPC-DA browser tools to discover available servers.                 │
+  │    InTouch.OPC. Use OPC-DA browser tools to discover available servers.                │
   │                                                                                        │
   │  * Tag Path Notation — Item addresses use the OPC-DA server's tag hierarchy with       │
-  │    dot separators. The _System group contains built-in Kepware tags like _DateTime.     │
+  │    dot separators. The _System group contains built-in Kepware tags like _DateTime.    │
   │    User-defined tags follow the channel.device.group.tag pattern.                      │
   │                                                                                        │
   │  * Per-Item RBE — Both the source-level rbe and item-level rbe are set to true.        │
-  │    Item-level RBE overrides the source default. For high-frequency tags, set            │
+  │    Item-level RBE overrides the source default. For high-frequency tags, set           │
   │    item rbe: false to stream every read regardless of change.                          │
   │                                                                                        │
-  │  * OPC-DA vs OPC-UA — OPC-DA is Windows-only (COM). OPC-UA (see EX08) is platform-    │
-  │    independent. Use OPC-DA for legacy brownfield; OPC-UA for new deployments.           │
+  │  * OPC-DA vs OPC-UA — OPC-DA is Windows-only (COM). OPC-UA (see EX08) is platform-     │
+  │    independent. Use OPC-DA for legacy brownfield; OPC-UA for new deployments.          │
   │                                                                                        │
   └────────────────────────────────────────────────────────────────────────────────────────┘
 

@@ -3,11 +3,11 @@
   EX21 — SPLUNK EDGE HUB                                                 DIME EXAMPLE SERIES
 ═══════════════════════════════════════════════════════════════════════════════════════════════
 
-  ┌─ WHAT THIS EXAMPLE DOES ──────────────────────────────────────────────────────────────┐
+  ┌─ WHAT THIS EXAMPLE DOES ───────────────────────────────────────────────────────────────┐
   │                                                                                        │
   │  Collects data from multiple industrial sources (Haas SHDR, EthernetIP PLC, Lua        │
   │  scripts) and forwards to a Splunk Edge Hub via the SplunkEhSDK connector.             │
-  │  Complete single-file configuration with 3 sources and 3 sinks. Demonstrates the      │
+  │  Complete single-file configuration with 3 sources and 3 sinks. Demonstrates the       │
   │  numbers_to_metrics option and complex cross-source data combination via cache.        │
   │                                                                                        │
   └────────────────────────────────────────────────────────────────────────────────────────┘
@@ -16,9 +16,9 @@
   ─────────
 
       ┌─────────────────────────┐
-      │   Haas SHDR Source       │
+      │   Haas SHDR Source      │
       │   192.168.111.221:9998  │          ┌──────────────────┐
-      │   · CPU (HIGH/LOW)      │     ┌───▶│  Splunk EH SDK  │  gRPC :50051
+      │   · CPU (HIGH/LOW)      │     ┌───▶│  Splunk EH SDK   │  gRPC :50051
       └────────────────────┬────┘     │    └──────────────────┘
                            │          │
       ┌────────────────────┴────┐     │    ┌──────────────────┐
@@ -26,11 +26,11 @@
       │   192.168.111.20        │     │    └──────────────────┘
       │   · boolGetUserCache    │     │
       │   · Execution           │     │    ┌──────────────────┐
-      │   · GoodPartCount       │     └───▶│  Console Sink   │  stdout
+      │   · GoodPartCount       │     └───▶│  Console Sink    │  stdout
       └────────────────────┬────┘          └──────────────────┘
                            │
       ┌────────────────────┴────┐
-      │   Script Source          │
+      │   Script Source         │
       │   Cross-source combiner │
       │   · luaPackagePath      │
       │   · machineNameDiscrete │
@@ -47,11 +47,11 @@
 
   ┌────────────────────────────────────────────────────────────────────────────────────────┐
   │                                                                                        │
-  │  haasSource1: &haasSource1                       # ── Haas CNC via SHDR protocol ──   │
+  │  haasSource1: &haasSource1                       # ── Haas CNC via SHDR protocol ──    │
   │    name: haasSource1                                                                   │
   │    enabled: !!bool true                                                                │
   │    scan_interval: !!int 1000                                                           │
-  │    connector: HaasSHDR                           # Haas Serial Data Record protocol   │
+  │    connector: HaasSHDR                           # Haas Serial Data Record protocol    │
   │    rbe: !!bool true                                                                    │
   │    itemized_read: !!bool false                                                         │
   │    address: 192.168.111.221                                                            │
@@ -60,16 +60,16 @@
   │    heartbeat_interval: !!int 0                                                         │
   │    retry_interval: !!int 10000                                                         │
   │    init_script: |                                                                      │
-  │      luanet.load_assembly("System")              # .NET interop for CLR types         │
+  │      luanet.load_assembly("System")              # .NET interop for CLR types          │
   │      CLR = { env = luanet.import_type("System.Environment") };                         │
   │    items:                                                                              │
   │      - name: CPU                                                                       │
   │        address: CPU                                                                    │
   │        script: |                                                                       │
-  │          local cpu = tonumber(result);                                                  │
+  │          local cpu = tonumber(result);                                                 │
   │          if cpu > 0.5 then return 'HIGH'; else return 'LOW'; end                       │
   │                                                                                        │
-  │  eipSource1: &eipSource1                         # ── Allen-Bradley PLC ──            │
+  │  eipSource1: &eipSource1                         # ── Allen-Bradley PLC ──             │
   │    name: eipSource1                                                                    │
   │    enabled: !!bool true                                                                │
   │    scan_interval: !!int 500                                                            │
@@ -95,12 +95,12 @@
   │          local m = { [0]='Ready', [1]='Active' };                                      │
   │          return m[result and 1 or 0];                                                  │
   │        sink:                                                                           │
-  │          mtconnect: Device[name=device1]/Controller/Path/Execution[category=Event]      │
+  │          mtconnect: Device[name=device1]/Controller/Path/Execution[category=Event]     │
   │      - name: GoodPartCount                                                             │
   │        type: int                                                                       │
   │        address: N7:1                                                                   │
   │                                                                                        │
-  │  scriptSource1: &scriptSource1                   # ── Cross-source combiner ──        │
+  │  scriptSource1: &scriptSource1                   # ── Cross-source combiner ──         │
   │    name: scriptSource1                                                                 │
   │    enabled: !!bool true                                                                │
   │    scan_interval: !!int 500                                                            │
@@ -135,24 +135,24 @@
   │          local n = cache('eipSource1/$SYSTEM/IsConnected', nil);                       │
   │          return n==true and 'Available' or 'Unavailable';                              │
   │        sink:                                                                           │
-  │          mtconnect: Device[name=device1]/Availability[category=Event]                   │
+  │          mtconnect: Device[name=device1]/Availability[category=Event]                  │
   │                                                                                        │
-  │  splunkEhSdkSink1: &splunkEhSdkSink1            # ── Splunk Edge Hub sink ──         │
+  │  splunkEhSdkSink1: &splunkEhSdkSink1            # ── Splunk Edge Hub sink ──           │
   │    name: splunkEhSdkSink1                                                              │
   │    enabled: !!bool true                                                                │
   │    scan_interval: !!int 1000                                                           │
-  │    connector: SplunkEhSDK                        # Splunk Edge Hub SDK (gRPC)         │
-  │    address: http://host.docker.internal          # Docker host address                │
+  │    connector: SplunkEhSDK                        # Splunk Edge Hub SDK (gRPC)          │
+  │    address: http://host.docker.internal          # Docker host address                 │
   │    port: !!int 50051                             # gRPC port                           │
-  │    numbers_to_metrics: !!bool true               # Convert numerics to Splunk metrics │
+  │    numbers_to_metrics: !!bool true               # Convert numerics to Splunk metrics  │
   │                                                                                        │
-  │  consoleSink1: &consoleSink1                     # ── Debug console ──                │
+  │  consoleSink1: &consoleSink1                     # ── Debug console ──                 │
   │    name: consoleSink1                                                                  │
   │    enabled: !!bool true                                                                │
   │    scan_interval: !!int 1000                                                           │
   │    connector: Console                                                                  │
   │                                                                                        │
-  │  httpServerSink1: &httpServerSink1               # ── HTTP REST endpoint ──           │
+  │  httpServerSink1: &httpServerSink1               # ── HTTP REST endpoint ──            │
   │    name: httpServerSink1                                                               │
   │    enabled: !!bool true                                                                │
   │    scan_interval: !!int 1000                                                           │
@@ -179,23 +179,23 @@
   ┌────────────────────────────────────────────────────────────────────────────────────────┐
   │                                                                                        │
   │  • SplunkEhSDK Connector — Sends data to Splunk Edge Hub using gRPC protocol.          │
-  │    The address and port point to the Edge Hub's gRPC endpoint. The                    │
+  │    The address and port point to the Edge Hub's gRPC endpoint. The                     │
   │    numbers_to_metrics: true option converts numeric values to Splunk metrics format.   │
   │                                                                                        │
   │  • Single-File Config — All anchors and the app section live in one main.yaml.         │
-  │    Anchors (&name) are defined inline and referenced (*name) in the sinks/sources     │
+  │    Anchors (&name) are defined inline and referenced (*name) in the sinks/sources      │
   │    arrays at the bottom. Valid for smaller configs; multi-file is better at scale.     │
   │                                                                                        │
   │  • Cross-Source Cache — The Script source reads values from other sources using        │
-  │    cache('eipSource1/Execution') and cache('mqttSource1/ffe4Sensor'). This enables    │
+  │    cache('eipSource1/Execution') and cache('mqttSource1/ffe4Sensor'). This enables     │
   │    data combination, aggregation, and derived calculations across sources.             │
   │                                                                                        │
-  │  • $SYSTEM Cache — cache('eipSource1/$SYSTEM/IsConnected') reads the PLC's            │
+  │  • $SYSTEM Cache — cache('eipSource1/$SYSTEM/IsConnected') reads the PLC's             │
   │    connection state from the system cache. This enables health-aware logic like        │
   │    mapping IsConnected to 'Available'/'Unavailable' MTConnect events.                  │
   │                                                                                        │
-  │  • .NET Interop — The init_script uses luanet.load_assembly and luanet.import_type    │
-  │    to access .NET CLR types directly from Lua (e.g., System.Environment.MachineName). │
+  │  • .NET Interop — The init_script uses luanet.load_assembly and luanet.import_type     │
+  │    to access .NET CLR types directly from Lua (e.g., System.Environment.MachineName).  │
   │                                                                                        │
   └────────────────────────────────────────────────────────────────────────────────────────┘
 

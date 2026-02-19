@@ -3,11 +3,11 @@
   EX05 — MODBUS TCP REGISTERS                                            DIME EXAMPLE SERIES
 ═══════════════════════════════════════════════════════════════════════════════════════════════
 
-  ┌─ WHAT THIS EXAMPLE DOES ──────────────────────────────────────────────────────────────┐
+  ┌─ WHAT THIS EXAMPLE DOES ───────────────────────────────────────────────────────────────┐
   │                                                                                        │
   │  Reads Modbus TCP holding registers from a Banner Engineering device. Demonstrates     │
   │  the ModbusTCP source connector with register-type addressing, multi-register reads,   │
-  │  and Lua struct library for binary decoding. The init_script loads the Lua struct       │
+  │  and Lua struct library for binary decoding. The init_script loads the Lua struct      │
   │  library once at startup; item scripts extract register values.                        │
   │  Multi-file YAML config with three files: source, sink, and main.                      │
   │                                                                                        │
@@ -16,7 +16,7 @@
   DATA FLOW
   ─────────
 
-      ┌──────────────────────────┐
+      ┌───────────────────────────┐
       │   Modbus TCP Source       │          ┌──────────────────┐
       │   (modbusSource1)         │     ┌───▶│  Console Sink    │  stdout
       │                           │     │    │  (console)       │
@@ -114,7 +114,7 @@
   │  app:                                                                                  │
   │    license: 0000-0000-0000-0000-0000-0000-0000-0000                                    │
   │    ring_buffer: !!int 4096                                                             │
-  │    http_server_uri: http://127.0.0.1:9999/       # Admin REST API                     │
+  │    http_server_uri: http://127.0.0.1:9999/       # Admin REST API                      │
   │    ws_server_uri: ws://127.0.0.1:9998/            # Admin WebSocket                    │
   │                                                                                        │
   │  sinks:                                                                                │
@@ -142,12 +142,12 @@
   │    total). The result is an array indexed from 0. Use Lua struct library to decode     │
   │    multi-register values into floats, 32-bit integers, or other binary formats.        │
   │                                                                                        │
-  │  • Lua struct Library — The init_script loads struct = require('struct'). This          │
+  │  • Lua struct Library — The init_script loads struct = require('struct'). This         │
   │    provides binary pack/unpack for converting raw register bytes into typed values.    │
   │    Example: struct.unpack('>f', bytes) decodes a big-endian 32-bit float.              │
   │                                                                                        │
   │  • Slave/Unit ID — Modbus TCP devices have a unit ID (slave). For single devices       │
-  │    this is often 1 or 255. Gateways use it to route to downstream serial devices.     │
+  │    this is often 1 or 255. Gateways use it to route to downstream serial devices.      │
   │    This Banner device uses slave ID 199.                                               │
   │                                                                                        │
   └────────────────────────────────────────────────────────────────────────────────────────┘

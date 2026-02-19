@@ -3,7 +3,7 @@
   EX32 — MQTT MOTOR AGGREGATION                                       DIME EXAMPLE SERIES
 ═══════════════════════════════════════════════════════════════════════════════════════════════
 
-  ┌─ WHAT THIS EXAMPLE DOES ──────────────────────────────────────────────────────────────┐
+  ┌─ WHAT THIS EXAMPLE DOES ───────────────────────────────────────────────────────────────┐
   │                                                                                        │
   │  Demonstrates multi-instance MQTT sourcing, Lua JSON aggregation, and cross-connector  │
   │  cache patterns. ChicagoPlant reads five MQTT topics from IoT sensors (amperage, RPM,  │
@@ -16,16 +16,16 @@
   DATA FLOW
   ─────────
 
-       ┌──────────────────────┐   MQTT topics from IoT sensors
+       ┌───────────────────────┐   MQTT topics from IoT sensors
        │  ChicagoPlant (MQTT)  │   sharc/08d1f9540058/evt/io/s3  (Amperage)
        │  wss.sharc.tech:1883  │   sharc/08d1f953ffe4/evt/io/s1  (Rpm)
        │                       │   sharc/48e7290b118c/.../temp    (Temperature)
        │  JSON decode + cache  │   sharc/48e7290b118c/.../Xhz     (Vibration)
        │  then aggregate into  │   sharc/08d1f9540b8c/evt/io/s3  (BeltSpeed)
        │  WC01/Motor object    │   sharc/08d1f953fffc/.../humidity (Humidity)
-       └──────────┬───────────┘
+       └──────────┬────────────┘
                   │
-       ┌──────────┴───────────┐         ┌──────────────────────────┐
+       ┌──────────┴────────────┐         ┌──────────────────────────┐
        │  DetroitPlant (Script)│         │                          │
        │  Reads ChicagoPlant   │         │   Disruptor Ring Buffer  │
        │  via cache() API:     │────────▶│   4096 slots             │
@@ -33,9 +33,9 @@
        │  cache("ChicagoPlant  │         └──────────┬───────────────┘
        │    /Amperage", 0)     │                    │
        │  cache("ChicagoPlant  │           ┌────────┼──────────┐
-       │    /$SYSTEM/           │           │        │          │
+       │    /$SYSTEM/          │           │        │          │
        │    IsConnected",false)│           ▼        ▼          ▼
-       └──────────────────────┘      ┌────────┐ ┌──────┐ ┌────────┐
+       └───────────────────────┘      ┌────────┐ ┌──────┐ ┌────────┐
                                       │Console │ │ HTTP │ │  MQTT  │
          2 SOURCES                    └────────┘ └──────┘ └────────┘
      (1 MQTT + 1 Script)                             3 SINKS
@@ -43,7 +43,7 @@
   CONFIGURATION                                                          [7 files, 0 folders]
   ─────────────
 
-  ┌─ instanceMotor1A.yaml — MQTT source (ChicagoPlant) ────────────────────────────────────┐
+  ┌─ instanceMotor1A.yaml — MQTT source (ChicagoPlant) ──────────────────────────────────────┐
   │                                                                                          │
   │  instanceMotor1A: &instanceMotor1A                                                       │
   │    name: ChicagoPlant                                                                    │
@@ -53,7 +53,7 @@
   │    qos: !!int 0                                                                          │
   │    itemized_read: !!bool true             # Each item has its own MQTT topic             │
   │    init_script: |                                                                        │
-  │      json = require('json')               # JSON parsing library                        │
+  │      json = require('json')               # JSON parsing library                         │
   │    items:                                                                                │
   │      - name: Amperage                                                                    │
   │        address: sharc/08d1f9540058/evt/io/s3                                             │
@@ -99,7 +99,7 @@
   │                                                                                          │
   └──────────────────────────────────────────────────────────────────────────────────────────┘
 
-  ┌─ instanceMotor1B.yaml — Script source (DetroitPlant) ──────────────────────────────────┐
+  ┌─ instanceMotor1B.yaml — Script source (DetroitPlant) ────────────────────────────────────┐
   │                                                                                          │
   │  instanceMotor1B: &instanceMotor1B                                                       │
   │    name: DetroitPlant                                                                    │
@@ -112,7 +112,7 @@
   │        script: |                                                                         │
   │          local motor = {                                                                 │
   │            name = "WC02-Motor",                                                          │
-  │            available = cache("ChicagoPlant/$SYSTEM/IsConnected", false),                  │
+  │            available = cache("ChicagoPlant/$SYSTEM/IsConnected", false),                 │
   │            amperage = cache("ChicagoPlant/Amperage", 0),                                 │
   │            rpm = cache("ChicagoPlant/Rpm", 0),                                           │
   │            temperature = cache("ChicagoPlant/Temperature", 0),                           │
@@ -126,7 +126,7 @@
   │                                                                                          │
   └──────────────────────────────────────────────────────────────────────────────────────────┘
 
-  ┌─ Sink files ────────────────────────────────────────────────────────────────────────────┐
+  ┌─ Sink files ─────────────────────────────────────────────────────────────────────────────┐
   │                                                                                          │
   │  consoleSink1: &consoleSink1              # Debug output                                 │
   │    connector: Console                                                                    │
@@ -151,7 +151,7 @@
   │                                                                                          │
   └──────────────────────────────────────────────────────────────────────────────────────────┘
 
-  ┌─ main.yaml ─────────────────────────────────────────────────────────────────────────────┐
+  ┌─ main.yaml ──────────────────────────────────────────────────────────────────────────────┐
   │                                                                                          │
   │  app:                                                                                    │
   │    ring_buffer: !!int 4096                                                               │
@@ -169,9 +169,9 @@
   ────────────
   ┌────────────────────────────────────────────────────────────────────────────────────────┐
   │                                                                                        │
-  │  * Cache-Then-Aggregate Pattern -- Individual MQTT items decode JSON and cache via      │
-  │    set(this.Name, value), returning nil to suppress raw output. A separate              │
-  │    aggregation item reads all cached values and returns a composite object. This        │
+  │  * Cache-Then-Aggregate Pattern -- Individual MQTT items decode JSON and cache via     │
+  │    set(this.Name, value), returning nil to suppress raw output. A separate             │
+  │    aggregation item reads all cached values and returns a composite object. This       │
   │    pattern decouples arrival timing from the aggregation schedule.                     │
   │                                                                                        │
   │  * address: ~ for Cache-Only Items -- The WC01/Motor item has no MQTT topic            │
@@ -180,15 +180,15 @@
   │                                                                                        │
   │  * Cross-Connector System State -- DetroitPlant reads ChicagoPlant/$SYSTEM/            │
   │    IsConnected to check if the remote MQTT connection is alive. Every connector        │
-  │    publishes $SYSTEM items that other connectors can query through cache().             │
+  │    publishes $SYSTEM items that other connectors can query through cache().            │
   │                                                                                        │
-  │  * include_filter for Selective Routing -- The MQTT sink only publishes items           │
+  │  * include_filter for Selective Routing -- The MQTT sink only publishes items          │
   │    matching "DetroitPlant" or "ChicagoPlant". The Redis sink only gets Detroit         │
   │    data. Filters route different data slices to different sinks from one ring buffer.  │
   │                                                                                        │
   │  * JSON Decode Patterns -- IoT sensors publish nested JSON like {v:{s3:{v:42}}}.       │
   │    The json.decode(result).v.s3.v chain navigates the structure. Different sensor      │
-  │    payloads use different paths (v.s3.v, v.s1.v, v.v) -- Lua handles each in the      │
+  │    payloads use different paths (v.s3.v, v.s1.v, v.v) -- Lua handles each in the       │
   │    item script.                                                                        │
   │                                                                                        │
   └────────────────────────────────────────────────────────────────────────────────────────┘

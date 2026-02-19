@@ -3,10 +3,10 @@
   EX09 — FANUC ROBOT                                                     DIME EXAMPLE SERIES
 ═══════════════════════════════════════════════════════════════════════════════════════════════
 
-  ┌─ WHAT THIS EXAMPLE DOES ──────────────────────────────────────────────────────────────┐
+  ┌─ WHAT THIS EXAMPLE DOES ───────────────────────────────────────────────────────────────┐
   │                                                                                        │
   │  Connect to a Fanuc industrial robot over Ethernet. Reads joint positions, cartesian   │
-  │  coordinates, program state, string registers, and system variables. Lua scripts        │
+  │  coordinates, program state, string registers, and system variables. Lua scripts       │
   │  derive an execution state machine (ACTIVE/READY/STOPPED) from digital I/O signals.    │
   │  Multi-file YAML with JSON library for structured data extraction.                     │
   │                                                                                        │
@@ -15,14 +15,14 @@
   DATA FLOW
   ─────────
 
-      ┌───────────────────────────┐
+      ┌────────────────────────────┐
       │   Fanuc Robot Source       │
-      │   (10.1.1.200)             │        ┌──────────────────┐
+      │   (10.1.1.200)             │        ┌───────────────────┐
       │                            │        │  Console Sink     │  stdout
       │  Digital I/O:              │        │                   │
-      │  · UO.0 (SysReady)        │   ┌───▶│  exclude_filter:  │
-      │  · UO.1 (PgmRun)          │   │    │  fanuc1/$SYSTEM   │
-      │  · UO.2 (PgmPause)        │   │    └──────────────────┘
+      │  · UO.0 (SysReady)         │   ┌───▶│  exclude_filter:  │
+      │  · UO.1 (PgmRun)           │   │    │  fanuc1/$SYSTEM   │
+      │  · UO.2 (PgmPause)         │   │    └───────────────────┘
       │  Derived: Execution state  │   │
       │                            │   │
       │  Position Registers:       │   │
@@ -39,7 +39,7 @@
       │  · worldJointPosition.J1   │
       │                            │
       │  scan: 1000ms  RBE: true   │
-      └───────────────────────────┘
+      └────────────────────────────┘
              SOURCE                        RING BUFFER            SINK
        (Fanuc SRTP protocol)             (4096 slots)        (1 destination)
 
@@ -137,7 +137,7 @@
   │      - name: ProgramLineNumber                                                         │
   │        address: IntegerSystemVariables.$MOR_GRP[1].$line_offset                        │
   │      - name: J1Torque                                                                  │
-  │        address: IntegerSystemVariables.$MOR_GRP[1].$CUR_DIS_TRQ[1]                    │
+  │        address: IntegerSystemVariables.$MOR_GRP[1].$CUR_DIS_TRQ[1]                     │
   │      # --- World coordinate reads ---                                                  │
   │      - name: XPosition                                                                 │
   │        address: worldCartesianPosition.X                                               │
@@ -164,21 +164,21 @@
   ────────────
   ┌────────────────────────────────────────────────────────────────────────────────────────┐
   │                                                                                        │
-  │  * Fanuc Address Types — The connector supports multiple register families:             │
+  │  * Fanuc Address Types — The connector supports multiple register families:            │
   │    UO (User Outputs), PositionRegisters, StringRegisters, IntegerSystemVariables,      │
-  │    StringSystemVariables, worldCartesianPosition, worldJointPosition. Each uses         │
+  │    StringSystemVariables, worldCartesianPosition, worldJointPosition. Each uses        │
   │    dot notation: UO.0, PositionRegisters.1, worldCartesianPosition.X.                  │
   │                                                                                        │
   │  * Cache-and-Derive Pattern — Raw I/O bits (UO.0-2) are cached with set() and          │
-  │    return nil (suppressing direct publish). The Execution item reads cached values      │
+  │    return nil (suppressing direct publish). The Execution item reads cached values     │
   │    with cache() to derive a human-readable state string. This is a common pattern      │
   │    for combining multiple raw signals into a single derived value.                     │
   │                                                                                        │
-  │  * Structured Results — Position registers return complex objects. Lua scripts          │
+  │  * Structured Results — Position registers return complex objects. Lua scripts         │
   │    extract fields: result.CartesianPosition.X, result.JointsPosition.J1.               │
   │    The script runs on the raw .NET object returned by the connector.                   │
   │                                                                                        │
-  │  * System Variables — Access Fanuc internal variables with $ prefix paths like          │
+  │  * System Variables — Access Fanuc internal variables with $ prefix paths like         │
   │    $MOR_GRP[1].$cur_prog_id. These give deep visibility into robot internals:          │
   │    program ID, line number, joint torques.                                             │
   │                                                                                        │

@@ -3,7 +3,7 @@
   EX27 — SLIDING WINDOW ANALYTICS                                        DIME EXAMPLE SERIES
 ═══════════════════════════════════════════════════════════════════════════════════════════════
 
-  ┌─ WHAT THIS EXAMPLE DOES ──────────────────────────────────────────────────────────────┐
+  ┌─ WHAT THIS EXAMPLE DOES ───────────────────────────────────────────────────────────────┐
   │                                                                                        │
   │  Demonstrates windowed analytics using the sliding_window Lua module. A simulated      │
   │  temperature sensor feeds values into two sliding windows: one computes a 5-sample     │
@@ -16,7 +16,7 @@
   ─────────
 
       ┌────────────────────────────┐
-      │   Script Source             │
+      │   Script Source            │
       │   (sliding_window)         │
       │                            │       ┌──────────────────────────┐
       │   init: require            │       │  Console Sink            │
@@ -26,7 +26,7 @@
       │                            ├──────▶│                          │  stdout
       │   Items:                   │       │  exclude_filter:         │
       │   · Temperature            │       │    /\$SYSTEM             │
-      │     (25.0 +/- 2.0)        │       │                          │
+      │     (25.0 +/- 2.0)         │       │                          │
       │   · TemperatureMovingAvg   │       │  Liquid templates format │
       │     window1:average()      │       │  items as JSON payloads  │
       │   · TemperatureSpike       │       └──────────────────────────┘
@@ -77,10 +77,10 @@
   │          return window1:average()                # Return windowed average             │
   │        sink:                                                                           │
   │          transform:                                                                    │
-  │            type: liquid                          # Liquid template engine               │
+  │            type: liquid                          # Liquid template engine              │
   │            template: |                                                                 │
   │              {                                                                         │
-  │                "value": {{Message.Data}},                                               │
+  │                "value": {{Message.Data}},                                              │
   │                "timestamp": {{Message.Timestamp}},                                     │
   │                "unit": "C"                                                             │
   │              }                                                                         │
@@ -102,13 +102,13 @@
   │          }                                                                             │
   │        sink:                                                                           │
   │          transform:                                                                    │
-  │            type: liquid                          # Liquid template for spike data       │
+  │            type: liquid                          # Liquid template for spike data      │
   │            template: |                                                                 │
   │              {                                                                         │
-  │                "is_spike": {{Message.Data.is_spike}},                                   │
-  │                "deviation": {{Message.Data.deviation}},                                 │
-  │                "max": {{Message.Data.max}},                                             │
-  │                "min": {{Message.Data.min}},                                             │
+  │                "is_spike": {{Message.Data.is_spike}},                                  │
+  │                "deviation": {{Message.Data.deviation}},                                │
+  │                "max": {{Message.Data.max}},                                            │
+  │                "min": {{Message.Data.min}},                                            │
   │                "timestamp": {{Message.Timestamp}}                                      │
   │              }                                                                         │
   │                                                                                        │
@@ -129,8 +129,8 @@
   ────────────
   ┌────────────────────────────────────────────────────────────────────────────────────────┐
   │                                                                                        │
-  │  * Sliding Window Module -- The sliding_window Lua module provides a circular buffer    │
-  │    for time-series analytics. Create with window_module.create(size). Methods:          │
+  │  * Sliding Window Module -- The sliding_window Lua module provides a circular buffer   │
+  │    for time-series analytics. Create with window_module.create(size). Methods:         │
   │    add(value), average(), sum(), min(), max(), count(), full(), clear(). The window    │
   │    automatically evicts the oldest value when full.                                    │
   │                                                                                        │
@@ -139,11 +139,11 @@
   │    size of 5, this smooths out noise by averaging the last 5 readings. Larger windows  │
   │    produce smoother but more delayed results.                                          │
   │                                                                                        │
-  │  * Spike Detection -- The TemperatureSpike item computes max - min over the window.     │
+  │  * Spike Detection -- The TemperatureSpike item computes max - min over the window.    │
   │    If this deviation exceeds 3.0 degrees, is_spike becomes true. This pattern detects  │
-  │    sudden changes without requiring threshold comparisons on individual values.         │
+  │    sudden changes without requiring threshold comparisons on individual values.        │
   │                                                                                        │
-  │  * Liquid Templates -- The sink.transform.type "liquid" enables DotLiquid templating.   │
+  │  * Liquid Templates -- The sink.transform.type "liquid" enables DotLiquid templating.  │
   │    Access data with {{Message.Data}}, {{Message.Data.field}}, and                      │
   │    {{Message.Timestamp}}. Liquid is ideal for formatting structured JSON payloads.     │
   │    The Console sink enables these templates with use_sink_transform: true.             │

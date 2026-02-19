@@ -3,7 +3,7 @@
   EX18 — MONGODB DOCUMENTS                                               DIME EXAMPLE SERIES
 ═══════════════════════════════════════════════════════════════════════════════════════════════
 
-  ┌─ WHAT THIS EXAMPLE DOES ──────────────────────────────────────────────────────────────┐
+  ┌─ WHAT THIS EXAMPLE DOES ───────────────────────────────────────────────────────────────┐
   │                                                                                        │
   │  Reads PLC data from a Rockwell MicroLogix via EthernetIP and stores it as             │
   │  documents in MongoDB Atlas (cloud). Demonstrates the MongoDB sink connector           │
@@ -17,14 +17,14 @@
   ─────────
 
       ┌─────────────────────────┐
-      │   Rockwell EthernetIP   │          ┌──────────────────┐
-      │   (MicroLogix PLC)      │     ┌───▶│  MongoDB Atlas   │  mongodb+srv://
+      │   Rockwell EthernetIP   │          ┌───────────────────┐
+      │   (MicroLogix PLC)      │     ┌───▶│  MongoDB Atlas    │  mongodb+srv://
       │                         │     │    │  DB: DIME         │
       │   192.168.111.20        │     │    │  Collection: TS   │
-      │   scan: 1500ms          ├─────┤    └──────────────────┘
+      │   scan: 1500ms          ├─────┤    └───────────────────┘
       │                         │     │
       │   Items:                │     │    ┌──────────────────┐
-      │   · boolFromCache       │     └───▶│  Console Sink   │  stdout
+      │   · boolFromCache       │     └───▶│  Console Sink    │  stdout
       │   · Execution           │          └──────────────────┘
       │   · GoodPartCount       │
       └─────────────────────────┘
@@ -93,7 +93,7 @@
   │    connector: MongoDB                            # MongoDB document sink               │
   │    use_sink_transform: !!bool true               # Apply source transform              │
   │    address: mongodb+srv://user:pa55w0rd@cluster0.h7xod.mongodb.net/                    │
-  │             ?retryWrites=true&w=majority&appName=Cluster0                               │
+  │             ?retryWrites=true&w=majority&appName=Cluster0                              │
   │    database: DIME                                # Target database name                │
   │    collection: TS                                # Target collection name              │
   │    exclude_filter:                                                                     │
@@ -141,11 +141,11 @@
   │    cloud clusters. The connection string includes authentication credentials,          │
   │    retry settings, and write concern. Keep credentials out of version control.         │
   │                                                                                        │
-  │  • use_sink_transform — When true on a sink, it applies the source's                  │
+  │  • use_sink_transform — When true on a sink, it applies the source's                   │
   │    sink.transform.template to extract just the data value (Message.Data) before        │
   │    writing. Without it, the full MessageBoxMessage envelope is stored.                 │
   │                                                                                        │
-  │  • Cache-and-Forward Pattern — Same as EX17: cache raw PLC bits with set/return nil,  │
+  │  • Cache-and-Forward Pattern — Same as EX17: cache raw PLC bits with set/return nil,   │
   │    then read with cache() in derived items. This separates data acquisition from       │
   │    data transformation cleanly.                                                        │
   │                                                                                        │
