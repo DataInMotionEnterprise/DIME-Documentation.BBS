@@ -19,10 +19,12 @@
         <span class="key-hint"><kbd>&uarr;</kbd><kbd>&darr;</kbd> navigate pages</span>
         <span class="key-hint">Click highlighted regions</span>
         <span class="key-hint"><kbd>Esc</kbd> close panel</span>
+        <span class="key-hint"><kbd>/</kbd> search</span>
       </div>
     </nav>
     <div id="sidebar-resize"></div>
     <main id="canvas-wrap">
+      <button id="copy-page" title="Copy page as markdown">Copy</button>
       <pre id="ascii-canvas"></pre>
       <nav id="page-nav"></nav>
       <div id="hotspot-hint">Click highlighted text for details</div>
@@ -30,12 +32,20 @@
     <aside id="panel">
       <div id="panel-header">
         <h2 id="panel-title"></h2>
+        <button id="copy-body" title="Copy as markdown">&#x2398;</button>
         <button id="panel-close" title="Close (ESC)">&times;</button>
       </div>
       <div id="panel-body"></div>
       <div id="panel-yaml"></div>
       <div id="panel-related"></div>
     </aside>
+  </div>
+  <div id="search-modal">
+    <div id="search-box">
+      <input id="search-input" type="text" placeholder="Search pages and topics..." autocomplete="off" spellcheck="false">
+      <ul id="search-results"></ul>
+      <div id="search-footer"><kbd>/</kbd> search &nbsp; <kbd>&uarr;</kbd><kbd>&darr;</kbd> navigate &nbsp; <kbd>Enter</kbd> open &nbsp; <kbd>Esc</kbd> close</div>
+    </div>
   </div>
   <div id="theme-dots">
     <span class="dot dot-amber active" data-theme="amber" title="Amber"></span>

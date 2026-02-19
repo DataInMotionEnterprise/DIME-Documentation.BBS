@@ -299,8 +299,12 @@
     // YAML example
     if (cfg.yaml) {
       panelYaml.innerHTML =
-        '<span class="yaml-label">Example</span>' +
+        '<span class="yaml-label">Example <button class="copy-yaml-btn">Copy</button></span>' +
         '<pre>' + escapeHtml(cfg.yaml) + '</pre>';
+      var yamlBtn = panelYaml.querySelector('.copy-yaml-btn');
+      yamlBtn.addEventListener('click', function () {
+        copyToClipboard(cfg.yaml, yamlBtn);
+      });
     } else {
       panelYaml.innerHTML = '';
     }
@@ -355,6 +359,18 @@
   // ── Keyboard ───────────────────────────────────────────────────
 
   function handleKeyboard(e) {
+    // Search is open — let it handle its own keys
+    if (searchModal.classList.contains('open')) return;
+
+    // Ctrl+K or / — open search
+    if ((e.key === 'k' && (e.ctrlKey || e.metaKey)) ||
+        (e.key === '/' && !e.ctrlKey && !e.metaKey && !e.altKey &&
+         document.activeElement.tagName !== 'INPUT')) {
+      e.preventDefault();
+      openSearch();
+      return;
+    }
+
     // ESC — close panel
     if (e.key === 'Escape') {
       if (shell.classList.contains('panel-open')) {
@@ -432,6 +448,260 @@
     });
   }
 
+  // ── Search ────────────────────────────────────────────────────
+
+  var searchModal   = document.getElementById('search-modal');
+  var searchInput   = document.getElementById('search-input');
+  var searchResults = document.getElementById('search-results');
+  var searchIndex   = [];
+  var selectedIdx   = -1;
+
+  function buildSearchIndex() {
+    searchIndex = [];
+    for (var i = 0; i < PAGES.length; i++) {
+      var page = PAGES[i];
+      searchIndex.push({
+        text: page.title,
+        pageId: page.id,
+        hotspotId: null,
+        type: 'page'
+      });
+      if (page.hotspots) {
+        for (var j = 0; j < page.hotspots.length; j++) {
+          var hs = page.hotspots[j];
+          if (hs.panel) {
+            searchIndex.push({
+              text: hs.panel.title,
+              pageId: page.id,
+              hotspotId: hs.id,
+              type: 'topic',
+              pageTitle: page.title
+            });
+          }
+        }
+      }
+    }
+  }
+
+  function openSearch() {
+    searchModal.classList.add('open');
+    searchInput.value = '';
+    searchResults.innerHTML = '';
+    selectedIdx = -1;
+    searchInput.focus();
+  }
+
+  function closeSearch() {
+    searchModal.classList.remove('open');
+  }
+
+  function runSearch(query) {
+    if (!query) { searchResults.innerHTML = ''; selectedIdx = -1; return; }
+
+    var terms = query.toLowerCase().split(/\s+/);
+    var matches = [];
+
+    for (var i = 0; i < searchIndex.length; i++) {
+      var entry = searchIndex[i];
+      var haystack = entry.text.toLowerCase();
+      var allMatch = true;
+      for (var t = 0; t < terms.length; t++) {
+        if (haystack.indexOf(terms[t]) < 0) { allMatch = false; break; }
+      }
+      if (allMatch) {
+        matches.push(entry);
+        if (matches.length >= 12) break;
+      }
+    }
+
+    selectedIdx = matches.length > 0 ? 0 : -1;
+    renderSearchResults(matches, terms);
+  }
+
+  function renderSearchResults(matches, terms) {
+    var html = '';
+    for (var i = 0; i < matches.length; i++) {
+      var m = matches[i];
+      var cls = i === selectedIdx ? ' class="selected"' : '';
+      var title = highlightTerms(escapeHtml(m.text), terms);
+      var sub = m.type === 'topic'
+        ? ' <span class="sr-page">in ' + escapeHtml(m.pageTitle) + '</span>'
+        : '';
+      html += '<li' + cls + ' data-idx="' + i + '">' +
+        '<span class="sr-title">' + title + '</span>' + sub + '</li>';
+    }
+    searchResults.innerHTML = html;
+
+    // Click handlers
+    var items = searchResults.querySelectorAll('li');
+    for (var j = 0; j < items.length; j++) {
+      (function (li, idx) {
+        li.addEventListener('click', function () {
+          navigateToResult(matches[idx]);
+        });
+      })(items[j], j);
+    }
+
+    // Store matches for keyboard nav
+    searchResults._matches = matches;
+  }
+
+  function highlightTerms(html, terms) {
+    for (var t = 0; t < terms.length; t++) {
+      var re = new RegExp('(' + terms[t].replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')', 'gi');
+      html = html.replace(re, '<span class="sr-match">$1</span>');
+    }
+    return html;
+  }
+
+  function navigateToResult(entry) {
+    closeSearch();
+    if (entry.pageId !== currentPageId) {
+      window.location.hash = 'page-' + entry.pageId;
+      if (entry.hotspotId) {
+        setTimeout(function () { activateHotspot(entry.hotspotId); }, 450);
+      }
+    } else if (entry.hotspotId) {
+      activateHotspot(entry.hotspotId);
+    }
+  }
+
+  function handleSearchKeys(e) {
+    var matches = searchResults._matches || [];
+    if (e.key === 'Escape') {
+      closeSearch();
+      e.preventDefault();
+      e.stopPropagation();
+    } else if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      if (matches.length > 0) {
+        selectedIdx = Math.min(selectedIdx + 1, matches.length - 1);
+        updateSelectedResult();
+      }
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      if (matches.length > 0) {
+        selectedIdx = Math.max(selectedIdx - 1, 0);
+        updateSelectedResult();
+      }
+    } else if (e.key === 'Enter') {
+      e.preventDefault();
+      if (selectedIdx >= 0 && selectedIdx < matches.length) {
+        navigateToResult(matches[selectedIdx]);
+      }
+    }
+  }
+
+  function updateSelectedResult() {
+    var items = searchResults.querySelectorAll('li');
+    for (var i = 0; i < items.length; i++) {
+      if (i === selectedIdx) {
+        items[i].classList.add('selected');
+        items[i].scrollIntoView({ block: 'nearest' });
+      } else {
+        items[i].classList.remove('selected');
+      }
+    }
+  }
+
+  function initSearch() {
+    buildSearchIndex();
+
+    searchInput.addEventListener('input', function () {
+      runSearch(searchInput.value.trim());
+    });
+
+    searchInput.addEventListener('keydown', handleSearchKeys);
+
+    searchModal.addEventListener('click', function (e) {
+      if (e.target === searchModal) closeSearch();
+    });
+  }
+
+  // ── Copy helpers ─────────────────────────────────────────────
+
+  function copyToClipboard(text, btn) {
+    navigator.clipboard.writeText(text).then(function () {
+      var orig = btn.textContent;
+      btn.textContent = 'Copied!';
+      btn.classList.add('copied');
+      setTimeout(function () {
+        btn.textContent = orig;
+        btn.classList.remove('copied');
+      }, 1200);
+    });
+  }
+
+  function htmlToMarkdown(node) {
+    var result = '';
+    for (var i = 0; i < node.childNodes.length; i++) {
+      var child = node.childNodes[i];
+      if (child.nodeType === 3) {
+        result += child.textContent;
+      } else if (child.nodeType === 1) {
+        var tag = child.tagName.toLowerCase();
+        if (tag === 'p') {
+          result += htmlToMarkdown(child) + '\n\n';
+        } else if (tag === 'strong' || tag === 'b') {
+          result += '**' + htmlToMarkdown(child) + '**';
+        } else if (tag === 'em' || tag === 'i') {
+          result += '_' + htmlToMarkdown(child) + '_';
+        } else if (tag === 'code') {
+          result += '`' + child.textContent + '`';
+        } else if (tag === 'br') {
+          result += '\n';
+        } else if (tag === 'ul') {
+          for (var u = 0; u < child.children.length; u++) {
+            if (child.children[u].tagName.toLowerCase() === 'li') {
+              result += '- ' + htmlToMarkdown(child.children[u]).trim() + '\n';
+            }
+          }
+          result += '\n';
+        } else if (tag === 'ol') {
+          var num = 1;
+          for (var o = 0; o < child.children.length; o++) {
+            if (child.children[o].tagName.toLowerCase() === 'li') {
+              result += num + '. ' + htmlToMarkdown(child.children[o]).trim() + '\n';
+              num++;
+            }
+          }
+          result += '\n';
+        } else if (tag === 'pre') {
+          result += '```\n' + child.textContent + '\n```\n\n';
+        } else {
+          result += htmlToMarkdown(child);
+        }
+      }
+    }
+    return result;
+  }
+
+  // ── Copy body as markdown ────────────────────────────────────
+
+  var copyBodyBtn = document.getElementById('copy-body');
+  var copyPageBtn = document.getElementById('copy-page');
+
+  function initCopyBody() {
+    copyBodyBtn.addEventListener('click', function () {
+      var title = panelTitle.textContent;
+      var bodyMd = htmlToMarkdown(panelBody).replace(/\n{3,}/g, '\n\n').trim();
+      var yamlPre = panelYaml.querySelector('pre');
+      var yamlMd = yamlPre ? '\n\n```yaml\n' + yamlPre.textContent + '\n```' : '';
+      var text = '## ' + title + '\n\n' + bodyMd + yamlMd;
+      copyToClipboard(text, copyBodyBtn);
+    });
+
+    copyPageBtn.addEventListener('click', function () {
+      var page = null;
+      for (var i = 0; i < PAGES.length; i++) {
+        if (PAGES[i].id === currentPageId) { page = PAGES[i]; break; }
+      }
+      var title = page ? page.title : currentPageId;
+      var text = '# ' + title + '\n\n```\n' + canvas.textContent + '\n```';
+      copyToClipboard(text, copyPageBtn);
+    });
+  }
+
   // ── First-visit hint ──────────────────────────────────────────
 
   var hotspotHint = document.getElementById('hotspot-hint');
@@ -504,6 +774,8 @@
     buildSidebar();
     initSidebarResize();
     initThemeDots();
+    initSearch();
+    initCopyBody();
     scheduleGlitch();
     showHintIfFirstVisit();
     panelClose.addEventListener('click', closePanel);
