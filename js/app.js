@@ -431,11 +431,46 @@
     });
   }
 
+  // ── Theme switcher ────────────────────────────────────────────
+
+  function initThemeDots() {
+    var dots = document.querySelectorAll('#theme-dots .dot');
+    var saved = localStorage.getItem('dime-theme') || 'amber';
+    applyTheme(saved);
+
+    for (var i = 0; i < dots.length; i++) {
+      (function (dot) {
+        dot.addEventListener('click', function () {
+          applyTheme(dot.getAttribute('data-theme'));
+        });
+      })(dots[i]);
+    }
+  }
+
+  function applyTheme(name) {
+    if (name === 'amber') {
+      document.documentElement.removeAttribute('data-theme');
+    } else {
+      document.documentElement.setAttribute('data-theme', name);
+    }
+    localStorage.setItem('dime-theme', name);
+
+    var dots = document.querySelectorAll('#theme-dots .dot');
+    for (var i = 0; i < dots.length; i++) {
+      if (dots[i].getAttribute('data-theme') === name) {
+        dots[i].classList.add('active');
+      } else {
+        dots[i].classList.remove('active');
+      }
+    }
+  }
+
   // ── Init ───────────────────────────────────────────────────────
 
   function init() {
     buildSidebar();
     initSidebarResize();
+    initThemeDots();
     panelClose.addEventListener('click', closePanel);
     sidebarToggle.addEventListener('click', toggleSidebar);
     document.addEventListener('keydown', handleKeyboard);

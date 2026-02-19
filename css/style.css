@@ -632,4 +632,64 @@ kbd {
   body {
     animation: none;
   }
+
+  #theme-dots {
+    bottom: 8px;
+    right: 8px;
+  }
 }
+
+/* === Theme Variants === */
+[data-theme="green"] {
+  --amber: #39ff14;
+  --amber-dim: #1a8a0a;
+  --amber-glow: rgba(57, 255, 20, 0.4);
+  --cyan: #00e5ff;
+  --cyan-dim: #007a8a;
+  --cyan-glow: rgba(0, 229, 255, 0.4);
+  --border: #0a3000;
+}
+
+[data-theme="white"] {
+  --amber: #d4d4d4;
+  --amber-dim: #707070;
+  --amber-glow: rgba(200, 200, 200, 0.2);
+  --cyan: #569cd6;
+  --cyan-dim: #2a6099;
+  --cyan-glow: rgba(86, 156, 214, 0.4);
+  --border: #333;
+}
+
+/* === Theme Dots === */
+#theme-dots {
+  position: fixed;
+  bottom: 12px;
+  right: 16px;
+  z-index: 500;
+  display: flex;
+  gap: 8px;
+}
+
+#theme-dots .dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 1px solid transparent;
+  cursor: pointer;
+  opacity: 0.5;
+  transition: opacity 0.15s, box-shadow 0.15s, border-color 0.15s;
+}
+
+#theme-dots .dot:hover {
+  opacity: 0.85;
+}
+
+#theme-dots .dot.active {
+  opacity: 1;
+  border-color: rgba(255, 255, 255, 0.5);
+  box-shadow: 0 0 6px currentColor;
+}
+
+#theme-dots .dot-amber  { background: #ffb000; color: #ffb000; }
+#theme-dots .dot-green  { background: #39ff14; color: #39ff14; }
+#theme-dots .dot-white  { background: #d4d4d4; color: #d4d4d4; }
