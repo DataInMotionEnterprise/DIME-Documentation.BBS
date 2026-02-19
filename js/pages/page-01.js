@@ -8,8 +8,36 @@ DIME_PAGES['01'] = {
   file: 'content/01-what-is-dime.md',
   hotspots: [
     {
+      id: 'github',
+      startLine: 11, startCol: 3, endLine: 11, endCol: 56,
+      label: 'DIME on GitHub',
+      panel: {
+        title: 'DIME \u2014 Data In Motion Enterprise',
+        body:
+          '<p><a href="https://github.com/DataInMotionEnterprise" target="_blank" style="color:var(--cyan)">github.com/DataInMotionEnterprise</a></p>' +
+          '<p>The industrial data platform that connects every machine, every protocol, every site \u2014 from plant floor to cloud \u2014 in milliseconds.</p>' +
+          '<p><strong>Three-tier architecture:</strong></p>' +
+          '<ul>' +
+          '<li><strong>Connector</strong> (Edge) \u2014 50+ industrial protocols, sub-millisecond latency via lock-free Disruptor ring buffer, 1M+ msg/sec, zero-code YAML config with inline Lua/Python scripting</li>' +
+          '<li><strong>Horizon</strong> (Gateway) \u2014 Site manager with pull-based cloud sync, zero inbound firewall rules, graceful offline operation, remote config push</li>' +
+          '<li><strong>Zenith</strong> (Cloud) \u2014 Centralized fleet command \u0026 control, automated health monitoring, task-based orchestration, MongoDB-backed config versioning</li>' +
+          '</ul>' +
+          '<p><strong>Desktop apps:</strong></p>' +
+          '<ul>' +
+          '<li><strong>Zenith UX</strong> \u2014 Fleet management console (Tauri + React) with live dashboard, YAML editor, and remote task management</li>' +
+          '<li><strong>Connector UX</strong> \u2014 Local operations console with real-time monitoring, WebSocket live feed, and schema browser</li>' +
+          '</ul>' +
+          '<p><strong>Protocols:</strong> Siemens S7, Rockwell EtherNet/IP, OPC-UA/DA, Modbus TCP, Beckhoff ADS, MQTT, SparkplugB, MTConnect, Fanuc, Yaskawa, ROS2, InfluxDB, MongoDB, SQL Server, PostgreSQL, Splunk, HTTP/WebSocket, and more.</p>',
+        related: [
+          { page: '03', label: '03 \u2014 Installation & First Run' },
+          { page: '05', label: '05 \u2014 Architecture Overview' },
+          { page: 'EX01', label: 'EX01 \u2014 Basic Counter (Hello World)' }
+        ]
+      }
+    },
+    {
       id: 'problem',
-      startLine: 17, startCol: 4, endLine: 31, endCol: 73,
+      startLine: 20, startCol: 4, endLine: 34, endCol: 73,
       label: 'The N\u00d7M Integration Problem',
       panel: {
         title: 'The N\u00d7M Integration Problem',
@@ -24,7 +52,7 @@ DIME_PAGES['01'] = {
     },
     {
       id: 'solution',
-      startLine: 41, startCol: 4, endLine: 55, endCol: 90,
+      startLine: 44, startCol: 4, endLine: 58, endCol: 90,
       label: 'The DIME Hub-and-Spoke',
       panel: {
         title: 'Hub-and-Spoke Architecture',
@@ -50,7 +78,7 @@ DIME_PAGES['01'] = {
     },
     {
       id: 'how-it-works',
-      startLine: 62, startCol: 6, endLine: 81, endCol: 73,
+      startLine: 65, startCol: 6, endLine: 84, endCol: 73,
       label: 'How Data Flows Through DIME',
       panel: {
         title: 'Sources \u2192 Ring Buffer \u2192 Sinks',
@@ -71,7 +99,7 @@ DIME_PAGES['01'] = {
     },
     {
       id: 'connectors',
-      startLine: 88, startCol: 3, endLine: 108, endCol: 90,
+      startLine: 91, startCol: 3, endLine: 111, endCol: 90,
       label: '47+ Connector Types',
       panel: {
         title: '47+ Connector Types',
@@ -93,7 +121,7 @@ DIME_PAGES['01'] = {
     },
     {
       id: 'features',
-      startLine: 115, startCol: 3, endLine: 137, endCol: 88,
+      startLine: 118, startCol: 3, endLine: 140, endCol: 88,
       label: 'Why Choose DIME?',
       panel: {
         title: 'Why DIME?',
@@ -115,7 +143,7 @@ DIME_PAGES['01'] = {
     },
     {
       id: 'yaml-config',
-      startLine: 144, startCol: 3, endLine: 159, endCol: 80,
+      startLine: 147, startCol: 3, endLine: 162, endCol: 80,
       label: 'YAML Configuration Example',
       panel: {
         title: 'From PLC to Database in 12 Lines',
