@@ -642,6 +642,10 @@ kbd {
     pointer-events: auto;
   }
 
+  #sidebar-header {
+    padding-left: 50px;
+  }
+
   #ascii-canvas {
     font-size: 1.55vw;
   }
