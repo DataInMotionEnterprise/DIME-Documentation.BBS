@@ -9,7 +9,7 @@ DIME_PAGES['22'] = {
   hotspots: [
     {
       id: 'chaining',
-      startLine: 35, startCol: 3, endLine: 75, endCol: 90,
+      startLine: 35, startCol: 3, endLine: 73, endCol: 90,
       label: 'Instance Chaining Concept',
       panel: {
         title: 'Instance Chaining \u2014 Sink \u2192 Protocol \u2192 Source',
@@ -24,7 +24,6 @@ DIME_PAGES['22'] = {
           '<li><strong>HTTP</strong> \u2014 REST push/pull. Works through firewalls and proxies.</li>' +
           '<li><strong>WebSocket</strong> \u2014 Persistent, full-duplex, low-latency streaming.</li>' +
           '<li><strong>Redis</strong> \u2014 Pub/Sub channel. In-memory speed for same-network linking.</li>' +
-          '<li><strong>ActiveMQ</strong> \u2014 JMS queuing with durable subscriptions.</li>' +
           '</ul>',
         related: [
           { page: '28', label: '28 \u2014 Edge-to-Cloud patterns' },
@@ -34,7 +33,7 @@ DIME_PAGES['22'] = {
     },
     {
       id: 'three-tier',
-      startLine: 79, startCol: 4, endLine: 100, endCol: 82,
+      startLine: 77, startCol: 4, endLine: 98, endCol: 82,
       label: 'Three-Tier Topology',
       panel: {
         title: 'Edge \u2192 Aggregator \u2192 Analytics',
@@ -54,7 +53,7 @@ DIME_PAGES['22'] = {
     },
     {
       id: 'edge-config',
-      startLine: 106, startCol: 3, endLine: 129, endCol: 90,
+      startLine: 104, startCol: 3, endLine: 127, endCol: 90,
       label: 'Edge Instance Config',
       panel: {
         title: 'Edge DIME \u2014 Collect, Normalize, Forward',
@@ -80,7 +79,7 @@ DIME_PAGES['22'] = {
     },
     {
       id: 'aggregator',
-      startLine: 134, startCol: 3, endLine: 162, endCol: 90,
+      startLine: 132, startCol: 3, endLine: 160, endCol: 90,
       label: 'Aggregator Instance Config',
       panel: {
         title: 'Aggregator DIME \u2014 Merge, Dashboard, Cloud',
@@ -112,15 +111,15 @@ DIME_PAGES['22'] = {
     },
     {
       id: 'hot-reconfig',
-      startLine: 168, startCol: 3, endLine: 191, endCol: 90,
+      startLine: 166, startCol: 3, endLine: 187, endCol: 90,
       label: 'Runtime Reconfiguration',
       panel: {
         title: 'Hot Reconfiguration \u2014 Zero Downtime',
         body:
           '<p>Add a new sink to any running DIME instance without restarting:</p>' +
-          '<pre>POST http://localhost:9999/connector/add/sink\n{\n  "name": "debug_console",\n  "connector": "Console"\n}</pre>' +
+          '<pre>POST http://localhost:9999/connector/add/sink/debug_console\nContent-Type: text/plain\n\nname: debug_console\nconnector: Console</pre>' +
           '<p>The new sink immediately begins receiving from the ring buffer. Existing connectors are completely unaffected.</p>' +
-          '<p>You can also add sources at runtime via <code>POST /connector/add/source</code>, or push an entirely new YAML config via <code>POST /config/yaml</code>.</p>' +
+          '<p>You can also add sources at runtime via <code>POST /connector/add/source/{name}</code>, or push an entirely new YAML config via <code>POST /config/yaml</code>.</p>' +
           '<p>This is how you add temporary debug sinks, enable new analytics destinations, or respond to changing requirements \u2014 all without interrupting data flow.</p>',
         related: [
           { page: '16', label: '16 \u2014 Admin REST API' },

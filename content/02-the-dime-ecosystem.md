@@ -50,7 +50,7 @@
 │                          ┌──────────────────────────────────────────┐                            │
 │                          │          DIME CONNECTOR  (Edge)          │   ┌──────────────────┐     │
 │                          │                                          │   │   Connector UX   │     │
-│                          │   Collects data from 50+ protocols       │   │                  │     │
+│                          │   Collects data from 47+ protocols       │   │                  │     │
 │                          │   Runs on the factory floor              │   │   Local mgmt     │     │
 │                          │   YAML-configured sources & sinks        │   │   desktop app    │     │
 │                          │   Disruptor ring buffer at the core      │   │                  │     │
@@ -71,7 +71,7 @@
 │          │                         │                      │                                      │
 │          ▼                         ▼                      ▼                                      │
 │     Factory Floor             Site Gateway           Cloud C2                                    │
-│     50+ protocols             Bridges edge           Fleet-wide                                  │
+│     47+ protocols             Bridges edge           Fleet-wide                                  │
 │     sub-ms latency            to cloud               command                                     │
 │                                                                                                  │
 │  ──────────────────────────────────────────────────────────────────────────────────────────────  │

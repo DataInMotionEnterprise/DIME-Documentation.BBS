@@ -21,7 +21,7 @@ DIME_PAGES['29'] = {
           '<li><strong>Larger = more burst capacity</strong> \u2014 Absorbs spikes when sinks are temporarily slow. Costs more memory.</li>' +
           '<li><strong>Smaller = lower latency</strong> \u2014 Tighter loop, less memory. But backpressure arrives sooner under load.</li>' +
           '</ul>' +
-          '<p>If unsure, start with 4096 and monitor <code>$SYSTEM/TotalLoopTime</code> via the admin API.</p>',
+          '<p>If unsure, start with 4096 and monitor <code>LastLoopMs</code> via <code>GET /status</code>.</p>',
         yaml:
           'app:\n' +
           '  ring_buffer: !!int 4096   # default\n' +
@@ -98,7 +98,7 @@ DIME_PAGES['29'] = {
           '<p><strong>Symptoms:</strong></p>' +
           '<ul>' +
           '<li>Memory usage grows steadily over time</li>' +
-          '<li><code>$SYSTEM/TotalLoopTime</code> increases on the affected sink</li>' +
+          '<li><code>LastLoopMs</code> increases on the affected sink (via <code>GET /status</code>)</li>' +
           '<li>Destination data falls behind real-time</li>' +
           '</ul>' +
           '<p><strong>Solutions (in order of impact):</strong></p>' +
@@ -119,15 +119,15 @@ DIME_PAGES['29'] = {
     {
       id: 'bottlenecks',
       startLine: 163, startCol: 3, endLine: 198, endCol: 87,
-      label: 'Finding Bottlenecks with $SYSTEM',
+      label: 'Finding Bottlenecks with /status',
       panel: {
-        title: '$SYSTEM Metrics \u2014 Built-In Performance Diagnostics',
+        title: '/status Metrics \u2014 Built-In Performance Diagnostics',
         body:
-          '<p>Every source connector publishes timing data automatically under <code>$SYSTEM</code>. Use these metrics to pinpoint bottlenecks.</p>' +
+          '<p>Every connector exposes timing and health metrics via the REST API at <code>GET /status</code>. Use these to pinpoint bottlenecks.</p>' +
           '<ul>' +
-          '<li><strong>TotalLoopTime</strong> \u2014 End-to-end time for one scan cycle. If this exceeds <code>scan_interval</code>, the source cannot keep up.</li>' +
-          '<li><strong>ScriptTime</strong> \u2014 Time spent in Lua/Python transforms. High values mean your script needs optimization.</li>' +
-          '<li><strong>MinReadTime / MaxReadTime</strong> \u2014 Fastest and slowest device reads. A large gap indicates intermittent device or network issues.</li>' +
+          '<li><strong>LastLoopMs</strong> \u2014 End-to-end time for one scan cycle. If this exceeds <code>scan_interval</code>, the source cannot keep up.</li>' +
+          '<li><strong>LastScriptMs</strong> \u2014 Time spent in Lua/Python transforms. High values mean your script needs optimization.</li>' +
+          '<li><strong>MinimumReadMs / MaximumReadMs</strong> \u2014 Fastest and slowest device reads. A large gap indicates intermittent device or network issues.</li>' +
           '<li><strong>MessagesAttempted vs. MessagesAccepted</strong> \u2014 Reveals RBE effectiveness. If Attempted >> Accepted, RBE is filtering well.</li>' +
           '</ul>' +
           '<p>Access via REST API at <code>GET /status</code> or in real time via the WebSocket at port 9998.</p>',
@@ -136,10 +136,10 @@ DIME_PAGES['29'] = {
           '$ curl http://localhost:9999/status\n' +
           '\n' +
           '# Key metrics per connector:\n' +
-          '#   TotalLoopTime  - full cycle time\n' +
-          '#   ScriptTime     - Lua/Python duration\n' +
-          '#   MinReadTime    - fastest device read\n' +
-          '#   MaxReadTime    - slowest device read',
+          '#   LastLoopMs      - full cycle time\n' +
+          '#   LastScriptMs    - Lua/Python duration\n' +
+          '#   MinimumReadMs   - fastest device read\n' +
+          '#   MaximumReadMs   - slowest device read',
         related: [
           { page: '18', label: '18 \u2014 Health & fault tracking' },
           { page: '16', label: '16 \u2014 Admin API reference' },

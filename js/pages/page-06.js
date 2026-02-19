@@ -77,20 +77,20 @@ DIME_PAGES['06'] = {
     {
       id: 'databases',
       startLine: 98, startCol: 3, endLine: 110, endCol: 90,
-      label: 'Database Sources (Batch Polling)',
+      label: 'Database Sources',
       panel: {
-        title: 'SQL Server & PostgreSQL \u2014 Batch Polling',
+        title: 'SQL Server & PostgreSQL \u2014 DatabaseSourceConnector',
         body:
-          '<p>Database connectors use <strong>BatchPollingSourceConnector</strong> \u2014 timer fires, executes a SQL query, iterates the result set, publishes each row.</p>' +
+          '<p>Database connectors use <strong>DatabaseSourceConnector</strong> \u2014 timer fires, executes a SQL query, iterates the result set, publishes each row with column-to-item mapping.</p>' +
           '<ul>' +
           '<li><strong>SQL Server</strong> \u2014 connection_string (standard ADO.NET format), query with optional @last_read parameter for incremental reads.</li>' +
           '<li><strong>PostgreSQL</strong> \u2014 connection_string (Npgsql format), query with $1 parameter placeholder.</li>' +
           '</ul>' +
-          '<p>Use parameterized queries to read only new rows since the last scan. The <strong>DatabaseSourceConnector</strong> subclass adds column-to-item mapping for structured result sets.</p>',
+          '<p>Use parameterized queries to read only new rows since the last scan. DatabaseSourceConnector inherits directly from SourceConnector (not BatchPolling).</p>',
         yaml:
           'sources:\n' +
           '  - name: db_source\n' +
-          '    connector: SqlServer\n' +
+          '    connector: MsSql\n' +
           '    connection_string: >\n' +
           '      Server=10.0.0.5;\n' +
           '      Database=PlantData;\n' +
@@ -110,13 +110,13 @@ DIME_PAGES['06'] = {
       startLine: 117, startCol: 3, endLine: 136, endCol: 90,
       label: 'Web, API & Network Sources',
       panel: {
-        title: 'JSON/XML Scrapers, HTTP Client, UDP, SNMP',
+        title: 'JSON/XML Scrapers, HTTP Server, UDP, SNMP',
         body:
-          '<p>Web and API connectors pull data from HTTP endpoints and network services:</p>' +
+          '<p>Web and API connectors pull or receive data from HTTP endpoints and network services:</p>' +
           '<ul>' +
           '<li><strong>JSON Scraper</strong> \u2014 Fetches JSON from a URL, parses items with JSONPath expressions. PollingSourceConnector.</li>' +
           '<li><strong>XML Scraper</strong> \u2014 Fetches XML from a URL, parses items with XPath expressions. PollingSourceConnector.</li>' +
-          '<li><strong>HTTP Client</strong> \u2014 Generic GET/POST to any REST endpoint. PollingSourceConnector.</li>' +
+          '<li><strong>HTTP Server</strong> \u2014 Listens for HTTP POSTs and ingests incoming data as messages. <strong>QueuingSourceConnector</strong> (push-based).</li>' +
           '<li><strong>TCP ASCII</strong> \u2014 Raw TCP socket reads with line-delimited text. PollingSourceConnector.</li>' +
           '<li><strong>UDP Server</strong> \u2014 Listens on a UDP port, receives datagrams as messages. <strong>QueuingSourceConnector</strong> (push-based).</li>' +
           '<li><strong>SNMP</strong> \u2014 SNMP GET on OIDs from network devices. v1/v2c with community string. PollingSourceConnector.</li>' +
@@ -131,19 +131,19 @@ DIME_PAGES['06'] = {
     },
     {
       id: 'source-types',
-      startLine: 174, startCol: 11, endLine: 195, endCol: 86,
+      startLine: 174, startCol: 11, endLine: 196, endCol: 86,
       label: 'Source Type Hierarchy',
       panel: {
-        title: 'Polling vs Queuing vs BatchPolling',
+        title: 'Polling vs Queuing vs BatchPolling vs Database',
         body:
           '<p>Every source connector inherits from one of four base classes:</p>' +
           '<ul>' +
-          '<li><strong>PollingSourceConnector</strong> \u2014 The most common. Timer fires every scan_interval \u2192 read all items \u2192 publish to ring buffer. Used by OPC-UA, Modbus, S7, EtherNet/IP, Beckhoff, FANUC, Script, HTTP, SNMP.</li>' +
-          '<li><strong>QueuingSourceConnector</strong> \u2014 For push-based protocols. Messages arrive asynchronously \u2192 queue in inbox \u2192 drain on timer \u2192 publish. Used by MQTT, SparkplugB, ActiveMQ, Redis, UDP Server, WebSocket.</li>' +
-          '<li><strong>BatchPollingSourceConnector</strong> \u2014 For bulk reads. Timer fires \u2192 execute query \u2192 iterate result set \u2192 publish each row. Used by SQL Server, PostgreSQL.</li>' +
-          '<li><strong>DatabaseSourceConnector</strong> \u2014 Subclass of BatchPolling. Adds column-to-item mapping for structured result sets.</li>' +
+          '<li><strong>PollingSourceConnector</strong> \u2014 The most common. Timer fires every scan_interval \u2192 read all items \u2192 publish to ring buffer. Used by OPC-UA, Modbus, S7, EtherNet/IP, Beckhoff, FANUC, Script, SNMP.</li>' +
+          '<li><strong>QueuingSourceConnector</strong> \u2014 For push-based protocols. Messages arrive asynchronously \u2192 queue in inbox \u2192 drain on timer \u2192 publish. Used by MQTT, SparkplugB, ActiveMQ, Redis, UDP Server, HTTP Server, Haas SHDR, MTConnect, ROS2.</li>' +
+          '<li><strong>BatchPollingSourceConnector</strong> \u2014 For bulk reads. Timer fires \u2192 read batch from device \u2192 iterate items \u2192 publish each. Used by OPC-DA.</li>' +
+          '<li><strong>DatabaseSourceConnector</strong> \u2014 For SQL queries. Inherits from SourceConnector. Timer fires \u2192 execute query \u2192 column-to-item mapping \u2192 publish. Used by SQL Server, PostgreSQL.</li>' +
           '</ul>' +
-          '<p>Choose based on how the device delivers data: pull (Polling), push (Queuing), or query (BatchPolling).</p>',
+          '<p>Choose based on how the device delivers data: pull (Polling), push (Queuing), batch (BatchPolling), or query (Database).</p>',
         related: [
           { page: '05', label: '05 \u2014 Architecture: source types detail' },
           { page: '07', label: '07 \u2014 Sink connectors' },

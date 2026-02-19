@@ -70,7 +70,7 @@ DIME_PAGES['04'] = {
     },
     {
       id: 'sink-anatomy',
-      startLine: 63, startCol: 3, endLine: 76, endCol: 89,
+      startLine: 63, startCol: 3, endLine: 79, endCol: 89,
       label: 'Sink Configuration Structure',
       panel: {
         title: 'Sink Connector Anatomy',
@@ -80,18 +80,19 @@ DIME_PAGES['04'] = {
           '<li><strong>name</strong> \u2014 Unique identifier for this sink.</li>' +
           '<li><strong>connector</strong> \u2014 The sink type: InfluxLP, MQTT, Console, MtcAgent, SparkplugB, etc.</li>' +
           '<li><strong>enabled</strong> (<code>!!bool</code>) \u2014 Set to false to skip this sink at startup.</li>' +
-          '<li><strong>include_filter</strong> \u2014 Regex pattern. Only messages whose path matches are delivered. Default: <code>.*</code> (everything).</li>' +
-          '<li><strong>exclude_filter</strong> \u2014 Regex pattern. Messages whose path matches are dropped. Applied after include_filter.</li>' +
+          '<li><strong>include_filter</strong> \u2014 List of regex patterns. Only messages whose path matches at least one are delivered.</li>' +
+          '<li><strong>exclude_filter</strong> \u2014 List of regex patterns. Messages whose path matches are dropped. Only applied when include_filter is empty.</li>' +
           '</ul>' +
-          '<p>Filters use the message path format <code>source_name/item_name</code>. For example, <code>include_filter: my_plc/.*</code> receives only items from "my_plc".</p>' +
+          '<p>Filters are mutually exclusive: if include_filter has entries, only it is used. If empty, exclude_filter is used instead.</p>' +
+          '<p>Filters match the message path format <code>source_name/item_name</code>.</p>' +
           '<p>Additional fields are connector-specific (e.g., <code>address</code>, <code>port</code>, <code>template</code>).</p>',
         yaml:
           'sinks:\n' +
           '  - name: my_database\n' +
           '    connector: InfluxLP\n' +
           '    enabled: !!bool true\n' +
-          '    include_filter: .*\n' +
-          '    exclude_filter: ""\n' +
+          '    include_filter:\n' +
+          '      - "my_plc/.*"\n' +
           '    address: https://influx.local',
         related: [
           { page: '07', label: '07 \u2014 Sink connectors reference' },
@@ -101,7 +102,7 @@ DIME_PAGES['04'] = {
     },
     {
       id: 'item-anatomy',
-      startLine: 85, startCol: 3, endLine: 106, endCol: 89,
+      startLine: 88, startCol: 3, endLine: 109, endCol: 89,
       label: 'Item Configuration & Type Tags',
       panel: {
         title: 'Item Anatomy & YAML Type Tags',
@@ -110,7 +111,7 @@ DIME_PAGES['04'] = {
           '<ul>' +
           '<li><strong>name</strong> \u2014 Becomes the second segment of the message path: <code>source_name/item_name</code>.</li>' +
           '<li><strong>address</strong> \u2014 Protocol-specific address on the device (OPC-UA node, Modbus register, MQTT topic, etc.).</li>' +
-          '<li><strong>script</strong> \u2014 Optional Lua or Python transform. Can be inline YAML or a file path. Access data via <code>msg.data</code>.</li>' +
+          '<li><strong>script</strong> \u2014 Optional Lua or Python transform. Can be inline YAML or a file path. Access data via the <code>result</code> variable.</li>' +
           '<li><strong>rbe</strong> (<code>!!bool</code>) \u2014 Per-item Report By Exception override. Takes precedence over the source-level setting.</li>' +
           '<li><strong>enabled</strong> (<code>!!bool</code>) \u2014 Disable individual items without removing them from config.</li>' +
           '</ul>' +
@@ -126,7 +127,7 @@ DIME_PAGES['04'] = {
           '  - name: Temperature\n' +
           '    address: ns=2;s=PLC.Temp\n' +
           '    script: |\n' +
-          '      return msg.data * 1.8 + 32\n' +
+          '      return result * 1.8 + 32\n' +
           '    rbe: !!bool true\n' +
           '    enabled: !!bool true',
         related: [
@@ -137,7 +138,7 @@ DIME_PAGES['04'] = {
     },
     {
       id: 'file-loading',
-      startLine: 114, startCol: 3, endLine: 132, endCol: 89,
+      startLine: 117, startCol: 3, endLine: 135, endCol: 89,
       label: 'Multi-File Configuration',
       panel: {
         title: 'File Loading & Merge Order',
@@ -154,7 +155,7 @@ DIME_PAGES['04'] = {
           '<li>Define defaults once: <code>&defaults { scan_interval: !!int 1000, rbe: !!bool true }</code></li>' +
           '<li>Reuse everywhere: <code>&lt;&lt;: *defaults</code></li>' +
           '</ul>' +
-          '<p>This works within a single file. Cross-file anchors are not supported by the YAML spec.</p>',
+          '<p>DIME concatenates all files before parsing, so anchors defined in one file can be referenced in another (as long as the defining file loads first).</p>',
         yaml:
           '# main.yaml (loaded last)\n' +
           'app:\n' +
@@ -178,7 +179,7 @@ DIME_PAGES['04'] = {
     },
     {
       id: 'minimal-example',
-      startLine: 141, startCol: 3, endLine: 159, endCol: 89,
+      startLine: 144, startCol: 3, endLine: 162, endCol: 89,
       label: 'Minimal Working Config',
       panel: {
         title: 'Minimal Working Example \u2014 Script \u2192 Console',

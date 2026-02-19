@@ -40,7 +40,7 @@ DIME_PAGES['30'] = {
           '<p>DIME auto-retries on every fault. If a connector keeps faulting, the root cause is external.</p>' +
           '<p><strong>Diagnostic steps:</strong></p>' +
           '<ol>' +
-          '<li>Check <code>FaultReason</code> via <code>GET /status</code> \u2014 it contains the last exception message</li>' +
+          '<li>Check <code>FaultMessage</code> via <code>GET /status</code> \u2014 it contains the last exception message</li>' +
           '<li>Verify network connectivity \u2014 can you ping the device IP from the DIME host?</li>' +
           '<li>Check credentials \u2014 OPC-UA certificates, database passwords, MQTT auth</li>' +
           '<li>Monitor <code>FaultCount</code> \u2014 if it stabilizes, the device recovered on its own</li>' +
@@ -74,7 +74,7 @@ DIME_PAGES['30'] = {
           '<p>Script errors can cause data to stop, transform incorrectly, or spike CPU.</p>' +
           '<p><strong>Common Lua mistakes:</strong></p>' +
           '<ul>' +
-          '<li><strong>Nil access</strong> \u2014 <code>msg.data</code> is nil when the device returns nothing. Always guard: <code>if msg.data then ... end</code></li>' +
+          '<li><strong>Nil access</strong> \u2014 <code>result</code> is nil when the device returns nothing. Always guard: <code>if result then ... end</code></li>' +
           '<li><strong>Type mismatch</strong> \u2014 <code>tonumber()</code> on a non-numeric string returns nil, which cascades</li>' +
           '<li><strong>Missing return</strong> \u2014 The script must return a value or use <code>emit()</code>. No return = no data published.</li>' +
           '<li><strong>Infinite loop</strong> \u2014 <code>while true</code> without break blocks the entire scan cycle for that source</li>' +
@@ -82,13 +82,13 @@ DIME_PAGES['30'] = {
           '<p><strong>Debugging strategy:</strong></p>' +
           '<ol>' +
           '<li>Add a Console sink with no filters to see raw data</li>' +
-          '<li>Simplify script to <code>return msg.data</code> to confirm data arrives</li>' +
+          '<li>Simplify script to <code>return result</code> to confirm data arrives</li>' +
           '<li>Re-add logic one line at a time</li>' +
           '<li>Use <code>emit(\'debug/info\', value)</code> for printf-style debugging</li>' +
           '</ol>',
         related: [
           { page: '09', label: '09 \u2014 Scripting guide' },
-          { page: '29', hotspot: 'bottlenecks', label: '29 \u2014 ScriptTime diagnostics' },
+          { page: '29', hotspot: 'bottlenecks', label: '29 \u2014 LastScriptMs diagnostics' },
           { page: '30', hotspot: 'console-sink', label: 'Console sink for debugging' }
         ]
       }
@@ -107,7 +107,7 @@ DIME_PAGES['30'] = {
           '<li><strong>Anchor/alias typos</strong> \u2014 <code>*my_default</code> vs <code>*my_defaults</code> \u2014 YAML silently fails or throws a cryptic error on mismatched names.</li>' +
           '<li><strong>Special characters</strong> \u2014 Strings containing colons, brackets, or semicolons should be quoted: <code>"ns=2;s=PLC:Tag"</code></li>' +
           '</ul>' +
-          '<p><strong>Validation tip:</strong> Use <code>GET /config</code> to see what DIME actually loaded after merging all YAML files. Compare with your intent.</p>',
+          '<p><strong>Validation tip:</strong> Use <code>GET /config/yaml</code> to see what DIME actually loaded after merging all YAML files. Compare with your intent.</p>',
         yaml:
           '# WRONG - missing type tags:\n' +
           'rbe: true              # string, not bool!\n' +
@@ -141,7 +141,7 @@ DIME_PAGES['30'] = {
           '<ol>' +
           '<li><strong>Console sink</strong> \u2014 "Is data flowing through the ring buffer?"</li>' +
           '<li><strong>GET /status</strong> \u2014 "Are connectors healthy? What are the timing metrics?"</li>' +
-          '<li><strong>GET /config</strong> \u2014 "What config did DIME actually load after merging files?"</li>' +
+          '<li><strong>GET /config/yaml</strong> \u2014 "What config did DIME actually load after merging files?"</li>' +
           '</ol>',
         yaml:
           'sinks:\n' +

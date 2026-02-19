@@ -44,19 +44,19 @@
 │   DATABASES                                                                                      │
 │   ─────────                                                                                      │
 │                                                                                                  │
-│   ┌──────────────────────────┐  ┌──────────────────────────┐  ┌──────────────────────────┐       │
-│   │                          │  │                          │  │                          │       │
-│   │  MongoDB                 │  │  SQL Server              │  │  PostgreSQL              │       │
-│   │                          │  │                          │  │                          │       │
-│   │  Document store. Each    │  │  Relational DB. Batch    │  │  Relational DB.          │       │
-│   │  message becomes a       │  │  inserts for throughput. │  │  Parameterized queries.  │       │
-│   │  document.               │  │                          │  │                          │       │
-│   │                          │  │  connection_string: ...  │  │  connection_string: ...  │       │
-│   │  connection_string: ...  │  │  table: Readings         │  │  query: INSERT INTO ...  │       │
-│   │  database: plant_data    │  │                          │  │                          │       │
-│   │  collection: readings    │  │                          │  │                          │       │
-│   │                          │  │                          │  │                          │       │
-│   └──────────────────────────┘  └──────────────────────────┘  └──────────────────────────┘       │
+│   ┌──────────────────────────┐  ┌──────────────────────────┐                                     │
+│   │                          │  │                          │                                     │
+│   │  MongoDB                 │  │  PostgreSQL Batch        │                                     │
+│   │                          │  │                          │                                     │
+│   │  Document store. Each    │  │  Relational DB. Native   │                                     │
+│   │  message becomes a       │  │  batch UPSERT support.   │                                     │
+│   │  document.               │  │  Column mappings and     │                                     │
+│   │                          │  │  automatic type conv.    │                                     │
+│   │  connection_string: ...  │  │                          │                                     │
+│   │  database: plant_data    │  │  connection_string: ...  │                                     │
+│   │  collection: readings    │  │  table: readings         │                                     │
+│   │                          │  │                          │                                     │
+│   └──────────────────────────┘  └──────────────────────────┘                                     │
 │                                                                                                  │
 │  ──────────────────────────────────────────────────────────────────────────────────────────────  │
 │                                                                                                  │
@@ -65,28 +65,26 @@
 │                                                                                                  │
 │   ┌──────────────────────┐  ┌──────────────────────┐  ┌──────────────────────┐                   │
 │   │                      │  │                      │  │                      │                   │
-│   │  MQTT Publish        │  │  SparkplugB Publish  │  │  ActiveMQ            │                   │
+│   │  MQTT Publish        │  │  SparkplugB Publish  │  │  Redis               │                   │
 │   │                      │  │                      │  │                      │                   │
-│   │  Publishes data to   │  │  Industrial MQTT     │  │  Publishes to JMS    │                   │
-│   │  an MQTT broker.     │  │  with SparkplugB     │  │  queues/topics on    │                   │
-│   │  Topic from message  │  │  metric encoding.    │  │  an ActiveMQ broker. │                   │
-│   │  path or configured. │  │                      │  │                      │                   │
-│   │                      │  │  address: broker     │  │  address: broker     │                   │
-│   │  address: broker     │  │  group_id: plant1    │  │  port: 61616         │                   │
-│   │  port: 1883          │  │  edge_node: line1    │  │  topic: output       │                   │
+│   │  Publishes data to   │  │  Industrial MQTT     │  │  Publishes to Redis  │                   │
+│   │  an MQTT broker.     │  │  with SparkplugB     │  │  channels.           │                   │
+│   │  Topic from message  │  │  metric encoding.    │  │                      │                   │
+│   │  path or configured. │  │                      │  │  address: host       │                   │
+│   │                      │  │  address: broker     │  │  port: 6379          │                   │
+│   │  address: broker     │  │  group_id: plant1    │  │  channel: output     │                   │
+│   │  port: 1883          │  │  edge_node: line1    │  │                      │                   │
 │   │  qos: 1              │  │                      │  │                      │                   │
 │   │                      │  │                      │  │                      │                   │
 │   └──────────────────────┘  └──────────────────────┘  └──────────────────────┘                   │
 │                                                                                                  │
-│   ┌──────────────────────┐                                                                       │
-│   │                      │     Broker sinks republish data to messaging infrastructure.          │
-│   │  Redis               │     Use include/exclude filters to control which messages             │
-│   │                      │     get published. MQTT sink topic can mirror the message path.       │
-│   │  address: host       │                                                                       │
-│   │  port: 6379          │     Common pattern: MQTT source from one broker, MQTT sink            │
-│   │  channel: output     │     to a different broker — DIME bridges the two.                     │
-│   │                      │                                                                       │
-│   └──────────────────────┘                                                                       │
+│                                  Broker sinks republish data to messaging infrastructure.        │
+│                                  Use include/exclude filters to control which messages           │
+│                                  get published. MQTT sink topic can mirror the message path.     │
+│                                                                                                  │
+│                                  Common pattern: MQTT source from one broker, MQTT sink          │
+│                                  to a different broker — DIME bridges the two.                   │
+│                                                                                                  │
 │                                                                                                  │
 │  ──────────────────────────────────────────────────────────────────────────────────────────────  │
 │                                                                                                  │

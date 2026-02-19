@@ -76,16 +76,17 @@
 │   │   sinks:                                                                               │     │
 │   │     - name: historian                                                                  │     │
 │   │       connector: InfluxLP                                                              │     │
-│   │       url: http://influx.local:8086                                                    │     │
-│   │       bucket: factory                                                                  │     │
-│   │       org: myorg                                                                       │     │
+│   │       address: http://influx.local:8086                                                │     │
+│   │       bucket_name: factory                                                             │     │
+│   │       org_name: myorg                                                                  │     │
 │   │       token: my-token-here                                                             │     │
-│   │       include_filter: "plc1/.*"          # only data from plc1                         │     │
+│   │       include_filter:                                                                  │     │
+│   │         - "plc1/.*"                      # only data from plc1                         │     │
 │   │                                                                                        │     │
 │   └────────────────────────────────────────────────────────────────────────────────────────┘     │
 │                                                                                                  │
 │   InfluxLP writes native line protocol.  No transformation needed.                               │
-│   Tags are derived from the message path: measurement = source, field = item.                    │
+│   The full message path becomes the measurement; the field key is "value".                       │
 │                                                                                                  │
 │  ──────────────────────────────────────────────────────────────────────────────────────────────  │
 │                                                                                                  │
@@ -98,8 +99,9 @@
 │   │                                                                                        │     │
 │   │     - name: dashboard                                                                  │     │
 │   │       connector: WebSocketServer                                                       │     │
-│   │       port: !!int 8092                                                                 │     │
-│   │       include_filter: "plc1/.*"          # same filter as historian                    │     │
+│   │       uri: ws://0.0.0.0:8092/                                                          │     │
+│   │       include_filter:                                                                  │     │
+│   │         - "plc1/.*"                      # same filter as historian                    │     │
 │   │                                                                                        │     │
 │   └────────────────────────────────────────────────────────────────────────────────────────┘     │
 │                                                                                                  │

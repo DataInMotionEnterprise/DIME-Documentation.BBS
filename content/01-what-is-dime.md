@@ -101,8 +101,8 @@
 │   │   MTConnect               ─────────────        ─────────           SCRIPTING             │   │
 │   │   FANUC Robot                                                      ─────────             │   │
 │   │   Yaskawa Robot           MTConnect Agent       Splunk HEC                               │   │
-│   │   Allen-Bradley           MTConnect SHDR        Splunk Edge Hub    Lua                   │   │
-│   │   SNMP                    Ignition SCADA        CSV / File         Python                │   │
+│   │   Haas SHDR               MTConnect SHDR        Splunk Edge Hub    Lua                   │   │
+│   │   SNMP                    SmartPac              CSV / File         Python                │   │
 │   │   ROS2                                                                                   │   │
 │   │                                                                                          │   │
 │   │                                    47+ connector types                                   │   │

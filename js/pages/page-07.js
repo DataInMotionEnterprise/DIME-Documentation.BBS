@@ -42,15 +42,14 @@ DIME_PAGES['07'] = {
       startLine: 45, startCol: 3, endLine: 57, endCol: 90,
       label: 'Database Sinks',
       panel: {
-        title: 'MongoDB, SQL Server, PostgreSQL',
+        title: 'MongoDB, PostgreSQL Batch',
         body:
-          '<p>Database sinks write data to relational and document databases:</p>' +
+          '<p>Database sinks write data to document and relational databases:</p>' +
           '<ul>' +
           '<li><strong>MongoDB</strong> \u2014 Each message becomes a document. Config: connection_string, database, collection. Good for flexible schemas and document-oriented storage.</li>' +
-          '<li><strong>SQL Server</strong> \u2014 Batch inserts for throughput. Config: connection_string, table. Maps message fields to table columns.</li>' +
-          '<li><strong>PostgreSQL</strong> \u2014 Parameterized queries for inserts. Config: connection_string, query (INSERT statement with parameters).</li>' +
+          '<li><strong>PostgreSQL Batch</strong> \u2014 Native batch UPSERT support with configuration-driven column mappings and automatic type conversion. Config: connection_string, table.</li>' +
           '</ul>' +
-          '<p>Use include/exclude filters to control which data streams get stored. Batch inserts improve throughput for high-volume scenarios.</p>',
+          '<p>Use include/exclude filters to control which data streams get stored.</p>',
         yaml:
           'sinks:\n' +
           '  - name: mongo_sink\n' +
@@ -67,16 +66,15 @@ DIME_PAGES['07'] = {
     },
     {
       id: 'brokers',
-      startLine: 64, startCol: 3, endLine: 87, endCol: 84,
+      startLine: 64, startCol: 3, endLine: 85, endCol: 84,
       label: 'Message Broker Sinks',
       panel: {
-        title: 'MQTT, SparkplugB, ActiveMQ, Redis',
+        title: 'MQTT, SparkplugB, Redis',
         body:
           '<p>Broker sinks republish data to messaging infrastructure:</p>' +
           '<ul>' +
           '<li><strong>MQTT Publish</strong> \u2014 Publishes to an MQTT broker. Topic derived from message path or configured. Config: address, port (1883), qos. Common pattern: bridge two brokers via DIME.</li>' +
           '<li><strong>SparkplugB Publish</strong> \u2014 Industrial MQTT with SparkplugB metric encoding. Config: address, group_id, edge_node. Birth/death certificates handled automatically.</li>' +
-          '<li><strong>ActiveMQ</strong> \u2014 Publishes to JMS queues/topics. Config: address, port (61616), topic.</li>' +
           '<li><strong>Redis</strong> \u2014 Publishes to Redis channels. Config: address, port (6379), channel.</li>' +
           '</ul>' +
           '<p>Use include/exclude filters to control which messages get published. MQTT sink topic can mirror the source message path for transparent bridging.</p>',
@@ -98,7 +96,7 @@ DIME_PAGES['07'] = {
     },
     {
       id: 'manufacturing',
-      startLine: 94, startCol: 3, endLine: 112, endCol: 90,
+      startLine: 92, startCol: 3, endLine: 110, endCol: 90,
       label: 'MTConnect Agent & SHDR Sinks',
       panel: {
         title: 'DIME as MTConnect Agent / SHDR Adapter',
@@ -126,7 +124,7 @@ DIME_PAGES['07'] = {
     },
     {
       id: 'servers',
-      startLine: 119, startCol: 3, endLine: 134, endCol: 90,
+      startLine: 117, startCol: 3, endLine: 132, endCol: 90,
       label: 'Server Sinks \u2014 HTTP, WebSocket, OPC-UA',
       panel: {
         title: 'DIME as a Data Endpoint',
@@ -147,7 +145,7 @@ DIME_PAGES['07'] = {
     },
     {
       id: 'fanout',
-      startLine: 164, startCol: 8, endLine: 190, endCol: 88,
+      startLine: 162, startCol: 8, endLine: 188, endCol: 88,
       label: 'Fan-Out Architecture',
       panel: {
         title: 'SinkDispatcher \u2014 Fan-Out to Every Sink',

@@ -19,7 +19,7 @@ DIME_PAGES['24'] = {
           '<li><strong>Volume mount</strong> \u2014 <code>-v /path/to/configs:/app/Configs</code> maps your YAML files into the container.</li>' +
           '<li><strong>Port mapping</strong> \u2014 <code>-p 9999:9999</code> (REST API) and <code>-p 9998:9998</code> (WebSocket).</li>' +
           '<li><strong>Restart policy</strong> \u2014 <code>--restart unless-stopped</code> keeps DIME running after host reboots.</li>' +
-          '<li><strong>Non-root</strong> \u2014 The container runs as a non-root user by default.</li>' +
+          '<li><strong>Root by default</strong> \u2014 The container runs as root. Add <code>USER app</code> to the Dockerfile for non-root execution.</li>' +
           '</ul>' +
           '<p>Add additional <code>-p</code> flags for protocol-specific ports (SHDR 7878, MQTT 1883, etc.) as needed by your config.</p>',
         yaml:
@@ -126,7 +126,7 @@ DIME_PAGES['24'] = {
     },
     {
       id: 'ros2',
-      startLine: 186, startCol: 3, endLine: 223, endCol: 90,
+      startLine: 186, startCol: 3, endLine: 204, endCol: 90,
       label: 'ROS2 Docker Variants',
       panel: {
         title: 'ROS2 Images \u2014 Humble & Jazzy',

@@ -25,7 +25,7 @@ DIME_PAGES['08'] = {
           '<li><code>mqtt/sensors/pressure</code> \u2014 MQTT source "mqtt", topic "sensors/pressure"</li>' +
           '<li><code>opcua/ns=2;s=Speed</code> \u2014 OPC-UA source "opcua", node "ns=2;s=Speed"</li>' +
           '</ul>' +
-          '<p>With <code>itemized_read: true</code> (default), each item gets its own path and message. With <code>itemized_read: false</code>, all items arrive as one bulk message.</p>' +
+          '<p>With <code>itemized_read: true</code>, each item gets its own path and message. With <code>itemized_read: false</code> (default), all items arrive as one bulk message.</p>' +
           '<p>Sinks use <strong>regex</strong> against these paths to decide what to accept or reject.</p>',
         related: [
           { page: '02', hotspot: 'message-format', label: '02 \u2014 MessageBoxMessage format' },
@@ -35,21 +35,18 @@ DIME_PAGES['08'] = {
     },
     {
       id: 'system-paths',
-      startLine: 45, startCol: 3, endLine: 59, endCol: 82,
+      startLine: 45, startCol: 3, endLine: 56, endCol: 82,
       label: '$SYSTEM Automatic Metadata',
       panel: {
         title: '$SYSTEM Paths \u2014 Connector Health Metadata',
         body:
           '<p>Every connector automatically publishes status messages under a <code>$SYSTEM</code> prefix:</p>' +
           '<ul>' +
+          '<li><code>sourceName/$SYSTEM/ExecutionDuration</code> \u2014 connector loop duration (ms)</li>' +
           '<li><code>sourceName/$SYSTEM/IsConnected</code> \u2014 true/false connection state</li>' +
           '<li><code>sourceName/$SYSTEM/IsFaulted</code> \u2014 true/false fault state</li>' +
-          '<li><code>sourceName/$SYSTEM/FaultCount</code> \u2014 cumulative fault count</li>' +
-          '<li><code>sourceName/$SYSTEM/ConnectCount</code> \u2014 number of reconnections</li>' +
-          '<li><code>sourceName/$SYSTEM/ReadTime</code> \u2014 last device read time (ms)</li>' +
-          '<li><code>sourceName/$SYSTEM/ScriptTime</code> \u2014 last script execution time (ms)</li>' +
-          '<li><code>sourceName/$SYSTEM/LoopTime</code> \u2014 total loop time (ms)</li>' +
-          '<li><code>sourceName/$SYSTEM/ItemCount</code> \u2014 number of items being read</li>' +
+          '<li><code>sourceName/$SYSTEM/Fault</code> \u2014 fault reason message or null</li>' +
+          '<li><code>sourceName/$SYSTEM/IsAvailable</code> \u2014 true when connected and not faulted</li>' +
           '</ul>' +
           '<p>These messages flow through the ring buffer like any other data. Sinks receive them unless explicitly excluded with <code>exclude_filter</code>.</p>',
         related: [
@@ -60,7 +57,7 @@ DIME_PAGES['08'] = {
     },
     {
       id: 'exclude-filter',
-      startLine: 71, startCol: 8, endLine: 97, endCol: 52,
+      startLine: 68, startCol: 8, endLine: 94, endCol: 52,
       label: 'Exclude Filter (Regex Blacklist)',
       panel: {
         title: 'exclude_filter \u2014 Drop Matching Messages',
@@ -90,13 +87,13 @@ DIME_PAGES['08'] = {
     },
     {
       id: 'include-filter',
-      startLine: 106, startCol: 8, endLine: 131, endCol: 52,
+      startLine: 103, startCol: 8, endLine: 128, endCol: 52,
       label: 'Include Filter (Regex Whitelist)',
       panel: {
         title: 'include_filter \u2014 Accept Only Matching Messages',
         body:
           '<p><strong>Only</strong> messages whose path matches a pattern in <code>include_filter</code> are accepted. Everything else is dropped.</p>' +
-          '<p>If <strong>both</strong> <code>include_filter</code> and <code>exclude_filter</code> are set on a sink, include is applied first (narrowing the stream), then exclude removes from that subset.</p>' +
+          '<p>If <strong>both</strong> <code>include_filter</code> and <code>exclude_filter</code> are set on a sink, only <code>include_filter</code> is used; the exclude filter is ignored entirely.</p>' +
           '<p>Common use cases:</p>' +
           '<ul>' +
           '<li>Only PLC data: <code>"plc1/.*"</code></li>' +
@@ -120,12 +117,12 @@ DIME_PAGES['08'] = {
     },
     {
       id: 'strip-prefix',
-      startLine: 142, startCol: 3, endLine: 155, endCol: 82,
+      startLine: 139, startCol: 3, endLine: 152, endCol: 82,
       label: 'strip_path_prefix',
       panel: {
         title: 'strip_path_prefix \u2014 Remove Source Name',
         body:
-          '<p>When <code>strip_path_prefix: true</code> is set on a sink, the source name is removed from the message path before the sink writes it.</p>' +
+          '<p>When <code>strip_path_prefix: true</code> is set on a <strong>source</strong> connector, the source name is removed from message paths at publish time.</p>' +
           '<p>Before / After examples:</p>' +
           '<ul>' +
           '<li><code>plc1/temperature</code> \u2192 <code>temperature</code></li>' +
@@ -134,12 +131,12 @@ DIME_PAGES['08'] = {
           '</ul>' +
           '<p>Useful when republishing to MQTT (the source name prefix would be redundant in the topic) or writing to databases where you want clean column/tag names.</p>',
         yaml:
-          'sinks:\n' +
-          '  - name: mqtt_republish\n' +
-          '    connector: MqttPublish\n' +
+          'sources:\n' +
+          '  - name: plc1\n' +
+          '    connector: EthernetIp\n' +
           '    strip_path_prefix: true\n' +
-          '    include_filter:\n' +
-          '      - "plc1/.*"',
+          '    # Messages publish as "temperature"\n' +
+          '    # instead of "plc1/temperature"',
         related: [
           { page: '08', hotspot: 'paths', label: '08 \u2014 Message path format' },
           { page: '07', hotspot: 'sinks', label: '07 \u2014 Sink connector types' }

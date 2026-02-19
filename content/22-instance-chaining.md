@@ -69,8 +69,6 @@
 │   │ WebSocket      │ Persistent, full-duplex. Low-latency streaming.                      │      │
 │   ├────────────────┼──────────────────────────────────────────────────────────────────────┤      │
 │   │ Redis          │ Pub/Sub channel. In-memory speed. Same-network linking.              │      │
-│   ├────────────────┼──────────────────────────────────────────────────────────────────────┤      │
-│   │ ActiveMQ       │ JMS queuing. Durable subscriptions across restarts.                  │      │
 │   └────────────────┴──────────────────────────────────────────────────────────────────────┘      │
 │                                                                                                  │
 │  ──────────────────────────────────────────────────────────────────────────────────────────────  │
@@ -168,12 +166,10 @@
 │                                                                                                  │
 │   ┌──────────────────────────────────────────────────────────────────────────────────────────┐   │
 │   │                                                                                          │   │
-│   │   $ curl -X POST http://localhost:9999/connector/add/sink \                              │   │
-│   │       -H "Content-Type: application/json" \                                              │   │
-│   │       -d '{                                                                              │   │
-│   │             "name": "debug_console",                                                     │   │
-│   │             "connector": "Console"                                                       │   │
-│   │           }'                                                                             │   │
+│   │   $ curl -X POST http://localhost:9999/connector/add/sink/debug_console \                 │   │
+│   │       -H "Content-Type: text/plain" \                                                    │   │
+│   │       -d 'name: debug_console                                                            │   │
+│   │   connector: Console'                                                                    │   │
 │   │                                                                                          │   │
 │   │   ┌───────────────────────────────────────────────────────────────────────────┐          │   │
 │   │   │  Before:   [plc1] ──▶ Ring ──▶ [upstream_mqtt]                            │          │   │

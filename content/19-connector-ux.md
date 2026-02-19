@@ -135,10 +135,10 @@
 │   │   └─────────────────────────────────────────────────────┘                                │   │
 │   │                                                                                          │   │
 │   │   REST API (port 9999) provides:                                                         │   │
-│   │     • GET /status    — connector states, health, metrics                                 │   │
-│   │     • GET /config    — running YAML configuration                                        │   │
-│   │     • GET /cache     — current data cache                                                │   │
-│   │     • POST /sinks    — add sinks at runtime                                              │   │
+│   │     • GET /status         — connector states, health, metrics                            │   │
+│   │     • GET /config/yaml    — running YAML configuration                                   │   │
+│   │     • GET /config/json    — running JSON configuration                                   │   │
+│   │     • POST /connector/add/sink/{name} — add sinks at runtime                             │   │
 │   │                                                                                          │   │
 │   │   WebSocket (port 9998) provides:                                                        │   │
 │   │     • Real-time state change events                                                      │   │

@@ -68,12 +68,15 @@
 │   │     - name: my_database                 # unique name for this sink                    │     │
 │   │       connector: InfluxLP               # connector type (destination)                 │     │
 │   │       enabled: !!bool true              # set false to disable without deleting        │     │
-│   │       include_filter: .*                # regex — which paths to accept                │     │
-│   │       exclude_filter: ""                # regex — which paths to reject                │     │
+│   │       include_filter:                   # list of regex — which paths to accept        │     │
+│   │         - ".*"                          # (default: accept everything)                 │     │
+│   │       exclude_filter:                   # list of regex — which paths to reject        │     │
+│   │         - "source/$SYSTEM"              # (applied only when include_filter is empty)  │     │
 │   │       address: https://influx.local     # destination address                          │     │
 │   │                                                                                        │     │
 │   │   Filters match against the message path: "source_name/item_name"                      │     │
-│   │   include_filter runs first, then exclude_filter removes matches.                      │     │
+│   │   If include_filter has entries, only matching paths are accepted.                      │     │
+│   │   If include_filter is empty, exclude_filter rejects matching paths.                   │     │
 │   │                                                                                        │     │
 │   └────────────────────────────────────────────────────────────────────────────────────────┘     │
 │                                                                                                  │
@@ -90,7 +93,7 @@
 │   │     - name: Temperature                 # becomes path: "source_name/Temperature"      │     │
 │   │       address: ns=2;s=PLC.Temp          # protocol-specific address on the device      │     │
 │   │       script: |                         # inline Lua transform                         │     │
-│   │         return msg.data * 1.8 + 32      #   convert Celsius to Fahrenheit              │     │
+│   │         return result * 1.8 + 32        #   convert Celsius to Fahrenheit              │     │
 │   │       rbe: !!bool true                  # per-item RBE override                        │     │
 │   │       enabled: !!bool true              # disable this item without removing it        │     │
 │   │                                                                                        │     │
@@ -123,7 +126,7 @@
 │   │   └── mqtt-sink.yaml      ← merged into sinks[]                                        │     │
 │   │                                                                                        │     │
 │   │   Merge order:                                                                         │     │
-│   │     1. All *.yaml files loaded alphabetically                                          │     │
+│   │     1. All *.yaml files loaded (filesystem order)                                      │     │
 │   │     2. main.yaml loaded LAST — its values override everything                          │     │
 │   │     3. Arrays (sources[], sinks[]) are concatenated, not replaced                      │     │
 │   │                                                                                        │     │

@@ -9,7 +9,7 @@ DIME_PAGES['10'] = {
   hotspots: [
     {
       id: 'cache-read',
-      startLine: 35, startCol: 3, endLine: 53, endCol: 92,
+      startLine: 35, startCol: 3, endLine: 54, endCol: 92,
       label: 'cache() \u2014 Read Cached Values',
       panel: {
         title: 'Reading Cached Values with cache()',
@@ -34,7 +34,7 @@ DIME_PAGES['10'] = {
     },
     {
       id: 'cache-write',
-      startLine: 60, startCol: 3, endLine: 76, endCol: 92,
+      startLine: 61, startCol: 3, endLine: 77, endCol: 92,
       label: 'set() \u2014 Write to Cache',
       panel: {
         title: 'Writing Custom Values with set()',
@@ -62,7 +62,7 @@ DIME_PAGES['10'] = {
     },
     {
       id: 'cache-ts',
-      startLine: 44, startCol: 3, endLine: 52, endCol: 92,
+      startLine: 44, startCol: 3, endLine: 53, endCol: 92,
       label: 'cache_ts() \u2014 Value + Timestamp',
       panel: {
         title: 'Checking Data Freshness with cache_ts()',
@@ -74,7 +74,7 @@ DIME_PAGES['10'] = {
           '<li>Compare timestamps across sources to correlate events</li>' +
           '<li>Detect when a source has stopped producing data</li>' +
           '</ul>' +
-          '<p>The timestamp is a Unix epoch value matching the original message timestamp from the source.</p>',
+          '<p>The timestamp is a Unix epoch value <strong>in milliseconds</strong>, matching the original message timestamp from the source. Since Lua\u2019s <code>os.time()</code> returns seconds, multiply by 1000 before comparing: <code>os.time() * 1000 - ts</code>.</p>',
         related: [
           { page: '09', label: '09 \u2014 Scripting & transforms' },
           { page: '08', label: '08 \u2014 Message Paths & Filtering' }
@@ -83,7 +83,7 @@ DIME_PAGES['10'] = {
     },
     {
       id: 'cross-connector',
-      startLine: 80, startCol: 3, endLine: 112, endCol: 92,
+      startLine: 81, startCol: 3, endLine: 113, endCol: 92,
       label: 'Cross-Connector Access',
       panel: {
         title: 'Cross-Connector Cache Access',
@@ -104,7 +104,7 @@ DIME_PAGES['10'] = {
     },
     {
       id: 'wait-for',
-      startLine: 142, startCol: 3, endLine: 179, endCol: 92,
+      startLine: 143, startCol: 3, endLine: 180, endCol: 92,
       label: 'wait_for_connectors',
       panel: {
         title: 'Dependency Ordering with wait_for_connectors',

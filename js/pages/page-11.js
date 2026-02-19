@@ -9,20 +9,28 @@ DIME_PAGES['11'] = {
   hotspots: [
     {
       id: 'sink-transform',
-      startLine: 26, startCol: 3, endLine: 41, endCol: 92,
-      label: 'use_sink_transform Flag',
+      startLine: 26, startCol: 3, endLine: 61, endCol: 92,
+      label: 'How Templates Work',
       panel: {
-        title: 'Enabling Templates with use_sink_transform',
+        title: 'Templates: Defined on Source, Rendered by Sink',
         body:
-          '<p>By default, source-side transforms (Lua/Python scripts) do not run on the sink. Templates are a sink-side feature.</p>' +
-          '<p>Set <code>use_sink_transform: !!bool true</code> on a sink to enable template processing.</p>' +
-          '<p>When enabled, each message passing through the sink is run through the template engine before being sent to the destination.</p>' +
+          '<p>Templates are defined on the <strong>source</strong> connector under <code>sink.transform</code>. Each sink independently decides whether to render the template by setting <code>use_sink_transform: !!bool true</code>.</p>' +
+          '<p>The template travels with each message through the ring buffer via <code>ConnectorItemRef</code>. When a sink with <code>use_sink_transform: true</code> receives the message, it renders the template.</p>' +
           '<ul>' +
-          '<li>The template has access to <code>Message</code>, <code>Connector</code>, and <code>Configuration</code> objects</li>' +
-          '<li>Output replaces the raw message data for that sink only</li>' +
-          '<li>Other sinks receiving the same message are unaffected</li>' +
+          '<li>Template definition lives on the <strong>source</strong> (connector-level or item-level)</li>' +
+          '<li><code>use_sink_transform</code> toggle lives on the <strong>sink</strong></li>' +
+          '<li>Each sink renders independently \u2014 other sinks are unaffected</li>' +
           '</ul>',
         yaml:
+          '# On the SOURCE:\n' +
+          'sources:\n' +
+          '  - name: my_source\n' +
+          '    sink:\n' +
+          '      transform:\n' +
+          '        type: scriban\n' +
+          '        template: |\n' +
+          '          { "value": {{ Message.Data }} }\n\n' +
+          '# On the SINK:\n' +
           'sinks:\n' +
           '  - name: my_sink\n' +
           '    connector: HttpClient\n' +
@@ -35,17 +43,18 @@ DIME_PAGES['11'] = {
     },
     {
       id: 'template-engines',
-      startLine: 48, startCol: 3, endLine: 67, endCol: 92,
-      label: 'Liquid & Scriban Engines',
+      startLine: 63, startCol: 3, endLine: 87, endCol: 92,
+      label: 'Three Template Modes',
       panel: {
-        title: 'Template Engines: Liquid vs Scriban',
+        title: 'Template Modes: script, scriban, liquid',
         body:
-          '<p>DIME supports two template engines. Both use the same context variables and produce the same output.</p>' +
+          '<p>DIME supports three template modes, all powered by the <strong>Scriban</strong> library. Set the mode via <code>sink.transform.type</code> on the source.</p>' +
           '<ul>' +
-          '<li><strong>Liquid</strong> \u2014 Ruby-inspired syntax, widely known from Shopify, Jekyll, and many web frameworks. Uses <code>{% if %} {% endif %}</code> block syntax.</li>' +
-          '<li><strong>Scriban</strong> \u2014 .NET-native template engine with richer expression support. Uses <code>{{ if }} {{ end }}</code> block syntax. Supports math operations, function calls, and advanced formatting.</li>' +
+          '<li><strong>script</strong> \u2014 Expression evaluation. Simplest mode. Example: <code>Message.Data</code>. Also provides <code>print()</code> and <code>type()</code> helper functions.</li>' +
+          '<li><strong>scriban</strong> \u2014 Full Scriban template syntax with loops, conditionals, math, and formatting. Uses <code>{{ if }} {{ end }}</code> blocks.</li>' +
+          '<li><strong>liquid</strong> \u2014 Liquid-compatible mode (Shopify/Jekyll syntax). Uses <code>{% if %} {% endif %}</code> blocks.</li>' +
           '</ul>' +
-          '<p>Both engines use <code>{{ }}</code> for variable interpolation. Choose whichever syntax you prefer.</p>',
+          '<p>All three modes use the same context variables: <code>Message</code>, <code>Connector</code>, <code>Configuration</code>.</p>',
         related: [
           { page: '09', label: '09 \u2014 Scripting (alternative to templates)' },
           { page: '07', label: '07 \u2014 Sink Connectors Catalog' }
@@ -54,21 +63,22 @@ DIME_PAGES['11'] = {
     },
     {
       id: 'context-vars',
-      startLine: 74, startCol: 3, endLine: 89, endCol: 92,
+      startLine: 89, startCol: 3, endLine: 114, endCol: 92,
       label: 'Template Context Variables',
       panel: {
         title: 'Template Context: Message, Connector, Configuration',
         body:
-          '<p>Every template has access to three context objects:</p>' +
+          '<p>Every template has access to these context objects (from the rendering sink):</p>' +
           '<ul>' +
           '<li><strong>Message.Path</strong> \u2014 The full source path, e.g. <code>"plc1/temperature"</code></li>' +
           '<li><strong>Message.Data</strong> \u2014 The raw value (number, string, JSON object)</li>' +
           '<li><strong>Message.Timestamp</strong> \u2014 Unix epoch timestamp of when the value was read</li>' +
-          '<li><strong>Connector.Name</strong> \u2014 Name of the sink connector processing this message</li>' +
-          '<li><strong>Connector.Type</strong> \u2014 Connector type, e.g. <code>"HttpClient"</code></li>' +
+          '<li><strong>Connector.Name</strong> \u2014 Name of the rendering <em>sink</em> connector</li>' +
+          '<li><strong>Connector.Type</strong> \u2014 Sink connector type, e.g. <code>"HttpClient"</code></li>' +
           '<li><strong>Configuration.Address</strong> \u2014 The sink\u2019s configured address/URL</li>' +
+          '<li><strong>print()</strong> / <strong>type()</strong> \u2014 Helper functions (script mode only)</li>' +
           '</ul>' +
-          '<p>Use these variables in your template expressions to build dynamic output strings.</p>',
+          '<p>Properties are PascalCase. Use these variables in template expressions to build dynamic output.</p>',
         related: [
           { page: '09', label: '09 \u2014 Scripting: the msg object' },
           { page: '08', label: '08 \u2014 Message Paths & Filtering' }
@@ -77,7 +87,7 @@ DIME_PAGES['11'] = {
     },
     {
       id: 'json-reshape',
-      startLine: 96, startCol: 3, endLine: 131, endCol: 92,
+      startLine: 114, startCol: 3, endLine: 152, endCol: 92,
       label: 'JSON Reshaping Example',
       panel: {
         title: 'Reshaping Flat Data into Nested JSON',
@@ -91,12 +101,16 @@ DIME_PAGES['11'] = {
           '</ul>' +
           '<p>The template output becomes the body sent to the sink destination.</p>',
         yaml:
-          'template: |\n' +
-          '  {\n' +
-          '    "device": "{{ Message.Path }}",\n' +
-          '    "value": {{ Message.Data }},\n' +
-          '    "ts": {{ Message.Timestamp }}\n' +
-          '  }',
+          '# Defined on the source connector:\n' +
+          'sink:\n' +
+          '  transform:\n' +
+          '    type: scriban\n' +
+          '    template: |\n' +
+          '      {\n' +
+          '        "device": "{{ Message.Path }}",\n' +
+          '        "value": {{ Message.Data }},\n' +
+          '        "ts": {{ Message.Timestamp }}\n' +
+          '      }',
         related: [
           { page: '07', label: '07 \u2014 Sink Connectors: HttpClient' },
           { page: '12', label: '12 \u2014 PLC to Dashboard Walkthrough' }
@@ -105,17 +119,17 @@ DIME_PAGES['11'] = {
     },
     {
       id: 'templates-vs-scripts',
-      startLine: 139, startCol: 3, endLine: 162, endCol: 92,
+      startLine: 167, startCol: 3, endLine: 194, endCol: 92,
       label: 'Templates vs Scripts',
       panel: {
         title: 'When to Use Templates vs Lua Scripts',
         body:
-          '<p>Templates and Lua scripts serve different purposes and run at different stages:</p>' +
+          '<p>Templates and Lua scripts serve different purposes and are configured at different stages:</p>' +
           '<ul>' +
-          '<li><strong>Templates</strong> run on the <strong>sink side</strong>. They format output for a specific destination. No access to <code>cache()</code>, <code>emit()</code>, or logic APIs. Pure string formatting.</li>' +
+          '<li><strong>Templates</strong> are <strong>defined on the source</strong> (under <code>sink.transform</code>) but <strong>rendered by each sink</strong> that has <code>use_sink_transform: true</code>. They format output for a specific destination. No access to <code>cache()</code>, <code>emit()</code>, or logic APIs. Pure string formatting.</li>' +
           '<li><strong>Lua/Python scripts</strong> run on the <strong>source side</strong>. They transform, filter, enrich, and fork data. Full access to the cache API, emit, and all scripting functions.</li>' +
           '</ul>' +
-          '<p><strong>Best practice:</strong> Use Lua scripts to transform and enrich data on the source side, then use templates on each sink to format the enriched data for that sink\u2019s specific protocol or API format.</p>' +
+          '<p><strong>Best practice:</strong> Use Lua scripts to transform and enrich data on the source, then define templates on the source to format the enriched data. Enable <code>use_sink_transform</code> on each sink that needs formatted output.</p>' +
           '<p>They work together: scripts prepare the data, templates shape the output.</p>',
         related: [
           { page: '09', label: '09 \u2014 Scripting & transforms' },

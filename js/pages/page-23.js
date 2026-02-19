@@ -123,9 +123,9 @@ DIME_PAGES['23'] = {
         body:
           '<p>DIME uses <strong>NLog</strong> for structured logging. All settings live in <code>nlog.config</code>.</p>' +
           '<ul>' +
-          '<li><strong>Daily rolling files</strong> \u2014 <code>Logs/dime-${shortdate}.log</code>. One file per day.</li>' +
-          '<li><strong>Log levels</strong> \u2014 Info (default), Debug, Trace. Change at runtime without restarting.</li>' +
-          '<li><strong>Archive retention</strong> \u2014 Configurable, default 30 days.</li>' +
+          '<li><strong>Daily rolling files</strong> \u2014 <code>Logs/${shortdate}.log</code>. One file per day.</li>' +
+          '<li><strong>Log levels</strong> \u2014 Warn (default), Info, Debug, Trace. Change at runtime without restarting.</li>' +
+          '<li><strong>Archive retention</strong> \u2014 Configurable, default 14 archive files.</li>' +
           '<li><strong>JSON layout</strong> \u2014 Optional structured JSON format for log aggregation tools (Splunk, ELK).</li>' +
           '<li><strong>Console target</strong> \u2014 Enabled when running interactively, auto-disabled as a service.</li>' +
           '</ul>' +

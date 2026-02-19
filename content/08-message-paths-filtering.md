@@ -30,8 +30,8 @@
 │   │     opcua/ns=2;s=Speed      ── OPC-UA source "opcua", node "ns=2;s=Speed"    │               │
 │   │     db_src/query1/col_temp  ── Database source, query 1, column "col_temp"   │               │
 │   │                                                                              │               │
-│   │   itemized_read: true       ── Each item gets its own path (default)         │               │
-│   │   itemized_read: false      ── All items arrive as one bulk message          │               │
+│   │   itemized_read: true       ── Each item gets its own path                   │               │
+│   │   itemized_read: false      ── All items arrive as one bulk message (default)│               │
 │   │                                                                              │               │
 │   └──────────────────────────────────────────────────────────────────────────────┘               │
 │                                                                                                  │
@@ -46,17 +46,14 @@
 │                                                                                                  │
 │   ┌──────────────────────────────────────────────────────────────────────────────┐               │
 │   │                                                                              │               │
-│   │   sourceName/$SYSTEM/IsConnected   ── true/false                             │               │
-│   │   sourceName/$SYSTEM/IsFaulted     ── true/false                             │               │
-│   │   sourceName/$SYSTEM/FaultCount    ── cumulative fault count                 │               │
-│   │   sourceName/$SYSTEM/ConnectCount  ── number of reconnections                │               │
-│   │   sourceName/$SYSTEM/ReadTime      ── last device read time (ms)             │               │
-│   │   sourceName/$SYSTEM/ScriptTime    ── last script exec time (ms)             │               │
-│   │   sourceName/$SYSTEM/LoopTime      ── total loop time (ms)                   │               │
-│   │   sourceName/$SYSTEM/ItemCount     ── number of items being read             │               │
+│   │   sourceName/$SYSTEM/ExecutionDuration ── connector loop duration (ms)        │               │
+│   │   sourceName/$SYSTEM/IsConnected      ── true/false                          │               │
+│   │   sourceName/$SYSTEM/IsFaulted        ── true/false                          │               │
+│   │   sourceName/$SYSTEM/Fault            ── fault reason message or null        │               │
+│   │   sourceName/$SYSTEM/IsAvailable      ── true when connected and not faulted │               │
 │   │                                                                              │               │
-│   │   Example:   plc1/$SYSTEM/IsConnected = true                                 │               │
-│   │              plc1/$SYSTEM/ReadTime    = 12                                   │               │
+│   │   Example:   plc1/$SYSTEM/IsConnected      = true                            │               │
+│   │              plc1/$SYSTEM/ExecutionDuration = 12                              │               │
 │   │                                                                              │               │
 │   └──────────────────────────────────────────────────────────────────────────────┘               │
 │                                                                                                  │
@@ -132,14 +129,14 @@
 │                       │  plc1/* only│                                                            │
 │                       └─────────────┘                                                            │
 │                                                                                                  │
-│   If BOTH include and exclude are set, include is applied first, then exclude.                   │
+│   If BOTH include and exclude are set, only include_filter is used; exclude is ignored.           │
 │                                                                                                  │
 │  ──────────────────────────────────────────────────────────────────────────────────────────────  │
 │                                                                                                  │
 │   STRIP PATH PREFIX                                                                              │
 │   ─────────────────                                                                              │
 │                                                                                                  │
-│   Removes the source name from the path before the sink writes it.                               │
+│   Set on a SOURCE connector; removes the source name from the message path at publish time.      │
 │                                                                                                  │
 │   ┌──────────────────────────────────────────────────────────────────────────────┐               │
 │   │                                                                              │               │

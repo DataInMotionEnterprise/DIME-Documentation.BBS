@@ -20,7 +20,7 @@
 │   │             │          │                       │          │             │                    │
 │   │   Sources   │─────────▶│  Disruptor Ring Buffer│─────────▶│    Sinks    │                    │
 │   │             │          │                       │          │             │                    │
-│   │  47+ types  │          │  Lock-free. < 1ms.    │          │  20+ types  │                    │
+│   │  30+ types  │          │  Lock-free. < 1ms.    │          │  20+ types  │                    │
 │   │  Any device │          │  1M+ msg/sec.         │          │  Any dest.  │                    │
 │   │ Any protocol│          │  Single hub for all.  │          │  Any format │                    │
 │   │             │          │                       │          │             │                    │
@@ -158,7 +158,7 @@
 │   │                                                                                         │    │
 │   │   Timer fires every scan_interval ──▶ Read all items ──▶ Publish to ring buffer         │    │
 │   │                                                                                         │    │
-│   │   Used by: OPC-UA, Modbus, S7, EtherNet/IP, Beckhoff, FANUC, Script, HTTP, SNMP         │    │
+│   │   Used by: OPC-UA, Modbus, S7, EtherNet/IP, Beckhoff, FANUC, Script, SNMP               │    │
 │   │                                                                                         │    │
 │   ├─────────────────────────────────────────────────────────────────────────────────────────┤    │
 │   │                                                                                         │    │
@@ -167,7 +167,7 @@
 │   │                                                                                         │    │
 │   │   Messages arrive asynchronously ──▶ Queue in inbox ──▶ Drain on timer ──▶ Publish      │    │
 │   │                                                                                         │    │
-│   │   Used by: MQTT, SparkplugB, ActiveMQ, WebSocket, UDP Server                            │    │
+│   │   Used by: MQTT, SparkplugB, ActiveMQ, HttpServer, UDP Server                           │    │
 │   │                                                                                         │    │
 │   ├─────────────────────────────────────────────────────────────────────────────────────────┤    │
 │   │                                                                                         │    │
@@ -176,7 +176,7 @@
 │   │                                                                                         │    │
 │   │   Timer fires ──▶ Execute query ──▶ Iterate result set ──▶ Publish each row             │    │
 │   │                                                                                         │    │
-│   │   Used by: SQL Server source, PostgreSQL source                                         │    │
+│   │   Used by: OPC-DA source                                                                │    │
 │   │                                                                                         │    │
 │   ├─────────────────────────────────────────────────────────────────────────────────────────┤    │
 │   │                                                                                         │    │
@@ -185,7 +185,7 @@
 │   │                                                                                         │    │
 │   │   Timer fires ──▶ SQL query ──▶ Map columns to items ──▶ Publish with names             │    │
 │   │                                                                                         │    │
-│   │   Used by: Database connectors with column-level item mapping                           │    │
+│   │   Used by: SQL Server (MsSql), PostgreSQL (Postgres)                                    │    │
 │   │                                                                                         │    │
 │   └─────────────────────────────────────────────────────────────────────────────────────────┘    │
 │                                                                                                  │
@@ -201,17 +201,19 @@
 │   │   REST API                                  WebSocket                        │               │
 │   │   http://localhost:9999                      ws://localhost:9998             │               │
 │   │                                                                              │               │
-│   │   GET  /status ─── All connector states      Real-time event stream:         │               │
-│   │   GET  /config ─── Running configuration                                     │               │
-│   │   POST /sinks ──── Add sink at runtime         Connector state changes       │               │
-│   │   GET  /cache ──── Cached values               Performance telemetry         │               │
-│   │                                                 Loop timing (read, script,   │               │
-│   │   Swagger UI included for exploration.          total per connector)         │               │
-│   │                                                 Fault notifications          │               │
+│   │   GET  /status ────────── Connector states      Real-time event stream:      │               │
+│   │   GET  /config/yaml ───── YAML configuration                                 │               │
+│   │   GET  /config/json ───── JSON configuration    Connector state changes      │               │
+│   │   POST /config/reload ─── Reload from disk       Performance telemetry       │               │
+│   │   POST /config/save ──── Save to disk            Loop timing (read, script,  │               │
+│   │   POST /connector/* ──── Add, edit, delete,      total per connector)        │               │
+│   │     start, stop sources & sinks at runtime       Fault notifications         │               │
+│   │                                                                              │               │
+│   │   Swagger UI included for exploration.                                       │               │
 │   │                                                                              │               │
 │   └──────────────────────────────────────────────────────────────────────────────┘               │
 │                                                                                                  │
-│   The REST API is how you add sinks at runtime — zero downtime reconfiguration.                  │
+│   The REST API enables zero-downtime reconfiguration — add, edit, or remove connectors live.     │
 │   The WebSocket is how DIME-Connector.UX (the web dashboard) gets live data.                     │
 │                                                                                                  │
 │  ──────────────────────────────────────────────────────────────────────────────────────────────  │
@@ -260,14 +262,14 @@
 │                                                                                                  │
 │   ┌───────────────────┐  ┌───────────────────┐  ┌───────────────────┐  ┌───────────────────┐     │
 │   │                   │  │                   │  │                   │  │                   │     │
-│   │   DISRUPTOR       │  │   ZERO-COPY       │  │   RBE             │  │   ISOLATION       │     │
+│   │   DISRUPTOR       │  │   SHARED-REF      │  │   RBE             │  │   ISOLATION       │     │
 │   │   RING BUFFER     │  │   FAN-OUT         │  │                   │  │                   │     │
 │   │                   │  │                   │  │   Report By       │  │   Each connector  │     │
 │   │   Lock-free.      │  │   SinkDispatcher  │  │   Exception.      │  │   on its own      │     │
 │   │   No mutexes.     │  │   pushes the same │  │   Only publish    │  │   thread & timer. │     │
 │   │   No contention.  │  │   message ref to  │  │   when the value  │  │   Fault in one    │     │
 │   │   Predictable     │  │   every sink. No  │  │   actually        │  │   never blocks    │     │
-│   │   sub-ms latency. │  │   copies made.    │  │   changes.        │  │   another.        │     │
+│   │   sub-ms latency. │  │   ref shared.     │  │   changes.        │  │   another.        │     │
 │   │                   │  │                   │  │                   │  │                   │     │
 │   └───────────────────┘  └───────────────────┘  └───────────────────┘  └───────────────────┘     │
 │                                                                                                  │

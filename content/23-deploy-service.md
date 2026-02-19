@@ -20,7 +20,7 @@
 │   │                 │      │                 │      │                 │      │              │    │
 │   │  OS Service     │─────▶│  DIME Process   │─────▶│  YAML Configs   │      │  Log Files   │    │
 │   │  Manager        │      │                 │      │                 │      │              │    │
-│   │                 │      │  Sources        │      │  /Configs/*.yml │      │  Daily roll  │    │
+│   │                 │      │  Sources        │      │ /Configs/*.yaml │      │  Daily roll  │    │
 │   │  Windows SCM    │◀─────│  Ring Buffer    │      │  Merged at      │      │  nlog.config │    │
 │   │  or systemd     │ stat │  Sinks          │      │  startup        │      │  JSON / text │    │
 │   │                 │      │  Admin API      │      │                 │      │              │    │
@@ -151,8 +151,8 @@
 │   │  │   ├── sources.yaml                    │  │   │   ├── sources.yaml                   │     │
 │   │  │   └── sinks.yaml                      │  │   │   └── sinks.yaml                     │     │
 │   │  ├── Logs\                               │  │   ├── Logs/                              │     │
-│   │  │   ├── dime-2026-02-19.log             │  │   │   ├── dime-2026-02-19.log            │     │
-│   │  │   └── dime-2026-02-18.log             │  │   │   └── dime-2026-02-18.log            │     │
+│   │  │   ├── 2026-02-19.log                  │  │   │   ├── 2026-02-19.log                 │     │
+│   │  │   └── 2026-02-18.log                  │  │   │   └── 2026-02-18.log                 │     │
 │   │  ├── Scripts\                            │  │   ├── Scripts/                           │     │
 │   │  └── nlog.config                         │  │   └── nlog.config                        │     │
 │   │                                          │  │                                          │     │
@@ -172,11 +172,11 @@
 │   │   ┌────────────────────┬────────────────────────────────────────────────────────┐        │   │
 │   │   │ Setting            │ Description                                            │        │   │
 │   │   ├────────────────────┼────────────────────────────────────────────────────────┤        │   │
-│   │   │ File target        │ Logs/dime-${shortdate}.log — daily rolling file        │        │   │
+│   │   │ File target        │ Logs/${shortdate}.log — daily rolling file              │        │   │
 │   │   ├────────────────────┼────────────────────────────────────────────────────────┤        │   │
-│   │   │ Min level          │ Info (default). Set to Debug or Trace for diagnostics  │        │   │
+│   │   │ Min level          │ Warn (default). Set to Info, Debug, or Trace to expand │        │   │
 │   │   ├────────────────────┼────────────────────────────────────────────────────────┤        │   │
-│   │   │ Archive            │ Max 30 days. Configurable retention.                   │        │   │
+│   │   │ Archive            │ Max 14 files. Configurable retention.                  │        │   │
 │   │   ├────────────────────┼────────────────────────────────────────────────────────┤        │   │
 │   │   │ JSON layout        │ Optional structured JSON format for log aggregation    │        │   │
 │   │   ├────────────────────┼────────────────────────────────────────────────────────┤        │   │

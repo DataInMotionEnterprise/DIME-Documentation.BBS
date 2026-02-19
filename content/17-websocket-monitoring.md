@@ -24,7 +24,7 @@
 │   │     ┌─────────────────────────────────────────────────────────────────────────────┐      │   │
 │   │     │                                                                             │      │   │
 │   │     │   Connector status    ── isConnected, isFaulted changes in real time        │      │   │
-│   │     │   Performance metrics ── totalLoopTime, deviceReadTime, scriptExecTime      │      │   │
+│   │     │   Performance metrics ── lastLoopMs, lastReadMs, lastScriptMs                │      │   │
 │   │     │   Fault notifications ── immediate alert when a connector errors            │      │   │
 │   │     │   Live data values    ── current values flowing through ring buffer         │      │   │
 │   │     │   $SYSTEM paths       ── all $SYSTEM metadata for every connector           │      │   │
@@ -59,14 +59,14 @@
 │   │                                                                                          │   │
 │   │   sinks:                                                                                 │   │
 │   │     - name: live_feed                                                                    │   │
-│   │       connector: WebSocketServer                                                         │   │
-│   │       port: !!int 8092                                                                   │   │
+│   │       connector: WebsocketServer                                                         │   │
+│   │       uri: !!str ws://localhost:8092/                                                    │   │
 │   │       include_filter:                                                                    │   │
 │   │         - "plc1/.*"                                                                      │   │
 │   │         - "robot1/.*"                                                                    │   │
 │   │                                                                                          │   │
 │   │   ┌──────────┐      ┌──────────────┐      ┌───────────────────┐      ┌────────────┐      │   │
-│   │   │ plc1     │      │              │      │  WebSocketServer  │      │ External   │      │   │
+│   │   │ plc1     │      │              │      │ WebsocketServer   │      │ External   │      │   │
 │   │   │ robot1   │─────▶│  Ring Buffer │─────▶│  Sink :8092       │─────▶│ Clients    │      │   │
 │   │   │ mqtt     │      │              │      │                   │      │            │      │   │
 │   │   └──────────┘      └──────────────┘      │  Only plc1/* and  │      │ Dashboard  │      │   │
@@ -74,15 +74,15 @@
 │   │                                           └───────────────────┘      │ Custom UI  │      │   │
 │   │                                                                      └────────────┘      │   │
 │   │                                                                                          │   │
-│   │   Unlike the admin WS (:9998), this is a configurable SINK — you choose the port,        │   │
+│   │   Unlike the admin WS (:9998), this is a configurable SINK — you choose the URI,         │   │
 │   │   the data filter, and can run multiple WebSocket servers on different ports.            │   │
 │   │                                                                                          │   │
 │   └──────────────────────────────────────────────────────────────────────────────────────────┘   │
 │                                                                                                  │
 │  ──────────────────────────────────────────────────────────────────────────────────────────────  │
 │                                                                                                  │
-│   HTTP SERVER SINK — SERVE STATIC FILES                                                          │
-│   ──────────────────────────────────────                                                         │
+│   WEB SERVER SINK — SERVE STATIC FILES                                                           │
+│   ─────────────────────────────────────                                                         │
 │                                                                                                  │
 │   Host HTML, CSS, JS files directly from DIME. No separate web server needed.                    │
 │                                                                                                  │
@@ -90,21 +90,21 @@
 │   │                                                                                          │   │
 │   │   sinks:                                                                                 │   │
 │   │     - name: web_ui                                                                       │   │
-│   │       connector: HttpServer                                                              │   │
-│   │       port: !!int 8080                                                                   │   │
-│   │       path: ./www                              ◀── folder with your HTML/CSS/JS          │   │
+│   │       connector: WebServer                                                               │   │
+│   │       uri: !!str http://localhost:8080/         ◀── listen address and port               │   │
+│   │       web_root: ./www                           ◀── folder with your HTML/CSS/JS          │   │
 │   │                                                                                          │   │
 │   │   ┌──────────────────────┐                                                               │   │
 │   │   │  ./www/              │          ┌───────────────────────────────────────┐            │   │
 │   │   │  ├── index.html      │          │                                       │            │   │
-│   │   │  ├── style.css       │────────▶ │   HttpServer Sink :8080               │            │   │
+│   │   │  ├── style.css       │────────▶ │   WebServer Sink :8080                │            │   │
 │   │   │  ├── app.js          │          │                                       │            │   │
 │   │   │  └── chart.js        │          │   Serves static files at              │            │   │
 │   │   │                      │          │   http://localhost:8080/              │            │   │
 │   │   └──────────────────────┘          └───────────────────────────────────────┘            │   │
 │   │                                                                                          │   │
 │   │   Your dashboard HTML/JS files connect to a WebSocket sink for live data.                │   │
-│   │   The HttpServer sink serves those files — everything runs from DIME.                    │   │
+│   │   The WebServer sink serves those files — everything runs from DIME.                     │   │
 │   │                                                                                          │   │
 │   └──────────────────────────────────────────────────────────────────────────────────────────┘   │
 │                                                                                                  │
@@ -166,28 +166,28 @@
 │   SELF-CONTAINED DASHBOARD — HTTP + WEBSOCKET                                                    │
 │   ────────────────────────────────────────────                                                   │
 │                                                                                                  │
-│   Combine HttpServer (static files) + WebSocketServer (live data) for a complete                 │
+│   Combine WebServer (static files) + WebsocketServer (live data) for a complete                  │
 │   dashboard with zero external dependencies. Everything runs inside DIME.                        │
 │                                                                                                  │
 │   ┌──────────────────────────────────────────────────────────────────────────────────────────┐   │
 │   │                                                                                          │   │
 │   │   sinks:                                                                                 │   │
 │   │     - name: web_ui                              - name: live_feed                        │   │
-│   │       connector: HttpServer                       connector: WebSocketServer             │   │
-│   │       port: !!int 8080                            port: !!int 8092                       │   │
-│   │       path: ./www                                 include_filter:                        │   │
-│   │                                                     - "plc1/.*"                          │   │
+│   │       connector: WebServer                        connector: WebsocketServer             │   │
+│   │       uri: http://localhost:8080/                  uri: ws://localhost:8092/              │   │
+│   │       web_root: ./www                              include_filter:                       │   │
+│   │                                                      - "plc1/.*"                         │   │
 │   │                                                                                          │   │
 │   │                        ┌─────────────────────────────────────────────┐                   │   │
 │   │                        │            DIME Instance                    │                   │   │
 │   │                        │                                             │                   │   │
 │   │   ┌──────────┐  data   │  ┌────────────┐    ┌────────────────────┐   │                   │   │
-│   │   │  Sources │────────▶│  │ Ring       │───▶│ WebSocketServer    │   │                   │   │
+│   │   │  Sources │────────▶│  │ Ring       │───▶│ WebsocketServer    │   │                   │   │
 │   │   │  plc1    │         │  │ Buffer     │    │ :8092 (live data)  │   │                   │   │
 │   │   │  mqtt    │         │  └────────────┘    └─────────┬──────────┘   │                   │   │
 │   │   └──────────┘         │                              │  ws://       │                   │   │
 │   │                        │  ┌────────────────────┐      │              │                   │   │
-│   │                        │  │ HttpServer         │      │              │                   │   │
+│   │                        │  │ WebServer          │      │              │                   │   │
 │   │                        │  │ :8080 (static)     │      │              │                   │   │
 │   │                        │  │ ./www/index.html   │      │              │                   │   │
 │   │                        │  └─────────┬──────────┘      │              │                   │   │
@@ -207,8 +207,8 @@
 │   │                                                                                          │   │
 │   └──────────────────────────────────────────────────────────────────────────────────────────┘   │
 │                                                                                                  │
-│   Open http://localhost:8080 in a browser. The page loads from HttpServer,                       │
-│   connects to WebSocketServer, and you have a live dashboard — nothing else needed.              │
+│   Open http://localhost:8080 in a browser. The page loads from WebServer,                        │
+│   connects to WebsocketServer, and you have a live dashboard — nothing else needed.              │
 │                                                                                                  │
 └──────────────────────────────────────────────────────────────────────────────────────────────────┘
 ```

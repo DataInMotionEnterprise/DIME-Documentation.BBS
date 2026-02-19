@@ -3,7 +3,7 @@
 │                                                                                                  │
 │          ██████┐  ██┐ ███┐   ███┐ ███████┐        06 — Source Connectors                         │
 │          ██┌──██┐ ██│ ████┐ ████│ ██┌────┘                                                       │
-│          ██│  ██│ ██│ ██┌████┌██│ █████┐          50+ ways to read data.                         │
+│          ██│  ██│ ██│ ██┌████┌██│ █████┐          30 ways to read data.                          │
 │          ██│  ██│ ██│ ██│└██┌┘██│ ██┌──┘          Every protocol, one YAML config.               │
 │          ██████┌┘ ██│ ██│ └─┘ ██│ ███████┐                                                       │
 │          └─────┘  └─┘ └─┘     └─┘ └──────┘                                                       │
@@ -94,8 +94,8 @@
 │                                                                                                  │
 │  ──────────────────────────────────────────────────────────────────────────────────────────────  │
 │                                                                                                  │
-│   DATABASES (BATCH POLLING)                                                                      │
-│   ─────────────────────────                                                                      │
+│   DATABASES (DATABASE SOURCE)                                                                    │
+│   ───────────────────────────                                                                    │
 │                                                                                                  │
 │   ┌──────────────────────────────────────────────────────────────────────────────────────────┐   │
 │   │                                                                                          │   │
@@ -106,7 +106,7 @@
 │   │   query: SELECT col1, col2 FROM table        query: SELECT col1, col2 FROM table         │   │
 │   │          WHERE timestamp > @last_read               WHERE timestamp > $1                 │   │
 │   │                                                                                          │   │
-│   │   BatchPollingSourceConnector: timer fires, execute query, iterate result set,           │   │
+│   │   DatabaseSourceConnector: timer fires, execute query, iterate result set,                │   │
 │   │   publish each row as a message. Use parameterized queries for incremental reads.        │   │
 │   │                                                                                          │   │
 │   └──────────────────────────────────────────────────────────────────────────────────────────┘   │
@@ -117,18 +117,18 @@
 │   ──────────────────                                                                             │
 │                                                                                                  │
 │   ┌───────────────────┐ ┌───────────────────┐ ┌───────────────────┐ ┌───────────────────┐        │
-│   │  JSON Scraper     │ │  XML Scraper      │ │  HTTP Client      │ │  TCP ASCII        │        │
+│   │  JSON Scraper     │ │  XML Scraper      │ │  HTTP Server      │ │  TCP ASCII        │        │
 │   │                   │ │                   │ │                   │ │                   │        │
-│   │  Fetch JSON from  │ │  Fetch XML from   │ │  Generic HTTP     │ │  Raw TCP socket   │        │
-│   │  a URL. Parse     │ │  a URL. Parse     │ │  GET/POST to any  │ │  reads. Line-     │        │
-│   │  with JSONPath.   │ │  with XPath.      │ │  REST endpoint.   │ │  delimited text.  │        │
+│   │  Fetch JSON from  │ │  Fetch XML from   │ │  Listens for HTTP │ │  Raw TCP socket   │        │
+│   │  a URL. Parse     │ │  a URL. Parse     │ │  POSTs. Incoming  │ │  reads. Line-     │        │
+│   │  with JSONPath.   │ │  with XPath.      │ │  data as messages.│ │  delimited text.  │        │
 │   │                   │ │                   │ │                   │ │                   │        │
 │   │  address: url     │ │  address: url     │ │  address: url     │ │  address: host    │        │
 │   └───────────────────┘ └───────────────────┘ └───────────────────┘ └───────────────────┘        │
 │                                                                                                  │
 │   ┌───────────────────┐ ┌───────────────────┐                                                    │
-│   │  UDP Server       │ │  SNMP             │     Web/API connectors are PollingSourceConnector  │
-│   │                   │ │                   │     except UDP Server (QueuingSourceConnector).    │
+│   │  UDP Server       │ │  SNMP             │     Scrapers and SNMP are PollingSourceConnector.  │
+│   │                   │ │                   │     HTTP Server and UDP Server are Queuing.        │
 │   │  Listens on a UDP │ │  SNMP GET on OIDs │                                                    │
 │   │  port. Receives   │ │  from network     │     JSON/XML Scrapers are useful for pulling       │
 │   │  datagrams as     │ │  devices. v1/v2c  │     data from web APIs and converting it into      │
@@ -173,31 +173,32 @@
 │                                                                                                  │
 │   Four base classes. Pick the one that matches how your device delivers data.                    │
 │                                                                                                  │
-│           ┌───────────────────────────────────────────────────────────────┐                      │
-│           │              SourceConnector (abstract)                       │                      │
-│           └─────────┬────────────────┬───────────────┬────────────────────┘                      │
-│                     │                │               │                                           │
-│           ┌─────────▼──────┐ ┌───────▼────────┐ ┌────▼──────────────┐                            │
-│           │                │ │                │ │                   │                            │
-│           │   Polling      │ │   Queuing      │ │  BatchPolling     │                            │
-│           │                │ │                │ │                   │                            │
-│           │  Timer fires   │ │  Msgs arrive   │ │  Timer fires      │                            │
-│           │  → read all    │ │  → queue inbox │ │  → run query      │                            │
-│           │  → publish     │ │  → drain timer │ │  → iterate rows   │                            │
-│           │                │ │  → publish     │ │  → publish each   │                            │
-│           │  OPC-UA        │ │                │ │                   │                            │
-│           │  Modbus        │ │  MQTT          │ │  SQL Server       │                            │
-│           │  S7            │ │  SparkplugB    │ │  PostgreSQL       │                            │
-│           │  EtherNet/IP   │ │  ActiveMQ      │ │                   │                            │
-│           │  Beckhoff ADS  │ │  Redis Pub/Sub │ │  ┌───────────────┐│                            │
-│           │  FANUC         │ │  UDP Server    │ │  │  Database     ││                            │
-│           │  HTTP / SNMP   │ │  WebSocket     │ │  │  (subclass)   ││                            │
-│           │  Script        │ │                │ │  │  column→item  ││                            │
-│           │                │ │                │ │  └───────────────┘│                            │
-│           └────────────────┘ └────────────────┘ └───────────────────┘                            │
+│           ┌──────────────────────────────────────────────────────────────────────────┐           │
+│           │                    SourceConnector (abstract)                             │           │
+│           └─────────┬───────────────┬───────────────┬───────────────┬────────────────┘           │
+│                     │               │               │               │                            │
+│           ┌─────────▼─────┐ ┌───────▼───────┐ ┌─────▼──────┐ ┌─────▼──────────┐                 │
+│           │               │ │               │ │            │ │                │                 │
+│           │   Polling     │ │   Queuing     │ │  Batch     │ │  Database      │                 │
+│           │               │ │               │ │  Polling   │ │                │                 │
+│           │  Timer fires  │ │  Msgs arrive  │ │            │ │  Timer fires   │                 │
+│           │  → read all   │ │  → queue inbox│ │  Timer →   │ │  → run query   │                 │
+│           │  → publish    │ │  → drain timer│ │  read batch│ │  → column→item │                 │
+│           │               │ │  → publish    │ │  → iterate │ │  → publish     │                 │
+│           │  OPC-UA       │ │               │ │  → publish │ │                │                 │
+│           │  Modbus       │ │  MQTT         │ │            │ │  SQL Server    │                 │
+│           │  S7           │ │  SparkplugB   │ │  OPC-DA    │ │  PostgreSQL    │                 │
+│           │  EtherNet/IP  │ │  ActiveMQ     │ │            │ │                │                 │
+│           │  Beckhoff ADS │ │  Redis Pub/Sub│ └────────────┘ └────────────────┘                 │
+│           │  FANUC        │ │  UDP Server   │                                                   │
+│           │  SNMP         │ │  HTTP Server  │                                                   │
+│           │  Script       │ │  Haas SHDR    │                                                   │
+│           │               │ │  MTConnect    │                                                   │
+│           │               │ │  ROS2         │                                                   │
+│           └───────────────┘ └───────────────┘                                                   │
 │                                                                                                  │
 │   Polling is the most common: timer → read → publish. Queuing is for push protocols.             │
-│   BatchPolling is for SQL queries that return result sets.                                       │
+│   Database is for SQL queries that return result sets with column-to-item mapping.               │
 │                                                                                                  │
 │  ──────────────────────────────────────────────────────────────────────────────────────────────  │
 │                                                                                                  │

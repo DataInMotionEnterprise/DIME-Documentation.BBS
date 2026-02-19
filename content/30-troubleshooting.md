@@ -76,11 +76,11 @@
 │   │                                                                                        │     │
 │   │   ┌─────────────────┐        ┌─────────────────┐        ┌─────────────────┐            │     │
 │   │   │ Check           │        │ Verify          │        │ Look at         │            │     │
-│   │   │ FaultReason     │───────▶│ network &       │───────▶│ FaultCount      │            │     │
+│   │   │ FaultMessage    │───────▶│ network &       │───────▶│ FaultCount      │            │     │
 │   │   │                 │        │ credentials     │        │                 │            │     │
 │   │   │ GET /status     │        │                 │        │ Growing = the   │            │     │
 │   │   │ IsFaulted: true │        │ Ping device?    │        │ device keeps    │            │     │
-│   │   │ FaultReason:    │        │ Firewall open?  │        │ dropping. Check │            │     │
+│   │   │ FaultMessage:   │        │ Firewall open?  │        │ dropping. Check │            │     │
 │   │   │ "timeout"       │        │ Creds correct?  │        │ device health.  │            │     │
 │   │   └─────────────────┘        └─────────────────┘        └─────────────────┘            │     │
 │   │                                                                                        │     │
@@ -98,13 +98,13 @@
 │   │                                                                                        │     │
 │   │   Symptoms:                     Diagnosis:                                             │     │
 │   │   ─────────                     ──────────                                             │     │
-│   │   - Data stops or is wrong      1. Check $SYSTEM/ScriptTime — is it growing?           │     │
-│   │   - FaultReason mentions Lua    2. Check FaultReason for Lua stack trace               │     │
+│   │   - Data stops or is wrong      1. Check LastScriptMs via GET /status                   │     │
+│   │   - FaultMessage mentions Lua   2. Check FaultMessage for Lua stack trace              │     │
 │   │   - ScriptTime spikes           3. Add Console sink to see raw vs. transformed data    │     │
 │   │                                                                                        │     │
 │   │   Common Lua mistakes:                                                                 │     │
 │   │   ────────────────────                                                                 │     │
-│   │   - Nil access: msg.data is nil when device returns nothing                            │     │
+│   │   - Nil access: result is nil when device returns nothing                               │     │
 │   │   - Type mismatch: tonumber() on a string that is not a number                         │     │
 │   │   - Missing return: script must return a value or use emit()                           │     │
 │   │   - Infinite loop: while true without break kills the scan cycle                       │     │
@@ -112,7 +112,7 @@
 │   │   Debugging strategy:                                                                  │     │
 │   │   ───────────────────                                                                  │     │
 │   │   1. Add a Console sink with no filters — see everything in stdout                     │     │
-│   │   2. Simplify script to just "return msg.data" — confirm raw data arrives              │     │
+│   │   2. Simplify script to just "return result" — confirm raw data arrives                │     │
 │   │   3. Add logic back one line at a time                                                 │     │
 │   │   4. Use emit('debug/info', value) for printf-style debugging                          │     │
 │   │                                                                                        │     │
@@ -195,7 +195,7 @@
 │   │   ─────────────────────                                                                │     │
 │   │                                                                                        │     │
 │   │   ┌─────────────────────┐  ┌─────────────────────┐  ┌─────────────────────┐            │     │
-│   │   │ Console sink        │  │ GET /status         │  │ GET /config         │            │     │
+│   │   │ Console sink        │  │ GET /status         │  │ GET /config/yaml    │            │     │
 │   │   │                     │  │                     │  │                     │            │     │
 │   │   │ See what data is    │  │ See connector state,│  │ See what DIME       │            │     │
 │   │   │ flowing through     │  │ fault info, timing  │  │ actually loaded     │            │     │
@@ -231,7 +231,7 @@
 │   │                                   Multiple sinks w/o filter Add include_filter       │       │
 │   │                                                                                      │       │
 │   │   Stale data in cache             Source disconnected       Check IsConnected        │       │
-│   │                                   Device offline            Check FaultReason        │       │
+│   │                                   Device offline            Check FaultMessage       │       │
 │   │                                                                                      │       │
 │   └──────────────────────────────────────────────────────────────────────────────────────┘       │
 │                                                                                                  │

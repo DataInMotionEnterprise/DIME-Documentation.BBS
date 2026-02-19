@@ -34,25 +34,31 @@
 │   ENDPOINT CATALOG                                                                               │
 │   ────────────────                                                                               │
 │                                                                                                  │
-│   ┌────────┬───────────────────────────────┬────────────────────────────────────────────────┐    │
-│   │ METHOD │ PATH                          │ DESCRIPTION                                    │    │
-│   ├────────┼───────────────────────────────┼────────────────────────────────────────────────┤    │
-│   │  GET   │ /status                       │ All connector health and metrics               │    │
-│   ├────────┼───────────────────────────────┼────────────────────────────────────────────────┤    │
-│   │  GET   │ /config/yaml                  │ Current running YAML configuration             │    │
-│   ├────────┼───────────────────────────────┼────────────────────────────────────────────────┤    │
-│   │  POST  │ /config/yaml                  │ Push new config (hot reload)                   │    │
-│   ├────────┼───────────────────────────────┼────────────────────────────────────────────────┤    │
-│   │  POST  │ /service/restart              │ Restart entire service                         │    │
-│   ├────────┼───────────────────────────────┼────────────────────────────────────────────────┤    │
-│   │  POST  │ /connector/start/{name}       │ Start one connector by name                    │    │
-│   ├────────┼───────────────────────────────┼────────────────────────────────────────────────┤    │
-│   │  POST  │ /connector/stop/{name}        │ Stop one connector by name                     │    │
-│   ├────────┼───────────────────────────────┼────────────────────────────────────────────────┤    │
-│   │  POST  │ /connector/add/source         │ Add source at runtime                          │    │
-│   ├────────┼───────────────────────────────┼────────────────────────────────────────────────┤    │
-│   │  POST  │ /connector/add/sink           │ Add sink at runtime                            │    │
-│   └────────┴───────────────────────────────┴────────────────────────────────────────────────┘    │
+│   ┌────────┬──────────────────────────────────────────┬─────────────────────────────────────────┐    │
+│   │ METHOD │ PATH                                     │ DESCRIPTION                             │    │
+│   ├────────┼──────────────────────────────────────────┼─────────────────────────────────────────┤    │
+│   │  GET   │ /status                                  │ All connector health and metrics         │    │
+│   ├────────┼──────────────────────────────────────────┼─────────────────────────────────────────┤    │
+│   │  GET   │ /config/yaml                             │ Current running YAML configuration       │    │
+│   ├────────┼──────────────────────────────────────────┼─────────────────────────────────────────┤    │
+│   │  GET   │ /config/json                             │ Current running JSON configuration       │    │
+│   ├────────┼──────────────────────────────────────────┼─────────────────────────────────────────┤    │
+│   │  POST  │ /config/yaml                             │ Write new config to disk                 │    │
+│   ├────────┼──────────────────────────────────────────┼─────────────────────────────────────────┤    │
+│   │  POST  │ /config/reload                           │ Reload config from disk and restart      │    │
+│   ├────────┼──────────────────────────────────────────┼─────────────────────────────────────────┤    │
+│   │  POST  │ /config/save                             │ Persist runtime config to disk           │    │
+│   ├────────┼──────────────────────────────────────────┼─────────────────────────────────────────┤    │
+│   │  POST  │ /connector/start/{type}/{name}           │ Start one connector (type=source|sink)  │    │
+│   ├────────┼──────────────────────────────────────────┼─────────────────────────────────────────┤    │
+│   │  POST  │ /connector/stop/{type}/{name}            │ Stop one connector (type=source|sink)   │    │
+│   ├────────┼──────────────────────────────────────────┼─────────────────────────────────────────┤    │
+│   │  POST  │ /connector/add/{type}/{name}             │ Add connector at runtime                 │    │
+│   ├────────┼──────────────────────────────────────────┼─────────────────────────────────────────┤    │
+│   │  POST  │ /connector/edit/{type}/{name}            │ Edit connector at runtime                │    │
+│   ├────────┼──────────────────────────────────────────┼─────────────────────────────────────────┤    │
+│   │  POST  │ /connector/delete/{type}/{name}          │ Delete connector at runtime              │    │
+│   └────────┴──────────────────────────────────────────┴─────────────────────────────────────────┘    │
 │                                                                                                  │
 │  ──────────────────────────────────────────────────────────────────────────────────────────────  │
 │                                                                                                  │
@@ -64,23 +70,26 @@
 │   │   $ curl http://localhost:9999/status                                                    │   │
 │   │                                                                                          │   │
 │   │   {                                                                                      │   │
-│   │     "connectors": [                                                                      │   │
-│   │       {                                                                                  │   │
-│   │         "name":          "plc1",              ◀── connector name from YAML               │   │
-│   │         "isConnected":   true,                ◀── connection alive?                      │   │
-│   │         "isFaulted":     false,               ◀── in error state?                        │   │
-│   │         "faultReason":   null,                ◀── last error message                     │   │
-│   │         "metrics": {                                                                     │   │
-│   │           "totalLoopTime":     23,            ◀── full cycle (ms)                        │   │
-│   │           "deviceReadTime":    12,            ◀── hardware response (ms)                 │   │
-│   │           "scriptExecTime":     4,            ◀── Lua/Python time (ms)                   │   │
-│   │           "messagesAccepted":  1420,          ◀── messages processed                     │   │
-│   │           "faultCount":        0              ◀── cumulative faults                      │   │
-│   │         }                                                                                │   │
+│   │     "version": "3.1.5.0",                                                                │   │
+│   │     "connectors": {                                                                      │   │
+│   │       "plc1": {                                                                          │   │
+│   │         "name":             "plc1",           ◀── connector name from YAML               │   │
+│   │         "direction":        "Source",          ◀── Source or Sink                         │   │
+│   │         "connectorType":    "OpcUa",           ◀── connector type                        │   │
+│   │         "isRunning":        true,              ◀── timer active?                         │   │
+│   │         "isConnected":      true,              ◀── connection alive?                     │   │
+│   │         "isFaulted":        false,             ◀── in error state?                       │   │
+│   │         "faultMessage":     "",                ◀── last error message                    │   │
+│   │         "messagesAttempted": 5000,             ◀── total reads attempted                 │   │
+│   │         "messagesAccepted":  1420,             ◀── passed RBE filter                     │   │
+│   │         "lastReadMs":       12,                ◀── last device read (ms)                 │   │
+│   │         "lastScriptMs":      4,                ◀── last script exec (ms)                 │   │
+│   │         "lastLoopMs":       23,                ◀── last full cycle (ms)                  │   │
+│   │         "connectCount":      1,                ◀── total connections                     │   │
+│   │         "faultCount":        0                 ◀── cumulative faults                     │   │
 │   │       },                                                                                 │   │
-│   │       { "name": "mqtt_src", ... },                                                       │   │
-│   │       { "name": "influx_sink", ... }                                                     │   │
-│   │     ]                                                                                    │   │
+│   │       "influx_sink": { ... }                                                             │   │
+│   │     }                                                                                    │   │
 │   │   }                                                                                      │   │
 │   │                                                                                          │   │
 │   └──────────────────────────────────────────────────────────────────────────────────────────┘   │
@@ -89,57 +98,78 @@
 │                                                                                                  │
 │  ──────────────────────────────────────────────────────────────────────────────────────────────  │
 │                                                                                                  │
-│   GET/POST /config/yaml — CONFIGURATION MANAGEMENT                                               │
-│   ────────────────────────────────────────────────                                               │
+│   CONFIGURATION MANAGEMENT                                                                       │
+│   ────────────────────────                                                                       │
 │                                                                                                  │
 │   ┌──────────────────────────────────────────────────────────────────────────────────────────┐   │
 │   │                                                                                          │   │
 │   │   READ current config:                                                                   │   │
 │   │   ────────────────────                                                                   │   │
 │   │   $ curl http://localhost:9999/config/yaml                                               │   │
+│   │   $ curl http://localhost:9999/config/json                                               │   │
 │   │                                                                                          │   │
-│   │   Returns the full merged YAML that is currently running.                                │   │
+│   │   Returns the runtime configuration (includes any unsaved API changes).                  │   │
 │   │   Useful for debugging, backup, or auditing.                                             │   │
 │   │                                                                                          │   │
-│   │   PUSH new config (hot reload):                                                          │   │
-│   │   ─────────────────────────────                                                          │   │
+│   │   WRITE config to disk:                                                                  │   │
+│   │   ─────────────────────                                                                  │   │
 │   │   $ curl -X POST http://localhost:9999/config/yaml \                                     │   │
-│   │       -H "Content-Type: text/yaml" \                                                     │   │
+│   │       -H "Content-Type: text/plain" \                                                    │   │
 │   │       -d @new-config.yaml                                                                │   │
 │   │                                                                                          │   │
-│   │   DIME will:  1. Parse the new YAML                                                      │   │
-│   │               2. Diff against running config                                             │   │
-│   │               3. Apply changes (start/stop connectors as needed)                         │   │
+│   │   Writes config to disk. Does NOT reload running connectors.                             │   │
+│   │   Call POST /config/reload to apply changes.                                             │   │
+│   │                                                                                          │   │
+│   │   RELOAD from disk:                                                                      │   │
+│   │   ──────────────────                                                                     │   │
+│   │   $ curl -X POST http://localhost:9999/config/reload                                     │   │
+│   │                                                                                          │   │
+│   │   Reloads configuration from disk and restarts all connectors.                           │   │
+│   │                                                                                          │   │
+│   │   SAVE runtime config to disk:                                                           │   │
+│   │   ────────────────────────────                                                           │   │
+│   │   $ curl -X POST http://localhost:9999/config/save                                       │   │
+│   │                                                                                          │   │
+│   │   Persists runtime configuration (after add/edit/delete operations) to disk.             │   │
 │   │                                                                                          │   │
 │   └──────────────────────────────────────────────────────────────────────────────────────────┘   │
 │                                                                                                  │
 │  ──────────────────────────────────────────────────────────────────────────────────────────────  │
 │                                                                                                  │
-│   CONNECTOR CONTROL — START / STOP / ADD                                                         │
-│   ───────────────────────────────────────                                                        │
+│   CONNECTOR CONTROL — START / STOP / ADD / EDIT / DELETE                                         │
+│   ──────────────────────────────────────────────────────                                        │
 │                                                                                                  │
 │   ┌──────────────────────────────────────────────────────────────────────────────────────────┐   │
 │   │                                                                                          │   │
-│   │   STOP a connector:                                                                      │   │
-│   │   $ curl -X POST http://localhost:9999/connector/stop/plc1                               │   │
+│   │   Paths include type (source or sink) and connector name:                                │   │
 │   │                                                                                          │   │
-│   │   START a connector:                                                                     │   │
-│   │   $ curl -X POST http://localhost:9999/connector/start/plc1                              │   │
+│   │   STOP a source connector:                                                               │   │
+│   │   $ curl -X POST http://localhost:9999/connector/stop/source/plc1                        │   │
 │   │                                                                                          │   │
-│   │   ADD a new source at runtime:                                                           │   │
-│   │   $ curl -X POST http://localhost:9999/connector/add/source \                            │   │
-│   │       -H "Content-Type: application/json" \                                              │   │
-│   │       -d '{"name":"new_plc","connector":"S7","address":"10.0.0.5"}'                      │   │
+│   │   START a source connector:                                                              │   │
+│   │   $ curl -X POST http://localhost:9999/connector/start/source/plc1                       │   │
+│   │                                                                                          │   │
+│   │   ADD a new source at runtime (body is YAML):                                            │   │
+│   │   $ curl -X POST http://localhost:9999/connector/add/source/new_plc \                    │   │
+│   │       -H "Content-Type: text/plain" \                                                    │   │
+│   │       -d 'connector: S7                                                                  │   │
+│   │   address: 10.0.0.5'                                                                     │   │
 │   │                                                                                          │   │
 │   │   ADD a new sink at runtime:                                                             │   │
-│   │   $ curl -X POST http://localhost:9999/connector/add/sink \                              │   │
-│   │       -H "Content-Type: application/json" \                                              │   │
-│   │       -d '{"name":"debug","connector":"Console"}'                                        │   │
+│   │   $ curl -X POST http://localhost:9999/connector/add/sink/debug \                        │   │
+│   │       -H "Content-Type: text/plain" \                                                    │   │
+│   │       -d 'connector: Console'                                                            │   │
+│   │                                                                                          │   │
+│   │   EDIT / DELETE follow the same pattern:                                                 │   │
+│   │   $ curl -X POST http://localhost:9999/connector/edit/source/plc1 ...                    │   │
+│   │   $ curl -X POST http://localhost:9999/connector/delete/sink/debug                       │   │
+│   │                                                                                          │   │
+│   │   After add/edit/delete, call POST /config/save to persist changes to disk.              │   │
 │   │                                                                                          │   │
 │   │   ┌─────────────────────────────────────────────────────────────────────────────────┐    │   │
 │   │   │                     CONNECTOR LIFECYCLE VIA API                                 │    │   │
 │   │   │                                                                                 │    │   │
-│   │   │   POST /connector/stop/plc1         POST /connector/start/plc1                  │    │   │
+│   │   │   POST /connector/stop/source/plc1  POST /connector/start/source/plc1           │    │   │
 │   │   │          │                                    │                                 │    │   │
 │   │   │          ▼                                    ▼                                 │    │   │
 │   │   │   ┌──────────────┐                     ┌─────────────┐                          │    │   │
@@ -167,22 +197,21 @@
 │   │   │  │  DIME Admin API                                                 v1.0     │  │     │   │
 │   │   │  └──────────────────────────────────────────────────────────────────────────┘  │     │   │
 │   │   │                                                                                │     │   │
-│   │   │  ┌─ GET ───┐  /status                    All connector health and metrics      │     │   │
+│   │   │  ┌─ GET ───┐  /status                              Health and metrics           │     │   │
 │   │   │  └─────────┘                                                                   │     │   │
-│   │   │  ┌─ GET ───┐  /config/yaml               Current running YAML                  │     │   │
+│   │   │  ┌─ GET ───┐  /config/yaml                         Running YAML config          │     │   │
 │   │   │  └─────────┘                                                                   │     │   │
-│   │   │  ┌─ POST ──┐  /config/yaml               Push new configuration                │     │   │
+│   │   │  ┌─ GET ───┐  /config/json                         Running JSON config          │     │   │
 │   │   │  └─────────┘                                                                   │     │   │
-│   │   │  ┌─ POST ──┐  /service/restart            Restart entire service               │     │   │
+│   │   │  ┌─ POST ──┐  /config/yaml                         Write config to disk         │     │   │
 │   │   │  └─────────┘                                                                   │     │   │
-│   │   │  ┌─ POST ──┐  /connector/start/{name}    Start one connector                   │     │   │
+│   │   │  ┌─ POST ──┐  /config/reload                       Reload and restart           │     │   │
 │   │   │  └─────────┘                                                                   │     │   │
-│   │   │  ┌─ POST ──┐  /connector/stop/{name}     Stop one connector                    │     │   │
+│   │   │  ┌─ POST ──┐  /config/save                         Save runtime to disk         │     │   │
 │   │   │  └─────────┘                                                                   │     │   │
-│   │   │  ┌─ POST ──┐  /connector/add/source      Add source at runtime                 │     │   │
-│   │   │  └─────────┘                                                                   │     │   │
-│   │   │  ┌─ POST ──┐  /connector/add/sink        Add sink at runtime                   │     │   │
-│   │   │  └─────────┘                                                                   │     │   │
+│   │   │  ┌─ POST ──┐  /connector/{action}/{type}/{name}    Connector management         │     │   │
+│   │   │  └─────────┘   action = start|stop|add|edit|delete                              │     │   │
+│   │   │                type = source|sink                                                │     │   │
 │   │   │                                                                                │     │   │
 │   │   │  Try it out — send real requests directly from the browser.                    │     │   │
 │   │   │  No curl needed. Responses shown inline.                                       │     │   │
@@ -207,7 +236,7 @@
 │   │   │                                                                │                     │   │
 │   │   └────────────────────────────────────────────────────────────────┘                     │   │
 │   │                            │                                                             │   │
-│   │      POST /connector/add/sink  { "name":"debug", "connector":"Console" }                 │   │
+│   │      POST /connector/add/sink/debug  (body: "connector: Console")                        │   │
 │   │                            │                                                             │   │
 │   │                            ▼                                                             │   │
 │   │   ┌────────────────────────────────────────────────────────────────┐                     │   │

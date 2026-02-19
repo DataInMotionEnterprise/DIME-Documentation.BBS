@@ -114,23 +114,23 @@ DIME_PAGES['20'] = {
     {
       id: 'execute-every',
       startLine: 169, startCol: 3, endLine: 189, endCol: 86,
-      label: 'execute_every Throttle',
+      label: 'every Throttle',
       panel: {
-        title: 'execute_every \u2014 Skip Scan Cycles',
+        title: 'every \u2014 Skip Scan Cycles',
         body:
-          '<p><code>execute_every</code> is a complementary throttle to RBE. Instead of suppressing duplicate <em>values</em>, it skips entire <em>scan cycles</em> for an item.</p>' +
-          '<p>With <code>scan_interval: 1000</code> and <code>execute_every: 10</code>, the item is only read on every 10th cycle \u2014 effectively once every 10 seconds.</p>' +
-          '<p><strong>RBE vs execute_every:</strong></p>' +
+          '<p><code>every</code> is a complementary throttle to RBE. Instead of suppressing duplicate <em>values</em>, it skips entire <em>scan cycles</em> for an item.</p>' +
+          '<p>With <code>scan_interval: 1000</code> and <code>every: 10</code>, the item is only read on every 10th cycle \u2014 effectively once every 10 seconds.</p>' +
+          '<p><strong>RBE vs every:</strong></p>' +
           '<ul>' +
           '<li><strong>RBE</strong> \u2014 Reads every cycle, compares, publishes only changes. Device is still polled.</li>' +
-          '<li><strong>execute_every</strong> \u2014 Skips the read entirely. Device is not polled on skipped cycles. Saves device I/O.</li>' +
+          '<li><strong>every</strong> \u2014 Skips the read entirely. Device is not polled on skipped cycles. Saves device I/O.</li>' +
           '</ul>' +
           '<p>Combine both for maximum reduction: read every Nth cycle, then suppress if unchanged.</p>' +
-          '<p>Other items on the same source are unaffected \u2014 each item has its own execute_every counter.</p>',
+          '<p>Other items on the same source are unaffected \u2014 each item has its own <code>every</code> counter.</p>',
         yaml:
           '    items:\n' +
           '      - name: slow_sensor\n' +
-          '        execute_every: !!int 10  # every 10th cycle',
+          '        every: !!int 10  # every 10th cycle',
         related: [
           { page: '20', hotspot: 'before-after', label: '20 \u2014 RBE data reduction' },
           { page: '05', hotspot: 'performance', label: '05 \u2014 Performance design' }

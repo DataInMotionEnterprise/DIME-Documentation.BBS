@@ -78,11 +78,11 @@ DIME_PAGES['01'] = {
         body:
           '<p>DIME ships with connectors for a wide range of protocols:</p>' +
           '<ul>' +
-          '<li><strong>Industrial</strong> \u2014 OPC-UA, OPC-DA, Siemens S7, Modbus TCP, EtherNet/IP, Beckhoff ADS, MTConnect, FANUC, Yaskawa, Allen-Bradley, SNMP, ROS2</li>' +
+          '<li><strong>Industrial</strong> \u2014 OPC-UA, OPC-DA, Siemens S7, Modbus TCP, EtherNet/IP, Beckhoff ADS, MTConnect, FANUC, Yaskawa, Haas SHDR, SNMP, ROS2</li>' +
           '<li><strong>Messaging</strong> \u2014 MQTT, SparkplugB, ActiveMQ, Redis Pub/Sub</li>' +
           '<li><strong>Databases</strong> \u2014 InfluxDB, MongoDB, SQL Server, PostgreSQL</li>' +
           '<li><strong>Web & API</strong> \u2014 HTTP/REST, WebSocket, JSON Scraper, XML Scraper, UDP Server</li>' +
-          '<li><strong>Manufacturing</strong> \u2014 MTConnect Agent/SHDR, Ignition SCADA, CSV/File</li>' +
+          '<li><strong>Manufacturing</strong> \u2014 MTConnect Agent/SHDR, SmartPac, CSV/File</li>' +
           '<li><strong>Scripting</strong> \u2014 Lua & Python for custom transforms</li>' +
           '</ul>',
         related: [

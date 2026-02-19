@@ -39,16 +39,22 @@ DIME_PAGES['18'] = {
       panel: {
         title: '$SYSTEM Messages \u2014 Automatic Health Telemetry',
         body:
-          '<p>Every connector automatically publishes status under the <code>$SYSTEM</code> path prefix. No configuration needed.</p>' +
+          '<p>Every source connector automatically publishes status under the <code>$SYSTEM</code> path prefix. No configuration needed.</p>' +
+          '<h4>Ring Buffer Messages</h4>' +
           '<table>' +
           '<tr><td><strong>IsConnected</strong></td><td><code>bool</code></td><td>Whether the device connection is currently active</td></tr>' +
           '<tr><td><strong>IsFaulted</strong></td><td><code>bool</code></td><td>Whether the connector is currently in a fault state</td></tr>' +
-          '<tr><td><strong>FaultReason</strong></td><td><code>string</code></td><td>The exception message from the last fault</td></tr>' +
+          '<tr><td><strong>Fault</strong></td><td><code>string</code></td><td>The exception message from the last fault (null when clear)</td></tr>' +
+          '<tr><td><strong>IsAvailable</strong></td><td><code>bool</code></td><td>IsConnected AND NOT IsFaulted</td></tr>' +
+          '<tr><td><strong>ExecutionDuration</strong></td><td><code>long</code></td><td>Total loop execution time in ms</td></tr>' +
+          '</table>' +
+          '<h4>Admin API Only (ConnectorStatus)</h4>' +
+          '<table>' +
           '<tr><td><strong>FaultCount</strong></td><td><code>int</code></td><td>Cumulative number of faults since startup</td></tr>' +
           '<tr><td><strong>ConnectCount</strong></td><td><code>int</code></td><td>Number of successful connections (including reconnections)</td></tr>' +
           '<tr><td><strong>DisconnectCount</strong></td><td><code>int</code></td><td>Number of disconnections (faults + graceful shutdowns)</td></tr>' +
           '</table>' +
-          '<p>These messages flow through the ring buffer like any other data. Sinks can include or exclude them using path filters like <code>".*\\$SYSTEM.*"</code>.</p>',
+          '<p>The ring buffer messages flow like any other data. Sinks can include or exclude them using path filters like <code>".*\\$SYSTEM.*"</code>. The Admin API metrics are available via <code>GET /status</code>.</p>',
         related: [
           { page: '08', label: '08 \u2014 Filtering & Routing' },
           { page: '18', hotspot: 'alerting', label: '18 \u2014 Monitoring & Alerting' },
@@ -62,16 +68,16 @@ DIME_PAGES['18'] = {
       startLine: 84, startCol: 3, endLine: 118, endCol: 92,
       label: 'Performance Metrics',
       panel: {
-        title: 'Performance Metrics Per Connector',
+        title: 'Performance Metrics Per Connector (Admin API)',
         body:
-          '<p>Every source connector publishes timing and throughput metrics so you can spot slow devices and measure RBE effectiveness.</p>' +
+          '<p>Every connector tracks timing and throughput metrics via the Admin API (<code>GET /status</code>). These are NOT ring buffer messages \u2014 they are available through the REST API and WebSocket status stream.</p>' +
           '<h4>Timing Metrics</h4>' +
           '<ul>' +
-          '<li><strong>MinReadTime</strong> \u2014 Fastest device read (ms) since startup</li>' +
-          '<li><strong>MaxReadTime</strong> \u2014 Slowest device read (ms) since startup. A growing value signals device latency or network issues.</li>' +
-          '<li><strong>LastReadTime</strong> \u2014 Most recent device read time (ms)</li>' +
-          '<li><strong>ScriptTime</strong> \u2014 Lua/Python script execution time (ms)</li>' +
-          '<li><strong>TotalLoopTime</strong> \u2014 Full cycle: read + script + RBE + publish (ms). Must stay below scan_interval.</li>' +
+          '<li><strong>MinimumReadMs</strong> \u2014 Fastest device read (ms) since startup</li>' +
+          '<li><strong>MaximumReadMs</strong> \u2014 Slowest device read (ms) since startup. A growing value signals device latency or network issues.</li>' +
+          '<li><strong>LastReadMs</strong> \u2014 Most recent device read time (ms)</li>' +
+          '<li><strong>MinimumScriptMs / MaximumScriptMs / LastScriptMs</strong> \u2014 Script execution time (ms)</li>' +
+          '<li><strong>MinimumLoopMs / MaximumLoopMs / LastLoopMs</strong> \u2014 Full cycle time (ms). Must stay below scan_interval.</li>' +
           '</ul>' +
           '<h4>Throughput Metrics</h4>' +
           '<ul>' +
@@ -97,7 +103,7 @@ DIME_PAGES['18'] = {
           '<p>When a fault occurs:</p>' +
           '<ol>' +
           '<li>Exception caught by ConnectorRunner</li>' +
-          '<li><code>IsFaulted = true</code>, <code>FaultReason</code> set to exception message</li>' +
+          '<li><code>IsFaulted = true</code>, <code>Fault</code> set to exception message</li>' +
           '<li><code>FaultCount</code> incremented</li>' +
           '<li>Disconnect from device</li>' +
           '<li>Brief pause</li>' +

@@ -13,7 +13,7 @@
 │   SCRIPT EXECUTION LIFECYCLE                                                                     │
 │   ──────────────────────────                                                                     │
 │                                                                                                  │
-│   Scripts hook into six points in the connector lifecycle.                                       │
+│   Scripts hook into five points in the connector lifecycle.                                      │
 │   Each runs at a different stage — from startup to shutdown.                                     │
 │                                                                                                  │
 │   ┌─────────────────────────────────────────────────────────────────────────────────────────┐    │
@@ -27,12 +27,12 @@
 │   │          │                                                                              │    │
 │   │          ▼                          ┌──────────────────────────────────────────┐        │    │
 │   │   ┌──────────────────┐              │                                          │        │    │
-│   │   │ loop_enter_script│              │   Runs ONCE per scan cycle, BEFORE       │        │    │
+│   │   │  enter_script    │              │   Runs ONCE per scan cycle, BEFORE       │        │    │
 │   │   └──────┬───────────┘              │   any items are read. Good for           │        │    │
 │   │          │                          │   resetting per-loop accumulators.       │        │    │
 │   │          ▼                          └──────────────────────────────────────────┘        │    │
 │   │   ┌──────────────────┐                                                                  │    │
-│   │   │ loop_item_script │◄──── Runs ONCE PER ITEM, every scan cycle.                       │    │
+│   │   │  item_script     │◄──── Runs ONCE PER ITEM, every scan cycle.                       │    │
 │   │   │  (or "script")   │      This is where transforms happen.                            │    │
 │   │   │                  │      The "result" variable holds the raw value.                  │    │
 │   │   └──────┬───────────┘      Return the transformed value.                               │    │
@@ -40,7 +40,7 @@
 │   │          │  for each item)                                                              │    │
 │   │          ▼                          ┌──────────────────────────────────────────┐        │    │
 │   │   ┌──────────────────┐              │                                          │        │    │
-│   │   │ loop_exit_script │              │   Runs ONCE per scan cycle, AFTER        │        │    │
+│   │   │  exit_script     │              │   Runs ONCE per scan cycle, AFTER        │        │    │
 │   │   └──────┬───────────┘              │   all items are read. Good for           │        │    │
 │   │          │                          │   aggregations, summaries, batch emits.  │        │    │
 │   │          │                          └──────────────────────────────────────────┘        │    │
@@ -59,7 +59,7 @@
 │   THE "result" VARIABLE                                                                          │
 │   ─────────────────────                                                                          │
 │                                                                                                  │
-│   Inside loop_item_script (or "script"), the variable "result" holds the raw value               │
+│   Inside item_script (or "script"), the variable "result" holds the raw value                    │
 │   read from the source device for the current item.                                              │
 │                                                                                                  │
 │   ┌──────────────────────────────────────────────────────────────────────────────┐               │
@@ -96,7 +96,7 @@
 │   │   │                              │  Full .NET framework access              │            │   │
 │   │   │  Globals:                    │  Prefixed with dime.*:                   │            │   │
 │   │   │    cache(), emit(),          │    dime.cache(), dime.emit(),            │            │   │
-│   │   │    from_json(), set()        │    dime.from_string(), dime.set()        │            │   │
+│   │   │    from_json(), set()        │    dime.from_json(), dime.set()          │            │   │
 │   │   │                              │                                          │            │   │
 │   │   │  Best for: quick math,       │  Best for: complex parsing,              │            │   │
 │   │   │  simple transforms           │  library-heavy transforms                │            │   │
@@ -134,7 +134,7 @@
 │   │                                                                                          │   │
 │   │   local prev = cache('last_val')               -- Suppress unchanged (manual RBE)        │   │
 │   │   if result == prev then return nil end                                                  │   │
-│   │   cache('last_val', result)                                                              │   │
+│   │   set('last_val', result)                                                                │   │
 │   │   return result                                                                          │   │
 │   │                                                                                          │   │
 │   │                                                                                          │   │
@@ -152,7 +152,7 @@
 │   │                                                                                          │   │
 │   │   prev = dime.cache('last_val')                # Suppress unchanged (manual RBE)         │   │
 │   │   if result == prev: return None                                                         │   │
-│   │   dime.cache('last_val', result)                                                         │   │
+│   │   dime.set('last_val', result)                                                           │   │
 │   │   return result                                                                          │   │
 │   │                                                                                          │   │
 │   └──────────────────────────────────────────────────────────────────────────────────────────┘   │
@@ -222,25 +222,21 @@
 │   │   Lua                                Python                                              │   │
 │   │   ───                                ──────                                              │   │
 │   │                                                                                          │   │
-│   │   from_json(str)                     dime.from_string(str)           Parse JSON          │   │
-│   │   to_json(tbl)                       dime.to_string(obj)             Serialize JSON      │   │
+│   │   from_json(str)                     dime.from_json(str)             Parse JSON          │   │
+│   │   to_json(tbl)                       dime.to_json(obj)               Serialize JSON      │   │
 │   │                                                                                          │   │
 │   │   cache(key)                         dime.cache(key)                 Read cache          │   │
-│   │   cache(key, val)                    dime.cache(key, val)            Write cache         │   │
-│   │   cache_ts(key)                      dime.cache_ts(key)              Cache timestamp     │   │
+│   │   cache(key, default)                dime.cache(key, default)        Read w/ default     │   │
+│   │   cache_ts(key)                      dime.cache_ts(key)              Read + timestamp    │   │
 │   │                                                                                          │   │
-│   │   set(path, val)                     dime.set(path, val)             Set item value      │   │
-│   │   env(name)                          dime.env(name)                  Read env var        │   │
+│   │   set(path, val)                     dime.set(path, val)             Write to cache      │   │
+│   │   env(name, default)                 dime.env(name, default)         Read env var        │   │
 │   │                                                                                          │   │
 │   │   emit(path, val)                    dime.emit(path, val)            Emit message        │   │
 │   │   emit_mtconnect(p,v,t)              dime.emit_mtconnect(p,v,t)      Emit MTConnect      │   │
 │   │                                                                                          │   │
-│   │   connector                          dime.connector()                Connector ref       │   │
-│   │   configuration                      dime.configuration()            Config ref          │   │
-│   │                                                                                          │   │
-│   │   log_info(msg)                      log_info(msg)                   Log at INFO         │   │
-│   │   log_warn(msg)                      log_warn(msg)                   Log at WARN         │   │
-│   │   log_error(msg)                     log_error(msg)                  Log at ERROR        │   │
+│   │   connector()                        dime.connector()                Connector ref       │   │
+│   │   configuration()                    dime.configuration()            Config ref          │   │
 │   │                                                                                          │   │
 │   │   The cache persists across scan cycles — use it to track state between reads.           │   │
 │   │   Python can also import standard library modules: json, math, re, datetime, etc.        │   │
@@ -280,16 +276,16 @@
 │   │   ────                                     ──────                                        │   │
 │   │   local prev = cache('machine_state')      prev = dime.cache('machine_state')            │   │
 │   │   if result ~= prev then                   if result != prev:                            │   │
-│   │     cache('machine_state', result)           dime.cache('machine_state', result)         │   │
+│   │     set('machine_state', result)             dime.set('machine_state', result)           │   │
 │   │     emit('state_changed', to_json({          dime.emit('state_changed',                  │   │
-│   │       from = prev, to = result                 dime.to_string({                          │   │
+│   │       from = prev, to = result                 dime.to_json({                            │   │
 │   │     }))                                          'from': prev, 'to': result              │   │
 │   │   end                                          }))                                       │   │
 │   │   return result                            return result                                 │   │
 │   │                                                                                          │   │
 │   │                                                                                          │   │
-│   │   Scripts can be inline one-liners, multiline YAML blocks, or loaded from                │   │
-│   │   external files via script_file: (e.g. transforms.lua or transforms.py).                │   │
+│   │   Scripts can be inline one-liners or multiline YAML blocks (using | or >).               │   │
+│   │   Use paths_script: to add directories where Lua require() can find modules.             │   │
 │   │                                                                                          │   │
 │   └──────────────────────────────────────────────────────────────────────────────────────────┘   │
 │                                                                                                  │

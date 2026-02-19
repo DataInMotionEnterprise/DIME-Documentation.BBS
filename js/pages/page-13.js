@@ -9,7 +9,7 @@ DIME_PAGES['13'] = {
   hotspots: [
     {
       id: 'mqtt-source',
-      startLine: 11, startCol: 3, endLine: 42, endCol: 90,
+      startLine: 11, startCol: 3, endLine: 46, endCol: 90,
       label: 'MQTT Source Configuration',
       panel: {
         title: 'MQTT Source \u2014 Subscribe to Sensor Topics',
@@ -19,7 +19,7 @@ DIME_PAGES['13'] = {
           '<li><strong>address / port</strong> \u2014 Broker hostname and port. Use 1883 for plain TCP, 8883 for TLS.</li>' +
           '<li><strong>client_id</strong> \u2014 Must be unique per broker. If two clients share an ID, the broker disconnects one.</li>' +
           '<li><strong>username / password</strong> \u2014 Optional broker credentials. Omit if the broker allows anonymous access.</li>' +
-          '<li><strong>base_topic</strong> \u2014 DIME subscribes to <code>base_topic/#</code> (wildcard). All matching messages are ingested.</li>' +
+          '<li><strong>items</strong> \u2014 Each item\u2019s <code>address</code> is the MQTT topic to subscribe to. DIME subscribes to each topic individually.</li>' +
           '<li><strong>qos</strong> \u2014 Quality of Service level. 0 = fire-and-forget, 1 = at least once (recommended), 2 = exactly once (slowest).</li>' +
           '<li><strong>clean_session</strong> \u2014 When true, the broker discards any previous session state on connect. When false, the broker queues messages received while DIME was offline.</li>' +
           '</ul>' +
@@ -31,11 +31,13 @@ DIME_PAGES['13'] = {
           '    address: mqtt.local\n' +
           '    port: !!int 1883\n' +
           '    client_id: dime-sub\n' +
-          '    username: user\n' +
-          '    password: pass\n' +
-          '    base_topic: factory/sensors\n' +
           '    qos: !!int 1\n' +
-          '    clean_session: !!bool true',
+          '    clean_session: !!bool true\n' +
+          '    items:\n' +
+          '      - name: line1_temp\n' +
+          '        address: factory/sensors/line1/temp\n' +
+          '      - name: line1_pressure\n' +
+          '        address: factory/sensors/line1/pressure',
         related: [
           { page: '06', label: '06 \u2014 Source connectors' },
           { page: '04', label: '04 \u2014 YAML configuration basics' }
@@ -44,7 +46,7 @@ DIME_PAGES['13'] = {
     },
     {
       id: 'mqtt-sink',
-      startLine: 76, startCol: 3, endLine: 98, endCol: 90,
+      startLine: 80, startCol: 3, endLine: 103, endCol: 90,
       label: 'MQTT Sink Configuration',
       panel: {
         title: 'MQTT Sink \u2014 Republish to Cloud Broker',
@@ -53,9 +55,9 @@ DIME_PAGES['13'] = {
           '<ul>' +
           '<li><strong>address / port</strong> \u2014 Cloud broker endpoint. Use port 8883 with TLS enabled for production.</li>' +
           '<li><strong>tls: true</strong> \u2014 Encrypts the connection. Required when publishing over the internet.</li>' +
-          '<li><strong>base_topic</strong> \u2014 Ring buffer paths are appended to this prefix. Path <code>sensors/line1/temp</code> publishes to <code>normalized/data/line1/temp</code>.</li>' +
+          '<li><strong>base_topic</strong> \u2014 Ring buffer paths are appended to this prefix. Path <code>sensors/line1_temp</code> publishes to <code>normalized/data/sensors/line1_temp</code>.</li>' +
           '<li><strong>retain: true</strong> \u2014 The broker stores the last message per topic. New subscribers immediately receive the latest value without waiting for the next update.</li>' +
-          '<li><strong>include_filter</strong> \u2014 Regex filter to select which ring buffer messages are published. <code>"sensors/.*"</code> forwards only data from the sensors source.</li>' +
+          '<li><strong>include_filter</strong> \u2014 A list of regex patterns to select which ring buffer messages are published. <code>"sensors/.*"</code> forwards only data from the sensors source.</li>' +
           '</ul>' +
           '<p>The MQTT sink uses the same client library as the source. You can have multiple MQTT sinks pointing at different brokers for redundancy or data segregation.</p>',
         yaml:
@@ -75,7 +77,7 @@ DIME_PAGES['13'] = {
     },
     {
       id: 'tls-config',
-      startLine: 53, startCol: 3, endLine: 73, endCol: 90,
+      startLine: 57, startCol: 3, endLine: 77, endCol: 90,
       label: 'TLS / SSL Configuration',
       panel: {
         title: 'TLS / SSL \u2014 Securing MQTT Connections',
@@ -100,7 +102,7 @@ DIME_PAGES['13'] = {
     },
     {
       id: 'sparkplugb',
-      startLine: 101, startCol: 3, endLine: 128, endCol: 90,
+      startLine: 106, startCol: 3, endLine: 133, endCol: 90,
       label: 'SparkplugB \u2014 Industrial MQTT',
       panel: {
         title: 'SparkplugB \u2014 Industrial MQTT Standard',
@@ -123,7 +125,7 @@ DIME_PAGES['13'] = {
     },
     {
       id: 'broker-bridge',
-      startLine: 143, startCol: 3, endLine: 169, endCol: 90,
+      startLine: 148, startCol: 3, endLine: 174, endCol: 90,
       label: 'Edge-to-Cloud MQTT Bridge',
       panel: {
         title: 'MQTT Broker Bridge \u2014 Edge to Cloud',
@@ -131,7 +133,7 @@ DIME_PAGES['13'] = {
           '<p>The most common DIME MQTT pattern: subscribe from a local edge broker, transform and filter data, then republish to a cloud broker.</p>' +
           '<ol>' +
           '<li><strong>Devices</strong> publish sensor data to a local MQTT broker on the factory floor.</li>' +
-          '<li><strong>DIME MQTT source</strong> subscribes to the local broker and ingests all matching topics into the ring buffer.</li>' +
+          '<li><strong>DIME MQTT source</strong> subscribes to specific topics on the local broker and ingests messages into the ring buffer.</li>' +
           '<li><strong>Ring buffer</strong> holds messages while Lua transforms run (unit conversion, data enrichment, filtering).</li>' +
           '<li><strong>DIME MQTT sink</strong> publishes normalized data to the cloud broker over TLS.</li>' +
           '</ol>' +

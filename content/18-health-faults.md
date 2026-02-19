@@ -63,19 +63,20 @@
 │                                                                                                  │
 │   ┌──────────────────────────────────────────────────────────────────────────────────────────┐   │
 │   │                                                                                          │   │
-│   │   CONNECTION STATUS                          FAULT TRACKING                              │   │
-│   │   ─────────────────                          ──────────────                              │   │
+│   │   RING BUFFER MESSAGES                       ADMIN API ONLY (ConnectorStatus)             │   │
+│   │   ────────────────────                       ───────────────────────────────              │   │
 │   │                                                                                          │   │
-│   │   name/$SYSTEM/IsConnected    bool           name/$SYSTEM/IsFaulted     bool             │   │
-│   │   name/$SYSTEM/ConnectCount   int            name/$SYSTEM/FaultReason   string           │   │
-│   │   name/$SYSTEM/DisconnectCount int           name/$SYSTEM/FaultCount    int              │   │
+│   │   name/$SYSTEM/IsConnected    bool           ConnectCount        int                     │   │
+│   │   name/$SYSTEM/IsFaulted      bool           DisconnectCount     int                     │   │
+│   │   name/$SYSTEM/Fault          string         FaultCount          int                     │   │
+│   │   name/$SYSTEM/IsAvailable    bool           FaultMessage        string                  │   │
+│   │   name/$SYSTEM/ExecutionDuration long                                                    │   │
 │   │                                                                                          │   │
 │   │   IsConnected = true     ── device is reachable and responding                           │   │
-│   │   ConnectCount = 5       ── connected 5 times (includes reconnections)                   │   │
-│   │   DisconnectCount = 4    ── disconnected 4 times (faults + graceful)                     │   │
 │   │   IsFaulted = true       ── connector is currently in fault state                        │   │
-│   │   FaultReason = "timeout"── last exception message                                       │   │
-│   │   FaultCount = 3         ── total faults since startup                                   │   │
+│   │   Fault = "timeout"      ── last exception message (null when clear)                     │   │
+│   │   IsAvailable = true     ── IsConnected AND NOT IsFaulted                                │   │
+│   │   ExecutionDuration      ── total loop execution time in ms                              │   │
 │   │                                                                                          │   │
 │   └──────────────────────────────────────────────────────────────────────────────────────────┘   │
 │                                                                                                  │
@@ -83,21 +84,21 @@
 │                                                                                                  │
 │  ──────────────────────────────────────────────────────────────────────────────────────────────  │
 │                                                                                                  │
-│   PERFORMANCE METRICS PER CONNECTOR                                                              │
-│   ─────────────────────────────────                                                              │
+│   PERFORMANCE METRICS PER CONNECTOR (Admin API)                                                  │
+│   ─────────────────────────────────────────────                                                  │
 │                                                                                                  │
-│   Every source connector publishes timing data so you can spot slow devices.                     │
+│   Every connector tracks timing data via the Admin API (GET /status). Not ring buffer msgs.      │
 │                                                                                                  │
 │   ┌──────────────────────────────────────────────────────────────────────────────────────────┐   │
 │   │                                                                                          │   │
-│   │   TIMING METRICS                             THROUGHPUT METRICS                          │   │
-│   │   ──────────────                             ───────────────────                         │   │
+│   │   TIMING METRICS (Admin API)                 THROUGHPUT METRICS (Admin API)               │   │
+│   │   ──────────────────────────                 ────────────────────────────────             │   │
 │   │                                                                                          │   │
-│   │   name/$SYSTEM/MinReadTime     ms            name/$SYSTEM/MessagesAttempted   int        │   │
-│   │   name/$SYSTEM/MaxReadTime     ms            name/$SYSTEM/MessagesAccepted    int        │   │
-│   │   name/$SYSTEM/LastReadTime    ms                                                        │   │
-│   │   name/$SYSTEM/ScriptTime      ms            Attempted = total reads from device         │   │
-│   │   name/$SYSTEM/TotalLoopTime   ms            Accepted  = values that passed RBE          │   │
+│   │   MinimumReadMs              ms              MessagesAttempted              int           │   │
+│   │   MaximumReadMs              ms              MessagesAccepted               int           │   │
+│   │   LastReadMs                 ms                                                          │   │
+│   │   MinimumScriptMs / MaximumScriptMs          Attempted = total reads from device         │   │
+│   │   MinimumLoopMs / MaximumLoopMs              Accepted  = values that passed RBE          │   │
 │   │                                                                                          │   │
 │   │   ┌──────────── One Loop Cycle ────────────────────────────────────────┐                 │   │
 │   │   │                                                                    │                 │   │
@@ -135,7 +136,7 @@
 │   │    What happens on fault:                                                                │   │
 │   │                                                                                          │   │
 │   │      1. Exception caught by ConnectorRunner                                              │   │
-│   │      2. IsFaulted = true, FaultReason = exception message                                │   │
+│   │      2. IsFaulted = true, Fault = exception message                                      │   │
 │   │      3. FaultCount incremented                                                           │   │
 │   │      4. Disconnect from device                                                           │   │
 │   │      5. Wait (brief pause)                                                               │   │

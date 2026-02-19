@@ -96,29 +96,29 @@ DIME_PAGES['05'] = {
         body:
           '<p>Pick the base class that matches how your device delivers data:</p>' +
           '<ul>' +
-          '<li><strong>PollingSourceConnector</strong> \u2014 Timer fires every scan_interval, reads all items, publishes. Used by OPC-UA, Modbus, S7, HTTP, SNMP.</li>' +
-          '<li><strong>QueuingSourceConnector</strong> \u2014 Messages arrive asynchronously, queued in inbox, drained on timer. Used by MQTT, SparkplugB, WebSocket.</li>' +
-          '<li><strong>BatchPollingSourceConnector</strong> \u2014 Timer fires, executes query, iterates result set. Used by SQL Server, PostgreSQL sources.</li>' +
-          '<li><strong>DatabaseSourceConnector</strong> \u2014 Timer fires, SQL query, maps columns to named items. Used by database connectors with column-level mapping.</li>' +
+          '<li><strong>PollingSourceConnector</strong> \u2014 Timer fires every scan_interval, reads all items, publishes. Used by OPC-UA, Modbus, S7, SNMP, Beckhoff, FANUC, Script.</li>' +
+          '<li><strong>QueuingSourceConnector</strong> \u2014 Messages arrive asynchronously, queued in inbox, drained on timer. Used by MQTT, SparkplugB, HttpServer, ActiveMQ, UDP Server.</li>' +
+          '<li><strong>BatchPollingSourceConnector</strong> \u2014 Timer fires, executes query, iterates result set. Used by OPC-DA source.</li>' +
+          '<li><strong>DatabaseSourceConnector</strong> \u2014 Timer fires, SQL query, maps columns to named items. Used by SQL Server (MsSql), PostgreSQL (Postgres).</li>' +
           '</ul>',
         related: [
-          { page: '01', hotspot: 'connectors', label: '01 \u2014 47+ connector types' }
+          { page: '01', hotspot: 'connectors', label: '01 \u2014 30+ connector types' }
         ]
       }
     },
     {
       id: 'admin-server',
-      startLine: 197, startCol: 3, endLine: 212, endCol: 78,
+      startLine: 197, startCol: 3, endLine: 214, endCol: 78,
       label: 'Admin REST & WebSocket APIs',
       panel: {
         title: 'The Admin Server',
         body:
           '<p>Every DIME instance exposes two endpoints \u2014 always on, no extra config:</p>' +
           '<ul>' +
-          '<li><strong>REST API</strong> (port 9999) \u2014 GET /status, GET /config, POST /sinks (add at runtime), GET /cache. Swagger UI included.</li>' +
+          '<li><strong>REST API</strong> (port 9999) \u2014 GET /status, GET /config/yaml, GET /config/json, POST /config/reload, POST /config/save, POST /connector/* (add/edit/delete/start/stop). Swagger UI included.</li>' +
           '<li><strong>WebSocket</strong> (port 9998) \u2014 Real-time stream: connector state changes, performance telemetry, loop timing, fault notifications.</li>' +
           '</ul>' +
-          '<p>The REST API enables <strong>zero-downtime reconfiguration</strong> \u2014 add sinks without restarting.</p>' +
+          '<p>The REST API enables <strong>zero-downtime reconfiguration</strong> \u2014 add, edit, or remove connectors without restarting.</p>' +
           '<p>The WebSocket powers the <strong>DIME web dashboard</strong> for live monitoring.</p>',
         related: [
           { page: '03', hotspot: 'verify', label: '03 \u2014 Verify it works' },
@@ -128,7 +128,7 @@ DIME_PAGES['05'] = {
     },
     {
       id: 'system-diagram',
-      startLine: 220, startCol: 3, endLine: 254, endCol: 90,
+      startLine: 222, startCol: 3, endLine: 256, endCol: 90,
       label: 'DimeService System Overview',
       panel: {
         title: 'Putting It All Together',
@@ -150,14 +150,14 @@ DIME_PAGES['05'] = {
     },
     {
       id: 'performance',
-      startLine: 259, startCol: 3, endLine: 271, endCol: 87,
+      startLine: 261, startCol: 3, endLine: 273, endCol: 87,
       label: 'Performance Design',
       panel: {
         title: 'Performance by Design',
         body:
           '<ul>' +
           '<li><strong>Disruptor Ring Buffer</strong> \u2014 Lock-free, no mutexes, no contention. Predictable sub-ms latency.</li>' +
-          '<li><strong>Zero-Copy Fan-Out</strong> \u2014 SinkDispatcher pushes the same message reference to every sink. No copies.</li>' +
+          '<li><strong>Shared-Reference Fan-Out</strong> \u2014 SinkDispatcher pushes the same message reference to every sink. No deep copies.</li>' +
           '<li><strong>Report By Exception</strong> \u2014 Only publish when the value actually changes. Configurable per item.</li>' +
           '<li><strong>Full Isolation</strong> \u2014 Each connector on its own thread and timer. Faults never propagate.</li>' +
           '</ul>' +

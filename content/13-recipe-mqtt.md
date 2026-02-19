@@ -25,14 +25,18 @@
 │   │       client_id: dime-sub                    # unique client identifier                │     │
 │   │       username: user                         # broker credentials                      │     │
 │   │       password: pass                                                                   │     │
-│   │       base_topic: factory/sensors            # subscribe to factory/sensors/#          │     │
 │   │       qos: !!int 1                           # 0=at most once, 1=at least once         │     │
 │   │       clean_session: !!bool true             # no persistent session state             │     │
+│   │       items:                                                                           │     │
+│   │         - name: line1_temp                                                             │     │
+│   │           address: factory/sensors/line1/temp   # MQTT topic to subscribe to           │     │
+│   │         - name: line1_pressure                                                         │     │
+│   │           address: factory/sensors/line1/pressure                                      │     │
 │   │                                                                                        │     │
 │   └────────────────────────────────────────────────────────────────────────────────────────┘     │
 │                                                                                                  │
-│   DIME subscribes to base_topic/# (wildcard).  Each sub-topic becomes an item path.              │
-│   Message: factory/sensors/line1/temp  →  Ring buffer path: sensors/line1/temp                   │
+│   DIME subscribes to each item's address as a separate MQTT topic.                               │
+│   Topic: factory/sensors/line1/temp  →  Ring buffer path: sensors/line1_temp                     │
 │                                                                                                  │
 │   MQTT CONFIG FIELDS                                                                             │
 │   ──────────────────                                                                             │
@@ -44,7 +48,7 @@
 │   │  port               │  Broker port (1883 plain, 8883 TLS)                            │       │
 │   │  client_id          │  Unique ID for this MQTT client (must be unique per broker)    │       │
 │   │  username / password│  Credentials (optional, depends on broker config)              │       │
-│   │  base_topic         │  Root topic — DIME appends /# for wildcard subscription        │       │
+│   │  base_topic         │  (sink only) Prefix for published topics                        │       │
 │   │  qos                │  Quality of Service: 0, 1, or 2                                │       │
 │   │  clean_session      │  true = no state between reconnects, false = resume session    │       │
 │   │  retain             │  (sink only) true = broker stores last message per topic       │       │
@@ -93,11 +97,12 @@
 │   │       base_topic: normalized/data            # publish under this prefix               │     │
 │   │       retain: !!bool true                    # broker keeps last value per topic       │     │
 │   │       qos: !!int 1                                                                     │     │
-│   │       include_filter: "sensors/.*"           # only forward sensor data                │     │
+│   │       include_filter:                                                                  │     │
+│   │         - "sensors/.*"                      # only forward sensor data                │     │
 │   │                                                                                        │     │
 │   └────────────────────────────────────────────────────────────────────────────────────────┘     │
 │                                                                                                  │
-│   Ring buffer path sensors/line1/temp  →  Published to normalized/data/line1/temp                │
+│   Ring buffer path sensors/line1_temp  →  Published to normalized/data/sensors/line1_temp        │
 │   The retain flag means new subscribers immediately get the last known value.                    │
 │                                                                                                  │
 │  ──────────────────────────────────────────────────────────────────────────────────────────────  │

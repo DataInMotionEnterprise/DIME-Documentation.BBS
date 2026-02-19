@@ -156,7 +156,7 @@
 │   │                                                                                        │     │
 │   │   Symptoms:                                                                            │     │
 │   │     - Memory usage grows steadily                                                      │     │
-│   │     - $SYSTEM/TotalLoopTime increases on sinks                                         │     │
+│   │     - LastLoopMs increases on sinks (GET /status)                                       │     │
 │   │     - Destination falls behind real-time                                               │     │
 │   │                                                                                        │     │
 │   │   Solutions:                                                                           │     │
@@ -170,10 +170,10 @@
 │                                                                                                  │
 │  ──────────────────────────────────────────────────────────────────────────────────────────────  │
 │                                                                                                  │
-│   FINDING BOTTLENECKS WITH $SYSTEM METRICS                                                       │
+│   FINDING BOTTLENECKS WITH /STATUS METRICS                                                       │
 │   ────────────────────────────────────────                                                       │
 │                                                                                                  │
-│   Every source publishes timing data automatically. Use it to find what is slow.                 │
+│   Every connector reports timing data via GET /status. Use it to find what is slow.              │
 │                                                                                                  │
 │   ┌────────────────────────────────────────────────────────────────────────────────────────┐     │
 │   │                                                                                        │     │
@@ -183,12 +183,12 @@
 │   │                                                                                        │     │
 │   │   ┌──────────── One Scan Cycle ──────────────────────────────────────────┐             │     │
 │   │   │                                                                      │             │     │
-│   │   │  ┌───────────┐  ┌────────────┐  ┌──────────┐  ┌───────────────┐      │             │     │
-│   │   │  │ ReadTime  │  │ ScriptTime │  │  RBE     │  │ Publish to    │      │             │     │
-│   │   │  │ (device)  │  │ (Lua/Py)   │  │  check   │  │ ring buffer   │      │             │     │
-│   │   │  └───────────┘  └────────────┘  └──────────┘  └───────────────┘      │             │     │
-│   │   │                                                                      │             │     │
-│   │   │  ◄─────────────── TotalLoopTime ───────────────────────────────────▶ │             │     │
+│   │   │  ┌────────────┐  ┌─────────────┐  ┌──────────┐  ┌───────────────┐     │             │     │
+│   │   │  │ LastReadMs │  │ LastScriptMs│  │  RBE     │  │ Publish to    │     │             │     │
+│   │   │  │ (device)   │  │ (Lua/Py)    │  │  check   │  │ ring buffer   │     │             │     │
+│   │   │  └────────────┘  └─────────────┘  └──────────┘  └───────────────┘     │             │     │
+│   │   │                                                                       │             │     │
+│   │   │  ◄──────────────── LastLoopMs ─────────────────────────────────────▶  │             │     │
 │   │   │                                                                      │             │     │
 │   │   └──────────────────────────────────────────────────────────────────────┘             │     │
 │   │                                                                                        │     │
@@ -196,13 +196,13 @@
 │   │   WHAT TO LOOK FOR                                                                     │     │
 │   │   ────────────────                                                                     │     │
 │   │                                                                                        │     │
-│   │   TotalLoopTime > scan_interval  ── Source cannot keep up! Reduce items or increase    │     │
+│   │   LastLoopMs > scan_interval      ── Source cannot keep up! Reduce items or increase    │     │
 │   │                                      scan_interval.                                    │     │
 │   │                                                                                        │     │
-│   │   MaxReadTime >> MinReadTime     ── Device has intermittent latency. Check network     │     │
+│   │   MaximumReadMs >> MinimumReadMs ── Device has intermittent latency. Check network     │     │
 │   │                                      or device load.                                   │     │
 │   │                                                                                        │     │
-│   │   ScriptTime is high             ── Lua/Python script is too complex. Optimize or      │     │
+│   │   LastScriptMs is high           ── Lua/Python script is too complex. Optimize or      │     │
 │   │                                      move heavy logic to a downstream service.         │     │
 │   │                                                                                        │     │
 │   │   MessagesAttempted >> Accepted  ── RBE is working well. Most values unchanged.        │     │

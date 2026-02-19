@@ -12,14 +12,14 @@ DIME_PAGES['09'] = {
       startLine: 17, startCol: 3, endLine: 53, endCol: 87,
       label: 'Script Execution Lifecycle',
       panel: {
-        title: 'Six Script Hooks in the Connector Lifecycle',
+        title: 'Five Script Hooks in the Connector Lifecycle',
         body:
-          '<p>Scripts can hook into six points in the connector lifecycle:</p>' +
+          '<p>Scripts can hook into five points in the connector lifecycle:</p>' +
           '<ul>' +
           '<li><strong>init_script</strong> \u2014 Runs ONCE at connector initialization. Set up caches, load lookup tables, initialize state.</li>' +
-          '<li><strong>loop_enter_script</strong> \u2014 Runs ONCE per scan cycle, BEFORE any items are read. Reset per-loop accumulators.</li>' +
-          '<li><strong>loop_item_script</strong> (or just <code>script</code>) \u2014 Runs ONCE PER ITEM, every scan cycle. The <code>result</code> variable holds the raw value. Return the transformed value.</li>' +
-          '<li><strong>loop_exit_script</strong> \u2014 Runs ONCE per scan cycle, AFTER all items are read. Aggregations, summaries, batch emits.</li>' +
+          '<li><strong>enter_script</strong> \u2014 Runs ONCE per scan cycle, BEFORE any items are read. Reset per-loop accumulators.</li>' +
+          '<li><strong>item_script</strong> (or just <code>script</code>) \u2014 Runs ONCE PER ITEM, every scan cycle. The <code>result</code> variable holds the raw value. Return the transformed value.</li>' +
+          '<li><strong>exit_script</strong> \u2014 Runs ONCE per scan cycle, AFTER all items are read. Aggregations, summaries, batch emits.</li>' +
           '<li><strong>deinit_script</strong> \u2014 Runs ONCE at connector shutdown. Clean up resources, flush caches.</li>' +
           '</ul>' +
           '<p>The loop (enter \u2192 item \u2192 exit) repeats every <code>scan_interval</code> milliseconds. These hooks work identically for both Lua and Python scripts.</p>',
@@ -37,7 +37,7 @@ DIME_PAGES['09'] = {
       panel: {
         title: 'result \u2014 Raw Data from the Source',
         body:
-          '<p>Inside <code>loop_item_script</code> (or <code>script</code>), the variable <code>result</code> holds the raw value read from the source device for the current item.</p>' +
+          '<p>Inside <code>item_script</code> (or <code>script</code>), the variable <code>result</code> holds the raw value read from the source device for the current item.</p>' +
           '<p>Possible types:</p>' +
           '<ul>' +
           '<li><strong>Number</strong> \u2014 72.5 (from a PLC register, OPC node, etc.)</li>' +
@@ -63,7 +63,7 @@ DIME_PAGES['09'] = {
           '<p>Set <code>lang_script</code> at the connector level to choose your scripting language. Default is Lua.</p>' +
           '<ul>' +
           '<li><strong>Lua (NLua)</strong> \u2014 Fast startup, low overhead. Helper functions are globals: <code>cache()</code>, <code>emit()</code>, <code>from_json()</code>.</li>' +
-          '<li><strong>Python (IronPython)</strong> \u2014 CLR-hosted Python with standard library 3.4 and full .NET framework access. Helpers are prefixed: <code>dime.cache()</code>, <code>dime.emit()</code>, <code>dime.from_string()</code>.</li>' +
+          '<li><strong>Python (IronPython)</strong> \u2014 CLR-hosted Python with standard library 3.4 and full .NET framework access. Helpers are prefixed: <code>dime.cache()</code>, <code>dime.emit()</code>, <code>dime.from_json()</code>.</li>' +
           '</ul>' +
           '<p>Use Lua for quick math and simple transforms. Use Python when you need complex parsing, standard library modules (json, math, re, datetime), or .NET interop.</p>',
         yaml:
@@ -91,7 +91,7 @@ DIME_PAGES['09'] = {
           '<li><strong>Scale / Convert</strong> \u2014 Arithmetic is identical in both. <code>return result * 2</code> works in Lua and Python.</li>' +
           '<li><strong>JSON Parsing</strong> \u2014 Lua uses <code>from_json(result)</code> with dot access (<code>d.value</code>). Python uses <code>json.loads(result)</code> with bracket access (<code>d[\'value\']</code>).</li>' +
           '<li><strong>Clamping</strong> \u2014 Lua uses if/then/end. Python can use <code>min(max(result, 0), 100)</code>.</li>' +
-          '<li><strong>Manual RBE</strong> \u2014 Lua: <code>cache()</code> and <code>return nil</code>. Python: <code>dime.cache()</code> and <code>return None</code>.</li>' +
+          '<li><strong>Manual RBE</strong> \u2014 Read with <code>cache()</code>, write with <code>set()</code>, and <code>return nil</code> to suppress unchanged.</li>' +
           '</ul>',
         related: [
           { page: '09', hotspot: 'lang-select', label: '09 \u2014 Choosing Lua vs Python' },
@@ -136,22 +136,21 @@ DIME_PAGES['09'] = {
     },
     {
       id: 'helpers',
-      startLine: 218, startCol: 3, endLine: 246, endCol: 92,
+      startLine: 218, startCol: 3, endLine: 242, endCol: 92,
       label: 'Built-in Helpers \u2014 Lua vs Python',
       panel: {
         title: 'Helper Functions \u2014 Lua vs Python',
         body:
           '<p>All scripts have access to these built-in functions. In Lua they are globals; in Python they are prefixed with <code>dime.</code>:</p>' +
           '<ul>' +
-          '<li><strong>Parse JSON</strong> \u2014 Lua: <code>from_json(str)</code> / Python: <code>dime.from_string(str)</code></li>' +
-          '<li><strong>Serialize JSON</strong> \u2014 Lua: <code>to_json(tbl)</code> / Python: <code>dime.to_string(obj)</code></li>' +
-          '<li><strong>Cache read/write</strong> \u2014 Lua: <code>cache(key)</code> / Python: <code>dime.cache(key)</code></li>' +
+          '<li><strong>Parse JSON</strong> \u2014 Lua: <code>from_json(str)</code> / Python: <code>dime.from_json(str)</code></li>' +
+          '<li><strong>Serialize JSON</strong> \u2014 Lua: <code>to_json(tbl)</code> / Python: <code>dime.to_json(obj)</code></li>' +
+          '<li><strong>Cache read</strong> \u2014 Lua: <code>cache(key)</code> or <code>cache(key, default)</code> / Python: <code>dime.cache(key)</code></li>' +
           '<li><strong>Cache timestamp</strong> \u2014 Lua: <code>cache_ts(key)</code> / Python: <code>dime.cache_ts(key)</code></li>' +
-          '<li><strong>Set item</strong> \u2014 Lua: <code>set(path, val)</code> / Python: <code>dime.set(path, val)</code></li>' +
-          '<li><strong>Env variable</strong> \u2014 Lua: <code>env(name)</code> / Python: <code>dime.env(name)</code></li>' +
+          '<li><strong>Cache write</strong> \u2014 Lua: <code>set(path, val)</code> / Python: <code>dime.set(path, val)</code></li>' +
+          '<li><strong>Env variable</strong> \u2014 Lua: <code>env(name, default)</code> / Python: <code>dime.env(name, default)</code></li>' +
           '<li><strong>Emit</strong> \u2014 Lua: <code>emit(path, val)</code> / Python: <code>dime.emit(path, val)</code></li>' +
-          '<li><strong>Connector/Config</strong> \u2014 Lua: <code>connector</code>, <code>configuration</code> / Python: <code>dime.connector()</code>, <code>dime.configuration()</code></li>' +
-          '<li><strong>Logging</strong> \u2014 <code>log_info(msg)</code>, <code>log_warn(msg)</code>, <code>log_error(msg)</code></li>' +
+          '<li><strong>Connector/Config</strong> \u2014 Lua: <code>connector()</code>, <code>configuration()</code> / Python: <code>dime.connector()</code>, <code>dime.configuration()</code></li>' +
           '</ul>' +
           '<p>The cache persists across scan cycles. Python can also import standard library modules: json, math, re, datetime, etc.</p>',
         related: [
@@ -163,7 +162,7 @@ DIME_PAGES['09'] = {
     },
     {
       id: 'examples',
-      startLine: 253, startCol: 3, endLine: 292, endCol: 92,
+      startLine: 249, startCol: 3, endLine: 288, endCol: 92,
       label: 'Practical Script Examples',
       panel: {
         title: 'Practical Examples \u2014 Lua & Python',
@@ -174,9 +173,9 @@ DIME_PAGES['09'] = {
           '<pre><code># Lua\nlocal data = from_json(result)\nfor key, val in pairs(data) do\n  emit(key, val)\nend\nreturn nil</code></pre>' +
           '<pre><code># Python\nimport json\ndata = json.loads(result)\nfor key in data:\n  dime.emit(key, data[key])\nreturn None</code></pre>' +
           '<p><strong>State Machine with Cache</strong></p>' +
-          '<pre><code># Lua\nlocal prev = cache(\'machine_state\')\nif result ~= prev then\n  cache(\'machine_state\', result)\n  emit(\'state_changed\', to_json({\n    from = prev, to = result\n  }))\nend\nreturn result</code></pre>' +
-          '<pre><code># Python\nprev = dime.cache(\'machine_state\')\nif result != prev:\n  dime.cache(\'machine_state\', result)\n  dime.emit(\'state_changed\',\n    dime.to_string({\n      \'from\': prev, \'to\': result\n    }))\nreturn result</code></pre>' +
-          '<p>Scripts can be inline, multiline YAML blocks, or loaded from external files via <code>script_file:</code>.</p>',
+          '<pre><code># Lua\nlocal prev = cache(\'machine_state\')\nif result ~= prev then\n  set(\'machine_state\', result)\n  emit(\'state_changed\', to_json({\n    from = prev, to = result\n  }))\nend\nreturn result</code></pre>' +
+          '<pre><code># Python\nprev = dime.cache(\'machine_state\')\nif result != prev:\n  dime.set(\'machine_state\', result)\n  dime.emit(\'state_changed\',\n    dime.to_json({\n      \'from\': prev, \'to\': result\n    }))\nreturn result</code></pre>' +
+          '<p>Scripts can be inline one-liners or multiline YAML blocks (using <code>|</code> or <code>&gt;</code>). Use <code>paths_script:</code> to add module search directories.</p>',
         related: [
           { page: '09', hotspot: 'emit', label: '09 \u2014 emit() function' },
           { page: '09', hotspot: 'helpers', label: '09 \u2014 Helper functions' },

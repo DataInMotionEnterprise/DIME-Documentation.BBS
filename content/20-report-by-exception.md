@@ -163,14 +163,14 @@
 │                                                                                                  │
 │  ──────────────────────────────────────────────────────────────────────────────────────────────  │
 │                                                                                                  │
-│   execute_every — COMPLEMENTARY THROTTLE                                                         │
+│   every — COMPLEMENTARY THROTTLE                                                                 │
 │   ──────────────────────────────────────                                                         │
 │                                                                                                  │
-│   RBE suppresses unchanged values. execute_every skips entire scan cycles for slow items.        │
+│   RBE suppresses unchanged values. every skips entire scan cycles for slow items.                │
 │                                                                                                  │
 │   ┌────────────────────────────────────────────────────────────────────────────────────────┐     │
 │   │                                                                                        │     │
-│   │   scan_interval: 1000ms, execute_every: 10                                             │     │
+│   │   scan_interval: 1000ms, every: 10                                                      │     │
 │   │                                                                                        │     │
 │   │   Cycle:  1    2    3    4    5    6    7    8    9    10   11   12  ...               │     │
 │   │           ─    ─    ─    ─    ─    ─    ─    ─    ─    ●    ─    ─                     │     │
@@ -181,11 +181,11 @@
 │   │                                                                                        │     │
 │   │   items:                                                                               │     │
 │   │     - name: fast_sensor                                                                │     │
-│   │       execute_every: !!int 1      ── Every cycle (default)                             │     │
+│   │       every: !!int 1      ── Every cycle (default)                             │     │
 │   │     - name: slow_sensor                                                                │     │
-│   │       execute_every: !!int 10     ── Every 10th cycle                                  │     │
+│   │       every: !!int 10     ── Every 10th cycle                                  │     │
 │   │     - name: glacial_sensor                                                             │     │
-│   │       execute_every: !!int 60     ── Every 60th cycle (once per minute at 1s scan)     │     │
+│   │       every: !!int 60             ── Every 60th cycle (once per minute at 1s scan)     │     │
 │   │                                                                                        │     │
 │   └────────────────────────────────────────────────────────────────────────────────────────┘     │
 │                                                                                                  │
@@ -223,10 +223,10 @@
 │   │   ─────────────────  ──────────────────────────────  ──────────                      │       │
 │   │   RBE on/off         rbe: !!bool true/false          Source or Item                  │       │
 │   │   Force publish      emit(path, val, true)           Script only                     │       │
-│   │   Cycle throttle     execute_every: !!int N          Item only                       │       │
+│   │   Cycle throttle     every: !!int N                   Item only                       │       │
 │   │   Scan interval      scan_interval: !!int ms         Source only                     │       │
 │   │                                                                                      │       │
-│   │   Combine RBE + execute_every for maximum reduction:                                 │       │
+│   │   Combine RBE + every for maximum reduction:                                          │       │
 │   │   Read every 10th cycle, then suppress if unchanged = minimal traffic.               │       │
 │   │                                                                                      │       │
 │   └──────────────────────────────────────────────────────────────────────────────────────┘       │

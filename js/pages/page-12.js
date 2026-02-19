@@ -68,7 +68,7 @@ DIME_PAGES['12'] = {
     },
     {
       id: 'influx-sink',
-      startLine: 67, startCol: 3, endLine: 86, endCol: 90,
+      startLine: 67, startCol: 3, endLine: 87, endCol: 90,
       label: 'Step 3 \u2014 InfluxDB Sink',
       panel: {
         title: 'Step 3 \u2014 InfluxDB Sink (Historian)',
@@ -76,20 +76,20 @@ DIME_PAGES['12'] = {
           '<p>The InfluxLP sink writes data to InfluxDB using native line protocol for maximum performance.</p>' +
           '<ul>' +
           '<li><strong>connector: InfluxLP</strong> \u2014 Writes InfluxDB line protocol directly. No intermediate conversion.</li>' +
-          '<li><strong>url</strong> \u2014 The InfluxDB v2 API endpoint.</li>' +
-          '<li><strong>bucket</strong> \u2014 The InfluxDB bucket (database) to write into.</li>' +
-          '<li><strong>org</strong> \u2014 Your InfluxDB organization name.</li>' +
+          '<li><strong>address</strong> \u2014 The InfluxDB v2 API endpoint.</li>' +
+          '<li><strong>bucket_name</strong> \u2014 The InfluxDB bucket (database) to write into.</li>' +
+          '<li><strong>org_name</strong> \u2014 Your InfluxDB organization name.</li>' +
           '<li><strong>token</strong> \u2014 API token with write permission to the target bucket.</li>' +
-          '<li><strong>include_filter</strong> \u2014 Regex pattern to select which ring buffer messages this sink receives. <code>"plc1/.*"</code> captures all items from plc1.</li>' +
+          '<li><strong>include_filter</strong> \u2014 A list of regex patterns to select which ring buffer messages this sink receives. <code>"plc1/.*"</code> captures all items from plc1.</li>' +
           '</ul>' +
-          '<p>Message paths map to InfluxDB structure: source name becomes the measurement, item name becomes the field key, and the value becomes the field value with a nanosecond timestamp.</p>',
+          '<p>The full message path becomes the InfluxDB measurement name. The field key is <code>"value"</code> and the timestamp uses millisecond precision.</p>',
         yaml:
           'sinks:\n' +
           '  - name: historian\n' +
           '    connector: InfluxLP\n' +
-          '    url: http://influx.local:8086\n' +
-          '    bucket: factory\n' +
-          '    org: myorg\n' +
+          '    address: http://influx.local:8086\n' +
+          '    bucket_name: factory\n' +
+          '    org_name: myorg\n' +
           '    token: my-token-here',
         related: [
           { page: '07', label: '07 \u2014 Sink connectors' },
@@ -99,23 +99,23 @@ DIME_PAGES['12'] = {
     },
     {
       id: 'websocket-sink',
-      startLine: 90, startCol: 3, endLine: 107, endCol: 90,
+      startLine: 91, startCol: 3, endLine: 108, endCol: 90,
       label: 'Step 4 \u2014 WebSocket Sink',
       panel: {
         title: 'Step 4 \u2014 WebSocket Sink (Live Dashboard)',
         body:
           '<p>The WebSocketServer sink starts a WebSocket server that pushes real-time data to connected browser clients.</p>' +
           '<ul>' +
-          '<li><strong>connector: WebSocketServer</strong> \u2014 Starts a WS server on the specified port. Any client can connect.</li>' +
-          '<li><strong>port</strong> \u2014 The TCP port to listen on. Clients connect to <code>ws://hostname:8092</code>.</li>' +
-          '<li><strong>include_filter</strong> \u2014 Only messages matching this regex are pushed to clients.</li>' +
+          '<li><strong>connector: WebSocketServer</strong> \u2014 Starts a WS server on the specified URI. Any client can connect.</li>' +
+          '<li><strong>uri</strong> \u2014 The full WebSocket URI to listen on, e.g. <code>ws://0.0.0.0:8092/</code>. Default is <code>ws://localhost:8082/</code>.</li>' +
+          '<li><strong>include_filter</strong> \u2014 Only messages matching these regex patterns are pushed to clients.</li>' +
           '</ul>' +
           '<p>Each message is sent as a JSON object with path, value, and timestamp fields. Connect any charting library (Grafana Live, Chart.js, custom JavaScript) to build a real-time dashboard.</p>' +
           '<p>Multiple browser clients can connect simultaneously. Each receives all matching messages independently.</p>',
         yaml:
           '  - name: dashboard\n' +
           '    connector: WebSocketServer\n' +
-          '    port: !!int 8092\n' +
+          '    uri: ws://0.0.0.0:8092/\n' +
           '    include_filter:\n' +
           '      - "plc1/.*"',
         related: [
@@ -126,7 +126,7 @@ DIME_PAGES['12'] = {
     },
     {
       id: 'complete-flow',
-      startLine: 117, startCol: 3, endLine: 142, endCol: 90,
+      startLine: 119, startCol: 3, endLine: 144, endCol: 90,
       label: 'Complete Data Flow Diagram',
       panel: {
         title: 'Complete Flow \u2014 Device to Multiple Destinations',

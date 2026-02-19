@@ -9,7 +9,7 @@ DIME_PAGES['16'] = {
   hotspots: [
     {
       id: 'status-endpoint',
-      startLine: 57, startCol: 3, endLine: 89, endCol: 90,
+      startLine: 63, startCol: 3, endLine: 97, endCol: 90,
       label: 'GET /status \u2014 Health & Metrics',
       panel: {
         title: 'GET /status \u2014 Full Instance Health',
@@ -17,25 +17,28 @@ DIME_PAGES['16'] = {
           '<p>A single GET request returns the health and performance of <strong>every</strong> connector in the running instance \u2014 sources and sinks alike.</p>' +
           '<p>Key fields per connector:</p>' +
           '<ul>' +
+          '<li><strong>name</strong> \u2014 Connector name from YAML</li>' +
+          '<li><strong>direction</strong> \u2014 Source or Sink</li>' +
+          '<li><strong>connectorType</strong> \u2014 The connector type (e.g. OpcUa, Mqtt)</li>' +
+          '<li><strong>isRunning</strong> \u2014 Is the connector timer active?</li>' +
           '<li><strong>isConnected</strong> \u2014 Is the connection to the device/destination alive?</li>' +
           '<li><strong>isFaulted</strong> \u2014 Is the connector in an error state?</li>' +
-          '<li><strong>faultReason</strong> \u2014 The last error message (null if healthy)</li>' +
-          '<li><strong>metrics.totalLoopTime</strong> \u2014 End-to-end cycle time in milliseconds</li>' +
-          '<li><strong>metrics.deviceReadTime</strong> \u2014 How long the hardware took to respond</li>' +
-          '<li><strong>metrics.scriptExecTime</strong> \u2014 Lua/Python transform time</li>' +
-          '<li><strong>metrics.messagesAccepted</strong> \u2014 Cumulative messages processed</li>' +
-          '<li><strong>metrics.faultCount</strong> \u2014 Cumulative fault count</li>' +
+          '<li><strong>faultMessage</strong> \u2014 The last error message (empty if healthy)</li>' +
+          '<li><strong>lastLoopMs</strong> \u2014 Last end-to-end cycle time in milliseconds</li>' +
+          '<li><strong>lastReadMs</strong> \u2014 Last device read time in milliseconds</li>' +
+          '<li><strong>lastScriptMs</strong> \u2014 Last Lua/Python transform time</li>' +
+          '<li><strong>messagesAttempted / messagesAccepted</strong> \u2014 Total reads vs. those that passed RBE</li>' +
+          '<li><strong>connectCount / faultCount</strong> \u2014 Cumulative connection and fault counts</li>' +
           '</ul>' +
           '<p>Use this for health checks, monitoring dashboards, or alerting systems.</p>',
         yaml:
           '$ curl http://localhost:9999/status\n\n' +
           '# Returns JSON with:\n' +
-          '#   connectors[].name\n' +
-          '#   connectors[].isConnected\n' +
-          '#   connectors[].isFaulted\n' +
-          '#   connectors[].faultReason\n' +
-          '#   connectors[].metrics.totalLoopTime\n' +
-          '#   connectors[].metrics.messagesAccepted',
+          '#   connectors.{name}.isConnected\n' +
+          '#   connectors.{name}.isFaulted\n' +
+          '#   connectors.{name}.faultMessage\n' +
+          '#   connectors.{name}.lastLoopMs\n' +
+          '#   connectors.{name}.messagesAccepted',
         related: [
           { page: '17', hotspot: 'admin-ws', label: '17 \u2014 WebSocket live monitoring' },
           { page: '05', hotspot: 'admin-server', label: '05 \u2014 Admin server overview' }
@@ -44,17 +47,20 @@ DIME_PAGES['16'] = {
     },
     {
       id: 'config-endpoints',
-      startLine: 93, startCol: 3, endLine: 119, endCol: 90,
-      label: 'GET/POST /config/yaml \u2014 Configuration',
+      startLine: 99, startCol: 3, endLine: 135, endCol: 90,
+      label: 'Configuration Management',
       panel: {
         title: 'Configuration Management via REST',
         body:
-          '<p>Two endpoints for managing the running YAML configuration:</p>' +
+          '<p>Multiple endpoints for managing configuration:</p>' +
           '<ul>' +
-          '<li><strong>GET /config/yaml</strong> \u2014 Returns the full merged YAML currently driving the instance. Useful for debugging, backup, or auditing what is actually running.</li>' +
-          '<li><strong>POST /config/yaml</strong> \u2014 Push a new YAML configuration. DIME will parse it, diff against the running config, and apply changes. Connectors are started or stopped as needed.</li>' +
+          '<li><strong>GET /config/yaml</strong> \u2014 Returns the runtime YAML configuration (includes any unsaved API changes).</li>' +
+          '<li><strong>GET /config/json</strong> \u2014 Returns the same configuration as JSON.</li>' +
+          '<li><strong>POST /config/yaml</strong> \u2014 Write a new YAML configuration to disk. Does NOT reload running connectors. Call <code>POST /config/reload</code> to apply changes.</li>' +
+          '<li><strong>POST /config/reload</strong> \u2014 Reload configuration from disk and restart all connectors.</li>' +
+          '<li><strong>POST /config/save</strong> \u2014 Persist the current runtime configuration to disk (after add/edit/delete operations).</li>' +
           '</ul>' +
-          '<p>This enables <strong>hot reload</strong> \u2014 change the entire configuration without restarting the service. Existing connections that have not changed remain untouched.</p>',
+          '<p>The write-then-reload pattern gives you a safety checkpoint: write config to disk, verify it looks correct, then reload.</p>',
         related: [
           { page: '16', hotspot: 'hot-reconfig', label: '16 \u2014 Zero-downtime reconfiguration' },
           { page: '03', hotspot: 'verify', label: '03 \u2014 Verify installation' }
@@ -63,26 +69,28 @@ DIME_PAGES['16'] = {
     },
     {
       id: 'connector-control',
-      startLine: 122, startCol: 3, endLine: 161, endCol: 90,
-      label: 'Start / Stop / Add Connectors',
+      startLine: 140, startCol: 3, endLine: 184, endCol: 90,
+      label: 'Start / Stop / Add / Edit / Delete',
       panel: {
         title: 'Runtime Connector Management',
         body:
-          '<p>Control individual connectors without affecting the rest of the instance:</p>' +
+          '<p>Control individual connectors without affecting the rest of the instance. All connector endpoints follow the pattern <code>/connector/{action}/{type}/{name}</code> where type is <code>source</code> or <code>sink</code>:</p>' +
           '<ul>' +
-          '<li><strong>POST /connector/stop/{name}</strong> \u2014 Gracefully disconnects and deinitializes the named connector. Other connectors are unaffected.</li>' +
-          '<li><strong>POST /connector/start/{name}</strong> \u2014 Re-initializes and starts the named connector through the full lifecycle.</li>' +
-          '<li><strong>POST /connector/add/source</strong> \u2014 Add a brand-new source connector at runtime. Pass the connector config as JSON.</li>' +
-          '<li><strong>POST /connector/add/sink</strong> \u2014 Add a brand-new sink connector at runtime. It immediately begins receiving from the ring buffer.</li>' +
+          '<li><strong>POST /connector/stop/{type}/{name}</strong> \u2014 Gracefully stops the named connector. Other connectors are unaffected.</li>' +
+          '<li><strong>POST /connector/start/{type}/{name}</strong> \u2014 Starts the named connector.</li>' +
+          '<li><strong>POST /connector/add/{type}/{name}</strong> \u2014 Add a brand-new connector at runtime. Pass the connector YAML config as the request body.</li>' +
+          '<li><strong>POST /connector/edit/{type}/{name}</strong> \u2014 Edit an existing connector by replacing its configuration.</li>' +
+          '<li><strong>POST /connector/delete/{type}/{name}</strong> \u2014 Delete a connector.</li>' +
           '</ul>' +
+          '<p>After add/edit/delete, call <code>POST /config/save</code> to persist changes to disk.</p>' +
           '<p>The stop/start cycle follows the standard connector lifecycle: Initialize \u2192 Create \u2192 Connect \u2192 Read/Write \u2192 Disconnect \u2192 Deinitialize.</p>',
         yaml:
-          '# Stop a connector\n' +
-          'curl -X POST http://localhost:9999/connector/stop/plc1\n\n' +
-          '# Add a new sink at runtime\n' +
-          'curl -X POST http://localhost:9999/connector/add/sink \\\n' +
-          '  -H \'Content-Type: application/json\' \\\n' +
-          '  -d \'{"name":"debug","connector":"Console"}\'',
+          '# Stop a source connector\n' +
+          'curl -X POST http://localhost:9999/connector/stop/source/plc1\n\n' +
+          '# Add a new sink at runtime (YAML body)\n' +
+          'curl -X POST http://localhost:9999/connector/add/sink/debug \\\n' +
+          '  -H \'Content-Type: text/plain\' \\\n' +
+          '  -d \'connector: Console\'',
         related: [
           { page: '05', hotspot: 'lifecycle', label: '05 \u2014 Connector lifecycle' },
           { page: '16', hotspot: 'hot-reconfig', label: '16 \u2014 Hot reconfiguration' }
@@ -91,7 +99,7 @@ DIME_PAGES['16'] = {
     },
     {
       id: 'swagger-ui',
-      startLine: 164, startCol: 3, endLine: 204, endCol: 90,
+      startLine: 189, startCol: 3, endLine: 220, endCol: 90,
       label: 'Swagger UI \u2014 Interactive Explorer',
       panel: {
         title: 'Swagger UI \u2014 Try It From the Browser',
@@ -113,18 +121,18 @@ DIME_PAGES['16'] = {
     },
     {
       id: 'hot-reconfig',
-      startLine: 207, startCol: 3, endLine: 244, endCol: 90,
+      startLine: 227, startCol: 3, endLine: 253, endCol: 90,
       label: 'Hot Reconfiguration \u2014 Zero Downtime',
       panel: {
         title: 'Zero-Downtime Reconfiguration',
         body:
           '<p>Add, remove, or restart connectors <strong>without stopping the service</strong>:</p>' +
           '<ul>' +
-          '<li><strong>POST /connector/add/sink</strong> \u2014 New sink starts receiving immediately from the ring buffer</li>' +
-          '<li><strong>POST /connector/add/source</strong> \u2014 New source begins publishing to the ring buffer</li>' +
-          '<li><strong>POST /config/yaml</strong> \u2014 Full config hot-reload: DIME diffs and applies only the changes</li>' +
-          '<li><strong>POST /service/restart</strong> \u2014 Full restart if needed (last resort)</li>' +
+          '<li><strong>POST /connector/add/sink/{name}</strong> \u2014 New sink starts receiving immediately from the ring buffer</li>' +
+          '<li><strong>POST /connector/add/source/{name}</strong> \u2014 New source begins publishing to the ring buffer</li>' +
+          '<li><strong>POST /config/yaml</strong> + <strong>POST /config/reload</strong> \u2014 Write new config to disk, then reload to apply changes</li>' +
           '</ul>' +
+          '<p>After adding or editing connectors via the API, call <code>POST /config/save</code> to persist changes to disk.</p>' +
           '<p>Existing connectors are completely unaffected by additions. The ring buffer continues to operate. No messages are lost during reconfiguration.</p>' +
           '<p>This is how production deployments evolve: start with sources, then add sinks as new consumers come online \u2014 all without downtime.</p>',
         related: [

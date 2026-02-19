@@ -45,9 +45,10 @@
 │   │                                                                                          │   │
 │   │   cache_ts( path, default )           Read value AND its timestamp as a tuple.           │   │
 │   │   ─────────────────────────           Use this to check data freshness.                  │   │
+│   │                                       Timestamp is epoch milliseconds.                   │   │
 │   │                                                                                          │   │
 │   │     local val, ts = cache_ts('plc1/temperature', 0)                                      │   │
-│   │     if (os.time() - ts) > 60 then                                                        │   │
+│   │     if (os.time() * 1000 - ts) > 60000 then                                              │   │
 │   │       return -1  -- stale data, older than 60 seconds                                    │   │
 │   │     end                                                                                  │   │
 │   │     return val                                                                           │   │
@@ -155,7 +156,7 @@
 │    │       address: 192.168.1.10              │  These must connect first.                 │     │
 │    │                                          │                                            │     │
 │    │     - name: weather                      │                                            │     │
-│    │       connector: HttpClient             ─┘                                            │     │
+│    │       connector: JsonWebScraper         ─┘                                            │     │
 │    │       address: https://api.weather.com                                                │     │
 │    │                                                                                       │     │
 │    │     - name: enricher                                                                  │     │

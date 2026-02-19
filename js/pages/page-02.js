@@ -59,7 +59,7 @@ DIME_PAGES['02'] = {
         body:
           '<p><strong>DIME Connector</strong> is the edge runtime that collects data directly from factory-floor devices.</p>' +
           '<ul>' +
-          '<li><strong>50+ Protocols</strong> \u2014 OPC-UA, Siemens S7, Modbus TCP, MQTT, EtherNet/IP, FANUC, and many more out of the box</li>' +
+          '<li><strong>47+ Protocols</strong> \u2014 OPC-UA, Siemens S7, Modbus TCP, MQTT, EtherNet/IP, FANUC, and many more out of the box</li>' +
           '<li><strong>YAML Configuration</strong> \u2014 Define sources (devices to read) and sinks (destinations to write) in simple YAML files</li>' +
           '<li><strong>Disruptor Ring Buffer</strong> \u2014 Lock-free, sub-millisecond message routing at 1M+ messages per second</li>' +
           '<li><strong>Runs Anywhere</strong> \u2014 Windows Service, Linux daemon, or Docker container on x86, x64, or ARM64</li>' +
