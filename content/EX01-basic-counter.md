@@ -14,20 +14,20 @@
   DATA FLOW
   ─────────
 
-       ┌──────────────────┐
-       │   Script Source   │          ┌─────────────────┐
-       │                   │     ┌───▶│  Console Sink   │  stdout
-       │  counter = 0      │     │    └─────────────────┘
-       │  counter = counter │     │
-       │    + 1             │     │    ┌─────────────────┐
-       │  return counter   ├─────┼───▶│  HTTP Server    │  http://localhost:8080
-       │                   │     │    └─────────────────┘
-       │  scan: 1000ms     │     │
-       │  RBE: true        │     │    ┌─────────────────┐
-       └───────────────────┘     └───▶│  WebSocket Srv  │  ws://0.0.0.0:8092
+       ┌────────────────────┐
+       │   Script Source     │         ┌─────────────────┐
+       │                    │    ┌───▶│  Console Sink   │  stdout
+       │  counter = 0       │    │    └─────────────────┘
+       │  counter = counter │    │
+       │    + 1             │    │    ┌─────────────────┐
+       │  return counter    ├────┼───▶│  HTTP Server    │  http://localhost:8080
+       │                    │    │    └─────────────────┘
+       │  scan: 1000ms      │    │
+       │  RBE: true         │    │    ┌─────────────────┐
+       └────────────────────┘    └───▶│  WebSocket Srv  │  ws://0.0.0.0:8092
                                       └─────────────────┘
-              SOURCE                     RING BUFFER              SINKS
-         (Lua scripting)              (4096 slots)          (3 destinations)
+              SOURCE                    RING BUFFER                SINKS
+         (Lua scripting)             (4096 slots)           (3 destinations)
 
   CONFIGURATION — main.yaml                                                    [single file]
   ─────────────────────────
