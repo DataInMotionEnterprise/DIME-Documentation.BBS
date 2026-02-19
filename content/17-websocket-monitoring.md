@@ -24,7 +24,7 @@
 │   │     ┌─────────────────────────────────────────────────────────────────────────────┐      │   │
 │   │     │                                                                             │      │   │
 │   │     │   Connector status    ── isConnected, isFaulted changes in real time        │      │   │
-│   │     │   Performance metrics ── lastLoopMs, lastReadMs, lastScriptMs                │      │   │
+│   │     │   Performance metrics ── lastLoopMs, lastReadMs, lastScriptMs               │      │   │
 │   │     │   Fault notifications ── immediate alert when a connector errors            │      │   │
 │   │     │   Live data values    ── current values flowing through ring buffer         │      │   │
 │   │     │   $SYSTEM paths       ── all $SYSTEM metadata for every connector           │      │   │
@@ -82,7 +82,7 @@
 │  ──────────────────────────────────────────────────────────────────────────────────────────────  │
 │                                                                                                  │
 │   WEB SERVER SINK — SERVE STATIC FILES                                                           │
-│   ─────────────────────────────────────                                                         │
+│   ─────────────────────────────────────                                                          │
 │                                                                                                  │
 │   Host HTML, CSS, JS files directly from DIME. No separate web server needed.                    │
 │                                                                                                  │
@@ -91,8 +91,8 @@
 │   │   sinks:                                                                                 │   │
 │   │     - name: web_ui                                                                       │   │
 │   │       connector: WebServer                                                               │   │
-│   │       uri: !!str http://localhost:8080/         ◀── listen address and port               │   │
-│   │       web_root: ./www                           ◀── folder with your HTML/CSS/JS          │   │
+│   │       uri: !!str http://localhost:8080/         ◀── listen address and port              │   │
+│   │       web_root: ./www                           ◀── folder with your HTML/CSS/JS         │   │
 │   │                                                                                          │   │
 │   │   ┌──────────────────────┐                                                               │   │
 │   │   │  ./www/              │          ┌───────────────────────────────────────┐            │   │
@@ -174,7 +174,7 @@
 │   │   sinks:                                                                                 │   │
 │   │     - name: web_ui                              - name: live_feed                        │   │
 │   │       connector: WebServer                        connector: WebsocketServer             │   │
-│   │       uri: http://localhost:8080/                  uri: ws://localhost:8092/              │   │
+│   │       uri: http://localhost:8080/                  uri: ws://localhost:8092/             │   │
 │   │       web_root: ./www                              include_filter:                       │   │
 │   │                                                      - "plc1/.*"                         │   │
 │   │                                                                                          │   │

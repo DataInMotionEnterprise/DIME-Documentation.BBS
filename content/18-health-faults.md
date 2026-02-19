@@ -63,8 +63,8 @@
 │                                                                                                  │
 │   ┌──────────────────────────────────────────────────────────────────────────────────────────┐   │
 │   │                                                                                          │   │
-│   │   RING BUFFER MESSAGES                       ADMIN API ONLY (ConnectorStatus)             │   │
-│   │   ────────────────────                       ───────────────────────────────              │   │
+│   │   RING BUFFER MESSAGES                       ADMIN API ONLY (ConnectorStatus)            │   │
+│   │   ────────────────────                       ───────────────────────────────             │   │
 │   │                                                                                          │   │
 │   │   name/$SYSTEM/IsConnected    bool           ConnectCount        int                     │   │
 │   │   name/$SYSTEM/IsFaulted      bool           DisconnectCount     int                     │   │
@@ -91,11 +91,11 @@
 │                                                                                                  │
 │   ┌──────────────────────────────────────────────────────────────────────────────────────────┐   │
 │   │                                                                                          │   │
-│   │   TIMING METRICS (Admin API)                 THROUGHPUT METRICS (Admin API)               │   │
-│   │   ──────────────────────────                 ────────────────────────────────             │   │
+│   │   TIMING METRICS (Admin API)                 THROUGHPUT METRICS (Admin API)              │   │
+│   │   ──────────────────────────                 ────────────────────────────────            │   │
 │   │                                                                                          │   │
-│   │   MinimumReadMs              ms              MessagesAttempted              int           │   │
-│   │   MaximumReadMs              ms              MessagesAccepted               int           │   │
+│   │   MinimumReadMs              ms              MessagesAttempted              int          │   │
+│   │   MaximumReadMs              ms              MessagesAccepted               int          │   │
 │   │   LastReadMs                 ms                                                          │   │
 │   │   MinimumScriptMs / MaximumScriptMs          Attempted = total reads from device         │   │
 │   │   MinimumLoopMs / MaximumLoopMs              Accepted  = values that passed RBE          │   │

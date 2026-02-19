@@ -156,7 +156,7 @@
 │   │                                                                                        │     │
 │   │   Symptoms:                                                                            │     │
 │   │     - Memory usage grows steadily                                                      │     │
-│   │     - LastLoopMs increases on sinks (GET /status)                                       │     │
+│   │     - LastLoopMs increases on sinks (GET /status)                                      │     │
 │   │     - Destination falls behind real-time                                               │     │
 │   │                                                                                        │     │
 │   │   Solutions:                                                                           │     │
@@ -183,12 +183,12 @@
 │   │                                                                                        │     │
 │   │   ┌──────────── One Scan Cycle ──────────────────────────────────────────┐             │     │
 │   │   │                                                                      │             │     │
-│   │   │  ┌────────────┐  ┌─────────────┐  ┌──────────┐  ┌───────────────┐     │             │     │
-│   │   │  │ LastReadMs │  │ LastScriptMs│  │  RBE     │  │ Publish to    │     │             │     │
-│   │   │  │ (device)   │  │ (Lua/Py)    │  │  check   │  │ ring buffer   │     │             │     │
-│   │   │  └────────────┘  └─────────────┘  └──────────┘  └───────────────┘     │             │     │
-│   │   │                                                                       │             │     │
-│   │   │  ◄──────────────── LastLoopMs ─────────────────────────────────────▶  │             │     │
+│   │   │  ┌────────────┐  ┌─────────────┐  ┌──────────┐  ┌───────────────┐    │             │     │
+│   │   │  │ LastReadMs │  │ LastScriptMs│  │  RBE     │  │ Publish to    │    │             │     │
+│   │   │  │ (device)   │  │ (Lua/Py)    │  │  check   │  │ ring buffer   │    │             │     │
+│   │   │  └────────────┘  └─────────────┘  └──────────┘  └───────────────┘    │             │     │
+│   │   │                                                                      │             │     │
+│   │   │  ◄──────────────── LastLoopMs ─────────────────────────────────────▶ │             │     │
 │   │   │                                                                      │             │     │
 │   │   └──────────────────────────────────────────────────────────────────────┘             │     │
 │   │                                                                                        │     │
@@ -196,7 +196,7 @@
 │   │   WHAT TO LOOK FOR                                                                     │     │
 │   │   ────────────────                                                                     │     │
 │   │                                                                                        │     │
-│   │   LastLoopMs > scan_interval      ── Source cannot keep up! Reduce items or increase    │     │
+│   │   LastLoopMs > scan_interval      ── Source cannot keep up! Reduce items or increase   │     │
 │   │                                      scan_interval.                                    │     │
 │   │                                                                                        │     │
 │   │   MaximumReadMs >> MinimumReadMs ── Device has intermittent latency. Check network     │     │

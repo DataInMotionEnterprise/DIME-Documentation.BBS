@@ -284,7 +284,7 @@
 │   │   return result                            return result                                 │   │
 │   │                                                                                          │   │
 │   │                                                                                          │   │
-│   │   Scripts can be inline one-liners or multiline YAML blocks (using | or >).               │   │
+│   │   Scripts can be inline one-liners or multiline YAML blocks (using | or >).              │   │
 │   │   Use paths_script: to add directories where Lua require() can find modules.             │   │
 │   │                                                                                          │   │
 │   └──────────────────────────────────────────────────────────────────────────────────────────┘   │

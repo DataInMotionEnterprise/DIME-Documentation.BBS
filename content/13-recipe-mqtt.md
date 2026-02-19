@@ -48,7 +48,7 @@
 │   │  port               │  Broker port (1883 plain, 8883 TLS)                            │       │
 │   │  client_id          │  Unique ID for this MQTT client (must be unique per broker)    │       │
 │   │  username / password│  Credentials (optional, depends on broker config)              │       │
-│   │  base_topic         │  (sink only) Prefix for published topics                        │       │
+│   │  base_topic         │  (sink only) Prefix for published topics                       │       │
 │   │  qos                │  Quality of Service: 0, 1, or 2                                │       │
 │   │  clean_session      │  true = no state between reconnects, false = resume session    │       │
 │   │  retain             │  (sink only) true = broker stores last message per topic       │       │
@@ -98,7 +98,7 @@
 │   │       retain: !!bool true                    # broker keeps last value per topic       │     │
 │   │       qos: !!int 1                                                                     │     │
 │   │       include_filter:                                                                  │     │
-│   │         - "sensors/.*"                      # only forward sensor data                │     │
+│   │         - "sensors/.*"                      # only forward sensor data                 │     │
 │   │                                                                                        │     │
 │   └────────────────────────────────────────────────────────────────────────────────────────┘     │
 │                                                                                                  │

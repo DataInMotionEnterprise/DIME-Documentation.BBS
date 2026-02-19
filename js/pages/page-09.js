@@ -170,11 +170,45 @@ DIME_PAGES['09'] = {
           '<p><strong>Unit Conversion (inline)</strong> \u2014 identical in both languages:</p>' +
           '<pre><code>script: "return (result - 32) * 5 / 9"</code></pre>' +
           '<p><strong>JSON Parsing + Multi-Emit</strong></p>' +
-          '<pre><code># Lua\nlocal data = from_json(result)\nfor key, val in pairs(data) do\n  emit(key, val)\nend\nreturn nil</code></pre>' +
-          '<pre><code># Python\nimport json\ndata = json.loads(result)\nfor key in data:\n  dime.emit(key, data[key])\nreturn None</code></pre>' +
+          '<pre><code class="language-lua">' +
+          '-- Lua\n' +
+          'local data = from_json(result)\n' +
+          'for key, val in pairs(data) do\n' +
+          '  emit(key, val)\n' +
+          'end\n' +
+          'return nil' +
+          '</code></pre>' +
+          '<pre><code class="language-python">' +
+          '# Python\n' +
+          'import json\n' +
+          'data = json.loads(result)\n' +
+          'for key in data:\n' +
+          '  dime.emit(key, data[key])\n' +
+          'return None' +
+          '</code></pre>' +
           '<p><strong>State Machine with Cache</strong></p>' +
-          '<pre><code># Lua\nlocal prev = cache(\'machine_state\')\nif result ~= prev then\n  set(\'machine_state\', result)\n  emit(\'state_changed\', to_json({\n    from = prev, to = result\n  }))\nend\nreturn result</code></pre>' +
-          '<pre><code># Python\nprev = dime.cache(\'machine_state\')\nif result != prev:\n  dime.set(\'machine_state\', result)\n  dime.emit(\'state_changed\',\n    dime.to_json({\n      \'from\': prev, \'to\': result\n    }))\nreturn result</code></pre>' +
+          '<pre><code class="language-lua">' +
+          '-- Lua\n' +
+          'local prev = cache(\'machine_state\')\n' +
+          'if result ~= prev then\n' +
+          '  set(\'machine_state\', result)\n' +
+          '  emit(\'state_changed\', to_json({\n' +
+          '    from = prev, to = result\n' +
+          '  }))\n' +
+          'end\n' +
+          'return result' +
+          '</code></pre>' +
+          '<pre><code class="language-python">' +
+          '# Python\n' +
+          'prev = dime.cache(\'machine_state\')\n' +
+          'if result != prev:\n' +
+          '  dime.set(\'machine_state\', result)\n' +
+          '  dime.emit(\'state_changed\',\n' +
+          '    dime.to_json({\n' +
+          '      \'from\': prev, \'to\': result\n' +
+          '    }))\n' +
+          'return result' +
+          '</code></pre>' +
           '<p>Scripts can be inline one-liners or multiline YAML blocks (using <code>|</code> or <code>&gt;</code>). Use <code>paths_script:</code> to add module search directories.</p>',
         related: [
           { page: '09', hotspot: 'emit', label: '09 \u2014 emit() function' },

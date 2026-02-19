@@ -98,13 +98,13 @@
 │   │                                                                                        │     │
 │   │   Symptoms:                     Diagnosis:                                             │     │
 │   │   ─────────                     ──────────                                             │     │
-│   │   - Data stops or is wrong      1. Check LastScriptMs via GET /status                   │     │
+│   │   - Data stops or is wrong      1. Check LastScriptMs via GET /status                  │     │
 │   │   - FaultMessage mentions Lua   2. Check FaultMessage for Lua stack trace              │     │
 │   │   - ScriptTime spikes           3. Add Console sink to see raw vs. transformed data    │     │
 │   │                                                                                        │     │
 │   │   Common Lua mistakes:                                                                 │     │
 │   │   ────────────────────                                                                 │     │
-│   │   - Nil access: result is nil when device returns nothing                               │     │
+│   │   - Nil access: result is nil when device returns nothing                              │     │
 │   │   - Type mismatch: tonumber() on a string that is not a number                         │     │
 │   │   - Missing return: script must return a value or use emit()                           │     │
 │   │   - Infinite loop: while true without break kills the scan cycle                       │     │

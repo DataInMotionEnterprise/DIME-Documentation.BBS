@@ -43,7 +43,7 @@
 │   │   │                                                                              │       │   │
 │   │   └──────────────────────────────────────────────────────────────────────────────┘       │   │
 │   │                                                                                          │   │
-│   │   Runs as root by default. Restart policy keeps DIME running after reboots.               │   │
+│   │   Runs as root by default. Restart policy keeps DIME running after reboots.              │   │
 │   │                                                                                          │   │
 │   └──────────────────────────────────────────────────────────────────────────────────────────┘   │
 │                                                                                                  │

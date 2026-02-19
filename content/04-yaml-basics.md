@@ -75,7 +75,7 @@
 │   │       address: https://influx.local     # destination address                          │     │
 │   │                                                                                        │     │
 │   │   Filters match against the message path: "source_name/item_name"                      │     │
-│   │   If include_filter has entries, only matching paths are accepted.                      │     │
+│   │   If include_filter has entries, only matching paths are accepted.                     │     │
 │   │   If include_filter is empty, exclude_filter rejects matching paths.                   │     │
 │   │                                                                                        │     │
 │   └────────────────────────────────────────────────────────────────────────────────────────┘     │

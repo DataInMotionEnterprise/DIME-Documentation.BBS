@@ -46,14 +46,14 @@
 │                                                                                                  │
 │   ┌──────────────────────────────────────────────────────────────────────────────┐               │
 │   │                                                                              │               │
-│   │   sourceName/$SYSTEM/ExecutionDuration ── connector loop duration (ms)        │               │
+│   │   sourceName/$SYSTEM/ExecutionDuration ── connector loop duration (ms)       │               │
 │   │   sourceName/$SYSTEM/IsConnected      ── true/false                          │               │
 │   │   sourceName/$SYSTEM/IsFaulted        ── true/false                          │               │
 │   │   sourceName/$SYSTEM/Fault            ── fault reason message or null        │               │
 │   │   sourceName/$SYSTEM/IsAvailable      ── true when connected and not faulted │               │
 │   │                                                                              │               │
 │   │   Example:   plc1/$SYSTEM/IsConnected      = true                            │               │
-│   │              plc1/$SYSTEM/ExecutionDuration = 12                              │               │
+│   │              plc1/$SYSTEM/ExecutionDuration = 12                             │               │
 │   │                                                                              │               │
 │   └──────────────────────────────────────────────────────────────────────────────┘               │
 │                                                                                                  │
@@ -129,7 +129,7 @@
 │                       │  plc1/* only│                                                            │
 │                       └─────────────┘                                                            │
 │                                                                                                  │
-│   If BOTH include and exclude are set, only include_filter is used; exclude is ignored.           │
+│   If BOTH include and exclude are set, only include_filter is used; exclude is ignored.          │
 │                                                                                                  │
 │  ──────────────────────────────────────────────────────────────────────────────────────────────  │
 │                                                                                                  │

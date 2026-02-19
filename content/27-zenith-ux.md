@@ -100,7 +100,7 @@
 │   │   │  ─────────                            ──────────                                 │   │   │
 │   │   │  IsConnected:   true                  sources:                                   │   │   │
 │   │   │  IsFaulted:     false                   - name: plc_line1                        │   │   │
-│   │   │  FaultCount:    0                         connector: SiemensS7                    │   │   │
+│   │   │  FaultCount:    0                         connector: SiemensS7                   │   │   │
 │   │   │  ConnectCount:  1                         address: 10.0.1.50                     │   │   │
 │   │   │  LoopTime:      23 ms                     items:                                 │   │   │
 │   │   │  ReadTime:      12 ms                       - name: temperature                  │   │   │

@@ -42,7 +42,7 @@
 │   │       connector: OpcUa                                                                   │   │
 │   │       sink:                                                                              │   │
 │   │         transform:                                                                       │   │
-│   │           type: scriban                      ◀── script | scriban | liquid                │   │
+│   │           type: scriban                      ◀── script | scriban | liquid               │   │
 │   │           template: |                                                                    │   │
 │   │             {                                                                            │   │
 │   │               "device": "{{ Message.Path }}",                                            │   │
@@ -68,23 +68,23 @@
 │   DIME supports three modes, all powered by the Scriban library.                                 │
 │   Set the mode via sink.transform.type on the source.                                            │
 │                                                                                                  │
-│   ┌────────────────────────────┐  ┌────────────────────────────┐  ┌────────────────────────────┐  │
-│   │                            │  │                            │  │                            │  │
-│   │   type: script             │  │   type: scriban            │  │   type: liquid             │  │
-│   │                            │  │                            │  │                            │  │
-│   │   Expression evaluation.   │  │   Full template syntax.    │  │   Liquid-compatible mode.  │  │
-│   │   Simplest mode.           │  │   Loops, conditionals.     │  │   Shopify/Jekyll syntax.   │  │
-│   │                            │  │                            │  │                            │  │
-│   │   template: Message.Data   │  │   template: |              │  │   template: |              │  │
-│   │                            │  │     {{ Message.Data }}     │  │     {{ Message.Data }}     │  │
-│   │   Returns the evaluated    │  │     {{ if x > 100 }}      │  │     {% if x > 100 %}       │  │
-│   │   result directly.         │  │       ALARM                │  │       ALARM                │  │
-│   │                            │  │     {{ end }}              │  │     {% endif %}             │  │
-│   │   Also exposes print()     │  │                            │  │                            │  │
-│   │   and type() functions.    │  │   .NET-native expressions  │  │   Ruby-inspired syntax.    │  │
-│   │                            │  │   with full formatting.    │  │   Widely known.            │  │
-│   │                            │  │                            │  │                            │  │
-│   └────────────────────────────┘  └────────────────────────────┘  └────────────────────────────┘  │
+│   ┌────────────────────────────┐  ┌────────────────────────────┐  ┌────────────────────────────┐ │
+│   │                            │  │                            │  │                            │ │
+│   │   type: script             │  │   type: scriban            │  │   type: liquid             │ │
+│   │                            │  │                            │  │                            │ │
+│   │   Expression evaluation.   │  │   Full template syntax.    │  │   Liquid-compatible mode.  │ │
+│   │   Simplest mode.           │  │   Loops, conditionals.     │  │   Shopify/Jekyll syntax.   │ │
+│   │                            │  │                            │  │                            │ │
+│   │   template: Message.Data   │  │   template: |              │  │   template: |              │ │
+│   │                            │  │     {{ Message.Data }}     │  │     {{ Message.Data }}     │ │
+│   │   Returns the evaluated    │  │     {{ if x > 100 }}       │  │     {% if x > 100 %}       │ │
+│   │   result directly.         │  │       ALARM                │  │       ALARM                │ │
+│   │                            │  │     {{ end }}              │  │     {% endif %}            │ │
+│   │   Also exposes print()     │  │                            │  │                            │ │
+│   │   and type() functions.    │  │   .NET-native expressions  │  │   Ruby-inspired syntax.    │ │
+│   │                            │  │   with full formatting.    │  │   Widely known.            │ │
+│   │                            │  │                            │  │                            │ │
+│   └────────────────────────────┘  └────────────────────────────┘  └────────────────────────────┘ │
 │                                                                                                  │
 │  ──────────────────────────────────────────────────────────────────────────────────────────────  │
 │                                                                                                  │
@@ -155,7 +155,7 @@
 │   ─────────────                                                                                  │
 │                                                                                                  │
 │   ┌─────────────────────────────────┐  ┌─────────────────────────────────┐                       │
-│   │  CSV Line                       │  │  Log String                       │                       │
+│   │  CSV Line                       │  │  Log String                     │                       │
 │   │                                 │  │                                 │                       │
 │   │  sink:                          │  │  sink:                          │                       │
 │   │    transform:                   │  │    transform:                   │                       │
@@ -191,7 +191,7 @@
 │   │                                          │  │                                          │     │
 │   └──────────────────────────────────────────┘  └──────────────────────────────────────────┘     │
 │                                                                                                  │
-│   TIP: Use Lua scripts to transform and enrich data on the source, then templates               │
+│   TIP: Use Lua scripts to transform and enrich data on the source, then templates                │
 │   to format the final output per sink. They work together.                                       │
 │                                                                                                  │
 └──────────────────────────────────────────────────────────────────────────────────────────────────┘

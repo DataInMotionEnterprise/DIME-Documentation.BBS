@@ -106,7 +106,7 @@
 │   │   query: SELECT col1, col2 FROM table        query: SELECT col1, col2 FROM table         │   │
 │   │          WHERE timestamp > @last_read               WHERE timestamp > $1                 │   │
 │   │                                                                                          │   │
-│   │   DatabaseSourceConnector: timer fires, execute query, iterate result set,                │   │
+│   │   DatabaseSourceConnector: timer fires, execute query, iterate result set,               │   │
 │   │   publish each row as a message. Use parameterized queries for incremental reads.        │   │
 │   │                                                                                          │   │
 │   └──────────────────────────────────────────────────────────────────────────────────────────┘   │
@@ -174,28 +174,28 @@
 │   Four base classes. Pick the one that matches how your device delivers data.                    │
 │                                                                                                  │
 │           ┌──────────────────────────────────────────────────────────────────────────┐           │
-│           │                    SourceConnector (abstract)                             │           │
+│           │                    SourceConnector (abstract)                            │           │
 │           └─────────┬───────────────┬───────────────┬───────────────┬────────────────┘           │
 │                     │               │               │               │                            │
-│           ┌─────────▼─────┐ ┌───────▼───────┐ ┌─────▼──────┐ ┌─────▼──────────┐                 │
-│           │               │ │               │ │            │ │                │                 │
-│           │   Polling     │ │   Queuing     │ │  Batch     │ │  Database      │                 │
-│           │               │ │               │ │  Polling   │ │                │                 │
-│           │  Timer fires  │ │  Msgs arrive  │ │            │ │  Timer fires   │                 │
-│           │  → read all   │ │  → queue inbox│ │  Timer →   │ │  → run query   │                 │
-│           │  → publish    │ │  → drain timer│ │  read batch│ │  → column→item │                 │
-│           │               │ │  → publish    │ │  → iterate │ │  → publish     │                 │
-│           │  OPC-UA       │ │               │ │  → publish │ │                │                 │
-│           │  Modbus       │ │  MQTT         │ │            │ │  SQL Server    │                 │
-│           │  S7           │ │  SparkplugB   │ │  OPC-DA    │ │  PostgreSQL    │                 │
-│           │  EtherNet/IP  │ │  ActiveMQ     │ │            │ │                │                 │
-│           │  Beckhoff ADS │ │  Redis Pub/Sub│ └────────────┘ └────────────────┘                 │
-│           │  FANUC        │ │  UDP Server   │                                                   │
-│           │  SNMP         │ │  HTTP Server  │                                                   │
-│           │  Script       │ │  Haas SHDR    │                                                   │
-│           │               │ │  MTConnect    │                                                   │
-│           │               │ │  ROS2         │                                                   │
-│           └───────────────┘ └───────────────┘                                                   │
+│           ┌─────────▼─────┐ ┌───────▼───────┐ ┌─────▼──────┐ ┌─────▼──────────┐                  │
+│           │               │ │               │ │            │ │                │                  │
+│           │   Polling     │ │   Queuing     │ │  Batch     │ │  Database      │                  │
+│           │               │ │               │ │  Polling   │ │                │                  │
+│           │  Timer fires  │ │  Msgs arrive  │ │            │ │  Timer fires   │                  │
+│           │  → read all   │ │  → queue inbox│ │  Timer →   │ │  → run query   │                  │
+│           │  → publish    │ │  → drain timer│ │  read batch│ │  → column→item │                  │
+│           │               │ │  → publish    │ │  → iterate │ │  → publish     │                  │
+│           │  OPC-UA       │ │               │ │  → publish │ │                │                  │
+│           │  Modbus       │ │  MQTT         │ │            │ │  SQL Server    │                  │
+│           │  S7           │ │  SparkplugB   │ │  OPC-DA    │ │  PostgreSQL    │                  │
+│           │  EtherNet/IP  │ │  ActiveMQ     │ │            │ │                │                  │
+│           │  Beckhoff ADS │ │  Redis Pub/Sub│ └────────────┘ └────────────────┘                  │
+│           │  FANUC        │ │  UDP Server   │                                                    │
+│           │  SNMP         │ │  HTTP Server  │                                                    │
+│           │  Script       │ │  Haas SHDR    │                                                    │
+│           │               │ │  MTConnect    │                                                    │
+│           │               │ │  ROS2         │                                                    │
+│           └───────────────┘ └───────────────┘                                                    │
 │                                                                                                  │
 │   Polling is the most common: timer → read → publish. Queuing is for push protocols.             │
 │   Database is for SQL queries that return result sets with column-to-item mapping.               │

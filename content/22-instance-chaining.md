@@ -166,7 +166,7 @@
 │                                                                                                  │
 │   ┌──────────────────────────────────────────────────────────────────────────────────────────┐   │
 │   │                                                                                          │   │
-│   │   $ curl -X POST http://localhost:9999/connector/add/sink/debug_console \                 │   │
+│   │   $ curl -X POST http://localhost:9999/connector/add/sink/debug_console \                │   │
 │   │       -H "Content-Type: text/plain" \                                                    │   │
 │   │       -d 'name: debug_console                                                            │   │
 │   │   connector: Console'                                                                    │   │
