@@ -1,0 +1,138 @@
+/**
+ * 17 — WebSocket Monitoring
+ * Hotspot coordinates are 0-indexed lines/cols after stripping ``` fences.
+ */
+DIME_PAGES['17'] = {
+  id: '17',
+  title: '17 \u2014 WebSocket Monitoring',
+  file: 'content/17-websocket-monitoring.md',
+  hotspots: [
+    {
+      id: 'admin-ws',
+      startLine: 16, startCol: 3, endLine: 53, endCol: 90,
+      label: 'Admin WebSocket \u2014 ws://localhost:9998',
+      panel: {
+        title: 'Built-In Admin WebSocket Stream',
+        body:
+          '<p>Every DIME instance streams live telemetry over <code>ws://localhost:9998</code>. Always on, no configuration needed.</p>' +
+          '<p>What streams over this WebSocket:</p>' +
+          '<ul>' +
+          '<li><strong>Connector status</strong> \u2014 isConnected and isFaulted changes in real time</li>' +
+          '<li><strong>Performance metrics</strong> \u2014 totalLoopTime, deviceReadTime, scriptExecTime per connector</li>' +
+          '<li><strong>Fault notifications</strong> \u2014 Immediate alert when any connector enters an error state</li>' +
+          '<li><strong>Live data values</strong> \u2014 Current values flowing through the ring buffer</li>' +
+          '<li><strong>$SYSTEM paths</strong> \u2014 All $SYSTEM metadata for every connector</li>' +
+          '</ul>' +
+          '<p>This is how <strong>DIME-Connector.UX</strong> (the built-in web dashboard) receives its live data. Any WebSocket client can connect to the same endpoint.</p>',
+        related: [
+          { page: '16', hotspot: 'status-endpoint', label: '16 \u2014 REST API /status endpoint' },
+          { page: '17', hotspot: 'ws-sink', label: '17 \u2014 WebSocket Server sink' },
+          { page: '18', hotspot: 'health-check', label: '18 \u2014 Health monitoring' }
+        ]
+      }
+    },
+    {
+      id: 'ws-sink',
+      startLine: 56, startCol: 3, endLine: 91, endCol: 90,
+      label: 'WebSocket Server Sink',
+      panel: {
+        title: 'WebSocketServer Sink \u2014 Push Data to Clients',
+        body:
+          '<p>The <strong>WebSocketServer</strong> sink opens a WebSocket server on a configurable port. External clients connect and receive live data, filtered by include/exclude patterns.</p>' +
+          '<p>Key differences from the admin WebSocket (:9998):</p>' +
+          '<ul>' +
+          '<li><strong>Configurable port</strong> \u2014 Run multiple WS servers on different ports</li>' +
+          '<li><strong>Filtered data</strong> \u2014 Use include_filter/exclude_filter to control what data streams</li>' +
+          '<li><strong>Purpose-built</strong> \u2014 Designed for external consumers, dashboards, mobile apps</li>' +
+          '<li><strong>Multiple instances</strong> \u2014 One WS sink for PLC data, another for MQTT, etc.</li>' +
+          '</ul>' +
+          '<p>Messages arrive as JSON with <code>path</code>, <code>data</code>, and <code>timestamp</code> fields.</p>',
+        yaml:
+          'sinks:\n' +
+          '  - name: live_feed\n' +
+          '    connector: WebSocketServer\n' +
+          '    port: !!int 8092\n' +
+          '    include_filter:\n' +
+          '      - "plc1/.*"\n' +
+          '      - "robot1/.*"',
+        related: [
+          { page: '17', hotspot: 'admin-ws', label: '17 \u2014 Admin WebSocket (built-in)' },
+          { page: '17', hotspot: 'dashboard-build', label: '17 \u2014 Building a live dashboard' },
+          { page: '16', hotspot: 'hot-reconfig', label: '16 \u2014 Add sinks at runtime' }
+        ]
+      }
+    },
+    {
+      id: 'http-sink',
+      startLine: 92, startCol: 3, endLine: 122, endCol: 90,
+      label: 'HTTP Server Sink \u2014 Static Files',
+      panel: {
+        title: 'HttpServer Sink \u2014 Serve Your Dashboard Files',
+        body:
+          '<p>The <strong>HttpServer</strong> sink serves static files (HTML, CSS, JS) directly from DIME on a configurable port. No separate web server needed.</p>' +
+          '<p>Point the <code>path</code> property at a folder containing your dashboard files. DIME will serve them at <code>http://localhost:{port}/</code>.</p>' +
+          '<p>Combine with a WebSocketServer sink to create a <strong>self-contained dashboard</strong>: the browser loads the page from HttpServer and connects to WebSocketServer for live data.</p>',
+        yaml:
+          'sinks:\n' +
+          '  - name: web_ui\n' +
+          '    connector: HttpServer\n' +
+          '    port: !!int 8080\n' +
+          '    path: ./www',
+        related: [
+          { page: '17', hotspot: 'self-contained', label: '17 \u2014 Self-contained dashboard setup' },
+          { page: '17', hotspot: 'ws-sink', label: '17 \u2014 WebSocket Server sink' }
+        ]
+      }
+    },
+    {
+      id: 'dashboard-build',
+      startLine: 124, startCol: 3, endLine: 181, endCol: 90,
+      label: 'Building a Live Dashboard',
+      panel: {
+        title: 'Connecting JavaScript to WebSocket for Live Charts',
+        body:
+          '<p>Building a live dashboard is straightforward:</p>' +
+          '<ol>' +
+          '<li>Create a WebSocketServer sink with the data you want to display</li>' +
+          '<li>Write a simple HTML page with JavaScript that connects to the WebSocket</li>' +
+          '<li>Parse incoming JSON messages and update your charts/gauges</li>' +
+          '</ol>' +
+          '<p>Each message arrives as JSON with three fields:</p>' +
+          '<ul>' +
+          '<li><code>path</code> \u2014 e.g. "plc1/temperature" \u2014 route to the correct gauge</li>' +
+          '<li><code>data</code> \u2014 e.g. 72.5 \u2014 the current value</li>' +
+          '<li><code>timestamp</code> \u2014 epoch ms \u2014 for time-series charts</li>' +
+          '</ul>' +
+          '<p>Use any charting library (Chart.js, D3, Plotly) or plain DOM manipulation. The WebSocket delivers data as fast as the source produces it.</p>',
+        related: [
+          { page: '17', hotspot: 'ws-sink', label: '17 \u2014 WebSocket Server sink config' },
+          { page: '17', hotspot: 'self-contained', label: '17 \u2014 Self-contained setup' },
+          { page: '12', hotspot: 'plc-walkthrough', label: '12 \u2014 PLC walkthrough' }
+        ]
+      }
+    },
+    {
+      id: 'self-contained',
+      startLine: 182, startCol: 3, endLine: 236, endCol: 90,
+      label: 'Self-Contained Dashboard Setup',
+      panel: {
+        title: 'Zero-Dependency Dashboard \u2014 HTTP + WebSocket',
+        body:
+          '<p>Combine two sinks for a complete, self-contained dashboard with no external dependencies:</p>' +
+          '<ul>' +
+          '<li><strong>HttpServer</strong> sink \u2014 Serves your HTML/CSS/JS dashboard files on port 8080</li>' +
+          '<li><strong>WebSocketServer</strong> sink \u2014 Streams filtered live data on port 8092</li>' +
+          '</ul>' +
+          '<p>Your <code>index.html</code> connects to <code>ws://localhost:8092</code> for live data. The browser loads the page from the HttpServer and receives data from the WebSocketServer.</p>' +
+          '<p><strong>No nginx, no Node.js, no separate web server.</strong> Just DIME and a folder of HTML files. Deploy the DIME binary + a <code>www</code> folder and you have a complete monitoring solution.</p>' +
+          '<p>This pattern is ideal for edge deployments, kiosks, and factory-floor displays where simplicity matters.</p>',
+        related: [
+          { page: '17', hotspot: 'http-sink', label: '17 \u2014 HttpServer sink config' },
+          { page: '17', hotspot: 'ws-sink', label: '17 \u2014 WebSocketServer sink config' },
+          { page: '16', hotspot: 'hot-reconfig', label: '16 \u2014 Add sinks at runtime' },
+          { page: '19', hotspot: 'connector-ux', label: '19 \u2014 Connector UX dashboard' }
+        ]
+      }
+    }
+  ]
+};

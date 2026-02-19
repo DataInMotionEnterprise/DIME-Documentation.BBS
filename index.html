@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DIME — Data In Motion Enterprise</title>
+  <!-- No web fonts — system monospace fonts have proper box-drawing glyph widths -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div id="shell">
+    <nav id="sidebar">
+      <div id="sidebar-header">
+        <span class="logo-text">DIME</span>
+      </div>
+      <ul id="page-list"></ul>
+      <div id="sidebar-footer">
+        <span class="key-hint"><kbd>&uarr;</kbd><kbd>&darr;</kbd> navigate pages</span>
+        <span class="key-hint">Click highlighted regions</span>
+        <span class="key-hint"><kbd>Esc</kbd> close panel</span>
+      </div>
+    </nav>
+    <main id="canvas-wrap">
+      <pre id="ascii-canvas"></pre>
+    </main>
+    <aside id="panel">
+      <div id="panel-header">
+        <h2 id="panel-title"></h2>
+        <button id="panel-close" title="Close (ESC)">&times;</button>
+      </div>
+      <div id="panel-body"></div>
+      <div id="panel-yaml"></div>
+      <div id="panel-related"></div>
+    </aside>
+  </div>
+  <div id="scanlines"></div>
+  <div id="vignette"></div>
+  <!-- Page configs (one file per infographic, loaded before registry) -->
+  <script>var DIME_PAGES = {};</script>
+  <script src="js/pages/page-01.js"></script>
+  <script src="js/pages/page-02.js"></script>
+  <script src="js/pages/page-03.js"></script>
+  <script src="js/pages/page-04.js"></script>
+  <script src="js/pages/page-05.js"></script>
+  <script src="js/pages/page-06.js"></script>
+  <script src="js/pages/page-07.js"></script>
+  <script src="js/pages/page-08.js"></script>
+  <script src="js/pages/page-09.js"></script>
+  <script src="js/pages/page-10.js"></script>
+  <script src="js/pages/page-11.js"></script>
+  <script src="js/pages/page-12.js"></script>
+  <script src="js/pages/page-13.js"></script>
+  <script src="js/pages/page-14.js"></script>
+  <script src="js/pages/page-15.js"></script>
+  <script src="js/pages/page-16.js"></script>
+  <script src="js/pages/page-17.js"></script>
+  <script src="js/pages/page-18.js"></script>
+  <script src="js/pages/page-19.js"></script>
+  <script src="js/pages/page-20.js"></script>
+  <script src="js/pages/page-21.js"></script>
+  <script src="js/pages/page-22.js"></script>
+  <script src="js/pages/page-23.js"></script>
+  <script src="js/pages/page-24.js"></script>
+  <script src="js/pages/page-25.js"></script>
+  <script src="js/pages/page-26.js"></script>
+  <script src="js/pages/page-27.js"></script>
+  <script src="js/pages/page-28.js"></script>
+  <script src="js/pages/page-29.js"></script>
+  <script src="js/pages/page-30.js"></script>
+  <!-- Registry assembles PAGES array from individual configs -->
+  <script src="js/pages.js"></script>
+  <!-- App engine -->
+  <script src="js/app.js"></script>
+</body>
+</html>

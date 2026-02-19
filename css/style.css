@@ -1,0 +1,442 @@
+/* === Reset & Variables === */
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --bg: #0a0a08;
+  --amber: #ffb000;
+  --amber-dim: #805800;
+  --amber-glow: rgba(255, 176, 0, 0.4);
+  --cyan: #00e5ff;
+  --cyan-dim: #007a8a;
+  --cyan-glow: rgba(0, 229, 255, 0.4);
+  --panel-bg: #0d0d0a;
+  --sidebar-bg: #0d0d0a;
+  --border: #302800;
+  --font: 'Cascadia Mono', Consolas, 'Courier New', monospace;
+  --sidebar-w: 220px;
+  --panel-w: 420px;
+}
+
+html, body {
+  height: 100%;
+  overflow: hidden;
+  background: var(--bg);
+  color: var(--amber);
+  font-family: var(--font);
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+/* === CRT Effects === */
+#scanlines {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1000;
+  background: repeating-linear-gradient(
+    0deg,
+    rgba(0, 0, 0, 0.12) 0px,
+    rgba(0, 0, 0, 0.12) 1px,
+    transparent 1px,
+    transparent 3px
+  );
+}
+
+#vignette {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 999;
+  background: radial-gradient(
+    ellipse at center,
+    transparent 55%,
+    rgba(0, 0, 0, 0.55) 100%
+  );
+}
+
+@keyframes flicker {
+  0%   { opacity: 1; }
+  92%  { opacity: 1; }
+  93%  { opacity: 0.97; }
+  94%  { opacity: 1; }
+  96%  { opacity: 0.985; }
+  97%  { opacity: 1; }
+  100% { opacity: 1; }
+}
+
+body {
+  animation: flicker 5s infinite;
+}
+
+/* === Shell Grid === */
+#shell {
+  display: grid;
+  grid-template-columns: var(--sidebar-w) 1fr 0px;
+  grid-template-rows: 100vh;
+  height: 100vh;
+  transition: grid-template-columns 0.3s ease;
+}
+
+#shell.panel-open {
+  grid-template-columns: var(--sidebar-w) 1fr var(--panel-w);
+}
+
+/* === Sidebar === */
+#sidebar {
+  background: var(--sidebar-bg);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+#sidebar-header {
+  padding: 20px 16px 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.logo-text {
+  display: block;
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--amber);
+  text-shadow: 0 0 10px var(--amber-glow), 0 0 20px var(--amber-glow);
+  letter-spacing: 6px;
+}
+
+.logo-sub {
+  display: block;
+  font-size: 11px;
+  color: var(--amber-dim);
+  margin-top: 4px;
+}
+
+#page-list {
+  list-style: none;
+  flex: 1;
+  padding: 8px 0;
+}
+
+#page-list li {
+  padding: 0;
+}
+
+#page-list a {
+  display: block;
+  padding: 8px 16px;
+  color: var(--amber-dim);
+  text-decoration: none;
+  font-size: 12px;
+  border-left: 3px solid transparent;
+  transition: color 0.15s, background 0.15s, border-color 0.15s;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+#page-list a:hover {
+  color: var(--amber);
+  background: rgba(255, 176, 0, 0.05);
+}
+
+#page-list a.active {
+  color: var(--cyan);
+  border-left-color: var(--cyan);
+  background: rgba(0, 229, 255, 0.05);
+  text-shadow: 0 0 8px var(--cyan-glow);
+}
+
+#sidebar-footer {
+  padding: 12px 16px;
+  border-top: 1px solid var(--border);
+  font-size: 10px;
+  color: var(--amber-dim);
+  line-height: 1.5;
+}
+
+#sidebar-footer span {
+  display: block;
+  margin-bottom: 2px;
+}
+
+kbd {
+  display: inline-block;
+  background: rgba(255, 176, 0, 0.08);
+  border: 1px solid var(--amber-dim);
+  border-radius: 2px;
+  padding: 0 4px;
+  font-family: var(--font);
+  font-size: 9px;
+  color: var(--amber);
+  line-height: 1.6;
+}
+
+/* === Canvas === */
+#canvas-wrap {
+  overflow: auto;
+  padding: 20px 24px;
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+
+#ascii-canvas {
+  color: var(--amber);
+  font-family: var(--font);
+  font-size: 13px;
+  line-height: 1.3;
+  text-shadow: 0 0 3px var(--amber-glow);
+  white-space: pre;
+  tab-size: 4;
+  margin: 0 auto;
+  min-width: 0;
+  font-variant-ligatures: none;
+  font-feature-settings: 'liga' 0, 'calt' 0;
+  -webkit-font-feature-settings: 'liga' 0, 'calt' 0;
+}
+
+/* === Hotspots === */
+.hotspot {
+  cursor: pointer;
+  text-decoration: none;
+  border-bottom: 1px dotted #333;
+  transition: color 0.12s, border-color 0.12s, text-shadow 0.12s, background 0.12s;
+}
+
+.hotspot:hover {
+  color: var(--cyan);
+  border-bottom-color: var(--cyan);
+  text-shadow: 0 0 6px var(--cyan-glow);
+  background: rgba(0, 229, 255, 0.05);
+}
+
+.hotspot:focus {
+  outline: 1px dotted var(--cyan);
+  outline-offset: 1px;
+}
+
+.hotspot.active {
+  color: var(--cyan);
+  border-bottom: 1px solid var(--cyan);
+  background: rgba(0, 229, 255, 0.08);
+  text-shadow: 0 0 10px var(--cyan-glow);
+}
+
+@keyframes hotspot-pulse {
+  0%   { background: rgba(0, 229, 255, 0.08); }
+  50%  { background: rgba(0, 229, 255, 0.14); }
+  100% { background: rgba(0, 229, 255, 0.08); }
+}
+
+.hotspot.active {
+  animation: hotspot-pulse 2s ease-in-out infinite;
+}
+
+/* === Panel === */
+#panel {
+  background: var(--panel-bg);
+  border-left: 1px solid var(--cyan-dim);
+  overflow-y: auto;
+  overflow-x: hidden;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+
+#shell.panel-open #panel {
+  opacity: 1;
+}
+
+#panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 20px 20px 14px;
+  border-bottom: 1px solid rgba(0, 229, 255, 0.2);
+  position: sticky;
+  top: 0;
+  background: var(--panel-bg);
+  z-index: 2;
+}
+
+#panel-title {
+  color: var(--cyan);
+  font-size: 15px;
+  font-weight: 700;
+  text-shadow: 0 0 8px var(--cyan-glow);
+  flex: 1;
+  margin: 0;
+  line-height: 1.3;
+}
+
+#panel-close {
+  background: none;
+  border: 1px solid var(--cyan-dim);
+  color: var(--cyan);
+  font-family: var(--font);
+  font-size: 18px;
+  cursor: pointer;
+  padding: 2px 8px;
+  line-height: 1;
+  transition: background 0.12s, border-color 0.12s;
+  flex-shrink: 0;
+  margin-left: 12px;
+}
+
+#panel-close:hover {
+  background: rgba(0, 229, 255, 0.15);
+  border-color: var(--cyan);
+}
+
+#panel-body {
+  padding: 16px 20px;
+  color: var(--amber);
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+#panel-body p {
+  margin-bottom: 10px;
+}
+
+#panel-body strong {
+  color: var(--cyan);
+  font-weight: 700;
+}
+
+#panel-body code {
+  background: rgba(255, 176, 0, 0.08);
+  border: 1px solid var(--border);
+  padding: 1px 5px;
+  font-size: 12px;
+  color: var(--amber);
+}
+
+#panel-body ul {
+  margin: 8px 0 12px 0;
+  padding: 0;
+  list-style: none;
+}
+
+#panel-body ul li {
+  padding: 3px 0 3px 16px;
+  position: relative;
+}
+
+#panel-body ul li::before {
+  content: "\25B8";
+  color: var(--cyan);
+  position: absolute;
+  left: 0;
+}
+
+/* === Panel YAML === */
+#panel-yaml {
+  padding: 0 20px 16px;
+}
+
+#panel-yaml:empty {
+  display: none;
+}
+
+#panel-yaml pre {
+  background: rgba(255, 176, 0, 0.04);
+  border: 1px solid var(--border);
+  padding: 12px;
+  font-size: 11.5px;
+  line-height: 1.5;
+  overflow-x: auto;
+  color: var(--amber);
+  font-family: var(--font);
+  white-space: pre;
+}
+
+.yaml-label {
+  display: block;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--amber-dim);
+  margin-bottom: 6px;
+}
+
+/* === Panel Related === */
+#panel-related {
+  padding: 0 20px 20px;
+  border-top: 1px solid var(--border);
+  margin-top: 4px;
+  padding-top: 14px;
+}
+
+#panel-related:empty {
+  display: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+}
+
+.related-label {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--amber-dim);
+  margin-bottom: 8px;
+}
+
+#panel-related a {
+  display: block;
+  color: var(--cyan-dim);
+  text-decoration: none;
+  font-size: 12px;
+  padding: 4px 0;
+  transition: color 0.12s;
+}
+
+#panel-related a:hover {
+  color: var(--cyan);
+  text-shadow: 0 0 6px var(--cyan-glow);
+}
+
+/* === Page Transition === */
+@keyframes page-enter {
+  0%   { opacity: 0; filter: brightness(2); }
+  20%  { opacity: 0.6; filter: brightness(1.4); }
+  100% { opacity: 1; filter: brightness(1); }
+}
+
+#ascii-canvas.entering {
+  animation: page-enter 0.3s ease-out;
+}
+
+/* === Loading State === */
+#ascii-canvas.loading {
+  opacity: 0.3;
+}
+
+/* === Scrollbar === */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--amber-dim);
+  border-radius: 0;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--amber);
+}
+
+/* Scrollbar for Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--amber-dim) var(--bg);
+}
