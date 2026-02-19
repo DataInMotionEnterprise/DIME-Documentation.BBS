@@ -9,7 +9,7 @@ DIME_PAGES['28'] = {
   hotspots: [
     {
       id: 'edge-tier',
-      startLine: 63, startCol: 3, endLine: 86, endCol: 90,
+      startLine: 59, startCol: 3, endLine: 82, endCol: 90,
       label: 'Tier 1 \u2014 Edge (DIME Connector)',
       panel: {
         title: 'Edge Tier \u2014 Factory Floor Data Collection',
@@ -32,7 +32,7 @@ DIME_PAGES['28'] = {
     },
     {
       id: 'gateway-tier',
-      startLine: 42, startCol: 3, endLine: 59, endCol: 90,
+      startLine: 40, startCol: 3, endLine: 55, endCol: 90,
       label: 'Tier 2 \u2014 Gateway (DIME Horizon)',
       panel: {
         title: 'Gateway Tier \u2014 Site Management & Cloud Bridge',
@@ -54,7 +54,7 @@ DIME_PAGES['28'] = {
     },
     {
       id: 'cloud-tier',
-      startLine: 19, startCol: 3, endLine: 37, endCol: 90,
+      startLine: 19, startCol: 3, endLine: 35, endCol: 90,
       label: 'Tier 3 \u2014 Cloud (DIME Zenith + Zenith UX)',
       panel: {
         title: 'Cloud Tier \u2014 Fleet Command Center',
@@ -76,7 +76,7 @@ DIME_PAGES['28'] = {
     },
     {
       id: 'data-up',
-      startLine: 91, startCol: 4, endLine: 103, endCol: 90,
+      startLine: 90, startCol: 4, endLine: 101, endCol: 90,
       label: 'Data Flows Up \u2014 Device to Cloud',
       panel: {
         title: 'Upward Data Flow \u2014 Device to Dashboard',
@@ -98,7 +98,7 @@ DIME_PAGES['28'] = {
     },
     {
       id: 'commands-down',
-      startLine: 109, startCol: 4, endLine: 122, endCol: 90,
+      startLine: 109, startCol: 4, endLine: 121, endCol: 90,
       label: 'Commands Flow Down \u2014 Cloud to Edge',
       panel: {
         title: 'Downward Command Flow \u2014 Config Propagation',

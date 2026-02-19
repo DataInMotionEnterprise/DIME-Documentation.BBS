@@ -9,7 +9,7 @@ DIME_PAGES['17'] = {
   hotspots: [
     {
       id: 'admin-ws',
-      startLine: 16, startCol: 3, endLine: 53, endCol: 90,
+      startLine: 16, startCol: 3, endLine: 47, endCol: 90,
       label: 'Admin WebSocket \u2014 ws://localhost:9998',
       panel: {
         title: 'Built-In Admin WebSocket Stream',
@@ -33,7 +33,7 @@ DIME_PAGES['17'] = {
     },
     {
       id: 'ws-sink',
-      startLine: 56, startCol: 3, endLine: 91, endCol: 90,
+      startLine: 56, startCol: 3, endLine: 79, endCol: 90,
       label: 'WebSocket Server Sink',
       panel: {
         title: 'WebsocketServer Sink \u2014 Push Data to Clients',
@@ -64,7 +64,7 @@ DIME_PAGES['17'] = {
     },
     {
       id: 'http-sink',
-      startLine: 92, startCol: 3, endLine: 122, endCol: 90,
+      startLine: 87, startCol: 3, endLine: 108, endCol: 90,
       label: 'Web Server Sink \u2014 Static Files',
       panel: {
         title: 'WebServer Sink \u2014 Serve Your Dashboard Files',
@@ -86,7 +86,7 @@ DIME_PAGES['17'] = {
     },
     {
       id: 'dashboard-build',
-      startLine: 124, startCol: 3, endLine: 181, endCol: 90,
+      startLine: 116, startCol: 3, endLine: 161, endCol: 90,
       label: 'Building a Live Dashboard',
       panel: {
         title: 'Connecting JavaScript to WebSocket for Live Charts',
@@ -113,7 +113,7 @@ DIME_PAGES['17'] = {
     },
     {
       id: 'self-contained',
-      startLine: 182, startCol: 3, endLine: 236, endCol: 90,
+      startLine: 170, startCol: 3, endLine: 207, endCol: 90,
       label: 'Self-Contained Dashboard Setup',
       panel: {
         title: 'Zero-Dependency Dashboard \u2014 HTTP + WebSocket',

@@ -9,7 +9,7 @@ DIME_PAGES['13'] = {
   hotspots: [
     {
       id: 'mqtt-source',
-      startLine: 11, startCol: 3, endLine: 46, endCol: 90,
+      startLine: 11, startCol: 3, endLine: 54, endCol: 90,
       label: 'MQTT Source Configuration',
       panel: {
         title: 'MQTT Source \u2014 Subscribe to Sensor Topics',
@@ -102,7 +102,7 @@ DIME_PAGES['13'] = {
     },
     {
       id: 'sparkplugb',
-      startLine: 106, startCol: 3, endLine: 133, endCol: 90,
+      startLine: 113, startCol: 3, endLine: 132, endCol: 90,
       label: 'SparkplugB \u2014 Industrial MQTT',
       panel: {
         title: 'SparkplugB \u2014 Industrial MQTT Standard',
@@ -125,7 +125,7 @@ DIME_PAGES['13'] = {
     },
     {
       id: 'broker-bridge',
-      startLine: 148, startCol: 3, endLine: 174, endCol: 90,
+      startLine: 165, startCol: 3, endLine: 179, endCol: 90,
       label: 'Edge-to-Cloud MQTT Bridge',
       panel: {
         title: 'MQTT Broker Bridge \u2014 Edge to Cloud',

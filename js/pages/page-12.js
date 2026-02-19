@@ -126,7 +126,7 @@ DIME_PAGES['12'] = {
     },
     {
       id: 'complete-flow',
-      startLine: 119, startCol: 3, endLine: 144, endCol: 90,
+      startLine: 131, startCol: 3, endLine: 146, endCol: 90,
       label: 'Complete Data Flow Diagram',
       panel: {
         title: 'Complete Flow \u2014 Device to Multiple Destinations',

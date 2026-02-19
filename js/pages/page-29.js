@@ -36,7 +36,7 @@ DIME_PAGES['29'] = {
     },
     {
       id: 'scan-interval',
-      startLine: 47, startCol: 3, endLine: 77, endCol: 87,
+      startLine: 50, startCol: 3, endLine: 75, endCol: 87,
       label: 'Scan Interval Tuning',
       panel: {
         title: 'scan_interval \u2014 Frequency vs. CPU',
@@ -64,7 +64,7 @@ DIME_PAGES['29'] = {
     },
     {
       id: 'double-buffer',
-      startLine: 91, startCol: 3, endLine: 123, endCol: 87,
+      startLine: 104, startCol: 3, endLine: 135, endCol: 87,
       label: 'Double-Buffer Pattern',
       panel: {
         title: 'Double-Buffer \u2014 Decoupling Read and Write Speeds',
@@ -89,7 +89,7 @@ DIME_PAGES['29'] = {
     },
     {
       id: 'backpressure',
-      startLine: 130, startCol: 3, endLine: 156, endCol: 87,
+      startLine: 143, startCol: 3, endLine: 168, endCol: 87,
       label: 'Backpressure \u2014 Slow Sinks',
       panel: {
         title: 'Backpressure \u2014 When Sinks Cannot Keep Up',
@@ -118,7 +118,7 @@ DIME_PAGES['29'] = {
     },
     {
       id: 'bottlenecks',
-      startLine: 163, startCol: 3, endLine: 198, endCol: 87,
+      startLine: 176, startCol: 3, endLine: 211, endCol: 87,
       label: 'Finding Bottlenecks with /status',
       panel: {
         title: '/status Metrics \u2014 Built-In Performance Diagnostics',

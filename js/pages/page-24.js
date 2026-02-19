@@ -9,7 +9,7 @@ DIME_PAGES['24'] = {
   hotspots: [
     {
       id: 'docker-run',
-      startLine: 16, startCol: 3, endLine: 51, endCol: 90,
+      startLine: 16, startCol: 3, endLine: 47, endCol: 90,
       label: 'Docker Run \u2014 Quick Start',
       panel: {
         title: 'docker run \u2014 Single Container',
@@ -38,7 +38,7 @@ DIME_PAGES['24'] = {
     },
     {
       id: 'compose',
-      startLine: 56, startCol: 3, endLine: 111, endCol: 90,
+      startLine: 55, startCol: 3, endLine: 109, endCol: 90,
       label: 'Docker Compose Stack',
       panel: {
         title: 'Docker Compose \u2014 DIME + InfluxDB + Grafana',
@@ -77,7 +77,7 @@ DIME_PAGES['24'] = {
     },
     {
       id: 'volumes',
-      startLine: 116, startCol: 3, endLine: 138, endCol: 90,
+      startLine: 115, startCol: 3, endLine: 134, endCol: 90,
       label: 'Volumes & Port Mapping',
       panel: {
         title: 'Volume Mounts & Port Mapping',
@@ -105,7 +105,7 @@ DIME_PAGES['24'] = {
     },
     {
       id: 'arm64',
-      startLine: 143, startCol: 3, endLine: 180, endCol: 90,
+      startLine: 142, startCol: 3, endLine: 169, endCol: 90,
       label: 'ARM64 / Edge Deployment',
       panel: {
         title: 'ARM64 \u2014 Raspberry Pi & Edge Gateways',
@@ -126,7 +126,7 @@ DIME_PAGES['24'] = {
     },
     {
       id: 'ros2',
-      startLine: 186, startCol: 3, endLine: 204, endCol: 90,
+      startLine: 177, startCol: 3, endLine: 203, endCol: 90,
       label: 'ROS2 Docker Variants',
       panel: {
         title: 'ROS2 Images \u2014 Humble & Jazzy',
