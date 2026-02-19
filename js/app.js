@@ -70,8 +70,16 @@
 
   function buildSidebar() {
     pageList.innerHTML = '';
+    var lastSection = null;
     for (var i = 0; i < PAGES.length; i++) {
       var page = PAGES[i];
+      if (page.section && page.section !== lastSection) {
+        var divLi = document.createElement('li');
+        divLi.className = 'section-divider';
+        divLi.textContent = page.section;
+        pageList.appendChild(divLi);
+        lastSection = page.section;
+      }
       var li = document.createElement('li');
       var a = document.createElement('a');
       a.href = '#page-' + page.id;
@@ -195,7 +203,7 @@
             '  Check back soon!\n';
           return;
         }
-        text = await resp.text();
+        text = (await resp.text()).replace(/\r/g, '');
         pageCache[page.file] = text;
       }
 
@@ -382,7 +390,7 @@
 
   function getPageIdFromHash() {
     var hash = window.location.hash;
-    var match = hash.match(/^#page-(\d{2})$/);
+    var match = hash.match(/^#page-([\w]+)$/);
     return match ? match[1] : '01';
   }
 
@@ -393,10 +401,41 @@
     }
   }
 
+  // ── Sidebar resize ────────────────────────────────────────────
+
+  var sidebarResize = document.getElementById('sidebar-resize');
+
+  function initSidebarResize() {
+    var dragging = false;
+
+    sidebarResize.addEventListener('mousedown', function (e) {
+      e.preventDefault();
+      dragging = true;
+      shell.classList.add('resizing');
+      document.body.style.cursor = 'col-resize';
+      document.body.style.userSelect = 'none';
+    });
+
+    document.addEventListener('mousemove', function (e) {
+      if (!dragging) return;
+      var newWidth = Math.max(120, Math.min(e.clientX, 500));
+      document.documentElement.style.setProperty('--sidebar-w', newWidth + 'px');
+    });
+
+    document.addEventListener('mouseup', function () {
+      if (!dragging) return;
+      dragging = false;
+      shell.classList.remove('resizing');
+      document.body.style.cursor = '';
+      document.body.style.userSelect = '';
+    });
+  }
+
   // ── Init ───────────────────────────────────────────────────────
 
   function init() {
     buildSidebar();
+    initSidebarResize();
     panelClose.addEventListener('click', closePanel);
     sidebarToggle.addEventListener('click', toggleSidebar);
     document.addEventListener('keydown', handleKeyboard);

@@ -98,20 +98,50 @@ body {
 /* === Shell Grid === */
 #shell {
   display: grid;
-  grid-template-columns: var(--sidebar-w) 1fr 0px;
+  grid-template-columns: var(--sidebar-w) 0px 1fr 0px;
   grid-template-rows: 100vh;
   height: 100vh;
   transition: grid-template-columns 0.3s ease;
 }
 
 #shell.panel-open {
-  grid-template-columns: var(--sidebar-w) 1fr var(--panel-w);
+  grid-template-columns: var(--sidebar-w) 0px 1fr var(--panel-w);
+}
+
+#shell.resizing {
+  transition: none;
+}
+
+/* === Sidebar Resize Handle === */
+#sidebar-resize {
+  width: 5px;
+  cursor: col-resize;
+  background: transparent;
+  position: relative;
+  z-index: 10;
+  margin-left: -3px;
+  margin-right: -2px;
+}
+
+#sidebar-resize::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 2px;
+  width: 1px;
+  background: var(--border);
+  transition: background 0.15s;
+}
+
+#sidebar-resize:hover::after {
+  background: var(--amber-dim);
+  box-shadow: 0 0 4px var(--amber-glow);
 }
 
 /* === Sidebar === */
 #sidebar {
   background: var(--sidebar-bg);
-  border-right: 1px solid var(--border);
   display: flex;
   flex-direction: column;
   overflow-y: auto;
@@ -196,6 +226,19 @@ kbd {
   font-size: 9px;
   color: var(--amber);
   line-height: 1.6;
+}
+
+/* === Section Dividers === */
+#page-list .section-divider {
+  color: var(--amber-dim);
+  font-size: 0.75em;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  padding: 1.2em 0.8em 0.3em;
+  border-top: 1px solid var(--amber-dim);
+  margin-top: 0.5em;
+  cursor: default;
+  user-select: none;
 }
 
 /* === Canvas === */
@@ -520,6 +563,10 @@ kbd {
 
   #sidebar-toggle {
     display: block;
+  }
+
+  #sidebar-resize {
+    display: none;
   }
 
   #shell {
