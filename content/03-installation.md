@@ -154,7 +154,7 @@
 │     │       -p 9999:9999 \                                                       │               │
 │     │       -p 9998:9998 \                                                       │               │
 │     │       --name dime \                                                        │               │
-│     │       ladder99/dime:latest                                                 │               │
+│     │       datainmotionenterprise/connector:latest                              │               │
 │     │                                                                            │               │
 │     │   Expose additional ports as needed by your sinks:                         │               │
 │     │                                                                            │               │
@@ -165,12 +165,12 @@
 │     │       -p 5000:5000 \     MTConnect Agent (if configured)                   │               │
 │     │       -p 7878:7878 \     MTConnect SHDR (if configured)                    │               │
 │     │       -p 8092:8092 \     WebSocket Server (if configured)                  │               │
-│     │       ladder99/dime:latest                                                 │               │
+│     │       datainmotionenterprise/connector:latest                              │               │
 │     │                                                                            │               │
 │     │   Available images:                                                        │               │
-│     │     ladder99/dime:latest            Standard (x64 + ARM64)                 │               │
-│     │     ladder99/dime:ros2-humble       ROS2 Humble base                       │               │
-│     │     ladder99/dime:ros2-jazzy        ROS2 Jazzy base                        │               │
+│     │     datainmotionenterprise/connector:latest              Standard          │               │
+│     │     datainmotionenterprise/connector:latest-ros2-humble  ROS2 Humble       │               │
+│     │     datainmotionenterprise/connector:latest-ros2-jazzy   ROS2 Jazzy        │               │
 │     │                                                                            │               │
 │     └────────────────────────────────────────────────────────────────────────────┘               │
 │                                                                                                  │
