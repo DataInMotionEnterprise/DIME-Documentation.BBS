@@ -23,7 +23,7 @@
 │   │       -p 9999:9999 \                         # REST API                                  │   │
 │   │       -p 9998:9998 \                         # WebSocket                                 │   │
 │   │       --restart unless-stopped \                                                         │   │
-│   │       ladder99/dime:latest                                                               │   │
+│   │       datainmotionenterprise/connector:latest                                            │   │
 │   │                                                                                          │   │
 │   │   ┌─── Docker Host ──────────────────────────────────────────────────────────────┐       │   │
 │   │   │                                                                              │       │   │
@@ -61,7 +61,7 @@
 │   │   services:                                                                              │   │
 │   │                                                                                          │   │
 │   │     dime:                                                                                │   │
-│   │       image: ladder99/dime:latest                                                        │   │
+│   │       image: datainmotionenterprise/connector:latest                                     │   │
 │   │       volumes:                                                                           │   │
 │   │         - ./configs:/app/Configs                                                         │   │
 │   │         - ./logs:/app/Logs                                                               │   │
@@ -148,7 +148,7 @@
 │   │       -v ./configs:/app/Configs \                                                        │   │
 │   │       -p 9999:9999 \                                                                     │   │
 │   │       --restart unless-stopped \                                                         │   │
-│   │       ladder99/dime:latest                     # multi-arch: auto-selects ARM64          │   │
+│   │       datainmotionenterprise/connector:latest  # multi-arch: auto-selects ARM64          │   │
 │   │                                                                                          │   │
 │   │   ┌─────────────────────────────────────────────────────────────────────────────┐        │   │
 │   │   │                                                                             │        │   │
@@ -181,21 +181,17 @@
 │   │   IMAGE TAGS                                                                             │   │
 │   │   ──────────                                                                             │   │
 │   │                                                                                          │   │
-│   │   ┌──────────────────────────────┬───────────────────────────────────────────────┐       │   │
-│   │   │ Image Tag                    │ Description                                   │       │   │
-│   │   ├──────────────────────────────┼───────────────────────────────────────────────┤       │   │
-│   │   │ ladder99/dime:latest         │ Standard DIME. No ROS2.                       │       │   │
-│   │   ├──────────────────────────────┼───────────────────────────────────────────────┤       │   │
-│   │   │ ladder99/dime:ros2-humble    │ DIME + ROS2 Humble Hawksbill (LTS)            │       │   │
-│   │   ├──────────────────────────────┼───────────────────────────────────────────────┤       │   │
-│   │   │ ladder99/dime:ros2-jazzy     │ DIME + ROS2 Jazzy Jalisco (LTS)               │       │   │
-│   │   └──────────────────────────────┴───────────────────────────────────────────────┘       │   │
+│   │   Tag                                                        Description                 │   │
+│   │   ────────────────────────────────────────────────────────  ────────────────────────     │   │
+│   │   datainmotionenterprise/connector:latest                    Standard DIME. No ROS2.     │   │
+│   │   datainmotionenterprise/connector:latest-ros2-humble        DIME + ROS2 Humble (LTS)    │   │
+│   │   datainmotionenterprise/connector:latest-ros2-jazzy         DIME + ROS2 Jazzy (LTS)     │   │
 │   │                                                                                          │   │
 │   │   $ docker run -d \                                                                      │   │
 │   │       --name dime-ros2 \                                                                 │   │
 │   │       -v ./configs:/app/Configs \                                                        │   │
 │   │       -p 9999:9999 \                                                                     │   │
-│   │       ladder99/dime:ros2-humble                                                          │   │
+│   │       datainmotionenterprise/connector:latest-ros2-humble                                │   │
 │   │                                                                                          │   │
 │   │   ROS2 images include the ROS2 runtime and DIME's ROS2 source connector.                 │   │
 │   │   Subscribe to ROS2 topics and route them through DIME's ring buffer                     │   │
