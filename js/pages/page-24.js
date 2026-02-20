@@ -29,7 +29,7 @@ DIME_PAGES['24'] = {
           '  -p 9999:9999 \\\n' +
           '  -p 9998:9998 \\\n' +
           '  --restart unless-stopped \\\n' +
-          '  ladder99/dime:latest',
+          '  datainmotionenterprise/connector:latest',
         related: [
           { page: '24', hotspot: 'compose', label: 'Docker Compose multi-container' },
           { page: '24', hotspot: 'volumes', label: 'Volume mounts and ports' }
@@ -55,7 +55,7 @@ DIME_PAGES['24'] = {
           'version: \'3.8\'\n' +
           'services:\n' +
           '  dime:\n' +
-          '    image: ladder99/dime:latest\n' +
+          '    image: datainmotionenterprise/connector:latest\n' +
           '    volumes:\n' +
           '      - ./configs:/app/Configs\n' +
           '    ports:\n' +
@@ -111,7 +111,7 @@ DIME_PAGES['24'] = {
         title: 'ARM64 \u2014 Raspberry Pi & Edge Gateways',
         body:
           '<p>DIME provides <strong>multi-architecture Docker images</strong> that automatically select the correct binary for your platform (AMD64 or ARM64).</p>' +
-          '<p>Deploy the same <code>ladder99/dime:latest</code> image to:</p>' +
+          '<p>Deploy the same <code>datainmotionenterprise/connector:latest</code> image to:</p>' +
           '<ul>' +
           '<li><strong>Raspberry Pi 4/5</strong> \u2014 ARM64 Linux. Ideal for small-scale edge collection (Modbus, S7, MQTT).</li>' +
           '<li><strong>Industrial edge gateways</strong> \u2014 ARM64 devices from vendors like Advantech, Moxa, or Siemens.</li>' +
@@ -133,11 +133,11 @@ DIME_PAGES['24'] = {
         body:
           '<p>For robotics integration, DIME offers Docker images with <strong>ROS2 pre-installed</strong>:</p>' +
           '<ul>' +
-          '<li><code>ladder99/dime:ros2-humble</code> \u2014 ROS2 Humble Hawksbill (LTS). Stable, widely supported.</li>' +
-          '<li><code>ladder99/dime:ros2-jazzy</code> \u2014 ROS2 Jazzy Jalisco (LTS). Latest long-term release.</li>' +
+          '<li><code>datainmotionenterprise/connector:latest-ros2-humble</code> \u2014 ROS2 Humble Hawksbill (LTS). Stable, widely supported.</li>' +
+          '<li><code>datainmotionenterprise/connector:latest-ros2-jazzy</code> \u2014 ROS2 Jazzy Jalisco (LTS). Latest long-term release.</li>' +
           '</ul>' +
           '<p>These images include the full ROS2 runtime and DIME\u2019s ROS2 source connector. Subscribe to ROS2 topics and route them through DIME\u2019s ring buffer to any sink \u2014 InfluxDB, MQTT, Splunk, dashboards, and more.</p>' +
-          '<p>Use the standard DIME image (<code>ladder99/dime:latest</code>) if you do not need ROS2 integration.</p>',
+          '<p>Use the standard DIME image (<code>datainmotionenterprise/connector:latest</code>) if you do not need ROS2 integration.</p>',
         related: [
           { page: '06', label: '06 \u2014 Source connectors (ROS2)' },
           { page: '24', hotspot: 'docker-run', label: 'Basic docker run' }

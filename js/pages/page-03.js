@@ -87,9 +87,9 @@ DIME_PAGES['03'] = {
         body:
           '<p>Mount your config directory as a volume and expose admin ports:</p>' +
           '<ul>' +
-          '<li><strong>ladder99/dime:latest</strong> \u2014 Standard multi-arch (x64 + ARM64)</li>' +
-          '<li><strong>ladder99/dime:ros2-humble</strong> \u2014 ROS2 Humble base image</li>' +
-          '<li><strong>ladder99/dime:ros2-jazzy</strong> \u2014 ROS2 Jazzy base image</li>' +
+          '<li><strong>datainmotionenterprise/connector:latest</strong> \u2014 Standard multi-arch (x64 + ARM64)</li>' +
+          '<li><strong>datainmotionenterprise/connector:latest-ros2-humble</strong> \u2014 ROS2 Humble base image</li>' +
+          '<li><strong>datainmotionenterprise/connector:latest-ros2-jazzy</strong> \u2014 ROS2 Jazzy base image</li>' +
           '</ul>' +
           '<p>Expose additional ports as needed for MTConnect Agent (5000), SHDR (7878), WebSocket Server (8092).</p>',
         yaml:
@@ -98,7 +98,7 @@ DIME_PAGES['03'] = {
           '  -p 9999:9999 \\\n' +
           '  -p 9998:9998 \\\n' +
           '  --name dime \\\n' +
-          '  ladder99/dime:latest',
+          '  datainmotionenterprise/connector:latest',
         related: [
           { page: '03', hotspot: 'ports', label: 'Default ports reference' }
         ]
