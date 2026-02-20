@@ -363,6 +363,7 @@
 #pg-yaml .y-bullet  { color: var(--cyan-dim); }
 #pg-yaml .y-pipe    { color: var(--cyan-dim); }
 #pg-yaml .y-comment { color: var(--amber-dim); font-style: italic; }
+#pg-yaml .y-tag     { color: #c9a; }
 
 /* Embedded script highlighting (Lua / Python) */
 #pg-yaml .y-kw      { color: var(--cyan); font-weight: 700; }

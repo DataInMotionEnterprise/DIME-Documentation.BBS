@@ -33,6 +33,7 @@
   var cacheModel = null;
   var isStreaming = false;
   var abortCtrl = null;
+  var stagedFile = null; // { name, base64, mimeType }
 
   // Build valid page ID set
   var validPageIds = {};
@@ -97,6 +98,7 @@
     var html = '';
     var inCode = false;
     var codeContent = '';
+    var codeLang = '';
     var inList = false;
     var listTag = '';
     var inTable = false;
@@ -139,9 +141,13 @@
           if (inList) { html += '</' + listTag + '>'; inList = false; }
           inCode = true;
           codeContent = '';
+          codeLang = (line.match(/```(\w+)/) || [])[1] || '';
         } else {
+          var highlighted = (codeLang === 'yaml' || codeLang === 'yml') && window.DIME_HL
+            ? window.DIME_HL.highlightYaml(codeContent)
+            : esc(codeContent);
           html += '<div class="chat-code-wrap"><button class="chat-code-copy">Copy</button>' +
-            '<pre class="chat-code">' + esc(codeContent) + '</pre></div>';
+            '<pre class="chat-code">' + highlighted + '</pre></div>';
           inCode = false;
         }
         continue;
@@ -213,8 +219,11 @@
 
     // Close any open constructs
     if (inCode) {
+      var trailingHl = (codeLang === 'yaml' || codeLang === 'yml') && window.DIME_HL
+        ? window.DIME_HL.highlightYaml(codeContent)
+        : esc(codeContent);
       html += '<div class="chat-code-wrap"><button class="chat-code-copy">Copy</button>' +
-        '<pre class="chat-code">' + esc(codeContent) + '</pre></div>';
+        '<pre class="chat-code">' + trailingHl + '</pre></div>';
     }
     if (inTable) flushTable();
     if (inList) html += '</' + listTag + '>';
@@ -226,6 +235,7 @@
   var bubble, pane, resizeHandle, messagesEl, tokenBar;
   var chatInput, sendBtn, modelSelect, newBtn, settingsBtn, closeBtn;
   var settingsEl, keyInput, keyToggle, keySave, keyCancel;
+  var attachBtn, fileInput, filePreview;
 
   // ── UI: Toggle pane ────────────────────────────────────────────
   function openPane() {
@@ -344,7 +354,11 @@
     messagesEl.innerHTML = '';
     for (var i = 0; i < chatHistory.length; i++) {
       var msg = chatHistory[i];
-      var text = msg.parts[0].text;
+      // Concatenate all text parts (skips any inlineData parts)
+      var text = '';
+      for (var p = 0; p < msg.parts.length; p++) {
+        if (msg.parts[p].text) text += msg.parts[p].text;
+      }
       if (msg.role === 'user') {
         var displayText = text.replace(/^\[Currently viewing:.*?\]\n\n/, '');
         addUserMessage(displayText);
@@ -474,30 +488,84 @@
     });
   }
 
+  // ── File attachment ────────────────────────────────────────────
+  var MAX_FILE_SIZE = 1024 * 1024; // 1MB
+
+  function stageFile(file) {
+    if (!file) return;
+    if (file.type !== 'application/pdf') {
+      addStatusMessage('Only PDF files are supported.', 'chat-error');
+      return;
+    }
+    if (file.size > MAX_FILE_SIZE) {
+      addStatusMessage('File too large. Maximum size is 1MB.', 'chat-error');
+      return;
+    }
+    var reader = new FileReader();
+    reader.onload = function () {
+      var base64 = reader.result.split(',')[1];
+      stagedFile = { name: file.name, base64: base64, mimeType: 'application/pdf' };
+      showFilePreview();
+      chatInput.focus();
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function clearStagedFile() {
+    stagedFile = null;
+    fileInput.value = '';
+    filePreview.innerHTML = '';
+    filePreview.style.display = 'none';
+  }
+
+  function showFilePreview() {
+    filePreview.style.display = 'flex';
+    filePreview.innerHTML = '<span class="chat-file-chip">' +
+      '<span class="chat-file-icon">&#x1F4C4;</span>' +
+      '<span class="chat-file-name">' + esc(stagedFile.name) + '</span>' +
+      '<button class="chat-file-remove" title="Remove">&times;</button>' +
+      '</span>';
+    filePreview.querySelector('.chat-file-remove').addEventListener('click', clearStagedFile);
+  }
+
   // ── Send message ───────────────────────────────────────────────
   function sendMessage() {
     var text = chatInput.value.trim();
-    if (!text || isStreaming) return;
+    if ((!text && !stagedFile) || isStreaming) return;
 
     if (!apiKey) {
       openSettings();
       return;
     }
 
+    // Capture staged file before clearing
+    var pendingFile = stagedFile;
+
     // Clear input
     chatInput.value = '';
     chatInput.style.height = 'auto';
+    clearStagedFile();
 
     // Build user message with page context
-    var apiText = text;
+    var apiText = text || '';
     var page = getCurrentPage();
     if (page) {
-      apiText = '[Currently viewing: ' + page.title + ' (page ' + page.id + ')]\n\n' + text;
+      apiText = '[Currently viewing: ' + page.title + ' (page ' + page.id + ')]\n\n' + apiText;
     }
 
-    // Add to history and display
-    chatHistory.push({ role: 'user', parts: [{ text: apiText }] });
-    addUserMessage(text);
+    // Build parts array for API
+    var parts = [];
+    var displayText = text || '';
+    if (pendingFile) {
+      parts.push({ inlineData: { mimeType: pendingFile.mimeType, data: pendingFile.base64 } });
+      displayText = '[PDF: ' + pendingFile.name + ']\n' + displayText;
+    }
+    if (apiText) parts.push({ text: apiText });
+    if (!parts.length) return;
+
+    // Add to history (with inline data for this request) and display
+    chatHistory.push({ role: 'user', parts: parts });
+    addUserMessage(displayText);
 
     // Status indicator with thinking effects
     var statusDiv = addStatusMessage('Loading context...');
@@ -530,6 +598,24 @@
     }).then(function (fullText) {
       // Final render
       aiContentDiv.innerHTML = renderMarkdown(fullText);
+
+      // Replace inlineData in the user message with text placeholder
+      // so we don't re-send the base64 blob in every subsequent turn
+      if (pendingFile) {
+        var userMsg = chatHistory[chatHistory.length - 1];
+        if (userMsg.role === 'user') {
+          var textPart = '';
+          var newParts = [];
+          for (var p = 0; p < userMsg.parts.length; p++) {
+            if (userMsg.parts[p].inlineData) {
+              newParts.push({ text: '[Attached PDF: ' + pendingFile.name + ']\n' });
+            } else {
+              newParts.push(userMsg.parts[p]);
+            }
+          }
+          userMsg.parts = newParts;
+        }
+      }
 
       // Add to history
       chatHistory.push({ role: 'model', parts: [{ text: fullText }] });
@@ -596,6 +682,7 @@
 
   function newConversation() {
     if (isStreaming) stopStreaming();
+    clearStagedFile();
     chatHistory = [];
     saveHistory();
     cacheName = null;
@@ -651,7 +738,10 @@
   function estimateTokens() {
     var chars = 0;
     for (var i = 0; i < chatHistory.length; i++) {
-      chars += chatHistory[i].parts[0].text.length;
+      var parts = chatHistory[i].parts;
+      for (var p = 0; p < parts.length; p++) {
+        if (parts[p].text) chars += parts[p].text.length;
+      }
     }
     return Math.round(chars / 4);
   }
@@ -722,6 +812,9 @@
     keySave      = document.getElementById('chat-key-save');
     keyCancel    = document.getElementById('chat-key-cancel');
     tokenBar     = document.getElementById('chat-token-bar');
+    attachBtn    = document.getElementById('chat-attach');
+    fileInput    = document.getElementById('chat-file-input');
+    filePreview  = document.getElementById('chat-file-preview');
 
     if (!bubble || !pane) return;
 
@@ -786,6 +879,12 @@
       e.stopPropagation();
       if (e.key === 'Enter') { e.preventDefault(); saveSettings(); }
       if (e.key === 'Escape') { e.preventDefault(); closeSettings(); }
+    });
+
+    // File attachment
+    attachBtn.addEventListener('click', function () { fileInput.click(); });
+    fileInput.addEventListener('change', function () {
+      if (fileInput.files.length) stageFile(fileInput.files[0]);
     });
 
     // Resize handle
