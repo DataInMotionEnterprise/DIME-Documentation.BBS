@@ -7,6 +7,7 @@
   <!-- No web fonts — system monospace fonts have proper box-drawing glyph widths -->
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/chat.css">
+  <link rel="stylesheet" href="css/playground.css">
 </head>
 <body>
   <button id="sidebar-toggle" title="Toggle menu">☰</button>
@@ -48,6 +49,9 @@
     </div>
   </div>
   <div id="bottom-controls">
+    <button id="playground-bubble" title="YAML Playground">Playground</button>
+    <button id="chat-bubble" title="Chat with DIME AI">Chat</button>
+    <span class="controls-sep"></span>
     <button id="font-down" title="Decrease font size">&minus;</button>
     <button id="font-up" title="Increase font size">+</button>
     <span class="controls-sep"></span>
@@ -68,8 +72,42 @@
       <div id="shortcut-footer">Press <kbd>Esc</kbd> to close</div>
     </div>
   </div>
+  <!-- Playground -->
+  <div id="playground-pane">
+    <div id="pg-header">
+      <span id="pg-title">YAML PLAYGROUND</span>
+      <button id="pg-validate" title="Validate configuration">Validate</button>
+      <button id="pg-copy" title="Copy YAML to clipboard">Copy</button>
+      <button id="pg-close" title="Close playground">&times;</button>
+    </div>
+    <div id="pg-body">
+      <div id="pg-forms">
+        <div id="pg-sources-col" class="pg-col">
+          <div class="pg-col-header">
+            <span>Sources</span>
+            <button class="pg-add-btn" id="pg-add-source">+ Add</button>
+          </div>
+          <div id="pg-source-list" class="pg-connector-list"></div>
+        </div>
+        <div id="pg-sinks-col" class="pg-col">
+          <div class="pg-col-header">
+            <span>Sinks</span>
+            <button class="pg-add-btn" id="pg-add-sink">+ Add</button>
+          </div>
+          <div id="pg-sink-list" class="pg-connector-list"></div>
+        </div>
+      </div>
+      <div id="pg-output">
+        <div id="pg-output-header">
+          <span>Generated YAML</span>
+          <span id="pg-status"></span>
+        </div>
+        <pre id="pg-yaml"></pre>
+        <div id="pg-errors"></div>
+      </div>
+    </div>
+  </div>
   <!-- Chat -->
-  <button id="chat-bubble" title="Chat with DIME AI">Chat</button>
   <div id="chat-pane">
     <div id="chat-resize"></div>
     <div id="chat-header">
@@ -218,6 +256,8 @@
   <script src="js/pages.js"></script>
   <!-- App engine -->
   <script src="js/app.js"></script>
+  <!-- Playground -->
+  <script src="js/playground.js"></script>
   <!-- Chat -->
   <script src="js/chat.js"></script>
 </body>

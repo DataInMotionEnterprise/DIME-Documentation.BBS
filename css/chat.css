@@ -19,29 +19,8 @@
   bottom: calc(var(--chat-h) + 12px);
 }
 
-/* === Chat Bubble === */
-#chat-bubble {
-  position: fixed;
-  bottom: 48px;
-  right: 16px;
-  z-index: 500;
-  background: var(--bg);
-  border: 1px solid var(--amber-dim);
-  color: var(--amber);
-  font-family: var(--font);
-  font-size: 12px;
-  padding: 6px 14px;
-  cursor: pointer;
-  line-height: 1;
-  transition: border-color 0.15s, color 0.15s, background 0.15s;
-}
-
-#chat-bubble:hover {
-  border-color: var(--amber);
-  background: rgba(255, 176, 0, 0.08);
-}
-
-#shell.chat-open ~ #chat-bubble {
+/* === Chat Bubble (now inside #bottom-controls, styled in playground.css) === */
+#shell.chat-open ~ #bottom-controls #chat-bubble {
   display: none;
 }
 
@@ -506,7 +485,9 @@
 
 /* === Desktop Only === */
 @media (max-width: 768px) {
-  #chat-bubble,
+  #chat-bubble {
+    display: none !important;
+  }
   #chat-pane {
     display: none !important;
   }

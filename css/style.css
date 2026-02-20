@@ -691,7 +691,7 @@ kbd {
   position: fixed;
   bottom: 12px;
   right: 16px;
-  z-index: 500;
+  z-index: 700;
   display: flex;
   align-items: center;
   gap: 8px;
