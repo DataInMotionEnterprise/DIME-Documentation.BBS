@@ -145,11 +145,15 @@
           codeContent = '';
           codeLang = (line.match(/```(\w+)/) || [])[1] || '';
         } else {
-          var highlighted = (codeLang === 'yaml' || codeLang === 'yml') && window.DIME_HL
+          var isYaml = (codeLang === 'yaml' || codeLang === 'yml');
+          var highlighted = isYaml && window.DIME_HL
             ? window.DIME_HL.highlightYaml(codeContent)
             : esc(codeContent);
+          var pgBtn = isYaml && window.DIME_PG
+            ? '<button class="chat-code-playground" title="Load in Playground">&#x25B6; Playground</button>'
+            : '';
           html += '<div class="chat-code-wrap"><button class="chat-code-copy">Copy</button>' +
-            '<pre class="chat-code">' + highlighted + '</pre></div>';
+            pgBtn + '<pre class="chat-code">' + highlighted + '</pre></div>';
           inCode = false;
         }
         continue;
@@ -221,11 +225,15 @@
 
     // Close any open constructs
     if (inCode) {
-      var trailingHl = (codeLang === 'yaml' || codeLang === 'yml') && window.DIME_HL
+      var trailIsYaml = (codeLang === 'yaml' || codeLang === 'yml');
+      var trailingHl = trailIsYaml && window.DIME_HL
         ? window.DIME_HL.highlightYaml(codeContent)
         : esc(codeContent);
+      var trailPgBtn = trailIsYaml && window.DIME_PG
+        ? '<button class="chat-code-playground" title="Load in Playground">&#x25B6; Playground</button>'
+        : '';
       html += '<div class="chat-code-wrap"><button class="chat-code-copy">Copy</button>' +
-        '<pre class="chat-code">' + trailingHl + '</pre></div>';
+        trailPgBtn + '<pre class="chat-code">' + trailingHl + '</pre></div>';
     }
     if (inTable) flushTable();
     if (inList) html += '</' + listTag + '>';
@@ -809,6 +817,23 @@
         if (pre) copyText(pre.textContent, e.target);
         return;
       }
+      if (e.target.classList.contains('chat-code-playground')) {
+        console.log('[CHAT→PG] Button clicked');
+        var pgPre = e.target.parentElement.querySelector('pre');
+        console.log('[CHAT→PG] pre found:', !!pgPre);
+        console.log('[CHAT→PG] DIME_PG:', !!window.DIME_PG);
+        if (pgPre) {
+          var yamlText = pgPre.textContent;
+          console.log('[CHAT→PG] YAML length:', yamlText.length);
+          console.log('[CHAT→PG] YAML first 200 chars:', yamlText.substring(0, 200));
+        }
+        if (pgPre && window.DIME_PG) {
+          window.DIME_PG.loadYaml(pgPre.textContent);
+          e.target.textContent = 'Loaded!';
+          setTimeout(function () { e.target.innerHTML = '&#x25B6; Playground'; }, 1200);
+        }
+        return;
+      }
       if (e.target.classList.contains('chat-copy-msg')) {
         var msgDiv = e.target.closest('.chat-ai');
         var contentDiv = msgDiv ? msgDiv.querySelector('.chat-ai-content') : null;
@@ -939,4 +964,22 @@
     init();
   }
 
+  // ── Public API ──────────────────────────────────────────────────
+
+  function sendYamlToChat(yaml) {
+    // Open the chat pane
+    if (pane && !pane.classList.contains('open')) openPane();
+    if (!apiKey) { openSettings(); return; }
+
+    // Pre-fill the input with YAML and a review prompt
+    var prompt = 'Review this DIME YAML configuration. Check for errors, suggest improvements, and explain what it does:\n\n```yaml\n' + yaml + '\n```';
+    chatInput.value = prompt;
+    chatInput.style.height = 'auto';
+    chatInput.style.height = Math.min(chatInput.scrollHeight, 120) + 'px';
+    chatInput.focus();
+  }
+
+  window.DIME_CHAT = {
+    sendYaml: sendYamlToChat
+  };
 })();
