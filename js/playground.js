@@ -659,11 +659,87 @@
     return v ? v.split(',').map(function (s) { return s.trim(); }).filter(Boolean) : [];
   }
 
+  // ── YAML Syntax Highlighting ────────────────────────────────────
+
+  function esc(s) {
+    return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
+
+  function highlightYaml(text) {
+    var lines = text.split('\n');
+    var out = [];
+    var inBlock = false; // inside a block scalar (|)
+    var blockIndent = 0;
+    for (var i = 0; i < lines.length; i++) {
+      var raw = lines[i];
+      // blank line
+      if (raw.trim() === '') { out.push(''); inBlock = false; continue; }
+
+      // detect block scalar content (indented body after | line)
+      if (inBlock) {
+        var spaces = raw.match(/^(\s*)/)[1].length;
+        if (spaces > blockIndent) {
+          out.push('<span class="y-str">' + esc(raw) + '</span>');
+          continue;
+        }
+        inBlock = false;
+      }
+
+      var m;
+      // comment line
+      if ((m = raw.match(/^(\s*)(#.*)$/))) {
+        out.push(esc(m[1]) + '<span class="y-comment">' + esc(m[2]) + '</span>');
+        continue;
+      }
+      // list item with key: value
+      if ((m = raw.match(/^(\s*)(- )([a-zA-Z_][a-zA-Z0-9_]*)(:)(.*)$/))) {
+        out.push(esc(m[1]) + '<span class="y-bullet">' + esc(m[2]) + '</span>' +
+          '<span class="y-key">' + esc(m[3]) + '</span><span class="y-colon">' + esc(m[4]) + '</span>' +
+          highlightValue(m[5]));
+        if (m[5].trim() === '|') { inBlock = true; blockIndent = m[1].length; }
+        continue;
+      }
+      // list item (plain value)
+      if ((m = raw.match(/^(\s*)(- )(.*)$/))) {
+        out.push(esc(m[1]) + '<span class="y-bullet">' + esc(m[2]) + '</span>' +
+          highlightValue(' ' + m[3]));
+        continue;
+      }
+      // key: value
+      if ((m = raw.match(/^(\s*)([a-zA-Z_][a-zA-Z0-9_]*)(:)(.*)$/))) {
+        out.push(esc(m[1]) + '<span class="y-key">' + esc(m[2]) + '</span><span class="y-colon">' + esc(m[3]) + '</span>' +
+          highlightValue(m[4]));
+        if (m[4].trim() === '|') { inBlock = true; blockIndent = m[1].length; }
+        continue;
+      }
+      // fallback
+      out.push(esc(raw));
+    }
+    return out.join('\n');
+  }
+
+  function highlightValue(val) {
+    if (val.trim() === '') return esc(val);
+    // block scalar indicator
+    if (val.trim() === '|') return esc(val.replace('|', '')) + '<span class="y-pipe">|</span>';
+    // number
+    if (/^\s+-?\d+(\.\d+)?\s*$/.test(val)) return '<span class="y-num">' + esc(val) + '</span>';
+    // boolean
+    if (/^\s+(true|false)\s*$/i.test(val)) return '<span class="y-bool">' + esc(val) + '</span>';
+    // inline comment after value
+    var cm = val.match(/^(.+?)(\s+#.*)$/);
+    if (cm) return '<span class="y-str">' + esc(cm[1]) + '</span><span class="y-comment">' + esc(cm[2]) + '</span>';
+    // string value
+    return '<span class="y-str">' + esc(val) + '</span>';
+  }
+
   // ── YAML Generation ────────────────────────────────────────────
 
   function updateYaml() {
     if (!yamlPre) return;
-    yamlPre.textContent = generateYaml();
+    var raw = generateYaml();
+    yamlPre.setAttribute('data-raw', raw);
+    yamlPre.innerHTML = highlightYaml(raw);
     clearValidation();
     updateStatus();
   }
@@ -961,7 +1037,7 @@
   }
 
   function copyYaml() {
-    var text = yamlPre.textContent;
+    var text = yamlPre.getAttribute('data-raw') || yamlPre.textContent;
     if (!text) return;
     navigator.clipboard.writeText(text).then(function () {
       var orig = copyBtn.textContent;

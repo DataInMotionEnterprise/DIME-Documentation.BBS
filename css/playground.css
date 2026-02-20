@@ -354,6 +354,16 @@
   min-height: 60px;
 }
 
+/* YAML syntax highlighting */
+#pg-yaml .y-key     { color: var(--cyan); }
+#pg-yaml .y-colon   { color: var(--amber-dim); }
+#pg-yaml .y-str     { color: var(--amber); }
+#pg-yaml .y-num     { color: #f8a; }
+#pg-yaml .y-bool    { color: #f8a; }
+#pg-yaml .y-bullet  { color: var(--cyan-dim); }
+#pg-yaml .y-pipe    { color: var(--cyan-dim); }
+#pg-yaml .y-comment { color: var(--amber-dim); font-style: italic; }
+
 #pg-errors {
   flex-shrink: 0;
   padding: 0 12px;
