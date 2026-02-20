@@ -1,7 +1,7 @@
 DIME_PAGES['REF13'] = {
   id: 'REF13',
-  title: 'REF13 \u2014 Logger',
-  file: 'content/REF13-logger.md',
+  title: 'REF13 \u2014 InfluxLP',
+  file: 'content/REF13-influxlp.md',
   section: 'Connector Reference',
   hotspots: []
 };

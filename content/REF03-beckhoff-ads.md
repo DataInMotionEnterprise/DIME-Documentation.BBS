@@ -23,7 +23,7 @@
   │  target_ip              string   Empty       IPv4 address to remote AMS Net ID.           │
   │  port                   int      851         ADS port.                                    │
   │  items.type             string   Empty       PLC register type ('bool','sbyte',           │
-  │                                              'short','int','long','float','string').       │
+  │                                              'short','int','long','float','string').      │
   │                                                                                           │
   └───────────────────────────────────────────────────────────────────────────────────────────┘
 
@@ -33,7 +33,7 @@
   │                                                                                           │
   │  - name: ads1                                                                             │
   │    connector: BeckhoffADS                                                                 │
-  │    local_netid: 1.1.1.1.1.1                                                              │
+  │    local_netid: 1.1.1.1.1.1                                                               │
   │    target_ip: 192.168.111.191                                                             │
   │    address: 192.168.111.191.1.1                                                           │
   │    port: !!int 851                                                                        │

@@ -1,7 +1,7 @@
 DIME_PAGES['REF06'] = {
   id: 'REF06',
-  title: 'REF06 \u2014 Ethernet/IP',
-  file: 'content/REF06-ethernet-ip.md',
+  title: 'REF06 \u2014 CSV Writer',
+  file: 'content/REF06-csv-writer.md',
   section: 'Connector Reference',
   hotspots: []
 };
