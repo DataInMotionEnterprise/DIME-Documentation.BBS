@@ -4,6 +4,7 @@
   // ── Constants ──────────────────────────────────────────────────
   var GEMINI_BASE = 'https://generativelanguage.googleapis.com/v1beta';
   var MODELS = [
+    { id: 'gemini-3-flash-preview',     name: '3.0 Flash' },
     { id: 'gemini-3-pro-preview',       name: '3.0 Pro' },
     { id: 'gemini-3.1-pro-preview',     name: '3.1 Pro' }
   ];
@@ -33,7 +34,8 @@
   var cacheModel = null;
   var isStreaming = false;
   var abortCtrl = null;
-  var stagedFile = null; // { name, base64, mimeType }
+  var stagedFiles = []; // [{ name, base64, mimeType }, ...]
+  var MAX_FILES = 5;
 
   // Build valid page ID set
   var validPageIds = {};
@@ -498,53 +500,77 @@
       return;
     }
     if (file.size > MAX_FILE_SIZE) {
-      addStatusMessage('File too large. Maximum size is 1MB.', 'chat-error');
+      addStatusMessage('File too large. Maximum size is 1MB per file.', 'chat-error');
+      return;
+    }
+    if (stagedFiles.length >= MAX_FILES) {
+      addStatusMessage('Maximum ' + MAX_FILES + ' files per message.', 'chat-error');
       return;
     }
     var reader = new FileReader();
     reader.onload = function () {
       var base64 = reader.result.split(',')[1];
-      stagedFile = { name: file.name, base64: base64, mimeType: 'application/pdf' };
+      stagedFiles.push({ name: file.name, base64: base64, mimeType: 'application/pdf' });
       showFilePreview();
       chatInput.focus();
     };
     reader.readAsDataURL(file);
   }
 
-  function clearStagedFile() {
-    stagedFile = null;
+  function removeStagedFile(index) {
+    stagedFiles.splice(index, 1);
+    showFilePreview();
+  }
+
+  function clearStagedFiles() {
+    stagedFiles = [];
     fileInput.value = '';
     filePreview.innerHTML = '';
     filePreview.style.display = 'none';
   }
 
   function showFilePreview() {
+    fileInput.value = '';
+    if (!stagedFiles.length) {
+      filePreview.innerHTML = '';
+      filePreview.style.display = 'none';
+      return;
+    }
     filePreview.style.display = 'flex';
-    filePreview.innerHTML = '<span class="chat-file-chip">' +
-      '<span class="chat-file-icon">&#x1F4C4;</span>' +
-      '<span class="chat-file-name">' + esc(stagedFile.name) + '</span>' +
-      '<button class="chat-file-remove" title="Remove">&times;</button>' +
-      '</span>';
-    filePreview.querySelector('.chat-file-remove').addEventListener('click', clearStagedFile);
+    var html = '';
+    for (var i = 0; i < stagedFiles.length; i++) {
+      html += '<span class="chat-file-chip" data-idx="' + i + '">' +
+        '<span class="chat-file-icon">&#x1F4C4;</span>' +
+        '<span class="chat-file-name">' + esc(stagedFiles[i].name) + '</span>' +
+        '<button class="chat-file-remove" title="Remove">&times;</button>' +
+        '</span>';
+    }
+    filePreview.innerHTML = html;
+    var removeBtns = filePreview.querySelectorAll('.chat-file-remove');
+    for (var j = 0; j < removeBtns.length; j++) {
+      (function (idx) {
+        removeBtns[idx].addEventListener('click', function () { removeStagedFile(idx); });
+      })(j);
+    }
   }
 
   // ── Send message ───────────────────────────────────────────────
   function sendMessage() {
     var text = chatInput.value.trim();
-    if ((!text && !stagedFile) || isStreaming) return;
+    if ((!text && !stagedFiles.length) || isStreaming) return;
 
     if (!apiKey) {
       openSettings();
       return;
     }
 
-    // Capture staged file before clearing
-    var pendingFile = stagedFile;
+    // Capture staged files before clearing
+    var pendingFiles = stagedFiles.slice();
 
     // Clear input
     chatInput.value = '';
     chatInput.style.height = 'auto';
-    clearStagedFile();
+    clearStagedFiles();
 
     // Build user message with page context
     var apiText = text || '';
@@ -556,10 +582,12 @@
     // Build parts array for API
     var parts = [];
     var displayText = text || '';
-    if (pendingFile) {
-      parts.push({ inlineData: { mimeType: pendingFile.mimeType, data: pendingFile.base64 } });
-      displayText = '[PDF: ' + pendingFile.name + ']\n' + displayText;
+    var fileLabel = '';
+    for (var f = 0; f < pendingFiles.length; f++) {
+      parts.push({ inlineData: { mimeType: pendingFiles[f].mimeType, data: pendingFiles[f].base64 } });
+      fileLabel += '[PDF: ' + pendingFiles[f].name + ']\n';
     }
+    if (fileLabel) displayText = fileLabel + displayText;
     if (apiText) parts.push({ text: apiText });
     if (!parts.length) return;
 
@@ -599,16 +627,18 @@
       // Final render
       aiContentDiv.innerHTML = renderMarkdown(fullText);
 
-      // Replace inlineData in the user message with text placeholder
-      // so we don't re-send the base64 blob in every subsequent turn
-      if (pendingFile) {
+      // Replace inlineData in the user message with text placeholders
+      // so we don't re-send base64 blobs in every subsequent turn
+      if (pendingFiles.length) {
         var userMsg = chatHistory[chatHistory.length - 1];
         if (userMsg.role === 'user') {
-          var textPart = '';
           var newParts = [];
+          var fileIdx = 0;
           for (var p = 0; p < userMsg.parts.length; p++) {
             if (userMsg.parts[p].inlineData) {
-              newParts.push({ text: '[Attached PDF: ' + pendingFile.name + ']\n' });
+              var fname = fileIdx < pendingFiles.length ? pendingFiles[fileIdx].name : 'file';
+              newParts.push({ text: '[Attached PDF: ' + fname + ']\n' });
+              fileIdx++;
             } else {
               newParts.push(userMsg.parts[p]);
             }
@@ -682,7 +712,7 @@
 
   function newConversation() {
     if (isStreaming) stopStreaming();
-    clearStagedFile();
+    clearStagedFiles();
     chatHistory = [];
     saveHistory();
     cacheName = null;
@@ -884,7 +914,9 @@
     // File attachment
     attachBtn.addEventListener('click', function () { fileInput.click(); });
     fileInput.addEventListener('change', function () {
-      if (fileInput.files.length) stageFile(fileInput.files[0]);
+      for (var f = 0; f < fileInput.files.length; f++) {
+        stageFile(fileInput.files[f]);
+      }
     });
 
     // Resize handle
