@@ -126,6 +126,21 @@
   border-color: var(--amber);
 }
 
+/* === Token Bar === */
+#chat-token-bar {
+  padding: 3px 12px;
+  font-size: 9px;
+  color: var(--amber-dim);
+  opacity: 0.6;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+  letter-spacing: 0.5px;
+}
+
+#chat-token-bar .cached {
+  color: var(--cyan-dim);
+}
+
 /* === Messages === */
 #chat-messages {
   flex: 1;
@@ -205,6 +220,30 @@
 
 .chat-ai-content ol li::marker {
   color: var(--cyan);
+}
+
+/* === Tables === */
+.chat-ai-content table {
+  border-collapse: collapse;
+  margin: 8px 0;
+  font-size: 11px;
+  width: 100%;
+  overflow-x: auto;
+  display: block;
+}
+
+.chat-ai-content th,
+.chat-ai-content td {
+  border: 1px solid var(--border);
+  padding: 4px 8px;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.chat-ai-content th {
+  color: var(--cyan);
+  border-color: var(--cyan-dim);
+  font-weight: 700;
 }
 
 /* === Code Blocks === */

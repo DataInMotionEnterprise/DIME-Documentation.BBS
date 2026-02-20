@@ -99,12 +99,42 @@
     var codeContent = '';
     var inList = false;
     var listTag = '';
+    var inTable = false;
+    var tableRows = [];
+
+    function flushTable() {
+      if (tableRows.length < 2) {
+        // Not enough rows for a real table — render as paragraphs
+        for (var t = 0; t < tableRows.length; t++) {
+          html += '<p>' + renderInline(tableRows[t]) + '</p>';
+        }
+      } else {
+        html += '<table>';
+        var headerDone = false;
+        for (var t = 0; t < tableRows.length; t++) {
+          var row = tableRows[t].trim();
+          // Skip separator row
+          if (/^\|[\s:|-]+\|?\s*$/.test(row)) { headerDone = true; continue; }
+          var cells = row.replace(/^\|/, '').replace(/\|$/, '').split('|');
+          var tag = !headerDone ? 'th' : 'td';
+          html += '<tr>';
+          for (var c = 0; c < cells.length; c++) {
+            html += '<' + tag + '>' + renderInline(cells[c].trim()) + '</' + tag + '>';
+          }
+          html += '</tr>';
+        }
+        html += '</table>';
+      }
+      inTable = false;
+      tableRows = [];
+    }
 
     for (var i = 0; i < lines.length; i++) {
       var line = lines[i];
 
       // Code fence (allow leading whitespace)
       if (/^\s*```/.test(line)) {
+        if (inTable) flushTable();
         if (!inCode) {
           if (inList) { html += '</' + listTag + '>'; inList = false; }
           inCode = true;
@@ -122,11 +152,23 @@
         continue;
       }
 
-      // Empty line
-      if (line.trim() === '') {
+      // Table row detection — line contains | and starts with |
+      var trimmed = line.trim();
+      if (trimmed.indexOf('|') >= 0 && /^\|/.test(trimmed)) {
+        if (inList) { html += '</' + listTag + '>'; inList = false; }
+        inTable = true;
+        tableRows.push(trimmed);
+        continue;
+      }
+
+      // Empty line — keep table open across blanks
+      if (trimmed === '') {
         if (inList) { html += '</' + listTag + '>'; inList = false; }
         continue;
       }
+
+      // Non-table, non-empty line — flush any pending table
+      if (inTable) flushTable();
 
       // Bullet list
       var bulletMatch = line.match(/^\s*[-*]\s+(.*)/);
@@ -174,13 +216,14 @@
       html += '<div class="chat-code-wrap"><button class="chat-code-copy">Copy</button>' +
         '<pre class="chat-code">' + esc(codeContent) + '</pre></div>';
     }
+    if (inTable) flushTable();
     if (inList) html += '</' + listTag + '>';
 
     return html;
   }
 
   // ── DOM refs (set during init) ─────────────────────────────────
-  var bubble, pane, resizeHandle, messagesEl;
+  var bubble, pane, resizeHandle, messagesEl, tokenBar;
   var chatInput, sendBtn, modelSelect, newBtn, settingsBtn, closeBtn;
   var settingsEl, keyInput, keyToggle, keySave, keyCancel;
 
@@ -362,31 +405,13 @@
     }
     return createCache(signal).then(function () {
       return { type: 'cached', name: cacheName };
-    }).catch(function (e) {
-      if (e && e.name === 'AbortError') throw e;
-      // Fallback: try to load docs for inline use
-      return fetchLlmsContent(signal).then(function (docs) {
-        return { type: 'inline', systemText: SYSTEM_PROMPT + '\n\n=== DIME DOCUMENTATION ===\n\n' + docs };
-      }).catch(function (e2) {
-        if (e2 && e2.name === 'AbortError') throw e2;
-        // No docs available — system prompt only
-        return { type: 'minimal', systemText: SYSTEM_PROMPT };
-      });
     });
   }
 
   function streamChat(contents, context, onChunk, signal) {
     var url = GEMINI_BASE + '/models/' + selectedModel + ':streamGenerateContent?alt=sse&key=' + apiKey;
 
-    var body;
-    if (context.type === 'cached') {
-      body = { cachedContent: context.name, contents: contents };
-    } else {
-      body = {
-        systemInstruction: { parts: [{ text: context.systemText }] },
-        contents: contents
-      };
-    }
+    var body = { cachedContent: context.name, contents: contents };
 
     return fetch(url, {
       method: 'POST',
@@ -512,6 +537,7 @@
 
       addCopyResponseButtons();
       scrollToBottom();
+      updateTokenBar();
     }).catch(function (err) {
       // Clean up thinking effects and status
       stopThinking();
@@ -576,6 +602,7 @@
     cacheModel = null;
     messagesEl.innerHTML = '';
     addWelcomeMessage();
+    updateTokenBar();
   }
 
   // ── Thinking effects ────────────────────────────────────────────
@@ -618,6 +645,31 @@
       scrambleEl = null;
     }
     scrambleText = '';
+  }
+
+  // ── Token bar ──────────────────────────────────────────────────
+  function estimateTokens() {
+    var chars = 0;
+    for (var i = 0; i < chatHistory.length; i++) {
+      chars += chatHistory[i].parts[0].text.length;
+    }
+    return Math.round(chars / 4);
+  }
+
+  function formatTokens(n) {
+    if (n >= 1000000) return (n / 1000000).toFixed(1) + 'M';
+    if (n >= 1000) return (n / 1000).toFixed(1) + 'k';
+    return String(n);
+  }
+
+  function updateTokenBar() {
+    if (!tokenBar) return;
+    var tokens = estimateTokens();
+    var cacheStatus = cacheName
+      ? '<span class="cached">● cached</span>'
+      : '○ not cached';
+    var tokenText = tokens > 0 ? ' · ~' + formatTokens(tokens) + ' conversation tokens' : '';
+    tokenBar.innerHTML = cacheStatus + tokenText;
   }
 
   // ── Copy helper ────────────────────────────────────────────────
@@ -669,6 +721,7 @@
     keyToggle    = document.getElementById('chat-key-toggle');
     keySave      = document.getElementById('chat-key-save');
     keyCancel    = document.getElementById('chat-key-cancel');
+    tokenBar     = document.getElementById('chat-token-bar');
 
     if (!bubble || !pane) return;
 
@@ -716,6 +769,7 @@
       saveModel();
       cacheName = null;
       cacheModel = null;
+      updateTokenBar();
     });
     modelSelect.addEventListener('keydown', function (e) { e.stopPropagation(); });
 
@@ -745,6 +799,7 @@
     if (chatHistory.length > 0) {
       restoreMessages();
     }
+    updateTokenBar();
   }
 
   if (document.readyState === 'loading') {
