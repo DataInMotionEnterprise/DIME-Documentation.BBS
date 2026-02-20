@@ -210,13 +210,36 @@
 │   │       include_filter: plc/.*     # regex: only keep matching paths                       │   │
 │   │       exclude_filter: .*\$SYS.* # regex: drop matching paths                             │   │
 │   │       use_sink_transform: true   # apply source-side transform on sink                   │   │
-│   │       template: >                # output formatting template                            │   │
-│   │         {{ Message.Path }}: {{ Message.Data }}                                           │   │
 │   │                                                                                          │   │
 │   └──────────────────────────────────────────────────────────────────────────────────────────┘   │
 │                                                                                                  │
 │   include_filter and exclude_filter are regex patterns matching the message Path.                │
 │   If both are set, include is applied first, then exclude removes from the result.               │
+│                                                                                                  │
+│  ──────────────────────────────────────────────────────────────────────────────────────────────  │
+│                                                                                                  │
+│   SINK TRANSFORMS                                                                                │
+│   ───────────────                                                                                │
+│                                                                                                  │
+│   Transforms reshape data before a sink writes it. The transform is defined on the               │
+│   SOURCE connector. The SINK opts in with use_sink_transform: true.                              │
+│                                                                                                  │
+│   ┌──────────────────────────────────────────────────────────────────────────────────────────┐   │
+│   │                                                                                          │   │
+│   │   sources:                                  sinks:                                       │   │
+│   │     - name: plc                               - name: console                            │   │
+│   │       connector: OpcUA                          connector: Console                       │   │
+│   │       address: 10.0.0.1                         use_sink_transform: !!bool true          │   │
+│   │       sink:                    # ← defined                                               │   │
+│   │         transform:             #   on source  Transform types:                           │   │
+│   │           type: script         #                script  — Scriban expression             │   │
+│   │           template: >-         #                scriban — Scriban template               │   │
+│   │             Message.Data       #                liquid  — Liquid template                │   │
+│   │                                                                                          │   │
+│   └──────────────────────────────────────────────────────────────────────────────────────────┘   │
+│                                                                                                  │
+│   When use_sink_transform is false (default), sinks receive the raw MessageBoxMessage.           │
+│   When true, the template runs first — sinks receive the transformed result.                     │
 │                                                                                                  │
 └──────────────────────────────────────────────────────────────────────────────────────────────────┘
 ```

@@ -219,6 +219,10 @@
 │   │       port: 4840                 # protocol-specific port                                │   │
 │   │       init_script: |             # Lua/Python run once at startup                        │   │
 │   │         log("starting up")                                                               │   │
+│   │       sink:                      # transform applied when sink enables it                │   │
+│   │         transform:                                                                       │   │
+│   │           type: script           # script | scriban | liquid                             │   │
+│   │           template: Message.Data # expression that reshapes output                       │   │
 │   │       items:                     # what to read                                          │   │
 │   │         - name: Temperature      # item name → path = my_source/Temperature              │   │
 │   │           address: ns=2;s=Temp   # protocol-specific address                             │   │
