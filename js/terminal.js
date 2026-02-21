@@ -14,6 +14,12 @@
   var completionItems = [];
   var completionIndex = -1;
 
+  // ── DIME instance connection state ───────────────────────────
+  var dimeConn = {
+    url: localStorage.getItem('dime-playground-url') || null,
+    status: {}   // connectorName → latest ConnectorStatus object
+  };
+
   // ── DOM refs (set during init) ─────────────────────────────────
   var pane, outputEl, inputEl, statusEl, closeBtn, bubble;
   var completionEl = null; // lazy-created
@@ -529,8 +535,13 @@
 
   function updateStatus() {
     if (!statusEl) return;
+    var parts = [];
     var pageId = getCurrentPageId();
-    statusEl.textContent = pageId ? 'page: ' + pageId : '';
+    if (pageId) parts.push('page: ' + pageId);
+    if (dimeConn.url) {
+      parts.push('\u25CF ' + dimeConn.url);
+    }
+    statusEl.textContent = parts.join('  |  ');
   }
 
   // ── Nav tracking ───────────────────────────────────────────────
@@ -542,6 +553,147 @@
       }
       pagesVisited[pageId] = true;
       updateStatus();
+    }
+  }
+
+  // ── DIME instance helpers ─────────────────────────────────────
+  // Normalize camelCase keys (System.Text.Json) to PascalCase (C# property names)
+  function normalizeToPascal(obj) {
+    if (!obj || typeof obj !== 'object') return obj;
+    var out = {};
+    for (var k in obj) {
+      if (!obj.hasOwnProperty(k)) continue;
+      var pk = k.charAt(0).toUpperCase() + k.slice(1);
+      out[pk] = obj[k];
+    }
+    return out;
+  }
+
+  function requireConnection() {
+    if (!dimeConn.url) {
+      writeError('Not connected. Use "connect <url>" first.');
+      return false;
+    }
+    return true;
+  }
+
+  function dimeApi(path, opts) {
+    return fetch(dimeConn.url + path, opts)
+      .then(function (r) {
+        if (!r.ok) throw new Error('HTTP ' + r.status);
+        return r;
+      });
+  }
+
+  // Fetch latest status from /status endpoint into dimeConn.status
+  function refreshStatus() {
+    return dimeApi('/status')
+      .then(function (r) { return r.json(); })
+      .then(function (data) {
+        dimeConn.status = {};
+        if (data.connectors) {
+          for (var key in data.connectors) {
+            if (!data.connectors.hasOwnProperty(key)) continue;
+            var c = normalizeToPascal(data.connectors[key]);
+            if (c.Name) dimeConn.status[c.Name] = c;
+          }
+        }
+        return dimeConn.status;
+      });
+  }
+
+  function formatConnStatus(s) {
+    if (s.IsFaulted) return { text: '\u2715 Faulted', cls: 'term-status-faulted' };
+    if (s.IsRunning) return { text: '\u25CF Running', cls: 'term-status-running' };
+    return { text: '\u25CB Stopped', cls: 'term-status-stopped' };
+  }
+
+  function completeConnectorNames(partial) {
+    var p = partial.toLowerCase();
+    var items = [];
+    var names = Object.keys(dimeConn.status);
+    for (var i = 0; i < names.length; i++) {
+      if (names[i].toLowerCase().indexOf(p) === 0) items.push(names[i]);
+    }
+    return items;
+  }
+
+  function renderPerfTable(statusMap, targetEl) {
+    var names = Object.keys(statusMap);
+    // Sort: sources first, then sinks
+    names.sort(function (a, b) {
+      var sa = statusMap[a], sb = statusMap[b];
+      var da = (sa.Direction || '').toLowerCase(), db = (sb.Direction || '').toLowerCase();
+      if (da === 'source' && db !== 'source') return -1;
+      if (da !== 'source' && db === 'source') return 1;
+      return a.localeCompare(b);
+    });
+
+    var headers = ['Name', 'Direction', 'Type', 'Status', 'Msgs', 'Loop ms', 'Read ms', 'Script ms', 'Faults'];
+    var rows = [];
+    for (var i = 0; i < names.length; i++) {
+      var s = statusMap[names[i]];
+      var st = formatConnStatus(s);
+      var loopStr = s.IsRunning ? s.LastLoopMs + '/' + s.MinimumLoopMs + '/' + s.MaximumLoopMs : '--';
+      var readStr = s.IsRunning ? s.LastReadMs + '/' + s.MinimumReadMs + '/' + s.MaximumReadMs : '--';
+      var scriptStr = s.IsRunning ? s.LastScriptMs + '/' + s.MinimumScriptMs + '/' + s.MaximumScriptMs : '--';
+      rows.push([
+        names[i],
+        s.Direction || '',
+        s.ConnectorType || '',
+        { html: '<span class="' + st.cls + '">' + escapeHtml(st.text) + '</span>' },
+        s.MessagesAttempted + '/' + s.MessagesAccepted,
+        loopStr,
+        readStr,
+        scriptStr,
+        String(s.FaultCount || 0)
+      ]);
+    }
+
+    if (targetEl) {
+      // Re-render into persistent element
+      targetEl.innerHTML = '';
+      var heading = document.createElement('div');
+      heading.className = 'term-line term-line-heading';
+      heading.textContent = 'CONNECTOR STATUS (live)';
+      targetEl.appendChild(heading);
+
+      var table = document.createElement('table');
+      table.className = 'term-table';
+      var thead = document.createElement('tr');
+      for (var h = 0; h < headers.length; h++) {
+        var th = document.createElement('th');
+        th.textContent = headers[h];
+        thead.appendChild(th);
+      }
+      table.appendChild(thead);
+      for (var r = 0; r < rows.length; r++) {
+        var tr = document.createElement('tr');
+        for (var c = 0; c < rows[r].length; c++) {
+          var td = document.createElement('td');
+          if (typeof rows[r][c] === 'object' && rows[r][c].html) {
+            td.innerHTML = rows[r][c].html;
+          } else {
+            td.textContent = rows[r][c];
+          }
+          if (c > 0) td.className = 'dim';
+          tr.appendChild(td);
+        }
+        table.appendChild(tr);
+      }
+      var wrap = document.createElement('div');
+      wrap.className = 'term-line';
+      wrap.appendChild(table);
+      targetEl.appendChild(wrap);
+
+      var updated = document.createElement('div');
+      updated.className = 'term-line term-line-dim';
+      updated.textContent = 'Updated: ' + new Date().toLocaleTimeString() + '  (Ctrl+C to stop)';
+      targetEl.appendChild(updated);
+    } else {
+      writeHeading('CONNECTOR STATUS');
+      writeTable(headers, rows);
+      writeDim(names.length + ' connector' + (names.length !== 1 ? 's' : ''));
     }
   }
 
@@ -578,7 +730,7 @@
         categories[cat].push({ name: names[i], desc: COMMANDS[names[i]].description });
       }
 
-      var catOrder = ['Navigation', 'Search', 'Config', 'AI', 'System'];
+      var catOrder = ['Navigation', 'Search', 'Config', 'Remote', 'AI', 'System'];
       for (var c = 0; c < catOrder.length; c++) {
         var cat = catOrder[c];
         if (!categories[cat]) continue;
@@ -1095,6 +1247,284 @@
       }
 
       writeDim('Nothing to export');
+    }
+  });
+
+  // ── connect ─────────────────────────────────────────────────
+  registerCommand('connect', {
+    description: 'Connect to a live DIME instance',
+    usage: 'connect [host:port]  |  connect --disconnect',
+    category: 'Remote',
+    fn: function (args, flags) {
+      if (flags.disconnect) {
+        dimeConn.url = null;
+        dimeConn.status = {};
+        localStorage.removeItem('dime-playground-url');
+        writeLine('Disconnected', 'term-line-success');
+        updateStatus();
+        return;
+      }
+
+      if (args.length === 0 && dimeConn.url) {
+        writeHeading('DIME CONNECTION');
+        writeLine('  URL:         ' + dimeConn.url);
+        var count = Object.keys(dimeConn.status).length;
+        writeLine('  Connectors:  ' + count);
+        return;
+      }
+
+      if (args.length === 0) {
+        writeError('Usage: connect <host:port> or connect --disconnect');
+        return;
+      }
+
+      var url = args[0];
+      if (url.indexOf('http') !== 0) url = 'http://' + url;
+      if (url.match(/:\d+/) === null) url += ':9999';
+      url = url.replace(/\/+$/, '');
+
+      writeDim('Connecting to ' + url + '...');
+
+      fetch(url + '/status')
+        .then(function (r) {
+          if (!r.ok) throw new Error('HTTP ' + r.status);
+          return r.json();
+        })
+        .then(function (data) {
+          dimeConn.url = url;
+          dimeConn.status = {};
+          localStorage.setItem('dime-playground-url', url);
+
+          // Populate status from /status response (Dictionary serialized as JSON object, camelCase)
+          if (data.connectors) {
+            for (var key in data.connectors) {
+              if (!data.connectors.hasOwnProperty(key)) continue;
+              var c = normalizeToPascal(data.connectors[key]);
+              if (c.Name) dimeConn.status[c.Name] = c;
+            }
+          }
+
+          writeLine('Connected to DIME ' + (data.version || '') + ' at ' + url, 'term-line-success');
+
+          // Show summary table
+          var names = Object.keys(dimeConn.status);
+          if (names.length > 0) {
+            var rows = [];
+            for (var j = 0; j < names.length; j++) {
+              var s = dimeConn.status[names[j]];
+              var st = formatConnStatus(s);
+              rows.push([
+                names[j],
+                s.Direction || '',
+                s.ConnectorType || '',
+                { html: '<span class="' + st.cls + '">' + escapeHtml(st.text) + '</span>' }
+              ]);
+            }
+            writeTable(['Name', 'Direction', 'Type', 'Status'], rows);
+          }
+          writeDim(names.length + ' connector' + (names.length !== 1 ? 's' : ''));
+          updateStatus();
+        })
+        .catch(function (err) {
+          writeError('Cannot reach DIME at ' + url + ': ' + err.message);
+        });
+    }
+  });
+
+  // ── pull ──────────────────────────────────────────────────────
+  registerCommand('pull', {
+    description: 'Fetch live config from DIME into playground',
+    usage: 'pull',
+    category: 'Remote',
+    fn: function () {
+      if (!requireConnection()) return;
+
+      writeDim('Pulling config from ' + dimeConn.url + '...');
+      dimeApi('/config/yaml')
+        .then(function (r) { return r.text(); })
+        .then(function (yaml) {
+          if (!yaml || !yaml.trim()) {
+            writeError('DIME returned empty configuration.');
+            return;
+          }
+          if (window.DIME_PG) {
+            window.DIME_PG.loadYaml(yaml);
+          }
+          writeLine('Config loaded into Playground', 'term-line-success');
+        })
+        .catch(function (err) {
+          writeError('Pull failed: ' + err.message);
+        });
+    }
+  });
+
+  // ── push ──────────────────────────────────────────────────────
+  registerCommand('push', {
+    description: 'Send playground config to DIME instance',
+    usage: 'push [--no-reload]',
+    category: 'Remote',
+    fn: function (args, flags) {
+      if (!requireConnection()) return;
+
+      var yamlPre = document.getElementById('pg-yaml');
+      var raw = yamlPre ? (yamlPre.getAttribute('data-raw') || yamlPre.textContent) : '';
+      if (!raw || !raw.trim()) {
+        writeError('Playground is empty. Build a config first.');
+        return;
+      }
+
+      writeDim('Pushing config to ' + dimeConn.url + '...');
+      dimeApi('/config/yaml', {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain' },
+        body: raw
+      })
+        .then(function () {
+          if (flags['no-reload']) {
+            writeLine('Config written. Skipping reload (--no-reload).', 'term-line-success');
+            return null;
+          }
+          writeDim('Reloading...');
+          return dimeApi('/config/reload', { method: 'POST' });
+        })
+        .then(function (r) {
+          if (r) writeLine('Config pushed and reloaded.', 'term-line-success');
+        })
+        .catch(function (err) {
+          writeError('Push failed: ' + err.message);
+        });
+    }
+  });
+
+  // ── start ─────────────────────────────────────────────────────
+  registerCommand('start', {
+    description: 'Start a connector on the DIME instance',
+    usage: 'start <connector-name>',
+    category: 'Remote',
+    fn: function (args) {
+      if (!requireConnection()) return;
+      if (args.length === 0) { writeError('Usage: start <connector-name>'); return; }
+      var name = args[0];
+
+      // Determine direction from status if available
+      var s = dimeConn.status[name];
+      var direction = s ? (s.Direction || '').toLowerCase() : null;
+
+      function tryStart(dir) {
+        return dimeApi('/connector/start/' + dir + '/' + encodeURIComponent(name), { method: 'POST' });
+      }
+
+      writeDim('Starting ' + name + '...');
+      if (direction === 'source' || direction === 'sink') {
+        tryStart(direction)
+          .then(function () { writeLine(name + ' started.', 'term-line-success'); })
+          .catch(function (err) { writeError('Start failed: ' + err.message); });
+      } else {
+        // Unknown direction — try source first, then sink
+        tryStart('source')
+          .then(function () { writeLine(name + ' started (source).', 'term-line-success'); })
+          .catch(function () {
+            return tryStart('sink')
+              .then(function () { writeLine(name + ' started (sink).', 'term-line-success'); })
+              .catch(function (err) { writeError('Start failed: ' + err.message); });
+          });
+      }
+    },
+    complete: function (partial) {
+      return completeConnectorNames(partial);
+    }
+  });
+
+  // ── stop ──────────────────────────────────────────────────────
+  registerCommand('stop', {
+    description: 'Stop a connector on the DIME instance',
+    usage: 'stop <connector-name>',
+    category: 'Remote',
+    fn: function (args) {
+      if (!requireConnection()) return;
+      if (args.length === 0) { writeError('Usage: stop <connector-name>'); return; }
+      var name = args[0];
+
+      var s = dimeConn.status[name];
+      var direction = s ? (s.Direction || '').toLowerCase() : null;
+
+      function tryStop(dir) {
+        return dimeApi('/connector/stop/' + dir + '/' + encodeURIComponent(name), { method: 'POST' });
+      }
+
+      writeDim('Stopping ' + name + '...');
+      if (direction === 'source' || direction === 'sink') {
+        tryStop(direction)
+          .then(function () { writeLine(name + ' stopped.', 'term-line-success'); })
+          .catch(function (err) { writeError('Stop failed: ' + err.message); });
+      } else {
+        tryStop('source')
+          .then(function () { writeLine(name + ' stopped (source).', 'term-line-success'); })
+          .catch(function () {
+            return tryStop('sink')
+              .then(function () { writeLine(name + ' stopped (sink).', 'term-line-success'); })
+              .catch(function (err) { writeError('Stop failed: ' + err.message); });
+          });
+      }
+    },
+    complete: function (partial) {
+      return completeConnectorNames(partial);
+    }
+  });
+
+  // ── perf ──────────────────────────────────────────────────────
+  registerCommand('perf', {
+    description: 'Show performance dashboard',
+    usage: 'perf [--watch]',
+    category: 'Remote',
+    fn: function (args, flags) {
+      if (!requireConnection()) return;
+
+      if (!flags.watch) {
+        // One-shot: fetch fresh status then render
+        refreshStatus()
+          .then(function (status) {
+            if (Object.keys(status).length === 0) {
+              writeDim('No connector status data. Is the instance running?');
+              return;
+            }
+            renderPerfTable(status, null);
+          })
+          .catch(function (err) {
+            writeError('Failed to fetch status: ' + err.message);
+          });
+        return;
+      }
+
+      // Watch mode — poll /status on interval
+      if (isStreaming) {
+        writeError('Already streaming. Press Ctrl+C to cancel first.');
+        return;
+      }
+      isStreaming = true;
+      var watchEl = document.createElement('div');
+      watchEl.className = 'term-line term-perf-watch';
+      outputEl.appendChild(watchEl);
+      writeDim('Fetching...');
+
+      function poll() {
+        refreshStatus()
+          .then(function (status) {
+            renderPerfTable(status, watchEl);
+            scrollBottom();
+          })
+          .catch(function () { /* ignore transient errors */ });
+      }
+
+      poll();
+      var interval = setInterval(function () {
+        if (!isStreaming) { clearInterval(interval); return; }
+        poll();
+      }, 2000);
+
+      cancelStream = function () {
+        clearInterval(interval);
+      };
     }
   });
 

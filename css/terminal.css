@@ -273,6 +273,17 @@
 .term-ai-stream li { margin: 2px 0; }
 .term-ai-stream li::marker { color: var(--cyan); }
 
+/* === DIME Instance Status === */
+.term-status-running { color: var(--cyan); }
+.term-status-stopped { color: var(--amber-dim); }
+.term-status-faulted { color: #ff4444; }
+
+.term-perf-watch {
+  border-left: 2px solid var(--cyan-dim);
+  padding-left: 10px;
+  margin: 4px 0;
+}
+
 /* === Desktop Only === */
 @media (max-width: 768px) {
   #term-bubble {
