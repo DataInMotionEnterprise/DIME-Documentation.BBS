@@ -24,7 +24,7 @@ DIME_PAGES['EX19'] = {
           '</ul>' +
           '<p>This pattern is powerful for any scenario where queries need to change at runtime \u2014 pagination, date ranges, dynamic filters, etc.</p>',
         related: [
-          { page: '06', label: '06 \u2014 Source Connectors' },
+          { page: 'CON06', label: 'CON06 \u2014 Source Connectors' },
           { page: 'EX20', label: 'EX20 \u2014 SQL Server Reads' },
           { page: 'REF26', label: 'REF26 \u2014 Postgres' }
         ]
@@ -45,8 +45,8 @@ DIME_PAGES['EX19'] = {
           '<li><strong>Console Sink</strong> \u2014 Displays results on stdout for verification.</li>' +
           '</ul>',
         related: [
-          { page: '05', label: '05 \u2014 Architecture Overview' },
-          { page: '09', label: '09 \u2014 Scripting Deep Dive' }
+          { page: 'CON05', label: 'CON05 \u2014 Architecture Overview' },
+          { page: 'CON09', label: 'CON09 \u2014 Scripting Deep Dive' }
         ]
       }
     },
@@ -80,8 +80,8 @@ DIME_PAGES['EX19'] = {
           '  top = next_num;\n' +
           '  configuration().CommandText = conn;',
         related: [
-          { page: '09', label: '09 \u2014 Scripting (Lua & Python)' },
-          { page: '06', label: '06 \u2014 Source Connectors' }
+          { page: 'CON09', label: 'CON09 \u2014 Scripting (Lua & Python)' },
+          { page: 'CON06', label: 'CON06 \u2014 Source Connectors' }
         ]
       }
     },
@@ -98,8 +98,8 @@ DIME_PAGES['EX19'] = {
           '<p><strong>enter_script vs init_script</strong> \u2014 <code>init_script</code> runs once at startup (one-time setup). <code>enter_script</code> runs before every scan cycle (per-cycle logic). This separation enables patterns like storing a pattern once and applying it repeatedly.</p>' +
           '<p><strong>Column-to-Item Mapping</strong> \u2014 Each item\u2019s <code>address</code> corresponds to a SQL column name. The script then processes the result array (e.g., <code>result[0]</code> for the first row\u2019s value).</p>',
         related: [
-          { page: '09', label: '09 \u2014 Scripting (Lua & Python)' },
-          { page: '06', label: '06 \u2014 Source Connectors' },
+          { page: 'CON09', label: 'CON09 \u2014 Scripting (Lua & Python)' },
+          { page: 'CON06', label: 'CON06 \u2014 Source Connectors' },
           { page: 'EX20', label: 'EX20 \u2014 SQL Server Reads' }
         ]
       }

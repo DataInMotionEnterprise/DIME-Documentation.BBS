@@ -26,7 +26,7 @@ DIME_PAGES['EX13'] = {
           '<p>This is the most complex example in the series, demonstrating 2 sources and 3 sinks with sophisticated filtering to route data correctly.</p>',
         related: [
           { page: 'EX12', label: 'EX12 \u2014 Secure MQTT (TLS)' },
-          { page: '08', label: '08 \u2014 Message Paths & Filtering' },
+          { page: 'CON08', label: 'CON08 \u2014 Message Paths & Filtering' },
           { page: 'REF32', label: 'REF32 \u2014 SparkplugB' },
           { page: 'REF07', label: 'REF07 \u2014 Ethernet/IP' }
         ]
@@ -51,8 +51,8 @@ DIME_PAGES['EX13'] = {
           '<li><strong>InfluxDB</strong> \u2014 Excludes <code>rockwell</code> and <code>spb/$SYSTEM</code> \u2192 stores only SparkplugB metrics as time-series</li>' +
           '</ul>',
         related: [
-          { page: '05', hotspot: 'data-flow', label: '05 \u2014 Architecture: Data Flow' },
-          { page: '08', label: '08 \u2014 Filtering' }
+          { page: 'CON05', hotspot: 'data-flow', label: 'CON05 \u2014 Architecture: Data Flow' },
+          { page: 'CON08', label: 'CON08 \u2014 Filtering' }
         ]
       }
     },
@@ -75,8 +75,8 @@ DIME_PAGES['EX13'] = {
           '</ul>' +
           '<p>The item script loops over <code>result.Metrics</code> using <code>luanet.each()</code> (.NET enumerable iteration) and calls <code>emit("./" .. metric.Name, value)</code> for each metric, creating individual ring buffer items. <code>return nil</code> suppresses the raw Protobuf message.</p>',
         related: [
-          { page: '09', label: '09 \u2014 Scripting (Lua + .NET interop)' },
-          { page: '10', label: '10 \u2014 Cache API (emit function)' }
+          { page: 'CON09', label: 'CON09 \u2014 Scripting (Lua + .NET interop)' },
+          { page: 'CON10', label: 'CON10 \u2014 Cache API (emit function)' }
         ]
       }
     },
@@ -102,8 +102,8 @@ DIME_PAGES['EX13'] = {
           '</ul>' +
           '<p>The <code>exclude_filter</code> prevents loopback (excluding <code>spb</code> source) and hides PLC system messages.</p>',
         related: [
-          { page: '07', label: '07 \u2014 Sink Connectors' },
-          { page: '08', label: '08 \u2014 Filtering' }
+          { page: 'CON07', label: 'CON07 \u2014 Sink Connectors' },
+          { page: 'CON08', label: 'CON08 \u2014 Filtering' }
         ]
       }
     },
@@ -120,10 +120,10 @@ DIME_PAGES['EX13'] = {
           '<p><strong>Multi-Source Filtering</strong> \u2014 With 2 sources and 3 sinks, <code>exclude_filter</code> becomes critical. Each sink carefully selects which source data it receives. This prevents the SparkplugB sink from creating a publish loop and ensures InfluxDB only stores the metrics it needs.</p>' +
           '<p><strong>.NET Interop in Lua</strong> \u2014 The script uses <code>import(\'System\')</code> to access .NET types and <code>Convert.ToInt32()</code>, <code>Convert.ToDouble()</code> for type conversion. <code>luanet.each()</code> iterates over .NET <code>IEnumerable</code> collections.</p>',
         related: [
-          { page: '08', label: '08 \u2014 Message Paths & Filtering' },
-          { page: '09', label: '09 \u2014 Scripting (Lua)' },
+          { page: 'CON08', label: 'CON08 \u2014 Message Paths & Filtering' },
+          { page: 'CON09', label: 'CON09 \u2014 Scripting (Lua)' },
           { page: 'EX12', label: 'EX12 \u2014 Secure MQTT' },
-          { page: '10', label: '10 \u2014 Cache API' }
+          { page: 'CON10', label: 'CON10 \u2014 Cache API' }
         ]
       }
     }

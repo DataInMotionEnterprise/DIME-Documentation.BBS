@@ -23,7 +23,7 @@ DIME_PAGES['EX10'] = {
           '</ul>' +
           '<p>This is the minimal OPC-DA configuration. OPC-DA (Data Access) is the original 1990s OPC standard built on Windows COM/DCOM. It is Windows-only but still widely deployed in brownfield factories running Kepware, Wonderware, RSLinx, or FactoryTalk.</p>',
         related: [
-          { page: '06', label: '06 \u2014 Source Connectors' },
+          { page: 'CON06', label: 'CON06 \u2014 Source Connectors' },
           { page: 'EX08', label: 'EX08 \u2014 OPC-UA Server Sink (modern alternative)' },
           { page: 'REF24', label: 'REF24 \u2014 OPC-DA' }
         ]
@@ -44,8 +44,8 @@ DIME_PAGES['EX10'] = {
           '</ul>' +
           '<p>Since OPC-DA uses COM/DCOM, the OPC server must be running on the same Windows machine or accessible via DCOM network configuration.</p>',
         related: [
-          { page: '05', hotspot: 'data-flow', label: '05 \u2014 Architecture: Data Flow' },
-          { page: '20', label: '20 \u2014 Report By Exception' }
+          { page: 'CON05', hotspot: 'data-flow', label: 'CON05 \u2014 Architecture: Data Flow' },
+          { page: 'CON20', label: 'CON20 \u2014 Report By Exception' }
         ]
       }
     },
@@ -70,8 +70,8 @@ DIME_PAGES['EX10'] = {
           '<li>Per-item <code>rbe: !!bool true</code> \u2014 Overrides the source-level RBE setting for individual tags</li>' +
           '</ul>',
         related: [
-          { page: '21', label: '21 \u2014 Multi-File Configs' },
-          { page: '04', label: '04 \u2014 YAML Basics' }
+          { page: 'CON21', label: 'CON21 \u2014 Multi-File Configs' },
+          { page: 'CON04', label: 'CON04 \u2014 YAML Basics' }
         ]
       }
     },
@@ -88,8 +88,8 @@ DIME_PAGES['EX10'] = {
           '<p><strong>Per-Item RBE</strong> \u2014 Both source-level and item-level <code>rbe</code> are set to true. Item-level RBE overrides the source default, letting you mix polling and change-only reporting within the same source.</p>' +
           '<p><strong>OPC-DA vs OPC-UA</strong> \u2014 OPC-DA is Windows-only (COM). OPC-UA (see EX08) is platform-independent. New deployments should use OPC-UA. Use OPC-DA only for brownfield legacy systems.</p>',
         related: [
-          { page: '06', label: '06 \u2014 Source Connectors' },
-          { page: '20', label: '20 \u2014 Report By Exception' },
+          { page: 'CON06', label: 'CON06 \u2014 Source Connectors' },
+          { page: 'CON20', label: 'CON20 \u2014 Report By Exception' },
           { page: 'EX08', label: 'EX08 \u2014 OPC-UA Server Sink' }
         ]
       }

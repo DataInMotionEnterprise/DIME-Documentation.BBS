@@ -23,8 +23,8 @@ DIME_PAGES['EX02'] = {
           '</ul>' +
           '<p>The simulator runs at 50Hz to produce smooth animation data. This is how production DIME deployments look \u2014 modular files, multiple sinks, and Lua logic driving the data pipeline.</p>',
         related: [
-          { page: '25', label: '25 \u2014 Horizon Gateway' },
-          { page: '26', label: '26 \u2014 Zenith Cloud' },
+          { page: 'CON25', label: 'CON25 \u2014 Horizon Gateway' },
+          { page: 'CON26', label: 'CON26 \u2014 Zenith Cloud' },
           { page: 'EX01', label: 'EX01 \u2014 Basic Counter (simpler starting point)' }
         ]
       }
@@ -48,8 +48,8 @@ DIME_PAGES['EX02'] = {
           '<p>Each scan produces 5 items (X, Y, Z, A, B) at 50Hz. The ring buffer distributes these to all 3 sinks simultaneously.</p>' +
           '<p>The <strong>WebServer</strong> sink is unique \u2014 it serves static HTML/JS files but excludes all data items. The browser JS connects to the WebSocket sink to get real-time position updates.</p>',
         related: [
-          { page: '05', hotspot: 'data-flow', label: '05 \u2014 Architecture: Data Flow' },
-          { page: '09', label: '09 \u2014 Scripting (Lua state machines)' }
+          { page: 'CON05', hotspot: 'data-flow', label: 'CON05 \u2014 Architecture: Data Flow' },
+          { page: 'CON09', label: 'CON09 \u2014 Scripting (Lua state machines)' }
         ]
       }
     },
@@ -85,8 +85,8 @@ DIME_PAGES['EX02'] = {
           'sources:\n' +
           '  - *machineSimulator    # references anchor',
         related: [
-          { page: '21', label: '21 \u2014 Multi-File Configs' },
-          { page: '04', label: '04 \u2014 YAML Basics (anchors & aliases)' }
+          { page: 'CON21', label: 'CON21 \u2014 Multi-File Configs' },
+          { page: 'CON04', label: 'CON04 \u2014 YAML Basics (anchors & aliases)' }
         ]
       }
     },
@@ -105,8 +105,8 @@ DIME_PAGES['EX02'] = {
           '<p>Filter patterns are regex-matched against the full item path: <code>sourceName/itemName</code>. For example, <code>machineSimulator/XPositionCurrent</code>.</p>' +
           '<p>Without filters, every sink receives every item from every source. Filters let you create targeted data pipelines from a shared ring buffer.</p>',
         related: [
-          { page: '08', label: '08 \u2014 Message Paths & Filtering' },
-          { page: '07', label: '07 \u2014 Sink Connectors' }
+          { page: 'CON08', label: 'CON08 \u2014 Message Paths & Filtering' },
+          { page: 'CON07', label: 'CON07 \u2014 Sink Connectors' }
         ]
       }
     },
@@ -122,10 +122,10 @@ DIME_PAGES['EX02'] = {
           '<p><strong>Sink Transform</strong> \u2014 The source defines <code>sink.transform.template: Message.Data</code>, which tells sinks to extract only the data value (not the full MessageBoxMessage envelope). Combined with <code>use_sink_transform: false</code> on sinks, this creates a clean JSON payload for web clients.</p>' +
           '<p><strong>WebServer Connector</strong> \u2014 Unlike other sinks, WebServer serves static files from <code>web_root</code>. It\u2019s a built-in HTTP file server. The <code>exclude_filter: ".*"</code> prevents it from processing ring buffer messages. The browser dashboard it serves connects back to the WebSocket sink for live data.</p>',
         related: [
-          { page: '10', label: '10 \u2014 Cache API' },
-          { page: '09', label: '09 \u2014 Scripting (enter_script)' },
-          { page: '11', label: '11 \u2014 Templates & Formatting' },
-          { page: '08', label: '08 \u2014 Message Paths & Filtering' }
+          { page: 'CON10', label: 'CON10 \u2014 Cache API' },
+          { page: 'CON09', label: 'CON09 \u2014 Scripting (enter_script)' },
+          { page: 'CON11', label: 'CON11 \u2014 Templates & Formatting' },
+          { page: 'CON08', label: 'CON08 \u2014 Message Paths & Filtering' }
         ]
       }
     }

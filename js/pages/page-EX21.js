@@ -25,8 +25,8 @@ DIME_PAGES['EX21'] = {
           '</ul>' +
           '<p>This example demonstrates the full power of DIME\u2019s scripting, caching, and multi-source architecture in a single configuration file.</p>',
         related: [
-          { page: '07', label: '07 \u2014 Sink Connectors' },
-          { page: '10', label: '10 \u2014 Cache API' },
+          { page: 'CON07', label: 'CON07 \u2014 Sink Connectors' },
+          { page: 'CON10', label: 'CON10 \u2014 Cache API' },
           { page: 'REF33', label: 'REF33 \u2014 Splunk EH SDK' },
           { page: 'REF09', label: 'REF09 \u2014 Haas SHDR' }
         ]
@@ -47,8 +47,8 @@ DIME_PAGES['EX21'] = {
           '</ul>' +
           '<p>All three sources publish to the ring buffer. Three sinks consume independently: Splunk Edge Hub (gRPC), HTTP Server (REST), and Console (stdout).</p>',
         related: [
-          { page: '05', label: '05 \u2014 Architecture Overview' },
-          { page: '10', label: '10 \u2014 Cache API' }
+          { page: 'CON05', label: 'CON05 \u2014 Architecture Overview' },
+          { page: 'CON10', label: 'CON10 \u2014 Cache API' }
         ]
       }
     },
@@ -68,7 +68,7 @@ DIME_PAGES['EX21'] = {
           '</ul>' +
           '<p>The Edge Hub acts as a local data collection point that can forward to Splunk Cloud or Splunk Enterprise. DIME connects as a data source to the Edge Hub\u2019s gRPC endpoint.</p>',
         related: [
-          { page: '07', label: '07 \u2014 Sink Connectors' },
+          { page: 'CON07', label: 'CON07 \u2014 Sink Connectors' },
           { page: 'EX17', label: 'EX17 \u2014 InfluxDB Time-Series' }
         ]
       }
@@ -89,8 +89,8 @@ DIME_PAGES['EX21'] = {
           '</ul>' +
           '<p>The combiner pattern enables derived metrics, aggregations, and health-aware logic without modifying the original source configurations.</p>',
         related: [
-          { page: '10', label: '10 \u2014 Cache API' },
-          { page: '09', label: '09 \u2014 Scripting (Lua & Python)' }
+          { page: 'CON10', label: 'CON10 \u2014 Cache API' },
+          { page: 'CON09', label: 'CON09 \u2014 Scripting (Lua & Python)' }
         ]
       }
     },
@@ -107,9 +107,9 @@ DIME_PAGES['EX21'] = {
           '<p><strong>$SYSTEM Cache</strong> \u2014 <code>cache(\'eipSource1/$SYSTEM/IsConnected\')</code> reads the PLC\u2019s live connection state from the system cache. This enables health-aware logic like mapping connectivity to MTConnect Availability events.</p>' +
           '<p><strong>.NET Interop</strong> \u2014 The <code>init_script</code> uses <code>luanet.load_assembly</code> and <code>luanet.import_type</code> to access .NET CLR types directly from Lua, such as <code>System.Environment.MachineName</code>.</p>',
         related: [
-          { page: '07', label: '07 \u2014 Sink Connectors' },
-          { page: '10', label: '10 \u2014 Cache API' },
-          { page: '09', label: '09 \u2014 Scripting (Lua & Python)' }
+          { page: 'CON07', label: 'CON07 \u2014 Sink Connectors' },
+          { page: 'CON10', label: 'CON10 \u2014 Cache API' },
+          { page: 'CON09', label: 'CON09 \u2014 Scripting (Lua & Python)' }
         ]
       }
     }

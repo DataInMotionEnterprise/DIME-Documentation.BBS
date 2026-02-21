@@ -24,7 +24,7 @@ DIME_PAGES['EX23'] = {
           '</ul>' +
           '<p>A single-file YAML config keeps everything in one place. Only the New York item is enabled by default.</p>',
         related: [
-          { page: '06', label: '06 \u2014 Source Connectors' },
+          { page: 'CON06', label: 'CON06 \u2014 Source Connectors' },
           { page: 'EX22', label: 'EX22 \u2014 JSON Web Scraper (generic REST)' },
           { page: 'REF23', label: 'REF23 \u2014 NWS Weather' }
         ]
@@ -46,8 +46,8 @@ DIME_PAGES['EX23'] = {
           '</ol>' +
           '<p>The <code>agent</code> property sets a User-Agent header required by the NWS API. Without it, requests are rejected. Multiple city items can run in parallel within the same source connector.</p>',
         related: [
-          { page: '05', hotspot: 'data-flow', label: '05 \u2014 Architecture: Data Flow' },
-          { page: '09', label: '09 \u2014 Scripting (result variable)' }
+          { page: 'CON05', hotspot: 'data-flow', label: 'CON05 \u2014 Architecture: Data Flow' },
+          { page: 'CON09', label: 'CON09 \u2014 Scripting (result variable)' }
         ]
       }
     },
@@ -77,8 +77,8 @@ DIME_PAGES['EX23'] = {
           '      return result.properties\n' +
           '        .periods[0].temperature;',
         related: [
-          { page: '04', label: '04 \u2014 YAML Basics' },
-          { page: '06', label: '06 \u2014 Source Connectors' }
+          { page: 'CON04', label: 'CON04 \u2014 YAML Basics' },
+          { page: 'CON06', label: 'CON06 \u2014 Source Connectors' }
         ]
       }
     },
@@ -94,8 +94,8 @@ DIME_PAGES['EX23'] = {
           '<p><strong>Forecast Types</strong> \u2014 The <code>forecast</code> property selects "daily" (7-day with day/night periods) or "hourly" (detailed hourly). The JSON response structure differs between them, so scripts must navigate the correct path.</p>' +
           '<p><strong>External API Pattern</strong> \u2014 This example demonstrates the general pattern for integrating any public REST API: set the base URL in <code>address</code>, configure authentication/headers, define items for each data point, and use Lua scripts to extract values from the response.</p>',
         related: [
-          { page: '09', label: '09 \u2014 Scripting (Lua & Python)' },
-          { page: '06', label: '06 \u2014 Source Connectors' },
+          { page: 'CON09', label: 'CON09 \u2014 Scripting (Lua & Python)' },
+          { page: 'CON06', label: 'CON06 \u2014 Source Connectors' },
           { page: 'EX22', label: 'EX22 \u2014 JSON Web Scraper' }
         ]
       }

@@ -26,8 +26,8 @@ DIME_PAGES['EX06'] = {
           '</ul>' +
           '<p>Six YAML files compose the full pipeline \u2014 this is how production DIME deployments look.</p>',
         related: [
-          { page: '06', label: '06 \u2014 Source Connectors' },
-          { page: '07', label: '07 \u2014 Sink Connectors' },
+          { page: 'CON06', label: 'CON06 \u2014 Source Connectors' },
+          { page: 'CON07', label: 'CON07 \u2014 Sink Connectors' },
           { page: 'EX04', label: 'EX04 \u2014 Siemens S7 PLC' },
           { page: 'REF07', label: 'REF07 \u2014 Ethernet/IP' },
           { page: 'REF32', label: 'REF32 \u2014 SparkplugB' }
@@ -53,8 +53,8 @@ DIME_PAGES['EX06'] = {
           '<li><strong>Sparkplug B</strong> \u2014 Publishes to Ignition SCADA; uses <code>include_filter</code> for rockwell + sharcs data only</li>' +
           '</ul>',
         related: [
-          { page: '05', hotspot: 'data-flow', label: '05 \u2014 Architecture: Data Flow' },
-          { page: '08', label: '08 \u2014 Message Paths & Filtering' }
+          { page: 'CON05', hotspot: 'data-flow', label: 'CON05 \u2014 Architecture: Data Flow' },
+          { page: 'CON08', label: 'CON08 \u2014 Message Paths & Filtering' }
         ]
       }
     },
@@ -75,8 +75,8 @@ DIME_PAGES['EX06'] = {
           '</ul>' +
           '<p>The <code>this.Key</code> variable contains the full MQTT topic path, which the script splits to extract the sensor serial number and event type.</p>',
         related: [
-          { page: '09', label: '09 \u2014 Scripting (emit API)' },
-          { page: '10', label: '10 \u2014 Cache API' }
+          { page: 'CON09', label: 'CON09 \u2014 Scripting (emit API)' },
+          { page: 'CON10', label: 'CON10 \u2014 Cache API' }
         ]
       }
     },
@@ -95,9 +95,9 @@ DIME_PAGES['EX06'] = {
           '</ul>' +
           '<p><strong>Sink Transform</strong> \u2014 The rockwell source defines <code>sink.transform.template: Message.Data</code>. Sinks that set <code>use_sink_transform: true</code> extract just the data value; others receive the full <code>MessageBoxMessage</code> envelope.</p>',
         related: [
-          { page: '07', label: '07 \u2014 Sink Connectors' },
-          { page: '11', label: '11 \u2014 Templates & Formatting' },
-          { page: '08', label: '08 \u2014 Message Paths & Filtering' }
+          { page: 'CON07', label: 'CON07 \u2014 Sink Connectors' },
+          { page: 'CON11', label: 'CON11 \u2014 Templates & Formatting' },
+          { page: 'CON08', label: 'CON08 \u2014 Message Paths & Filtering' }
         ]
       }
     },
@@ -113,10 +113,10 @@ DIME_PAGES['EX06'] = {
           '<p><strong>Sparkplug B</strong> \u2014 An MQTT-based specification for industrial SCADA. It manages birth/death certificates, uses protobuf encoding, and organizes tags into a <code>host/group/node/device</code> hierarchy. DIME\u2019s <code>SparkplugB</code> connector handles the full specification including <code>reconnect_interval</code> and <code>birth_delay</code> timing.</p>' +
           '<p><strong>include_filter vs exclude_filter</strong> \u2014 <code>include_filter</code> is a whitelist: only matching paths are delivered. <code>exclude_filter</code> is a blacklist: matching paths are blocked. The Ignition sink uses <code>include_filter: [rockwell, sharcs]</code> to receive only data from those two sources.</p>',
         related: [
-          { page: '06', label: '06 \u2014 Source Connectors' },
-          { page: '07', label: '07 \u2014 Sink Connectors' },
-          { page: '09', label: '09 \u2014 Scripting (emit API)' },
-          { page: '08', label: '08 \u2014 Message Paths & Filtering' }
+          { page: 'CON06', label: 'CON06 \u2014 Source Connectors' },
+          { page: 'CON07', label: 'CON07 \u2014 Sink Connectors' },
+          { page: 'CON09', label: 'CON09 \u2014 Scripting (emit API)' },
+          { page: 'CON08', label: 'CON08 \u2014 Message Paths & Filtering' }
         ]
       }
     }

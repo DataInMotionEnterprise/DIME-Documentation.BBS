@@ -24,8 +24,8 @@ DIME_PAGES['EX24'] = {
           '</ul>' +
           '<p>The 3-file config separates the source, sink, and main orchestration.</p>',
         related: [
-          { page: '07', label: '07 \u2014 Sink Connectors' },
-          { page: '11', label: '11 \u2014 Templates & Formatting' },
+          { page: 'CON07', label: 'CON07 \u2014 Sink Connectors' },
+          { page: 'CON11', label: 'CON11 \u2014 Templates & Formatting' },
           { page: 'REF10', label: 'REF10 \u2014 HTTP Client' }
         ]
       }
@@ -46,8 +46,8 @@ DIME_PAGES['EX24'] = {
           '</ol>' +
           '<p>Only the ModelInstance item produces output (the others return nil). This ensures one combined POST per scan cycle instead of four separate requests.</p>',
         related: [
-          { page: '05', hotspot: 'data-flow', label: '05 \u2014 Architecture: Data Flow' },
-          { page: '10', label: '10 \u2014 Cache API' }
+          { page: 'CON05', hotspot: 'data-flow', label: 'CON05 \u2014 Architecture: Data Flow' },
+          { page: 'CON10', label: 'CON10 \u2014 Cache API' }
         ]
       }
     },
@@ -79,9 +79,9 @@ DIME_PAGES['EX24'] = {
           '    Content-Type: text/plain\n' +
           '    Authorization: Bearer <token>',
         related: [
-          { page: '04', label: '04 \u2014 YAML Basics' },
-          { page: '21', label: '21 \u2014 Multi-File Configs' },
-          { page: '11', label: '11 \u2014 Templates & Formatting' }
+          { page: 'CON04', label: 'CON04 \u2014 YAML Basics' },
+          { page: 'CON21', label: 'CON21 \u2014 Multi-File Configs' },
+          { page: 'CON11', label: 'CON11 \u2014 Templates & Formatting' }
         ]
       }
     },
@@ -98,10 +98,10 @@ DIME_PAGES['EX24'] = {
           '<p><strong>Cache-Based State Assembly</strong> \u2014 Items use <code>set("key", value)</code> to store values and <code>return nil</code> to suppress output. A final "assembler" item reads all cached values with <code>cache("./key", default)</code> and returns a combined table. This produces one message per scan cycle from multiple data points.</p>' +
           '<p><strong>configuration() API</strong> \u2014 <code>configuration().Name</code> returns the connector\u2019s name from YAML config. Scripts can adapt to their runtime context without hardcoding values.</p>',
         related: [
-          { page: '10', label: '10 \u2014 Cache API' },
-          { page: '11', label: '11 \u2014 Templates & Formatting' },
-          { page: '09', label: '09 \u2014 Scripting (Lua & Python)' },
-          { page: '07', label: '07 \u2014 Sink Connectors' }
+          { page: 'CON10', label: 'CON10 \u2014 Cache API' },
+          { page: 'CON11', label: 'CON11 \u2014 Templates & Formatting' },
+          { page: 'CON09', label: 'CON09 \u2014 Scripting (Lua & Python)' },
+          { page: 'CON07', label: 'CON07 \u2014 Sink Connectors' }
         ]
       }
     }

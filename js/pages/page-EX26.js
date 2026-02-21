@@ -25,7 +25,7 @@ DIME_PAGES['EX26'] = {
           '</ul>' +
           '<p>Switch from Lua to Python with a single property: <code>lang_script: python</code>.</p>',
         related: [
-          { page: '09', label: '09 \u2014 Scripting (Lua & Python)' },
+          { page: 'CON09', label: 'CON09 \u2014 Scripting (Lua & Python)' },
           { page: 'EX01', label: 'EX01 \u2014 Basic Counter (Lua version)' },
           { page: 'REF29', label: 'REF29 \u2014 Script' }
         ]
@@ -52,8 +52,8 @@ DIME_PAGES['EX26'] = {
           '</ul>' +
           '<p>The Console sink with <code>use_sink_transform: true</code> applies the source\u2019s <code>Message.Data</code> template to show only the data values.</p>',
         related: [
-          { page: '05', hotspot: 'data-flow', label: '05 \u2014 Architecture: Data Flow' },
-          { page: '10', label: '10 \u2014 Cache API' }
+          { page: 'CON05', hotspot: 'data-flow', label: 'CON05 \u2014 Architecture: Data Flow' },
+          { page: 'CON10', label: 'CON10 \u2014 Cache API' }
         ]
       }
     },
@@ -86,8 +86,8 @@ DIME_PAGES['EX26'] = {
           '      script: |\n' +
           '        Random().NextDouble()',
         related: [
-          { page: '04', label: '04 \u2014 YAML Basics' },
-          { page: '09', label: '09 \u2014 Scripting Deep Dive' }
+          { page: 'CON04', label: 'CON04 \u2014 YAML Basics' },
+          { page: 'CON09', label: 'CON09 \u2014 Scripting Deep Dive' }
         ]
       }
     },
@@ -104,8 +104,8 @@ DIME_PAGES['EX26'] = {
           '<p><strong>Custom Modules</strong> \u2014 Place <code>.py</code> files in DIME\u2019s <code>Python/</code> directory. Import with standard syntax: <code>from example import add</code>. The <code>paths_script</code> property can add additional module search paths.</p>' +
           '<p><strong>Global Variables</strong> \u2014 Variables defined in <code>init_script</code> (like <code>counter = 0</code>) persist across scan cycles. All items share the same Python runtime, so globals are accessible from any item script.</p>',
         related: [
-          { page: '09', label: '09 \u2014 Scripting (Lua & Python)' },
-          { page: '10', label: '10 \u2014 Cache API' },
+          { page: 'CON09', label: 'CON09 \u2014 Scripting (Lua & Python)' },
+          { page: 'CON10', label: 'CON10 \u2014 Cache API' },
           { page: 'EX01', label: 'EX01 \u2014 Basic Counter (Lua equivalent)' }
         ]
       }

@@ -24,8 +24,8 @@ DIME_PAGES['EX27'] = {
           '</ul>' +
           '<p>The single-file config shows how Lua modules, the cache API, and template transforms work together for real-time analytics.</p>',
         related: [
-          { page: '09', label: '09 \u2014 Scripting Deep Dive' },
-          { page: '11', label: '11 \u2014 Templates & Formatting' }
+          { page: 'CON09', label: 'CON09 \u2014 Scripting Deep Dive' },
+          { page: 'CON11', label: 'CON11 \u2014 Templates & Formatting' }
         ]
       }
     },
@@ -44,8 +44,8 @@ DIME_PAGES['EX27'] = {
           '</ol>' +
           '<p>Items are evaluated in order, so Temperature\u2019s value is cached before the analytics items read it. The Console sink applies Liquid templates via <code>use_sink_transform: true</code>.</p>',
         related: [
-          { page: '05', hotspot: 'data-flow', label: '05 \u2014 Architecture: Data Flow' },
-          { page: '10', label: '10 \u2014 Cache API (cross-item reads)' }
+          { page: 'CON05', hotspot: 'data-flow', label: 'CON05 \u2014 Architecture: Data Flow' },
+          { page: 'CON10', label: 'CON10 \u2014 Cache API (cross-item reads)' }
         ]
       }
     },
@@ -80,8 +80,8 @@ DIME_PAGES['EX27'] = {
           '    window1:add(t)\n' +
           '    return window1:average()',
         related: [
-          { page: '04', label: '04 \u2014 YAML Basics' },
-          { page: '11', label: '11 \u2014 Templates & Formatting' }
+          { page: 'CON04', label: 'CON04 \u2014 YAML Basics' },
+          { page: 'CON11', label: 'CON11 \u2014 Templates & Formatting' }
         ]
       }
     },
@@ -98,10 +98,10 @@ DIME_PAGES['EX27'] = {
           '<p><strong>Liquid Templates</strong> \u2014 DotLiquid templates (<code>sink.transform.type: liquid</code>) format output as structured JSON. Access data with <code>{{Message.Data}}</code>, <code>{{Message.Data.field}}</code>, and <code>{{Message.Timestamp}}</code>. Each item can have its own template for different output shapes.</p>' +
           '<p><strong>Cross-Item Cache Reads</strong> \u2014 <code>cache("sliding_window/Temperature", 0)</code> reads another item\u2019s cached value using the absolute path <code>sourceName/itemName</code>. The second argument is the default when the cache entry doesn\u2019t exist yet. Items evaluate in order, so Temperature runs before its dependents.</p>',
         related: [
-          { page: '09', label: '09 \u2014 Scripting (Lua modules)' },
-          { page: '10', label: '10 \u2014 Cache API' },
-          { page: '11', label: '11 \u2014 Templates & Formatting' },
-          { page: '20', label: '20 \u2014 Report By Exception' }
+          { page: 'CON09', label: 'CON09 \u2014 Scripting (Lua modules)' },
+          { page: 'CON10', label: 'CON10 \u2014 Cache API' },
+          { page: 'CON11', label: 'CON11 \u2014 Templates & Formatting' },
+          { page: 'CON20', label: 'CON20 \u2014 Report By Exception' }
         ]
       }
     }

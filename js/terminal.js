@@ -129,11 +129,12 @@
     // Direct match first
     if (findPage(s)) return s;
 
-    // Try zero-padded number: "5" -> "05"
-    if (/^\d+$/.test(s)) {
-      var num = parseInt(s, 10);
-      var padded = (num < 10 ? '0' : '') + num;
-      if (findPage(padded)) return padded;
+    // Try "CON" + number: "con5" -> "CON05"
+    var conMatch = s.match(/^CON(\d+)$/);
+    if (conMatch) {
+      var conNum = parseInt(conMatch[1], 10);
+      var conId = 'CON' + (conNum < 10 ? '0' : '') + conNum;
+      if (findPage(conId)) return conId;
     }
 
     // Try "EX" + number: "ex17" -> "EX17", "ex5" -> "EX05"

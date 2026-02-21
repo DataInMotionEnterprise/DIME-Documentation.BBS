@@ -24,8 +24,8 @@ DIME_PAGES['EX09'] = {
           '</ul>' +
           '<p>This demonstrates the full spectrum of Fanuc data access through a single DIME connector, using Lua to transform raw signals into meaningful operational metrics.</p>',
         related: [
-          { page: '06', label: '06 \u2014 Source Connectors' },
-          { page: '10', label: '10 \u2014 Cache API' },
+          { page: 'CON06', label: 'CON06 \u2014 Source Connectors' },
+          { page: 'CON10', label: 'CON10 \u2014 Cache API' },
           { page: 'REF08', label: 'REF08 \u2014 Fanuc Robot' }
         ]
       }
@@ -47,8 +47,8 @@ DIME_PAGES['EX09'] = {
           '</ul>' +
           '<p>The console sink uses <code>exclude_filter: fanuc1/$SYSTEM</code> to hide DIME system messages and show only robot data.</p>',
         related: [
-          { page: '05', hotspot: 'data-flow', label: '05 \u2014 Architecture: Data Flow' },
-          { page: '08', label: '08 \u2014 Filtering' }
+          { page: 'CON05', hotspot: 'data-flow', label: 'CON05 \u2014 Architecture: Data Flow' },
+          { page: 'CON08', label: 'CON08 \u2014 Filtering' }
         ]
       }
     },
@@ -72,8 +72,8 @@ DIME_PAGES['EX09'] = {
           '<li><strong>sink.transform.template: Message.Data</strong> \u2014 Strips the MessageBoxMessage envelope so sinks receive only the data value</li>' +
           '</ul>',
         related: [
-          { page: '21', label: '21 \u2014 Multi-File Configs' },
-          { page: '09', label: '09 \u2014 Scripting (Lua)' }
+          { page: 'CON21', label: 'CON21 \u2014 Multi-File Configs' },
+          { page: 'CON09', label: 'CON09 \u2014 Scripting (Lua)' }
         ]
       }
     },
@@ -98,8 +98,8 @@ DIME_PAGES['EX09'] = {
           '</ul>' +
           '<p>This pattern applies to any scenario where you need to combine multiple raw data points into a single meaningful metric.</p>',
         related: [
-          { page: '10', label: '10 \u2014 Cache API (set/cache)' },
-          { page: '09', label: '09 \u2014 Scripting Deep Dive' }
+          { page: 'CON10', label: 'CON10 \u2014 Cache API (set/cache)' },
+          { page: 'CON09', label: 'CON09 \u2014 Scripting Deep Dive' }
         ]
       }
     },
@@ -115,9 +115,9 @@ DIME_PAGES['EX09'] = {
           '<p><strong>System Variables</strong> \u2014 Fanuc\u2019s internal variables use <code>$</code> prefix paths like <code>$MOR_GRP[1].$cur_prog_id</code>. These expose deep robot internals: currently running program, line number, and joint torques.</p>' +
           '<p><strong>Sink Transform</strong> \u2014 The source defines <code>sink.transform.template: Message.Data</code> which tells sinks to extract only the data payload (not the full <code>MessageBoxMessage</code> envelope). The console sets <code>use_sink_transform: true</code> to apply this transform.</p>',
         related: [
-          { page: '10', label: '10 \u2014 Cache API' },
-          { page: '09', label: '09 \u2014 Scripting (Lua & Python)' },
-          { page: '06', label: '06 \u2014 Source Connectors' }
+          { page: 'CON10', label: 'CON10 \u2014 Cache API' },
+          { page: 'CON09', label: 'CON09 \u2014 Scripting (Lua & Python)' },
+          { page: 'CON06', label: 'CON06 \u2014 Source Connectors' }
         ]
       }
     }

@@ -24,7 +24,7 @@ DIME_PAGES['EX04'] = {
           '</ul>' +
           '<p>This is the simplest industrial protocol example \u2014 two boolean tags from a real PLC, printed to console.</p>',
         related: [
-          { page: '06', label: '06 \u2014 Source Connectors' },
+          { page: 'CON06', label: 'CON06 \u2014 Source Connectors' },
           { page: 'EX03', label: 'EX03 \u2014 OPC-UA Client Reads' },
           { page: 'REF30', label: 'REF30 \u2014 Siemens S7' }
         ]
@@ -45,8 +45,8 @@ DIME_PAGES['EX04'] = {
           '</ul>' +
           '<p>The S7 protocol connects directly to the PLC CPU \u2014 no middleware or OPC server sits between DIME and the controller.</p>',
         related: [
-          { page: '05', hotspot: 'data-flow', label: '05 \u2014 Architecture: Data Flow' },
-          { page: '08', label: '08 \u2014 Message Paths & Filtering' }
+          { page: 'CON05', hotspot: 'data-flow', label: 'CON05 \u2014 Architecture: Data Flow' },
+          { page: 'CON08', label: 'CON08 \u2014 Message Paths & Filtering' }
         ]
       }
     },
@@ -80,8 +80,8 @@ DIME_PAGES['EX04'] = {
           '    type: bool\n' +
           '    address: Q0.0        # Output byte 0, bit 0',
         related: [
-          { page: '04', label: '04 \u2014 YAML Basics' },
-          { page: '21', label: '21 \u2014 Multi-File Configs' }
+          { page: 'CON04', label: 'CON04 \u2014 YAML Basics' },
+          { page: 'CON21', label: 'CON21 \u2014 Multi-File Configs' }
         ]
       }
     },
@@ -98,10 +98,10 @@ DIME_PAGES['EX04'] = {
           '<p><strong>Script Lifecycle Hooks</strong> \u2014 The four script hooks (<code>init_script</code>, <code>enter_script</code>, <code>exit_script</code>, <code>deinit_script</code>) are all shown as <code>~</code> (null). This documents the full lifecycle surface even when no scripting is needed. Use them for initialization, pre-scan setup, post-scan cleanup, or shutdown logic.</p>' +
           '<p><strong>$SYSTEM Filtering</strong> \u2014 Every source publishes heartbeat messages to <code>sourceName/$SYSTEM</code> with connection health data. The <code>exclude_filter</code> on the console sink blocks these so only real data items appear in output.</p>',
         related: [
-          { page: '06', label: '06 \u2014 Source Connectors' },
-          { page: '08', label: '08 \u2014 Message Paths & Filtering' },
-          { page: '09', label: '09 \u2014 Scripting (Lifecycle Hooks)' },
-          { page: '20', label: '20 \u2014 Report By Exception' }
+          { page: 'CON06', label: 'CON06 \u2014 Source Connectors' },
+          { page: 'CON08', label: 'CON08 \u2014 Message Paths & Filtering' },
+          { page: 'CON09', label: 'CON09 \u2014 Scripting (Lifecycle Hooks)' },
+          { page: 'CON20', label: 'CON20 \u2014 Report By Exception' }
         ]
       }
     }

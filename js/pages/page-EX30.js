@@ -23,7 +23,7 @@ DIME_PAGES['EX30'] = {
           '</ul>' +
           '<p>This is ideal for testing DIME configurations, training, and developing analytics logic before connecting to real machines.</p>',
         related: [
-          { page: '09', label: '09 \u2014 Scripting (Lua & Python)' },
+          { page: 'CON09', label: 'CON09 \u2014 Scripting (Lua & Python)' },
           { page: 'EX01', label: 'EX01 \u2014 Basic Counter (simpler simulation)' }
         ]
       }
@@ -43,8 +43,8 @@ DIME_PAGES['EX30'] = {
           '</ol>' +
           '<p>The <code>enter_script</code> runs the state machine logic before items read cached state. The <code>exit_script</code> checks for alert conditions after all items complete.</p>',
         related: [
-          { page: '05', hotspot: 'data-flow', label: '05 \u2014 Architecture: Data Flow' },
-          { page: '10', label: '10 \u2014 Cache API' }
+          { page: 'CON05', hotspot: 'data-flow', label: 'CON05 \u2014 Architecture: Data Flow' },
+          { page: 'CON10', label: 'CON10 \u2014 Cache API' }
         ]
       }
     },
@@ -65,8 +65,8 @@ DIME_PAGES['EX30'] = {
           '</ul>' +
           '<p>The analytics source demonstrates all three script hooks: <code>init_script</code> (setup), <code>enter_script</code> (periodic OEE), <code>exit_script</code> (alerts).</p>',
         related: [
-          { page: '09', label: '09 \u2014 Scripting Deep Dive' },
-          { page: '12', label: '12 \u2014 emit() Function' }
+          { page: 'CON09', label: 'CON09 \u2014 Scripting Deep Dive' },
+          { page: 'CON12', label: 'CON12 \u2014 emit() Function' }
         ]
       }
     },
@@ -83,9 +83,9 @@ DIME_PAGES['EX30'] = {
           '<p><strong>Cross-Source Dependencies</strong> \u2014 production_simulator reads machine_simulator cache. analytics reads both. This three-source cascade demonstrates DIME\u2019s data combination pattern where each source enriches the data pipeline.</p>' +
           '<p><strong>Predictive Maintenance</strong> \u2014 A simple wear index combines vibration band energy, temperature, and anomaly counts to estimate days until maintenance. Illustrates how Lua analytics can approach ML-style pattern recognition.</p>',
         related: [
-          { page: '09', label: '09 \u2014 Scripting (enter/exit scripts)' },
-          { page: '10', label: '10 \u2014 Cache API' },
-          { page: '12', label: '12 \u2014 emit() Function' }
+          { page: 'CON09', label: 'CON09 \u2014 Scripting (enter/exit scripts)' },
+          { page: 'CON10', label: 'CON10 \u2014 Cache API' },
+          { page: 'CON12', label: 'CON12 \u2014 emit() Function' }
         ]
       }
     }

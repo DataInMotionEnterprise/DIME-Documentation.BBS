@@ -24,7 +24,7 @@ DIME_PAGES['EX18'] = {
           '</ul>' +
           '<p>The same Rockwell source configuration and cache-and-forward pattern from EX17 is reused here, showing how easily you can swap sinks without changing your source logic.</p>',
         related: [
-          { page: '07', label: '07 \u2014 Sink Connectors' },
+          { page: 'CON07', label: 'CON07 \u2014 Sink Connectors' },
           { page: 'EX17', label: 'EX17 \u2014 InfluxDB Time-Series' },
           { page: 'REF17', label: 'REF17 \u2014 MongoDB' },
           { page: 'REF07', label: 'REF07 \u2014 Ethernet/IP' }
@@ -46,8 +46,8 @@ DIME_PAGES['EX18'] = {
           '<li><strong>Console Sink</strong> \u2014 Debug output with <code>use_sink_transform: true</code> for readable values.</li>' +
           '</ul>',
         related: [
-          { page: '05', label: '05 \u2014 Architecture Overview' },
-          { page: '06', label: '06 \u2014 Source Connectors' }
+          { page: 'CON05', label: 'CON05 \u2014 Architecture Overview' },
+          { page: 'CON06', label: 'CON06 \u2014 Source Connectors' }
         ]
       }
     },
@@ -69,8 +69,8 @@ DIME_PAGES['EX18'] = {
           '</ul>' +
           '<p><strong>Security note:</strong> The connection string contains credentials. In production, use environment variables or separate credential files outside version control.</p>',
         related: [
-          { page: '07', label: '07 \u2014 Sink Connectors' },
-          { page: '11', label: '11 \u2014 Templates & Formatting' }
+          { page: 'CON07', label: 'CON07 \u2014 Sink Connectors' },
+          { page: 'CON11', label: 'CON11 \u2014 Templates & Formatting' }
         ]
       }
     },
@@ -86,8 +86,8 @@ DIME_PAGES['EX18'] = {
           '<p><strong>use_sink_transform</strong> \u2014 When <code>true</code> on a sink, it applies the source\u2019s <code>sink.transform.template</code> to extract just the data value (<code>Message.Data</code>) before writing. Without it, the full <code>MessageBoxMessage</code> envelope would be stored as the document.</p>' +
           '<p><strong>Cache-and-Forward Pattern</strong> \u2014 Same as EX17: cache raw PLC bits with <code>set()</code> / <code>return nil</code>, then read with <code>cache()</code> in derived items. This cleanly separates data acquisition from transformation.</p>',
         related: [
-          { page: '10', label: '10 \u2014 Cache API' },
-          { page: '11', label: '11 \u2014 Templates & Formatting' },
+          { page: 'CON10', label: 'CON10 \u2014 Cache API' },
+          { page: 'CON11', label: 'CON11 \u2014 Templates & Formatting' },
           { page: 'EX17', label: 'EX17 \u2014 InfluxDB Time-Series' }
         ]
       }

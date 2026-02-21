@@ -440,7 +440,7 @@
   function parseHash() {
     var hash = window.location.hash;
     var match = hash.match(/^#page-([\w]+)(?::([\w-]+))?$/);
-    return match ? { pageId: match[1], hotspotId: match[2] || null } : { pageId: '01', hotspotId: null };
+    return match ? { pageId: match[1], hotspotId: match[2] || null } : { pageId: 'CON01', hotspotId: null };
   }
 
   function onHashChange() {
@@ -921,7 +921,7 @@
     // Load initial page
     var initial = parseHash();
     if (!window.location.hash) {
-      window.location.hash = 'page-01';
+      window.location.hash = 'page-CON01';
     } else {
       loadPage(initial.pageId).then(function () {
         if (initial.hotspotId) {

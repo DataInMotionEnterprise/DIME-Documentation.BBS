@@ -24,8 +24,8 @@ DIME_PAGES['EX31'] = {
           '</ul>' +
           '<p>The Script source simulates a GWB/Ultiform sheet-metal press brake with <strong>50+ OPC-UA-style variables</strong> covering machine state, job tracking, part quality, hydraulics, maintenance timers, and remote diagnostics.</p>',
         related: [
-          { page: '16', label: '16 \u2014 WebServer Connector' },
-          { page: '07', label: '07 \u2014 Sink Connectors' },
+          { page: 'CON16', label: 'CON16 \u2014 WebServer Connector' },
+          { page: 'CON07', label: 'CON07 \u2014 Sink Connectors' },
           { page: 'EX02', label: 'EX02 \u2014 Horizon & Zenith Minimum' },
           { page: 'REF39', label: 'REF39 \u2014 WebsocketServer' },
           { page: 'REF11', label: 'REF11 \u2014 HTTP Server' }
@@ -48,8 +48,8 @@ DIME_PAGES['EX31'] = {
           '</ul>' +
           '<p>The browser loads the page from WebServer, then opens a WebSocket connection to receive real-time updates. This two-port pattern (HTTP for static files, WS for live data) is the standard DIME dashboard architecture.</p>',
         related: [
-          { page: '05', hotspot: 'data-flow', label: '05 \u2014 Architecture: Data Flow' },
-          { page: '08', label: '08 \u2014 Message Paths & Filtering' }
+          { page: 'CON05', hotspot: 'data-flow', label: 'CON05 \u2014 Architecture: Data Flow' },
+          { page: 'CON08', label: 'CON08 \u2014 Message Paths & Filtering' }
         ]
       }
     },
@@ -71,8 +71,8 @@ DIME_PAGES['EX31'] = {
           '</ul>' +
           '<p>The <code>exclude_filter: ".*"</code> on the WebServer sink is critical \u2014 without it, the WebServer would try to process data messages as HTTP responses.</p>',
         related: [
-          { page: '04', label: '04 \u2014 YAML Basics' },
-          { page: '10', label: '10 \u2014 Cache API' }
+          { page: 'CON04', label: 'CON04 \u2014 YAML Basics' },
+          { page: 'CON10', label: 'CON10 \u2014 Cache API' }
         ]
       }
     },
@@ -89,9 +89,9 @@ DIME_PAGES['EX31'] = {
           '<p><strong>Maintenance Timers</strong> \u2014 Overdue flags compare <code>os.time()</code> against cached last-maintenance timestamps. Lubrication every 168 hours, audit every 720 hours, cartridge every 2160 hours. This mirrors real OPC-UA machine data structures.</p>' +
           '<p><strong>Four Sink Architecture</strong> \u2014 Console for development, HTTP for polling clients, WebSocket for real-time dashboards, WebServer for hosting. Each serves a different consumption pattern from one ring buffer.</p>',
         related: [
-          { page: '07', label: '07 \u2014 Sink Connectors' },
-          { page: '10', label: '10 \u2014 Cache API' },
-          { page: '16', label: '16 \u2014 WebServer Connector' }
+          { page: 'CON07', label: 'CON07 \u2014 Sink Connectors' },
+          { page: 'CON10', label: 'CON10 \u2014 Cache API' },
+          { page: 'CON16', label: 'CON16 \u2014 WebServer Connector' }
         ]
       }
     }

@@ -1,22 +1,23 @@
 /**
  * Page registry — assembles the PAGES array from individual page files.
  *
- * Each page file (js/pages/page-NN.js) registers itself into DIME_PAGES.
+ * Each page file (js/pages/page-CONNN.js, page-EXNN.js, page-REFNN.js)
+ * registers itself into DIME_PAGES.
  * This file collects them into the ordered PAGES array that app.js uses.
  *
  * To add a new page:
- *   1. Create js/pages/page-NN.js
+ *   1. Create js/pages/page-CONNN.js (or EXNN / REFNN)
  *   2. Add a <script> tag for it in index.html (before this file)
- *   3. Add 'NN' to PAGE_ORDER below
+ *   3. Add 'CONNN' to PAGE_ORDER below
  */
 
-/* Global map populated by individual page-NN.js files */
+/* Global map populated by individual page-*.js files */
 var DIME_PAGES = DIME_PAGES || {};
 
 var PAGE_ORDER = [
-  '01', '02', '03', '04', '05', '06', '07', '08', '09', '10',
-  '11', '12', '13', '14', '15', '16', '17', '18', '19', '20',
-  '21', '22', '23', '24', '25', '26', '27', '28', '29', '30',
+  'CON01', 'CON02', 'CON03', 'CON04', 'CON05', 'CON06', 'CON07', 'CON08', 'CON09', 'CON10',
+  'CON11', 'CON12', 'CON13', 'CON14', 'CON15', 'CON16', 'CON17', 'CON18', 'CON19', 'CON20',
+  'CON21', 'CON22', 'CON23', 'CON24', 'CON25', 'CON26', 'CON27', 'CON28', 'CON29', 'CON30',
   'EX01', 'EX02', 'EX03', 'EX04', 'EX05', 'EX06', 'EX07', 'EX08', 'EX09', 'EX10',
   'EX11', 'EX12', 'EX13', 'EX14', 'EX15', 'EX16', 'EX17', 'EX18', 'EX19', 'EX20',
   'EX21', 'EX22', 'EX23', 'EX24', 'EX25', 'EX26', 'EX27', 'EX28', 'EX29', 'EX30',

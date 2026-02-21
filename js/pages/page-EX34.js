@@ -23,8 +23,8 @@ DIME_PAGES['EX34'] = {
           '<li><strong>emit() fan-out</strong> \u2014 One UDP packet produces 20+ observations for 3 axes (X/Y/Z), each with Current, Frequency, State, Direction, Velocity, and Condition</li>' +
           '</ul>',
         related: [
-          { page: '06', label: '06 \u2014 Source Connectors' },
-          { page: '12', label: '12 \u2014 emit() Function' },
+          { page: 'CON06', label: 'CON06 \u2014 Source Connectors' },
+          { page: 'CON12', label: 'CON12 \u2014 emit() Function' },
           { page: 'REF38', label: 'REF38 \u2014 UDP Server' }
         ]
       }
@@ -45,8 +45,8 @@ DIME_PAGES['EX34'] = {
           '</ol>' +
           '<p>The script returns <code>nil</code> \u2014 all output goes through <code>emit()</code>.</p>',
         related: [
-          { page: '05', hotspot: 'data-flow', label: '05 \u2014 Architecture: Data Flow' },
-          { page: '09', label: '09 \u2014 Scripting' }
+          { page: 'CON05', hotspot: 'data-flow', label: 'CON05 \u2014 Architecture: Data Flow' },
+          { page: 'CON09', label: 'CON09 \u2014 Scripting' }
         ]
       }
     },
@@ -65,8 +65,8 @@ DIME_PAGES['EX34'] = {
           '</ul>' +
           '<p>The binary message format maps 30 bytes to crane state: bytes 0-9 for status/mode, bytes 10-15 for 3-axis speed commands, bytes 16-27 for motor current/frequency pairs, bytes 28-29 for hoist load cell.</p>',
         related: [
-          { page: '04', label: '04 \u2014 YAML Basics' },
-          { page: '12', label: '12 \u2014 emit() Function' }
+          { page: 'CON04', label: 'CON04 \u2014 YAML Basics' },
+          { page: 'CON12', label: 'CON12 \u2014 emit() Function' }
         ]
       }
     },
@@ -83,9 +83,9 @@ DIME_PAGES['EX34'] = {
           '<p><strong>Fault Code Mapping</strong> \u2014 The fault byte (<code>result[8]</code>) maps to specific drive faults. <code>moses.include({4}, result[8])</code> checks if the fault code is trolley-specific (code 4). Different fault codes map to different axis Condition items.</p>' +
           '<p><strong>UdpServer Connector</strong> \u2014 DIME listens as a UDP server on the configured port. The 100ms scan provides responsive crane monitoring. UDP is connectionless, so no handshake overhead per message.</p>',
         related: [
-          { page: '09', label: '09 \u2014 Scripting Deep Dive' },
-          { page: '12', label: '12 \u2014 emit() Function' },
-          { page: '06', label: '06 \u2014 Source Connectors' }
+          { page: 'CON09', label: 'CON09 \u2014 Scripting Deep Dive' },
+          { page: 'CON12', label: 'CON12 \u2014 emit() Function' },
+          { page: 'CON06', label: 'CON06 \u2014 Source Connectors' }
         ]
       }
     }

@@ -25,8 +25,8 @@ DIME_PAGES['EX29'] = {
           '</ul>' +
           '<p>Output flows to Console, MQTT, MTConnect SHDR, CSV, HTTP Server, and WebSocket \u2014 demonstrating how one ring buffer can feed many output formats simultaneously.</p>',
         related: [
-          { page: '06', label: '06 \u2014 Source Connectors' },
-          { page: '15', label: '15 \u2014 MTConnect' },
+          { page: 'CON06', label: 'CON06 \u2014 Source Connectors' },
+          { page: 'CON15', label: 'CON15 \u2014 MTConnect' },
           { page: 'EX28', label: 'EX28 \u2014 Unified Namespace' },
           { page: 'REF09', label: 'REF09 \u2014 Haas SHDR' },
           { page: 'REF41', label: 'REF41 \u2014 XMLWebScraper' },
@@ -53,8 +53,8 @@ DIME_PAGES['EX29'] = {
           '</ul>' +
           '<p>The 14-file configuration lets operators enable/disable any source or sink by commenting a single alias in <code>main.yaml</code>.</p>',
         related: [
-          { page: '05', hotspot: 'data-flow', label: '05 \u2014 Architecture: Data Flow' },
-          { page: '07', label: '07 \u2014 Sink Connectors' }
+          { page: 'CON05', hotspot: 'data-flow', label: 'CON05 \u2014 Architecture: Data Flow' },
+          { page: 'CON07', label: 'CON07 \u2014 Sink Connectors' }
         ]
       }
     },
@@ -75,8 +75,8 @@ DIME_PAGES['EX29'] = {
           '</ul>' +
           '<p>Every item carries <code>sink.mtconnect</code> metadata for standards-compliant output through the SHDR and Agent sinks.</p>',
         related: [
-          { page: '04', label: '04 \u2014 YAML Basics' },
-          { page: '11', label: '11 \u2014 Templates & Formatting' }
+          { page: 'CON04', label: 'CON04 \u2014 YAML Basics' },
+          { page: 'CON11', label: 'CON11 \u2014 Templates & Formatting' }
         ]
       }
     },
@@ -93,9 +93,9 @@ DIME_PAGES['EX29'] = {
           '<p><strong>Penlight String Library</strong> \u2014 The TcpASCII source loads <code>pl.stringx</code> in <code>init_script</code> for <code>split()</code>, <code>strip()</code>, and <code>replace()</code> operations on raw Haas responses.</p>' +
           '<p><strong>Flexible Sink Routing</strong> \u2014 Commenting/uncommenting aliases in <code>main.yaml</code> enables/disables entire output channels. The same data can simultaneously flow to Console, MQTT, SHDR, CSV, HTTP, and WebSocket.</p>',
         related: [
-          { page: '06', label: '06 \u2014 Source Connectors' },
-          { page: '14', label: '14 \u2014 MQTT Connector' },
-          { page: '15', label: '15 \u2014 MTConnect' }
+          { page: 'CON06', label: 'CON06 \u2014 Source Connectors' },
+          { page: 'CON14', label: 'CON14 \u2014 MQTT Connector' },
+          { page: 'CON15', label: 'CON15 \u2014 MTConnect' }
         ]
       }
     }

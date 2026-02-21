@@ -24,7 +24,7 @@ DIME_PAGES['EX15'] = {
           '</ul>' +
           '<p>The agent automatically constructs the MTConnect device model XML from the <code>sink.mtconnect</code> annotations on each item \u2014 no separate Devices.xml file is needed.</p>',
         related: [
-          { page: '07', label: '07 \u2014 Sink Connectors' },
+          { page: 'CON07', label: 'CON07 \u2014 Sink Connectors' },
           { page: 'EX16', label: 'EX16 \u2014 MTConnect Aggregation' },
           { page: 'REF20', label: 'REF20 \u2014 MTConnect Agent' }
         ]
@@ -46,8 +46,8 @@ DIME_PAGES['EX15'] = {
           '</ul>' +
           '<p>Both sinks filter out <code>script/$SYSTEM</code> messages to avoid publishing connector health data to the MTConnect output.</p>',
         related: [
-          { page: '05', label: '05 \u2014 Architecture Overview' },
-          { page: '08', label: '08 \u2014 Message Paths & Filtering' }
+          { page: 'CON05', label: 'CON05 \u2014 Architecture Overview' },
+          { page: 'CON08', label: 'CON08 \u2014 Message Paths & Filtering' }
         ]
       }
     },
@@ -69,8 +69,8 @@ DIME_PAGES['EX15'] = {
           '<p><code>Device[name=device1]/Controller/Mass[category=Sample]</code></p>' +
           '<p>This creates a Device named "device1" with a Controller component containing a Mass DataItem of category Sample.</p>',
         related: [
-          { page: '21', label: '21 \u2014 Multi-File Configs' },
-          { page: '04', label: '04 \u2014 YAML Basics' }
+          { page: 'CON21', label: 'CON21 \u2014 Multi-File Configs' },
+          { page: 'CON04', label: 'CON04 \u2014 YAML Basics' }
         ]
       }
     },
@@ -86,8 +86,8 @@ DIME_PAGES['EX15'] = {
           '<p><strong>Device Model Auto-Construction</strong> \u2014 Unlike traditional MTConnect agents that require a separate Devices.xml file, DIME builds the device model dynamically from the <code>sink.mtconnect</code> paths across all incoming items.</p>' +
           '<p><strong>Exclude Filters</strong> \u2014 Both sinks use <code>exclude_filter: [script/$SYSTEM]</code> to prevent system health messages (IsConnected, FaultCount) from polluting the MTConnect output or console display.</p>',
         related: [
-          { page: '07', label: '07 \u2014 Sink Connectors' },
-          { page: '08', label: '08 \u2014 Message Paths & Filtering' },
+          { page: 'CON07', label: 'CON07 \u2014 Sink Connectors' },
+          { page: 'CON08', label: 'CON08 \u2014 Message Paths & Filtering' },
           { page: 'EX16', label: 'EX16 \u2014 MTConnect Aggregation' }
         ]
       }

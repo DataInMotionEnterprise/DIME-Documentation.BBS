@@ -24,7 +24,7 @@ DIME_PAGES['EX22'] = {
           '</ul>' +
           '<p>The multi-file config (5 YAML files) shows the standard modular pattern for production deployments.</p>',
         related: [
-          { page: '06', label: '06 \u2014 Source Connectors' },
+          { page: 'CON06', label: 'CON06 \u2014 Source Connectors' },
           { page: 'EX23', label: 'EX23 \u2014 Weather API (another HTTP source)' },
           { page: 'REF14', label: 'REF14 \u2014 JSONWebScraper' },
           { page: 'REF20', label: 'REF20 \u2014 MTConnect Agent' },
@@ -48,8 +48,8 @@ DIME_PAGES['EX22'] = {
           '</ul>' +
           '<p>Each sink operates independently via its own ring buffer event handler. The SHDR and Agent sinks both apply <code>use_sink_transform: true</code> to format output according to the source\u2019s transform template.</p>',
         related: [
-          { page: '05', hotspot: 'data-flow', label: '05 \u2014 Architecture: Data Flow' },
-          { page: '07', label: '07 \u2014 Sink Connectors' }
+          { page: 'CON05', hotspot: 'data-flow', label: 'CON05 \u2014 Architecture: Data Flow' },
+          { page: 'CON07', label: 'CON07 \u2014 Sink Connectors' }
         ]
       }
     },
@@ -80,8 +80,8 @@ DIME_PAGES['EX22'] = {
           '      mtconnect: Device[name=device1]/\n' +
           '        Controller/Load[category=Sample]',
         related: [
-          { page: '04', label: '04 \u2014 YAML Basics' },
-          { page: '21', label: '21 \u2014 Multi-File Configs' }
+          { page: 'CON04', label: 'CON04 \u2014 YAML Basics' },
+          { page: 'CON21', label: 'CON21 \u2014 Multi-File Configs' }
         ]
       }
     },
@@ -97,9 +97,9 @@ DIME_PAGES['EX22'] = {
           '<p><strong>MTConnect Sink Mapping</strong> \u2014 The <code>sink.mtconnect</code> property on items maps data to the MTConnect information model. The Agent sink (port 5000) serves XML; the SHDR sink (port 7878) produces pipe-delimited adapter output for external agents.</p>' +
           '<p><strong>Lua JSON Library</strong> \u2014 Load once in <code>init_script</code> with <code>json = require(\'json\')</code>. Use <code>json.decode()</code> to parse strings and <code>json.encode()</code> to serialize tables. Always load libraries in <code>init_script</code>, not in per-item scripts.</p>',
         related: [
-          { page: '09', label: '09 \u2014 Scripting (Lua & Python)' },
-          { page: '06', label: '06 \u2014 Source Connectors' },
-          { page: '07', label: '07 \u2014 Sink Connectors' }
+          { page: 'CON09', label: 'CON09 \u2014 Scripting (Lua & Python)' },
+          { page: 'CON06', label: 'CON06 \u2014 Source Connectors' },
+          { page: 'CON07', label: 'CON07 \u2014 Sink Connectors' }
         ]
       }
     }

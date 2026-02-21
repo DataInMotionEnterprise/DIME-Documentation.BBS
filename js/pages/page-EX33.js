@@ -23,8 +23,8 @@ DIME_PAGES['EX33'] = {
           '</ul>' +
           '<p>This is a single-file configuration demonstrating how DIME bridges robotics middleware to industrial IT infrastructure.</p>',
         related: [
-          { page: '06', label: '06 \u2014 Source Connectors' },
-          { page: '14', label: '14 \u2014 MQTT Connector' },
+          { page: 'CON06', label: 'CON06 \u2014 Source Connectors' },
+          { page: 'CON14', label: 'CON14 \u2014 MQTT Connector' },
           { page: 'REF28', label: 'REF28 \u2014 ROS2' },
           { page: 'REF18', label: 'REF18 \u2014 MQTT' }
         ]
@@ -45,8 +45,8 @@ DIME_PAGES['EX33'] = {
           '</ol>' +
           '<p>External message type DLLs (<code>Ros2cs-ros2-sensor_msgs.dll</code>, <code>Ros2cs-clearpathrobotics-clearpath_msgs.dll</code>) are loaded via the <code>message_libraries</code> array.</p>',
         related: [
-          { page: '05', hotspot: 'data-flow', label: '05 \u2014 Architecture: Data Flow' },
-          { page: '20', label: '20 \u2014 Report By Exception' }
+          { page: 'CON05', hotspot: 'data-flow', label: 'CON05 \u2014 Architecture: Data Flow' },
+          { page: 'CON20', label: 'CON20 \u2014 Report By Exception' }
         ]
       }
     },
@@ -66,8 +66,8 @@ DIME_PAGES['EX33'] = {
           '</ul>' +
           '<p>The Chatter item uses <code>rbe: false</code> to forward every message, while other items use default RBE to only report changes.</p>',
         related: [
-          { page: '04', label: '04 \u2014 YAML Basics' },
-          { page: '09', label: '09 \u2014 Scripting' }
+          { page: 'CON04', label: 'CON04 \u2014 YAML Basics' },
+          { page: 'CON09', label: 'CON09 \u2014 Scripting' }
         ]
       }
     },
@@ -84,9 +84,9 @@ DIME_PAGES['EX33'] = {
           '<p><strong>Typed Message Access</strong> \u2014 Scripts receive the deserialized ROS2 message object. For <code>std_msgs/String</code>, <code>result.Data</code> extracts the string. For complex types like <code>BatteryState</code>, returning the full object preserves all fields (voltage, current, charge, capacity).</p>' +
           '<p><strong>RBE Override</strong> \u2014 <code>rbe: false</code> on Chatter ensures every message is forwarded, even duplicates. For event-style topics, disable RBE so nothing is filtered.</p>',
         related: [
-          { page: '06', label: '06 \u2014 Source Connectors' },
-          { page: '14', label: '14 \u2014 MQTT Connector' },
-          { page: '20', label: '20 \u2014 Report By Exception' }
+          { page: 'CON06', label: 'CON06 \u2014 Source Connectors' },
+          { page: 'CON14', label: 'CON14 \u2014 MQTT Connector' },
+          { page: 'CON20', label: 'CON20 \u2014 Report By Exception' }
         ]
       }
     }

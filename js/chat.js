@@ -17,7 +17,7 @@
     'give accurate, specific answers grounded in the documentation.\n\n' +
     'Guidelines:\n' +
     '- Page references MUST use one of these exact prefixed formats to become clickable links:\n' +
-    '  CON05 (concept pages 01-30), REF18 (reference pages), EX05 (example pages).\n' +
+    '  CON05 (concept pages CON01-CON30), REF18 (reference pages), EX05 (example pages).\n' +
     '  Never write bare numbers, "page 12", "REF: 12", or any other format.\n' +
     '  Example: "see CON08 for filtering" or "the OPC-UA connector (REF25)".\n' +
     '- When generating YAML configurations, use proper DIME YAML structure with ' +
@@ -89,11 +89,10 @@
     var h = esc(text);
     h = h.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
     h = h.replace(/`([^`]+)`/g, '<code>$1</code>');
-    // Page IDs: CON12 → concept page "12", REF18, EX05
+    // Page IDs: CON12 → concept page "CON12", REF18, EX05
     h = h.replace(/\b(CON|REF|EX)(\d{1,2})\b/g, function (full, prefix, num) {
-      var id = prefix === 'CON'
-        ? (num.length === 1 ? '0' + num : num)
-        : prefix + (num.length === 1 ? '0' + num : num);
+      var padded = num.length === 1 ? '0' + num : num;
+      var id = prefix + padded;
       if (validPageIds[id]) {
         return '<a class="chat-page-link" href="#page-' + id + '">' + full + '</a>';
       }
@@ -103,9 +102,8 @@
     h = h.replace(/\b(Page|page|CON|REF|EX)[:\s]+(\d{1,2})\b/g, function (full, prefix, num) {
       var p = prefix.toUpperCase();
       if (p === 'PAGE') p = 'CON';
-      var id = p === 'CON'
-        ? (num.length === 1 ? '0' + num : num)
-        : p + (num.length === 1 ? '0' + num : num);
+      var padded = num.length === 1 ? '0' + num : num;
+      var id = p + padded;
       if (validPageIds[id]) {
         return '<a class="chat-page-link" href="#page-' + id + '">' + full + '</a>';
       }

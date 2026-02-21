@@ -23,8 +23,8 @@ DIME_PAGES['EX28'] = {
           '</ul>' +
           '<p>The 10-file configuration demonstrates modular multi-file YAML with anchors. Each source and sink is defined in its own file, composed in <code>main.yaml</code>.</p>',
         related: [
-          { page: '14', label: '14 \u2014 MQTT Connector' },
-          { page: '21', label: '21 \u2014 Multi-File Configs' },
+          { page: 'CON14', label: 'CON14 \u2014 MQTT Connector' },
+          { page: 'CON21', label: 'CON21 \u2014 Multi-File Configs' },
           { page: 'EX01', label: 'EX01 \u2014 Basic Counter (simpler starting point)' },
           { page: 'REF18', label: 'REF18 \u2014 MQTT' }
         ]
@@ -46,8 +46,8 @@ DIME_PAGES['EX28'] = {
           '</ol>' +
           '<p>The MQTT sink publishes under <code>base_topic: Acme/Dallas/Assembly</code>, forming ISA-95 topics like <code>Acme/Dallas/Assembly/plc1/Execution</code>.</p>',
         related: [
-          { page: '05', hotspot: 'data-flow', label: '05 \u2014 Architecture: Data Flow' },
-          { page: '10', label: '10 \u2014 Cache API' }
+          { page: 'CON05', hotspot: 'data-flow', label: 'CON05 \u2014 Architecture: Data Flow' },
+          { page: 'CON10', label: 'CON10 \u2014 Cache API' }
         ]
       }
     },
@@ -69,8 +69,8 @@ DIME_PAGES['EX28'] = {
           '</ul>' +
           '<p>All items use <code>sink.transform.template: Message.Data</code> to send clean values to the MQTT UNS.</p>',
         related: [
-          { page: '04', label: '04 \u2014 YAML Basics' },
-          { page: '21', label: '21 \u2014 Multi-File Configs' }
+          { page: 'CON04', label: 'CON04 \u2014 YAML Basics' },
+          { page: 'CON21', label: 'CON21 \u2014 Multi-File Configs' }
         ]
       }
     },
@@ -87,9 +87,9 @@ DIME_PAGES['EX28'] = {
           '<p><strong>Multi-Rate Sources</strong> \u2014 PLC at 1s, robot at 500ms, sensors at 5s. Each source polls at the appropriate rate for its data type. The ring buffer and MQTT sink handle the different cadences seamlessly.</p>' +
           '<p><strong>OEE Calculation</strong> \u2014 Availability (machine running?) \u00d7 Performance (actual vs ideal cycle time) \u00d7 Quality (good parts ratio). The <code>moses</code> library provides functional helpers for rolling window analysis.</p>',
         related: [
-          { page: '10', label: '10 \u2014 Cache API' },
-          { page: '14', label: '14 \u2014 MQTT Connector' },
-          { page: '08', label: '08 \u2014 Message Paths & Filtering' }
+          { page: 'CON10', label: 'CON10 \u2014 Cache API' },
+          { page: 'CON14', label: 'CON14 \u2014 MQTT Connector' },
+          { page: 'CON08', label: 'CON08 \u2014 Message Paths & Filtering' }
         ]
       }
     }

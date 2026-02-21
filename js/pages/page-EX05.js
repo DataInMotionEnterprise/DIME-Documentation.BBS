@@ -24,7 +24,7 @@ DIME_PAGES['EX05'] = {
           '</ul>' +
           '<p>Modbus is the most widely deployed industrial protocol. Nearly every sensor, VFD, power meter, and gateway speaks it.</p>',
         related: [
-          { page: '06', label: '06 \u2014 Source Connectors' },
+          { page: 'CON06', label: 'CON06 \u2014 Source Connectors' },
           { page: 'EX04', label: 'EX04 \u2014 Siemens S7 PLC' },
           { page: 'REF16', label: 'REF16 \u2014 ModbusTCP' }
         ]
@@ -45,8 +45,8 @@ DIME_PAGES['EX05'] = {
           '</ul>' +
           '<p>The <code>init_script</code> loads the Lua <code>struct</code> library once at startup, making it available to all item scripts for binary decoding of multi-register values.</p>',
         related: [
-          { page: '05', hotspot: 'data-flow', label: '05 \u2014 Architecture: Data Flow' },
-          { page: '09', label: '09 \u2014 Scripting (init_script)' }
+          { page: 'CON05', hotspot: 'data-flow', label: 'CON05 \u2014 Architecture: Data Flow' },
+          { page: 'CON09', label: 'CON09 \u2014 Scripting (init_script)' }
         ]
       }
     },
@@ -80,8 +80,8 @@ DIME_PAGES['EX05'] = {
           '    script: |\n' +
           '      return result[0]     # Extract scalar',
         related: [
-          { page: '04', label: '04 \u2014 YAML Basics' },
-          { page: '21', label: '21 \u2014 Multi-File Configs' }
+          { page: 'CON04', label: 'CON04 \u2014 YAML Basics' },
+          { page: 'CON21', label: 'CON21 \u2014 Multi-File Configs' }
         ]
       }
     },
@@ -98,9 +98,9 @@ DIME_PAGES['EX05'] = {
           '<p><strong>Slave/Unit ID</strong> \u2014 Every Modbus TCP device has a unit ID. For standalone devices it is typically 1 or 255. Gateways that bridge to serial Modbus RTU devices use the unit ID to route requests to downstream slaves. This Banner device uses ID 199.</p>' +
           '<p><strong>init_script Pattern</strong> \u2014 Use <code>init_script</code> to load Lua libraries once at startup rather than in every item script. This avoids redundant <code>require()</code> calls on each scan cycle and keeps item scripts focused on data transformation.</p>',
         related: [
-          { page: '06', label: '06 \u2014 Source Connectors' },
-          { page: '09', label: '09 \u2014 Scripting (Lua Libraries)' },
-          { page: '20', label: '20 \u2014 Report By Exception' }
+          { page: 'CON06', label: 'CON06 \u2014 Source Connectors' },
+          { page: 'CON09', label: 'CON09 \u2014 Scripting (Lua Libraries)' },
+          { page: 'CON20', label: 'CON20 \u2014 Report By Exception' }
         ]
       }
     }

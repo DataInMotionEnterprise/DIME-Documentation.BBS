@@ -23,8 +23,8 @@ DIME_PAGES['EX32'] = {
           '</ul>' +
           '<p>Output flows to Console, HTTP Server, MQTT (republish), and optional Redis \u2014 each with targeted <code>include_filter</code> for selective routing.</p>',
         related: [
-          { page: '14', label: '14 \u2014 MQTT Connector' },
-          { page: '10', label: '10 \u2014 Cache API' },
+          { page: 'CON14', label: 'CON14 \u2014 MQTT Connector' },
+          { page: 'CON10', label: 'CON10 \u2014 Cache API' },
           { page: 'EX28', label: 'EX28 \u2014 Unified Namespace' },
           { page: 'REF18', label: 'REF18 \u2014 MQTT' },
           { page: 'REF27', label: 'REF27 \u2014 Redis' }
@@ -47,8 +47,8 @@ DIME_PAGES['EX32'] = {
           '</ol>' +
           '<p>The MQTT sink republishes under <code>base_topic: MqttMotors</code> with <code>include_filter</code> limiting output to plant-specific data.</p>',
         related: [
-          { page: '05', hotspot: 'data-flow', label: '05 \u2014 Architecture: Data Flow' },
-          { page: '08', label: '08 \u2014 Message Paths & Filtering' }
+          { page: 'CON05', hotspot: 'data-flow', label: 'CON05 \u2014 Architecture: Data Flow' },
+          { page: 'CON08', label: 'CON08 \u2014 Message Paths & Filtering' }
         ]
       }
     },
@@ -66,8 +66,8 @@ DIME_PAGES['EX32'] = {
           '</ul>' +
           '<p>The MQTT sink uses <code>include_filter</code> to only publish plant data (excluding system messages), while the Redis sink targets only Detroit data.</p>',
         related: [
-          { page: '14', label: '14 \u2014 MQTT Connector' },
-          { page: '04', label: '04 \u2014 YAML Basics' }
+          { page: 'CON14', label: 'CON14 \u2014 MQTT Connector' },
+          { page: 'CON04', label: 'CON04 \u2014 YAML Basics' }
         ]
       }
     },
@@ -84,9 +84,9 @@ DIME_PAGES['EX32'] = {
           '<p><strong>include_filter for Routing</strong> \u2014 The MQTT sink publishes only Detroit and Chicago data. The Redis sink gets only Detroit. Filters route different data slices from one ring buffer to different destinations.</p>' +
           '<p><strong>JSON Decode Patterns</strong> \u2014 Different sensors use different JSON structures: <code>.v.s3.v</code>, <code>.v.s1.v</code>, <code>.v.v</code>. Each item script navigates its sensor\u2019s specific payload shape.</p>',
         related: [
-          { page: '10', label: '10 \u2014 Cache API' },
-          { page: '14', label: '14 \u2014 MQTT Connector' },
-          { page: '08', label: '08 \u2014 Message Paths & Filtering' }
+          { page: 'CON10', label: 'CON10 \u2014 Cache API' },
+          { page: 'CON14', label: 'CON14 \u2014 MQTT Connector' },
+          { page: 'CON08', label: 'CON08 \u2014 Message Paths & Filtering' }
         ]
       }
     }

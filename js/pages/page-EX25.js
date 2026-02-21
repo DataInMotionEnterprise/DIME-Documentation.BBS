@@ -23,7 +23,7 @@ DIME_PAGES['EX25'] = {
           '</ul>' +
           '<p>No <code>init_script</code>, no <code>scan_interval</code>, no <code>rbe</code> \u2014 DIME applies sensible defaults for all omitted properties. This example shows how little YAML you need for a working multi-file config.</p>',
         related: [
-          { page: '21', label: '21 \u2014 Multi-File Configs' },
+          { page: 'CON21', label: 'CON21 \u2014 Multi-File Configs' },
           { page: 'EX01', label: 'EX01 \u2014 Basic Counter (single-file equivalent)' },
           { page: 'REF29', label: 'REF29 \u2014 Script' },
           { page: 'REF05', label: 'REF05 \u2014 Console' }
@@ -46,8 +46,8 @@ DIME_PAGES['EX25'] = {
           '</ol>' +
           '<p>With default <code>rbe: true</code>, values only appear on the console when they change. Since <code>math.random()</code> produces different values most cycles, output is frequent but not guaranteed every scan.</p>',
         related: [
-          { page: '05', hotspot: 'data-flow', label: '05 \u2014 Architecture: Data Flow' },
-          { page: '20', label: '20 \u2014 Report By Exception' }
+          { page: 'CON05', hotspot: 'data-flow', label: 'CON05 \u2014 Architecture: Data Flow' },
+          { page: 'CON20', label: 'CON20 \u2014 Report By Exception' }
         ]
       }
     },
@@ -74,8 +74,8 @@ DIME_PAGES['EX25'] = {
           '    - name: number1\n' +
           '      script: return math.random(100);',
         related: [
-          { page: '04', label: '04 \u2014 YAML Basics (anchors & aliases)' },
-          { page: '21', label: '21 \u2014 Multi-File Configs' }
+          { page: 'CON04', label: 'CON04 \u2014 YAML Basics (anchors & aliases)' },
+          { page: 'CON21', label: 'CON21 \u2014 Multi-File Configs' }
         ]
       }
     },
@@ -91,9 +91,9 @@ DIME_PAGES['EX25'] = {
           '<p><strong>Modular YAML Pattern</strong> \u2014 Each connector in its own file with a YAML anchor. Main.yaml references them with aliases. To add a new sink, create a file with <code>mySink: &amp;mySink</code> and add <code>- *mySink</code> to the sinks array. No other files need editing.</p>' +
           '<p><strong>Lua Standard Library</strong> \u2014 The Script connector provides the full Lua standard library. <code>math.random(n)</code>, <code>math.floor()</code>, <code>string.format()</code>, <code>os.time()</code> \u2014 all available without imports. Use <code>require()</code> only for external Lua modules.</p>',
         related: [
-          { page: '09', label: '09 \u2014 Scripting (Lua & Python)' },
-          { page: '08', label: '08 \u2014 Message Paths & Filtering' },
-          { page: '21', label: '21 \u2014 Multi-File Configs' }
+          { page: 'CON09', label: 'CON09 \u2014 Scripting (Lua & Python)' },
+          { page: 'CON08', label: 'CON08 \u2014 Message Paths & Filtering' },
+          { page: 'CON21', label: 'CON21 \u2014 Multi-File Configs' }
         ]
       }
     }

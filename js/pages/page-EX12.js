@@ -25,7 +25,7 @@ DIME_PAGES['EX12'] = {
           '<p>This demonstrates secure MQTT communication with certificate-based mutual authentication, commonly required in enterprise and regulated industrial environments.</p>',
         related: [
           { page: 'EX11', label: 'EX11 \u2014 MQTT to WebSocket (plaintext)' },
-          { page: '06', label: '06 \u2014 Source Connectors' },
+          { page: 'CON06', label: 'CON06 \u2014 Source Connectors' },
           { page: 'REF18', label: 'REF18 \u2014 MQTT' }
         ]
       }
@@ -46,8 +46,8 @@ DIME_PAGES['EX12'] = {
           '</ul>' +
           '<p>This creates a secure message relay: DIME sits between producers and consumers with TLS encryption on both sides and the ability to transform, filter, or route messages in between.</p>',
         related: [
-          { page: '05', hotspot: 'data-flow', label: '05 \u2014 Architecture: Data Flow' },
-          { page: '07', label: '07 \u2014 Sink Connectors' }
+          { page: 'CON05', hotspot: 'data-flow', label: 'CON05 \u2014 Architecture: Data Flow' },
+          { page: 'CON07', label: 'CON07 \u2014 Sink Connectors' }
         ]
       }
     },
@@ -75,8 +75,8 @@ DIME_PAGES['EX12'] = {
           '<li><code>tls_insecure: true</code> \u2014 Skip hostname validation (dev only; set false in production)</li>' +
           '</ul>',
         related: [
-          { page: '21', label: '21 \u2014 Multi-File Configs' },
-          { page: '04', label: '04 \u2014 YAML Basics' }
+          { page: 'CON21', label: 'CON21 \u2014 Multi-File Configs' },
+          { page: 'CON04', label: 'CON04 \u2014 YAML Basics' }
         ]
       }
     },
@@ -93,8 +93,8 @@ DIME_PAGES['EX12'] = {
           '<p><strong>MQTT Source + Sink</strong> \u2014 Both connect to the same broker. The source subscribes to all topics (<code>#</code>), and the sink republishes under <code>base_topic: MqttSecure1</code>. This creates a relay where DIME can transform or filter messages between subscribe and publish.</p>' +
           '<p><strong>Retain Flag</strong> \u2014 <code>retain: true</code> on the sink tells the broker to keep the last message for each topic. New subscribers immediately get the latest value without waiting for the next publish.</p>',
         related: [
-          { page: '06', label: '06 \u2014 Source Connectors' },
-          { page: '07', label: '07 \u2014 Sink Connectors' },
+          { page: 'CON06', label: 'CON06 \u2014 Source Connectors' },
+          { page: 'CON07', label: 'CON07 \u2014 Sink Connectors' },
           { page: 'EX11', label: 'EX11 \u2014 MQTT to WebSocket Bridge' }
         ]
       }

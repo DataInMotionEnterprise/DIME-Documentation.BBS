@@ -24,7 +24,7 @@ DIME_PAGES['EX11'] = {
           '</ul>' +
           '<p>DIME acts as the protocol bridge: no custom code needed, just YAML configuration.</p>',
         related: [
-          { page: '06', label: '06 \u2014 Source Connectors' },
+          { page: 'CON06', label: 'CON06 \u2014 Source Connectors' },
           { page: 'EX12', label: 'EX12 \u2014 Secure MQTT (TLS)' },
           { page: 'REF18', label: 'REF18 \u2014 MQTT' },
           { page: 'REF39', label: 'REF39 \u2014 WebsocketServer' }
@@ -48,8 +48,8 @@ DIME_PAGES['EX11'] = {
           '</ul>' +
           '<p>With <code>itemized_read: false</code>, the MQTT connector operates in queuing (event-driven) mode rather than polling.</p>',
         related: [
-          { page: '05', hotspot: 'data-flow', label: '05 \u2014 Architecture: Data Flow' },
-          { page: '07', label: '07 \u2014 Sink Connectors' }
+          { page: 'CON05', hotspot: 'data-flow', label: 'CON05 \u2014 Architecture: Data Flow' },
+          { page: 'CON07', label: 'CON07 \u2014 Sink Connectors' }
         ]
       }
     },
@@ -75,8 +75,8 @@ DIME_PAGES['EX11'] = {
           '<li><code>address: sharc/+/evt/#</code> \u2014 MQTT wildcard subscription pattern</li>' +
           '</ul>',
         related: [
-          { page: '21', label: '21 \u2014 Multi-File Configs' },
-          { page: '09', label: '09 \u2014 Scripting (Lua)' }
+          { page: 'CON21', label: 'CON21 \u2014 Multi-File Configs' },
+          { page: 'CON09', label: 'CON09 \u2014 Scripting (Lua)' }
         ]
       }
     },
@@ -93,8 +93,8 @@ DIME_PAGES['EX11'] = {
           '<p><strong>JSON Parsing</strong> \u2014 The <code>init_script</code> loads the JSON library once with <code>json = require(\'json\')</code>. The <code>item_script</code> then calls <code>from_json(result)</code> on every message. The parsed Lua table becomes the item\u2019s value in the ring buffer.</p>' +
           '<p><strong>Protocol Bridge</strong> \u2014 MQTT (pub/sub) to WebSocket (push) is a fundamental IoT gateway pattern. DIME handles the protocol translation, JSON parsing, and fan-out to multiple consumers without any custom code.</p>',
         related: [
-          { page: '09', label: '09 \u2014 Scripting (Lua & Python)' },
-          { page: '06', label: '06 \u2014 Source Connectors' },
+          { page: 'CON09', label: 'CON09 \u2014 Scripting (Lua & Python)' },
+          { page: 'CON06', label: 'CON06 \u2014 Source Connectors' },
           { page: 'EX12', label: 'EX12 \u2014 Secure MQTT (TLS)' }
         ]
       }

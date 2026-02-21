@@ -24,8 +24,8 @@ DIME_PAGES['EX01'] = {
           '<p>The Script connector uses embedded Lua to generate data without any external hardware. The <code>init_script</code> runs once at startup to initialize state. Each item\u2019s <code>script</code> runs every <code>scan_interval</code> milliseconds.</p>' +
           '<p>Three sinks consume the same data simultaneously from the ring buffer \u2014 Console for terminal output, HTTP Server for REST clients, and WebSocket Server for real-time browser dashboards.</p>',
         related: [
-          { page: '09', label: '09 \u2014 Scripting Deep Dive' },
-          { page: '03', label: '03 \u2014 Installation & First Run' }
+          { page: 'CON09', label: 'CON09 \u2014 Scripting Deep Dive' },
+          { page: 'CON03', label: 'CON03 \u2014 Installation & First Run' }
         ]
       }
     },
@@ -46,8 +46,8 @@ DIME_PAGES['EX01'] = {
           '<strong>HTTP Server</strong> \u2014 Exposes latest values at <code>http://localhost:8080</code>. Poll with any HTTP client.<br>' +
           '<strong>WebSocket Server</strong> \u2014 Pushes updates to connected clients at <code>ws://0.0.0.0:8092</code>.</p>',
         related: [
-          { page: '05', hotspot: 'data-flow', label: '05 \u2014 Architecture: Data Flow' },
-          { page: '07', label: '07 \u2014 Sink Connectors' }
+          { page: 'CON05', hotspot: 'data-flow', label: 'CON05 \u2014 Architecture: Data Flow' },
+          { page: 'CON07', label: 'CON07 \u2014 Sink Connectors' }
         ]
       }
     },
@@ -84,8 +84,8 @@ DIME_PAGES['EX01'] = {
           '  - name: mySink\n' +
           '    connector: console',
         related: [
-          { page: '04', label: '04 \u2014 YAML Basics' },
-          { page: '21', label: '21 \u2014 Multi-File Configs' }
+          { page: 'CON04', label: 'CON04 \u2014 YAML Basics' },
+          { page: 'CON21', label: 'CON21 \u2014 Multi-File Configs' }
         ]
       }
     },
@@ -101,9 +101,9 @@ DIME_PAGES['EX01'] = {
           '<p><strong>YAML Type Tags</strong> \u2014 YAML treats bare <code>true</code> as a string in some parsers. DIME uses <code>!!bool true</code> and <code>!!int 1000</code> to guarantee correct .NET type coercion. Always use these tags for numeric and boolean config values.</p>' +
           '<p><strong>Admin Endpoints</strong> \u2014 The <code>app</code> section configures the admin REST API (port 9999) and admin WebSocket (port 9998). These are separate from your data sinks and are used for monitoring, health checks, and runtime control.</p>',
         related: [
-          { page: '09', label: '09 \u2014 Scripting (Lua & Python)' },
-          { page: '20', label: '20 \u2014 Report By Exception' },
-          { page: '05', label: '05 \u2014 Architecture Overview' }
+          { page: 'CON09', label: 'CON09 \u2014 Scripting (Lua & Python)' },
+          { page: 'CON20', label: 'CON20 \u2014 Report By Exception' },
+          { page: 'CON05', label: 'CON05 \u2014 Architecture Overview' }
         ]
       }
     }

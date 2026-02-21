@@ -23,7 +23,7 @@ DIME_PAGES['EX08'] = {
           '</ul>' +
           '<p>Any standard OPC-UA client (UaExpert, Ignition, Kepware) can connect to <code>opc.tcp://localhost:4840</code>, browse the "Production" folder, and subscribe to live data updates.</p>',
         related: [
-          { page: '07', label: '07 \u2014 Sink Connectors' },
+          { page: 'CON07', label: 'CON07 \u2014 Sink Connectors' },
           { page: 'EX10', label: 'EX10 \u2014 OPC-DA Legacy (COM-based)' },
           { page: 'REF25', label: 'REF25 \u2014 OPC-UA' }
         ]
@@ -45,8 +45,8 @@ DIME_PAGES['EX08'] = {
           '</ul>' +
           '<p>The OPC-UA server uses <code>exclude_filter: /\\$SYSTEM</code> to hide internal DIME system messages from the OPC-UA browse tree. Only real data items appear as nodes.</p>',
         related: [
-          { page: '05', hotspot: 'data-flow', label: '05 \u2014 Architecture: Data Flow' },
-          { page: '08', label: '08 \u2014 Message Paths & Filtering' }
+          { page: 'CON05', hotspot: 'data-flow', label: 'CON05 \u2014 Architecture: Data Flow' },
+          { page: 'CON08', label: 'CON08 \u2014 Message Paths & Filtering' }
         ]
       }
     },
@@ -73,8 +73,8 @@ DIME_PAGES['EX08'] = {
           '<li><code>max_sessions</code> / <code>max_subscriptions</code> \u2014 Resource limits for connected clients</li>' +
           '</ul>',
         related: [
-          { page: '21', label: '21 \u2014 Multi-File Configs' },
-          { page: '04', label: '04 \u2014 YAML Basics' }
+          { page: 'CON21', label: 'CON21 \u2014 Multi-File Configs' },
+          { page: 'CON04', label: 'CON04 \u2014 YAML Basics' }
         ]
       }
     },
@@ -91,8 +91,8 @@ DIME_PAGES['EX08'] = {
           '<p><strong>System Message Filtering</strong> \u2014 The regex <code>/\\$SYSTEM</code> in the exclude_filter hides DIME internal messages from OPC-UA clients. This keeps the browse tree clean with only real data items.</p>' +
           '<p><strong>OPC-UA vs OPC-DA</strong> \u2014 OPC-UA (this example) is the modern, platform-independent standard. OPC-DA (see EX10) is the legacy Windows COM-based standard. Use OPC-UA for new deployments.</p>',
         related: [
-          { page: '07', label: '07 \u2014 Sink Connectors' },
-          { page: '08', label: '08 \u2014 Message Paths & Filtering' },
+          { page: 'CON07', label: 'CON07 \u2014 Sink Connectors' },
+          { page: 'CON08', label: 'CON08 \u2014 Message Paths & Filtering' },
           { page: 'EX10', label: 'EX10 \u2014 OPC-DA Legacy' }
         ]
       }

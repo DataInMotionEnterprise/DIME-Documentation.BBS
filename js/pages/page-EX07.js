@@ -24,7 +24,7 @@ DIME_PAGES['EX07'] = {
           '</ul>' +
           '<p>Two sources reading the same PLC demonstrates how DIME creates unique message paths (<code>adsSource1/bool1</code> vs <code>adsSource2/bool1</code>) for identical variables from different connections.</p>',
         related: [
-          { page: '06', label: '06 \u2014 Source Connectors' },
+          { page: 'CON06', label: 'CON06 \u2014 Source Connectors' },
           { page: 'EX04', label: 'EX04 \u2014 Siemens S7 PLC' },
           { page: 'REF03', label: 'REF03 \u2014 Beckhoff ADS' }
         ]
@@ -45,8 +45,8 @@ DIME_PAGES['EX07'] = {
           '</ul>' +
           '<p>The AMS Net ID <code>192.168.111.191.1.1</code> identifies the TwinCAT target. The <code>local_netid: 1.1.1.1.1.1</code> identifies the DIME host. Both must exist in the TwinCAT ADS routing table.</p>',
         related: [
-          { page: '05', hotspot: 'data-flow', label: '05 \u2014 Architecture: Data Flow' },
-          { page: '08', label: '08 \u2014 Message Paths & Filtering' }
+          { page: 'CON05', hotspot: 'data-flow', label: 'CON05 \u2014 Architecture: Data Flow' },
+          { page: 'CON08', label: 'CON08 \u2014 Message Paths & Filtering' }
         ]
       }
     },
@@ -81,8 +81,8 @@ DIME_PAGES['EX07'] = {
           '    type: int               # PLC DINT\n' +
           '    address: MAIN.testDint1',
         related: [
-          { page: '04', label: '04 \u2014 YAML Basics' },
-          { page: '21', label: '21 \u2014 Multi-File Configs' }
+          { page: 'CON04', label: 'CON04 \u2014 YAML Basics' },
+          { page: 'CON21', label: 'CON21 \u2014 Multi-File Configs' }
         ]
       }
     },
@@ -99,9 +99,9 @@ DIME_PAGES['EX07'] = {
           '<p><strong>Symbol Addressing</strong> \u2014 Items use TwinCAT symbol paths: <code>MAIN.testBool1</code> accesses variable <code>testBool1</code> declared in program <code>MAIN</code>. The <code>type</code> field (<code>bool</code>, <code>int</code>) tells DIME how to interpret the raw PLC memory bytes.</p>' +
           '<p><strong>Multiple Source Instances</strong> \u2014 Creating two sources to the same PLC is useful for separating fast-scan and slow-scan variable groups, or for organizing tags by functional area. Each source has its own connection, scan loop, and message path prefix.</p>',
         related: [
-          { page: '06', label: '06 \u2014 Source Connectors' },
-          { page: '08', label: '08 \u2014 Message Paths & Filtering' },
-          { page: '20', label: '20 \u2014 Report By Exception' }
+          { page: 'CON06', label: 'CON06 \u2014 Source Connectors' },
+          { page: 'CON08', label: 'CON08 \u2014 Message Paths & Filtering' },
+          { page: 'CON20', label: 'CON20 \u2014 Report By Exception' }
         ]
       }
     }

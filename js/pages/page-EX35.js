@@ -23,8 +23,8 @@ DIME_PAGES['EX35'] = {
           '</ul>' +
           '<p>The system learns part fingerprints automatically (3 cycles per type), then identifies parts in real-time with 55-80% confidence. A web dashboard shows live current waveforms and identification results.</p>',
         related: [
-          { page: '09', label: '09 \u2014 Scripting (Lua & Python)' },
-          { page: '10', label: '10 \u2014 Cache API' },
+          { page: 'CON09', label: 'CON09 \u2014 Scripting (Lua & Python)' },
+          { page: 'CON10', label: 'CON10 \u2014 Cache API' },
           { page: 'EX30', label: 'EX30 \u2014 CNC Machine Simulator' },
           { page: 'REF29', label: 'REF29 \u2014 Script' }
         ]
@@ -45,8 +45,8 @@ DIME_PAGES['EX35'] = {
           '</ol>' +
           '<p>Data flows through cache: the transformer writes raw current, the analytics processor writes identification results, and the productivity module reads both for comprehensive metrics.</p>',
         related: [
-          { page: '05', hotspot: 'data-flow', label: '05 \u2014 Architecture: Data Flow' },
-          { page: '10', label: '10 \u2014 Cache API' }
+          { page: 'CON05', hotspot: 'data-flow', label: 'CON05 \u2014 Architecture: Data Flow' },
+          { page: 'CON10', label: 'CON10 \u2014 Cache API' }
         ]
       }
     },
@@ -65,8 +65,8 @@ DIME_PAGES['EX35'] = {
           '</ul>' +
           '<p>Sinks include WebSocket with <code>include_filter</code> for 30+ specific paths, CSV for historical analysis, and WebServer for the dashboard.</p>',
         related: [
-          { page: '09', label: '09 \u2014 Scripting Deep Dive' },
-          { page: '21', label: '21 \u2014 Multi-File Configs' }
+          { page: 'CON09', label: 'CON09 \u2014 Scripting Deep Dive' },
+          { page: 'CON21', label: 'CON21 \u2014 Multi-File Configs' }
         ]
       }
     },
@@ -83,10 +83,10 @@ DIME_PAGES['EX35'] = {
           '<p><strong>Three-Source Pipeline</strong> \u2014 currentTransformer generates raw data. analyticsProcessor reads it via cache for signal processing. productivityMetrics reads both for OEE. Each runs at its own rate (1s, 1s, 2s) and communicates solely through the cache API.</p>' +
           '<p><strong>rbe: false for Streaming</strong> \u2014 The current transformer disables RBE because every sample matters for pattern analysis. Even identical consecutive readings are meaningful in a waveform. Other connectors use <code>rbe: true</code> since they only output when derived metrics change.</p>',
         related: [
-          { page: '09', label: '09 \u2014 Scripting (Lua & Python)' },
-          { page: '10', label: '10 \u2014 Cache API' },
-          { page: '20', label: '20 \u2014 Report By Exception' },
-          { page: '08', label: '08 \u2014 Message Paths & Filtering' }
+          { page: 'CON09', label: 'CON09 \u2014 Scripting (Lua & Python)' },
+          { page: 'CON10', label: 'CON10 \u2014 Cache API' },
+          { page: 'CON20', label: 'CON20 \u2014 Report By Exception' },
+          { page: 'CON08', label: 'CON08 \u2014 Message Paths & Filtering' }
         ]
       }
     }

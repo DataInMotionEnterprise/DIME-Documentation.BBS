@@ -24,7 +24,7 @@ DIME_PAGES['EX17'] = {
           '</ul>' +
           '<p>Demonstrates the standard DIME fan-in pattern: multiple sources feed the same ring buffer, and all sinks consume from it independently.</p>',
         related: [
-          { page: '07', label: '07 \u2014 Sink Connectors' },
+          { page: 'CON07', label: 'CON07 \u2014 Sink Connectors' },
           { page: 'EX18', label: 'EX18 \u2014 MongoDB Documents' },
           { page: 'REF13', label: 'REF13 \u2014 InfluxLP' },
           { page: 'REF07', label: 'REF07 \u2014 Ethernet/IP' }
@@ -46,8 +46,8 @@ DIME_PAGES['EX17'] = {
           '</ul>' +
           '<p>The <strong>exclude_filter</strong> on both sinks blocks <code>rockwell/$SYSTEM</code> messages to keep health data out of the database and console output.</p>',
         related: [
-          { page: '05', label: '05 \u2014 Architecture Overview' },
-          { page: '06', label: '06 \u2014 Source Connectors' }
+          { page: 'CON05', label: 'CON05 \u2014 Architecture Overview' },
+          { page: 'CON06', label: 'CON06 \u2014 Source Connectors' }
         ]
       }
     },
@@ -68,8 +68,8 @@ DIME_PAGES['EX17'] = {
           '</ul>' +
           '<p><strong>Security note:</strong> Keep API tokens in separate YAML files that are not committed to version control. The token shown in the example is truncated.</p>',
         related: [
-          { page: '07', label: '07 \u2014 Sink Connectors' },
-          { page: '08', label: '08 \u2014 Message Paths & Filtering' }
+          { page: 'CON07', label: 'CON07 \u2014 Sink Connectors' },
+          { page: 'CON08', label: 'CON08 \u2014 Message Paths & Filtering' }
         ]
       }
     },
@@ -85,8 +85,8 @@ DIME_PAGES['EX17'] = {
           '<p><strong>Cache-and-Forward Pattern</strong> \u2014 The Rockwell source demonstrates caching raw PLC data: <code>set(\'boolTag\', result); return nil;</code> stores a value without publishing. Other items use <code>cache(\'boolTag\', false)</code> to read and transform cached values for publication.</p>' +
           '<p><strong>Multiple Sources, One Sink</strong> \u2014 Both Modbus and Rockwell sources publish to the same ring buffer. The InfluxDB sink receives all data regardless of its origin. This is the standard DIME fan-in pattern for data consolidation.</p>',
         related: [
-          { page: '10', label: '10 \u2014 Cache API' },
-          { page: '07', label: '07 \u2014 Sink Connectors' },
+          { page: 'CON10', label: 'CON10 \u2014 Cache API' },
+          { page: 'CON07', label: 'CON07 \u2014 Sink Connectors' },
           { page: 'EX18', label: 'EX18 \u2014 MongoDB Documents' }
         ]
       }

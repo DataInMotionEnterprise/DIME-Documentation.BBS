@@ -24,7 +24,7 @@ DIME_PAGES['EX20'] = {
           '</ul>' +
           '<p>Compare with EX19 (PostgreSQL) which adds dynamic query parameterization. This example is intentionally minimal to show the simplest database polling pattern.</p>',
         related: [
-          { page: '06', label: '06 \u2014 Source Connectors' },
+          { page: 'CON06', label: 'CON06 \u2014 Source Connectors' },
           { page: 'EX19', label: 'EX19 \u2014 PostgreSQL Polling' },
           { page: 'REF19', label: 'REF19 \u2014 MSSQL' }
         ]
@@ -44,8 +44,8 @@ DIME_PAGES['EX20'] = {
           '<li><strong>Console Sink</strong> \u2014 Displays all messages including <code>$SYSTEM</code> health data (no filters applied in this minimal example).</li>' +
           '</ul>',
         related: [
-          { page: '05', label: '05 \u2014 Architecture Overview' },
-          { page: '06', label: '06 \u2014 Source Connectors' }
+          { page: 'CON05', label: 'CON05 \u2014 Architecture Overview' },
+          { page: 'CON06', label: 'CON06 \u2014 Source Connectors' }
         ]
       }
     },
@@ -70,8 +70,8 @@ DIME_PAGES['EX20'] = {
           '</ul>' +
           '<p><strong>Lifecycle scripts:</strong> All four scripts (<code>init</code>, <code>deinit</code>, <code>enter</code>, <code>exit</code>) are set to <code>~</code> (null). Compare with EX19 where <code>enter_script</code> dynamically modifies the query.</p>',
         related: [
-          { page: '06', label: '06 \u2014 Source Connectors' },
-          { page: '09', label: '09 \u2014 Scripting (Lua & Python)' }
+          { page: 'CON06', label: 'CON06 \u2014 Source Connectors' },
+          { page: 'CON09', label: 'CON09 \u2014 Scripting (Lua & Python)' }
         ]
       }
     },
@@ -88,8 +88,8 @@ DIME_PAGES['EX20'] = {
           '<p><strong>Null Lifecycle Scripts</strong> \u2014 Setting scripts to <code>~</code> (YAML null) explicitly declares that no custom logic runs at that lifecycle stage. This is cleaner than omitting them entirely, making the configuration self-documenting.</p>' +
           '<p><strong>Minimal Sink</strong> \u2014 The Console sink has no filters, so it receives all messages including <code>$SYSTEM</code> health data. For production, add <code>exclude_filter: [msSqlSource1/$SYSTEM]</code>.</p>',
         related: [
-          { page: '06', label: '06 \u2014 Source Connectors' },
-          { page: '09', label: '09 \u2014 Scripting (Lua & Python)' },
+          { page: 'CON06', label: 'CON06 \u2014 Source Connectors' },
+          { page: 'CON09', label: 'CON09 \u2014 Scripting (Lua & Python)' },
           { page: 'EX19', label: 'EX19 \u2014 PostgreSQL Polling' }
         ]
       }

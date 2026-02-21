@@ -25,7 +25,7 @@ DIME_PAGES['EX16'] = {
           '<p>This pattern enables centralized data collection from distributed MTConnect agents across a factory floor or multiple facilities.</p>',
         related: [
           { page: 'EX15', label: 'EX15 \u2014 MTConnect Agent Output' },
-          { page: '07', label: '07 \u2014 Sink Connectors' },
+          { page: 'CON07', label: 'CON07 \u2014 Sink Connectors' },
           { page: 'REF20', label: 'REF20 \u2014 MTConnect Agent' }
         ]
       }
@@ -45,8 +45,8 @@ DIME_PAGES['EX16'] = {
           '</ul>' +
           '<p>The Console sink is commented out in main.yaml (<code>#- *consoleSink1</code>) but can be enabled for debugging by removing the <code>#</code>.</p>',
         related: [
-          { page: '05', label: '05 \u2014 Architecture Overview' },
-          { page: '11', label: '11 \u2014 Templates & Formatting' }
+          { page: 'CON05', label: 'CON05 \u2014 Architecture Overview' },
+          { page: 'CON11', label: 'CON11 \u2014 Templates & Formatting' }
         ]
       }
     },
@@ -67,8 +67,8 @@ DIME_PAGES['EX16'] = {
           '<p><strong>Transform pipeline:</strong> The <code>sink.transform.template: Message.Data[0].Value</code> extracts the raw value from the MTConnect response. The sink sets <code>use_sink_transform: true</code> to apply this extraction.</p>' +
           '<p><strong>Path remapping:</strong> Each item\u2019s <code>sink.mtconnect</code> annotation restructures where the value appears in the local agent\u2019s device model. For example, <code>Xload</code> from the remote agent is remapped to <code>Device[Name=device1]/Axes/Linear[Name=X]/Load[Category=Sample]</code>.</p>',
         related: [
-          { page: '06', label: '06 \u2014 Source Connectors' },
-          { page: '11', label: '11 \u2014 Templates & Formatting' }
+          { page: 'CON06', label: 'CON06 \u2014 Source Connectors' },
+          { page: 'CON11', label: 'CON11 \u2014 Templates & Formatting' }
         ]
       }
     },
@@ -84,8 +84,8 @@ DIME_PAGES['EX16'] = {
           '<p><strong>Sink Transform Chain</strong> \u2014 The source defines a transform template (<code>Message.Data[0].Value</code>) and the sink enables it with <code>use_sink_transform: true</code>. This two-step pattern ensures the transform is defined close to the data shape (at the source) but applied at the sink.</p>' +
           '<p><strong>itemized_read</strong> \u2014 When <code>true</code>, each item is read individually from the remote agent using its <code>address</code> field. This gives fine-grained control over which DataItems are collected, versus bulk-reading everything.</p>',
         related: [
-          { page: '07', label: '07 \u2014 Sink Connectors' },
-          { page: '11', label: '11 \u2014 Templates & Formatting' },
+          { page: 'CON07', label: 'CON07 \u2014 Sink Connectors' },
+          { page: 'CON11', label: 'CON11 \u2014 Templates & Formatting' },
           { page: 'EX15', label: 'EX15 \u2014 MTConnect Agent Output' }
         ]
       }

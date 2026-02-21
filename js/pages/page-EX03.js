@@ -24,7 +24,7 @@ DIME_PAGES['EX03'] = {
           '</ul>' +
           '<p>The config includes a library of pre-configured items (Random, Sine, Ramp, User functions) that are disabled by default. Enable them as needed without editing addresses.</p>',
         related: [
-          { page: '06', label: '06 \u2014 Source Connectors' },
+          { page: 'CON06', label: 'CON06 \u2014 Source Connectors' },
           { page: 'EX01', label: 'EX01 \u2014 Basic Counter (simpler starting point)' },
           { page: 'REF25', label: 'REF25 \u2014 OPC-UA' }
         ]
@@ -45,8 +45,8 @@ DIME_PAGES['EX03'] = {
           '</ul>' +
           '<p>The <code>item_script</code> runs for every item before individual scripts. It calls <code>return result.Value</code> to unwrap the OPC DataValue object, so downstream scripts and sinks receive the clean value rather than the full OPC envelope.</p>',
         related: [
-          { page: '05', hotspot: 'data-flow', label: '05 \u2014 Architecture: Data Flow' },
-          { page: '07', label: '07 \u2014 Sink Connectors' }
+          { page: 'CON05', hotspot: 'data-flow', label: 'CON05 \u2014 Architecture: Data Flow' },
+          { page: 'CON07', label: 'CON07 \u2014 Sink Connectors' }
         ]
       }
     },
@@ -77,8 +77,8 @@ DIME_PAGES['EX03'] = {
           '    address: _System._DateTime # Node string ID\n' +
           '    rbe: !!bool true          # Per-item RBE',
         related: [
-          { page: '04', label: '04 \u2014 YAML Basics' },
-          { page: '21', label: '21 \u2014 Multi-File Configs' }
+          { page: 'CON04', label: 'CON04 \u2014 YAML Basics' },
+          { page: 'CON21', label: 'CON21 \u2014 Multi-File Configs' }
         ]
       }
     },
@@ -94,9 +94,9 @@ DIME_PAGES['EX03'] = {
           '<p><strong>Namespace Addressing</strong> \u2014 OPC-UA organizes nodes into namespaces. Namespace 0 is the OPC Foundation standard namespace. Higher indices (commonly 2+) are vendor-specific. The <code>namespace</code> and <code>address</code> fields together form the full <code>NodeId</code>.</p>' +
           '<p><strong>Disabled Items as Tag Library</strong> \u2014 Setting <code>enabled: false</code> pre-configures items without activating them. This is a common pattern for building a reusable tag library \u2014 toggle items on/off without re-entering addresses.</p>',
         related: [
-          { page: '09', label: '09 \u2014 Scripting (Lua & Python)' },
-          { page: '20', label: '20 \u2014 Report By Exception' },
-          { page: '06', label: '06 \u2014 Source Connectors' }
+          { page: 'CON09', label: 'CON09 \u2014 Scripting (Lua & Python)' },
+          { page: 'CON20', label: 'CON20 \u2014 Report By Exception' },
+          { page: 'CON06', label: 'CON06 \u2014 Source Connectors' }
         ]
       }
     }

@@ -8,36 +8,36 @@
 
 ## Documentation
 
-- [01 — What is DIME?](content/01-what-is-dime.md): Platform overview, N×M integration problem, hub-and-spoke architecture
-- [02 — The DIME Ecosystem](content/02-the-dime-ecosystem.md): Zenith cloud, Horizon gateway, Connector edge, Desktop UX
-- [03 — Installation](content/03-installation.md): Windows, Linux, and Docker setup with verification steps
-- [04 — YAML Configuration](content/04-yaml-basics.md): Config file structure, app/sources/sinks sections, type tags, merge order
-- [05 — Architecture](content/05-architecture.md): Ring buffer, message flow, connector lifecycle, source types, admin server
-- [06 — Source Connectors](content/06-source-connectors.md): PLCs, MQTT, databases, scrapers, polling vs queuing vs batch
-- [07 — Sink Connectors](content/07-sink-connectors.md): InfluxDB, Splunk, MongoDB, MQTT, MTConnect, fan-out dispatch
-- [08 — Filtering & Routing](content/08-message-paths-filtering.md): Message paths, $SYSTEM paths, include/exclude filters, strip_path_prefix
-- [09 — Scripting](content/09-scripting.md): Five script hooks, Lua vs Python, result object, emit(), helper functions
-- [10 — Cache API](content/10-cache-api.md): cache(), set(), cache_ts(), cross-connector access, wait_for_connectors
-- [11 — Templates & Output Formatting](content/11-templates-formatting.md): Scriban and Liquid templates, reshaping flat data to nested JSON
-- [12 — PLC to Dashboard](content/12-plc-to-dashboard.md): End-to-end walkthrough from OPC-UA source to InfluxDB and WebSocket
-- [13 — MQTT Integration](content/13-recipe-mqtt.md): MQTT source/sink, TLS, SparkplugB, edge-to-cloud bridging
-- [14 — Database Logging](content/14-recipe-database.md): InfluxDB, relational DB, MongoDB, CSV sinks, database source polling
-- [15 — MTConnect & CNC](content/15-recipe-mtconnect.md): MTConnect source, SHDR/Haas, DIME as MTConnect agent, FANUC/Yaskawa
-- [16 — Admin REST API](content/16-admin-api.md): GET /status, configuration management, runtime control, Swagger UI
-- [17 — WebSocket Monitoring](content/17-websocket-monitoring.md): Admin WebSocket, WebsocketServer sink, zero-dependency dashboards
-- [18 — Health & Faults](content/18-health-faults.md): Connector state machine, $SYSTEM telemetry, auto-recovery, alerting
-- [19 — Connector UX](content/19-connector-ux.md): Desktop app, live dashboard, Monaco YAML editor, Tauri v2
-- [20 — Report By Exception](content/20-report-by-exception.md): RBE at connector and item level, force publish, skip scan cycles
-- [21 — Multi-File Configs](content/21-multi-file-configs.md): File splitting, load order, YAML anchors, organization patterns
-- [22 — Instance Chaining](content/22-instance-chaining.md): Sink-to-source chaining, edge/aggregator/analytics tiers, hot reconfig
-- [23 — Service Deployment](content/23-deploy-service.md): Windows Service, Linux systemd, named instances, logging config
-- [24 — Docker Deployment](content/24-deploy-docker.md): docker run, Compose stacks, volumes/ports, ARM64, ROS2 variants
-- [25 — Horizon Gateway](content/25-horizon-gateway.md): Pull-based architecture, check-in cycle, task types, deployment options
-- [26 — Zenith Cloud](content/26-zenith-cloud.md): ASP.NET Core + MongoDB, fleet state, API endpoints, stale detection
-- [27 — Zenith UX](content/27-zenith-ux.md): Fleet tree, live dashboard, deep-dive detail, remote YAML editing
-- [28 — Edge to Cloud](content/28-edge-to-cloud.md): Three-tier architecture, upward data flow, downward config propagation
-- [29 — Performance Tuning](content/29-performance-tuning.md): Ring buffer sizing, scan_interval, double-buffer, backpressure, metrics
-- [30 — Troubleshooting](content/30-troubleshooting.md): No-data diagnosis, persistent faults, script issues, YAML gotchas
+- [CON01 — What is DIME?](content/CON01-what-is-dime.md): Platform overview, N×M integration problem, hub-and-spoke architecture
+- [CON02 — The DIME Ecosystem](content/CON02-the-dime-ecosystem.md): Zenith cloud, Horizon gateway, Connector edge, Desktop UX
+- [CON03 — Installation](content/CON03-installation.md): Windows, Linux, and Docker setup with verification steps
+- [CON04 — YAML Configuration](content/CON04-yaml-basics.md): Config file structure, app/sources/sinks sections, type tags, merge order
+- [CON05 — Architecture](content/CON05-architecture.md): Ring buffer, message flow, connector lifecycle, source types, admin server
+- [CON06 — Source Connectors](content/CON06-source-connectors.md): PLCs, MQTT, databases, scrapers, polling vs queuing vs batch
+- [CON07 — Sink Connectors](content/CON07-sink-connectors.md): InfluxDB, Splunk, MongoDB, MQTT, MTConnect, fan-out dispatch
+- [CON08 — Filtering & Routing](content/CON08-message-paths-filtering.md): Message paths, $SYSTEM paths, include/exclude filters, strip_path_prefix
+- [CON09 — Scripting](content/CON09-scripting.md): Five script hooks, Lua vs Python, result object, emit(), helper functions
+- [CON10 — Cache API](content/CON10-cache-api.md): cache(), set(), cache_ts(), cross-connector access, wait_for_connectors
+- [CON11 — Templates & Output Formatting](content/CON11-templates-formatting.md): Scriban and Liquid templates, reshaping flat data to nested JSON
+- [CON12 — PLC to Dashboard](content/CON12-plc-to-dashboard.md): End-to-end walkthrough from OPC-UA source to InfluxDB and WebSocket
+- [CON13 — MQTT Integration](content/CON13-recipe-mqtt.md): MQTT source/sink, TLS, SparkplugB, edge-to-cloud bridging
+- [CON14 — Database Logging](content/CON14-recipe-database.md): InfluxDB, relational DB, MongoDB, CSV sinks, database source polling
+- [CON15 — MTConnect & CNC](content/CON15-recipe-mtconnect.md): MTConnect source, SHDR/Haas, DIME as MTConnect agent, FANUC/Yaskawa
+- [CON16 — Admin REST API](content/CON16-admin-api.md): GET /status, configuration management, runtime control, Swagger UI
+- [CON17 — WebSocket Monitoring](content/CON17-websocket-monitoring.md): Admin WebSocket, WebsocketServer sink, zero-dependency dashboards
+- [CON18 — Health & Faults](content/CON18-health-faults.md): Connector state machine, $SYSTEM telemetry, auto-recovery, alerting
+- [CON19 — Connector UX](content/CON19-connector-ux.md): Desktop app, live dashboard, Monaco YAML editor, Tauri v2
+- [CON20 — Report By Exception](content/CON20-report-by-exception.md): RBE at connector and item level, force publish, skip scan cycles
+- [CON21 — Multi-File Configs](content/CON21-multi-file-configs.md): File splitting, load order, YAML anchors, organization patterns
+- [CON22 — Instance Chaining](content/CON22-instance-chaining.md): Sink-to-source chaining, edge/aggregator/analytics tiers, hot reconfig
+- [CON23 — Service Deployment](content/CON23-deploy-service.md): Windows Service, Linux systemd, named instances, logging config
+- [CON24 — Docker Deployment](content/CON24-deploy-docker.md): docker run, Compose stacks, volumes/ports, ARM64, ROS2 variants
+- [CON25 — Horizon Gateway](content/CON25-horizon-gateway.md): Pull-based architecture, check-in cycle, task types, deployment options
+- [CON26 — Zenith Cloud](content/CON26-zenith-cloud.md): ASP.NET Core + MongoDB, fleet state, API endpoints, stale detection
+- [CON27 — Zenith UX](content/CON27-zenith-ux.md): Fleet tree, live dashboard, deep-dive detail, remote YAML editing
+- [CON28 — Edge to Cloud](content/CON28-edge-to-cloud.md): Three-tier architecture, upward data flow, downward config propagation
+- [CON29 — Performance Tuning](content/CON29-performance-tuning.md): Ring buffer sizing, scan_interval, double-buffer, backpressure, metrics
+- [CON30 — Troubleshooting](content/CON30-troubleshooting.md): No-data diagnosis, persistent faults, script issues, YAML gotchas
 
 ## Examples
 

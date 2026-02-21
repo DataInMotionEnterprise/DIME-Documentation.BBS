@@ -24,7 +24,7 @@ DIME_PAGES['EX14'] = {
           '</ul>' +
           '<p>ActiveMQ Artemis supports persistence, clustering, transactions, and dead-letter queues \u2014 making it suitable for enterprise integration scenarios where MQTT may not be sufficient.</p>',
         related: [
-          { page: '06', label: '06 \u2014 Source Connectors' },
+          { page: 'CON06', label: 'CON06 \u2014 Source Connectors' },
           { page: 'EX11', label: 'EX11 \u2014 MQTT Bridge (lighter weight)' },
           { page: 'REF01', label: 'REF01 \u2014 ActiveMQ' }
         ]
@@ -45,8 +45,8 @@ DIME_PAGES['EX14'] = {
           '</ul>' +
           '<p>With <code>itemized_read: false</code>, the connector operates in event-driven queuing mode. Messages arrive asynchronously and are drained every 500ms.</p>',
         related: [
-          { page: '05', hotspot: 'data-flow', label: '05 \u2014 Architecture: Data Flow' },
-          { page: '08', label: '08 \u2014 Filtering' }
+          { page: 'CON05', hotspot: 'data-flow', label: 'CON05 \u2014 Architecture: Data Flow' },
+          { page: 'CON08', label: 'CON08 \u2014 Filtering' }
         ]
       }
     },
@@ -72,8 +72,8 @@ DIME_PAGES['EX14'] = {
           '<li><code>itemized_read: false</code> \u2014 Event-driven mode for async broker messages</li>' +
           '</ul>',
         related: [
-          { page: '21', label: '21 \u2014 Multi-File Configs' },
-          { page: '04', label: '04 \u2014 YAML Basics' }
+          { page: 'CON21', label: 'CON21 \u2014 Multi-File Configs' },
+          { page: 'CON04', label: 'CON04 \u2014 YAML Basics' }
         ]
       }
     },
@@ -90,8 +90,8 @@ DIME_PAGES['EX14'] = {
           '<p><strong>Console Filter as Debug Toggle</strong> \u2014 The <code>exclude_filter</code> includes both <code>activemq/$SYSTEM</code> (system messages) and <code>activemq</code> (all source data). Removing the <code>activemq</code> entry instantly enables raw message display for debugging. This is a useful pattern for development.</p>' +
           '<p><strong>Enterprise Messaging</strong> \u2014 ActiveMQ Artemis supports message persistence, clustering, transactions, and dead-letter queues. DIME acts as a lightweight consumer that bridges enterprise broker messages into the ring buffer for further routing to any DIME sink.</p>',
         related: [
-          { page: '06', label: '06 \u2014 Source Connectors' },
-          { page: '08', label: '08 \u2014 Message Paths & Filtering' },
+          { page: 'CON06', label: 'CON06 \u2014 Source Connectors' },
+          { page: 'CON08', label: 'CON08 \u2014 Message Paths & Filtering' },
           { page: 'EX11', label: 'EX11 \u2014 MQTT to WebSocket Bridge' }
         ]
       }
