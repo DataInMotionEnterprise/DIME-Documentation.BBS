@@ -555,7 +555,7 @@
       }
       if (allMatch) {
         matches.push(entry);
-        if (matches.length >= 12) break;
+        if (matches.length >= 100) break;
       }
     }
 
