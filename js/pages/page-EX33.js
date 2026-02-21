@@ -24,7 +24,9 @@ DIME_PAGES['EX33'] = {
           '<p>This is a single-file configuration demonstrating how DIME bridges robotics middleware to industrial IT infrastructure.</p>',
         related: [
           { page: '06', label: '06 \u2014 Source Connectors' },
-          { page: '14', label: '14 \u2014 MQTT Connector' }
+          { page: '14', label: '14 \u2014 MQTT Connector' },
+          { page: 'REF28', label: 'REF28 \u2014 ROS2' },
+          { page: 'REF18', label: 'REF18 \u2014 MQTT' }
         ]
       }
     },

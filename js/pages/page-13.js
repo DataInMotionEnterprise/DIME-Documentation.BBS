@@ -119,7 +119,7 @@ DIME_PAGES['13'] = {
         related: [
           { page: '13', hotspot: 'mqtt-source', label: '13 \u2014 MQTT source config' },
           { page: '06', label: '06 \u2014 Source connectors' },
-          { page: '07', label: '07 \u2014 Sink connectors' }
+          { page: 'EX13', label: 'EX13 \u2014 SparkplugB Integration' }
         ]
       }
     },
@@ -147,9 +147,8 @@ DIME_PAGES['13'] = {
           '<p>For multi-hop architectures (edge \u2192 site \u2192 cloud), chain multiple DIME instances using MQTT as the transport between them.</p>',
         related: [
           { page: '22', label: '22 \u2014 Instance chaining' },
-          { page: '06', label: '06 \u2014 Source connectors' },
-          { page: '07', label: '07 \u2014 Sink connectors' },
-          { page: '08', label: '08 \u2014 Filtering' }
+          { page: 'EX11', label: 'EX11 \u2014 MQTT to WebSocket' },
+          { page: 'EX12', label: 'EX12 \u2014 Secure MQTT (TLS)' }
         ]
       }
     }

@@ -25,7 +25,8 @@ DIME_PAGES['EX12'] = {
           '<p>This demonstrates secure MQTT communication with certificate-based mutual authentication, commonly required in enterprise and regulated industrial environments.</p>',
         related: [
           { page: 'EX11', label: 'EX11 \u2014 MQTT to WebSocket (plaintext)' },
-          { page: '06', label: '06 \u2014 Source Connectors' }
+          { page: '06', label: '06 \u2014 Source Connectors' },
+          { page: 'REF18', label: 'REF18 \u2014 MQTT' }
         ]
       }
     },

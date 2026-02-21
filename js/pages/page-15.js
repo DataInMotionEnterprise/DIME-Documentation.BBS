@@ -82,9 +82,9 @@ DIME_PAGES['15'] = {
           '    port: !!int 5000\n' +
           '    device_name: CNC-Line-1',
         related: [
-          { page: '07', label: '07 \u2014 Sink connectors' },
-          { page: '15', hotspot: 'mtconnect-source', label: 'MTConnect source' },
-          { page: '15', hotspot: 'emit-mtconnect', label: 'emit_mtconnect() mapping' }
+          { page: '15', hotspot: 'emit-mtconnect', label: 'emit_mtconnect() mapping' },
+          { page: 'EX15', label: 'EX15 \u2014 MTConnect Agent Output' },
+          { page: 'EX16', label: 'EX16 \u2014 MTConnect Aggregation' }
         ]
       }
     },
@@ -135,7 +135,7 @@ DIME_PAGES['15'] = {
         related: [
           { page: '06', label: '06 \u2014 Source connectors' },
           { page: '15', hotspot: 'agent-sink', label: 'MTConnect Agent sink' },
-          { page: '09', label: '09 \u2014 Scripting' }
+          { page: 'EX09', label: 'EX09 \u2014 Fanuc Robot Integration' }
         ]
       }
     }

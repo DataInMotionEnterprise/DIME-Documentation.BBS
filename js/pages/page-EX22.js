@@ -25,7 +25,10 @@ DIME_PAGES['EX22'] = {
           '<p>The multi-file config (5 YAML files) shows the standard modular pattern for production deployments.</p>',
         related: [
           { page: '06', label: '06 \u2014 Source Connectors' },
-          { page: 'EX23', label: 'EX23 \u2014 Weather API (another HTTP source)' }
+          { page: 'EX23', label: 'EX23 \u2014 Weather API (another HTTP source)' },
+          { page: 'REF14', label: 'REF14 \u2014 JSONWebScraper' },
+          { page: 'REF20', label: 'REF20 \u2014 MTConnect Agent' },
+          { page: 'REF22', label: 'REF22 \u2014 MTConnect SHDR' }
         ]
       }
     },

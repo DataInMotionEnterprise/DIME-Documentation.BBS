@@ -27,7 +27,8 @@ DIME_PAGES['22'] = {
           '</ul>',
         related: [
           { page: '28', label: '28 \u2014 Edge-to-Cloud patterns' },
-          { page: '05', hotspot: 'big-picture', label: '05 \u2014 Three-layer architecture' }
+          { page: '05', hotspot: 'big-picture', label: '05 \u2014 Three-layer architecture' },
+          { page: 'EX28', label: 'EX28 \u2014 Unified Namespace (multi-sink)' }
         ]
       }
     },

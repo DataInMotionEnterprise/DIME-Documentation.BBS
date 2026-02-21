@@ -26,7 +26,9 @@ DIME_PAGES['EX21'] = {
           '<p>This example demonstrates the full power of DIME\u2019s scripting, caching, and multi-source architecture in a single configuration file.</p>',
         related: [
           { page: '07', label: '07 \u2014 Sink Connectors' },
-          { page: '10', label: '10 \u2014 Cache API' }
+          { page: '10', label: '10 \u2014 Cache API' },
+          { page: 'REF33', label: 'REF33 \u2014 Splunk EH SDK' },
+          { page: 'REF09', label: 'REF09 \u2014 Haas SHDR' }
         ]
       }
     },

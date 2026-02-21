@@ -25,7 +25,8 @@ DIME_PAGES['EX05'] = {
           '<p>Modbus is the most widely deployed industrial protocol. Nearly every sensor, VFD, power meter, and gateway speaks it.</p>',
         related: [
           { page: '06', label: '06 \u2014 Source Connectors' },
-          { page: 'EX04', label: 'EX04 \u2014 Siemens S7 PLC' }
+          { page: 'EX04', label: 'EX04 \u2014 Siemens S7 PLC' },
+          { page: 'REF16', label: 'REF16 \u2014 ModbusTCP' }
         ]
       }
     },

@@ -24,7 +24,8 @@ DIME_PAGES['EX34'] = {
           '</ul>',
         related: [
           { page: '06', label: '06 \u2014 Source Connectors' },
-          { page: '12', label: '12 \u2014 emit() Function' }
+          { page: '12', label: '12 \u2014 emit() Function' },
+          { page: 'REF38', label: 'REF38 \u2014 UDP Server' }
         ]
       }
     },

@@ -25,7 +25,8 @@ DIME_PAGES['EX03'] = {
           '<p>The config includes a library of pre-configured items (Random, Sine, Ramp, User functions) that are disabled by default. Enable them as needed without editing addresses.</p>',
         related: [
           { page: '06', label: '06 \u2014 Source Connectors' },
-          { page: 'EX01', label: 'EX01 \u2014 Basic Counter (simpler starting point)' }
+          { page: 'EX01', label: 'EX01 \u2014 Basic Counter (simpler starting point)' },
+          { page: 'REF25', label: 'REF25 \u2014 OPC-UA' }
         ]
       }
     },

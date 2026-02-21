@@ -25,7 +25,8 @@ DIME_PAGES['EX24'] = {
           '<p>The 3-file config separates the source, sink, and main orchestration.</p>',
         related: [
           { page: '07', label: '07 \u2014 Sink Connectors' },
-          { page: '11', label: '11 \u2014 Templates & Formatting' }
+          { page: '11', label: '11 \u2014 Templates & Formatting' },
+          { page: 'REF10', label: 'REF10 \u2014 HTTP Client' }
         ]
       }
     },

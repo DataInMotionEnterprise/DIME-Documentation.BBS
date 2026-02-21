@@ -27,7 +27,12 @@ DIME_PAGES['EX29'] = {
         related: [
           { page: '06', label: '06 \u2014 Source Connectors' },
           { page: '15', label: '15 \u2014 MTConnect' },
-          { page: 'EX28', label: 'EX28 \u2014 Unified Namespace' }
+          { page: 'EX28', label: 'EX28 \u2014 Unified Namespace' },
+          { page: 'REF09', label: 'REF09 \u2014 Haas SHDR' },
+          { page: 'REF41', label: 'REF41 \u2014 XMLWebScraper' },
+          { page: 'REF35', label: 'REF35 \u2014 TcpASCII' },
+          { page: 'REF20', label: 'REF20 \u2014 MTConnect Agent' },
+          { page: 'REF07', label: 'REF07 \u2014 Ethernet/IP' }
         ]
       }
     },

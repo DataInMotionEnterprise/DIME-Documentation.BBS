@@ -26,7 +26,9 @@ DIME_PAGES['EX13'] = {
           '<p>This is the most complex example in the series, demonstrating 2 sources and 3 sinks with sophisticated filtering to route data correctly.</p>',
         related: [
           { page: 'EX12', label: 'EX12 \u2014 Secure MQTT (TLS)' },
-          { page: '08', label: '08 \u2014 Message Paths & Filtering' }
+          { page: '08', label: '08 \u2014 Message Paths & Filtering' },
+          { page: 'REF32', label: 'REF32 \u2014 SparkplugB' },
+          { page: 'REF07', label: 'REF07 \u2014 Ethernet/IP' }
         ]
       }
     },

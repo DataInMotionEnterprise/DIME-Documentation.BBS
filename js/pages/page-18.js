@@ -86,9 +86,9 @@ DIME_PAGES['18'] = {
           '</ul>' +
           '<p>Compare Attempted vs Accepted to measure RBE effectiveness. If Attempted=1000 and Accepted=50, then 95% of values were unchanged \u2014 RBE is saving significant bandwidth.</p>',
         related: [
+          { page: '29', hotspot: 'bottlenecks', label: '29 \u2014 Finding bottlenecks' },
           { page: '20', label: '20 \u2014 Report By Exception (RBE)' },
-          { page: '05', hotspot: 'performance', label: '05 \u2014 Performance by design' },
-          { page: '17', label: '17 \u2014 WebSocket real-time telemetry' }
+          { page: '05', hotspot: 'performance', label: '05 \u2014 Performance by design' }
         ]
       }
     },

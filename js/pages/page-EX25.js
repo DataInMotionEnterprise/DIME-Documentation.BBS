@@ -24,7 +24,9 @@ DIME_PAGES['EX25'] = {
           '<p>No <code>init_script</code>, no <code>scan_interval</code>, no <code>rbe</code> \u2014 DIME applies sensible defaults for all omitted properties. This example shows how little YAML you need for a working multi-file config.</p>',
         related: [
           { page: '21', label: '21 \u2014 Multi-File Configs' },
-          { page: 'EX01', label: 'EX01 \u2014 Basic Counter (single-file equivalent)' }
+          { page: 'EX01', label: 'EX01 \u2014 Basic Counter (single-file equivalent)' },
+          { page: 'REF29', label: 'REF29 \u2014 Script' },
+          { page: 'REF05', label: 'REF05 \u2014 Console' }
         ]
       }
     },

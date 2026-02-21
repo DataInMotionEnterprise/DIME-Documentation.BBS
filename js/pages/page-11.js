@@ -57,7 +57,8 @@ DIME_PAGES['11'] = {
           '<p>All three modes use the same context variables: <code>Message</code>, <code>Connector</code>, <code>Configuration</code>.</p>',
         related: [
           { page: '09', label: '09 \u2014 Scripting (alternative to templates)' },
-          { page: '07', label: '07 \u2014 Sink Connectors Catalog' }
+          { page: '07', label: '07 \u2014 Sink Connectors Catalog' },
+          { page: 'EX27', label: 'EX27 \u2014 Liquid Templates' }
         ]
       }
     },
@@ -113,7 +114,7 @@ DIME_PAGES['11'] = {
           '      }',
         related: [
           { page: '07', label: '07 \u2014 Sink Connectors: HttpClient' },
-          { page: '12', label: '12 \u2014 PLC to Dashboard Walkthrough' }
+          { page: 'EX24', label: 'EX24 \u2014 HTTP Client POST (Scriban)' }
         ]
       }
     },

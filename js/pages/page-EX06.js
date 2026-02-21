@@ -28,7 +28,9 @@ DIME_PAGES['EX06'] = {
         related: [
           { page: '06', label: '06 \u2014 Source Connectors' },
           { page: '07', label: '07 \u2014 Sink Connectors' },
-          { page: 'EX04', label: 'EX04 \u2014 Siemens S7 PLC' }
+          { page: 'EX04', label: 'EX04 \u2014 Siemens S7 PLC' },
+          { page: 'REF07', label: 'REF07 \u2014 Ethernet/IP' },
+          { page: 'REF32', label: 'REF32 \u2014 SparkplugB' }
         ]
       }
     },

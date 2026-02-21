@@ -25,7 +25,8 @@ DIME_PAGES['EX07'] = {
           '<p>Two sources reading the same PLC demonstrates how DIME creates unique message paths (<code>adsSource1/bool1</code> vs <code>adsSource2/bool1</code>) for identical variables from different connections.</p>',
         related: [
           { page: '06', label: '06 \u2014 Source Connectors' },
-          { page: 'EX04', label: 'EX04 \u2014 Siemens S7 PLC' }
+          { page: 'EX04', label: 'EX04 \u2014 Siemens S7 PLC' },
+          { page: 'REF03', label: 'REF03 \u2014 Beckhoff ADS' }
         ]
       }
     },

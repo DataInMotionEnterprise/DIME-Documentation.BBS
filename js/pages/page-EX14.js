@@ -25,7 +25,8 @@ DIME_PAGES['EX14'] = {
           '<p>ActiveMQ Artemis supports persistence, clustering, transactions, and dead-letter queues \u2014 making it suitable for enterprise integration scenarios where MQTT may not be sufficient.</p>',
         related: [
           { page: '06', label: '06 \u2014 Source Connectors' },
-          { page: 'EX11', label: 'EX11 \u2014 MQTT Bridge (lighter weight)' }
+          { page: 'EX11', label: 'EX11 \u2014 MQTT Bridge (lighter weight)' },
+          { page: 'REF01', label: 'REF01 \u2014 ActiveMQ' }
         ]
       }
     },

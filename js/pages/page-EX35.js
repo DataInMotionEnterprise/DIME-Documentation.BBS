@@ -25,7 +25,8 @@ DIME_PAGES['EX35'] = {
         related: [
           { page: '09', label: '09 \u2014 Scripting (Lua & Python)' },
           { page: '10', label: '10 \u2014 Cache API' },
-          { page: 'EX30', label: 'EX30 \u2014 CNC Machine Simulator' }
+          { page: 'EX30', label: 'EX30 \u2014 CNC Machine Simulator' },
+          { page: 'REF29', label: 'REF29 \u2014 Script' }
         ]
       }
     },

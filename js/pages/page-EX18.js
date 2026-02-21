@@ -25,7 +25,9 @@ DIME_PAGES['EX18'] = {
           '<p>The same Rockwell source configuration and cache-and-forward pattern from EX17 is reused here, showing how easily you can swap sinks without changing your source logic.</p>',
         related: [
           { page: '07', label: '07 \u2014 Sink Connectors' },
-          { page: 'EX17', label: 'EX17 \u2014 InfluxDB Time-Series' }
+          { page: 'EX17', label: 'EX17 \u2014 InfluxDB Time-Series' },
+          { page: 'REF17', label: 'REF17 \u2014 MongoDB' },
+          { page: 'REF07', label: 'REF07 \u2014 Ethernet/IP' }
         ]
       }
     },

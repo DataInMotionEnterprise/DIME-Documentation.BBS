@@ -24,7 +24,8 @@ DIME_PAGES['EX08'] = {
           '<p>Any standard OPC-UA client (UaExpert, Ignition, Kepware) can connect to <code>opc.tcp://localhost:4840</code>, browse the "Production" folder, and subscribe to live data updates.</p>',
         related: [
           { page: '07', label: '07 \u2014 Sink Connectors' },
-          { page: 'EX10', label: 'EX10 \u2014 OPC-DA Legacy (COM-based)' }
+          { page: 'EX10', label: 'EX10 \u2014 OPC-DA Legacy (COM-based)' },
+          { page: 'REF25', label: 'REF25 \u2014 OPC-UA' }
         ]
       }
     },

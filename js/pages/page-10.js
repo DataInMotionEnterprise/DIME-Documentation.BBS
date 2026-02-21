@@ -98,7 +98,8 @@ DIME_PAGES['10'] = {
           '<p>The cache store is global and in-memory. All paths from all sources are accessible to all scripts.</p>',
         related: [
           { page: '09', label: '09 \u2014 Scripting & transforms' },
-          { page: '11', label: '11 \u2014 Templates & Output Formatting' }
+          { page: 'EX09', label: 'EX09 \u2014 Fanuc Robot (cache-derive)' },
+          { page: 'EX28', label: 'EX28 \u2014 Unified Namespace (cross-cache)' }
         ]
       }
     },

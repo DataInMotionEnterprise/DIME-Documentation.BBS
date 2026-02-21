@@ -25,7 +25,8 @@ DIME_PAGES['EX04'] = {
           '<p>This is the simplest industrial protocol example \u2014 two boolean tags from a real PLC, printed to console.</p>',
         related: [
           { page: '06', label: '06 \u2014 Source Connectors' },
-          { page: 'EX03', label: 'EX03 \u2014 OPC-UA Client Reads' }
+          { page: 'EX03', label: 'EX03 \u2014 OPC-UA Client Reads' },
+          { page: 'REF30', label: 'REF30 \u2014 Siemens S7' }
         ]
       }
     },

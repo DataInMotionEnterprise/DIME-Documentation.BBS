@@ -26,7 +26,9 @@ DIME_PAGES['EX31'] = {
         related: [
           { page: '16', label: '16 \u2014 WebServer Connector' },
           { page: '07', label: '07 \u2014 Sink Connectors' },
-          { page: 'EX02', label: 'EX02 \u2014 Horizon & Zenith Minimum' }
+          { page: 'EX02', label: 'EX02 \u2014 Horizon & Zenith Minimum' },
+          { page: 'REF39', label: 'REF39 \u2014 WebsocketServer' },
+          { page: 'REF11', label: 'REF11 \u2014 HTTP Server' }
         ]
       }
     },

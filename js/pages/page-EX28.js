@@ -25,7 +25,8 @@ DIME_PAGES['EX28'] = {
         related: [
           { page: '14', label: '14 \u2014 MQTT Connector' },
           { page: '21', label: '21 \u2014 Multi-File Configs' },
-          { page: 'EX01', label: 'EX01 \u2014 Basic Counter (simpler starting point)' }
+          { page: 'EX01', label: 'EX01 \u2014 Basic Counter (simpler starting point)' },
+          { page: 'REF18', label: 'REF18 \u2014 MQTT' }
         ]
       }
     },

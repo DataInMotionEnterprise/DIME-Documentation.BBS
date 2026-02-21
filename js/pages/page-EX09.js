@@ -25,7 +25,8 @@ DIME_PAGES['EX09'] = {
           '<p>This demonstrates the full spectrum of Fanuc data access through a single DIME connector, using Lua to transform raw signals into meaningful operational metrics.</p>',
         related: [
           { page: '06', label: '06 \u2014 Source Connectors' },
-          { page: '10', label: '10 \u2014 Cache API' }
+          { page: '10', label: '10 \u2014 Cache API' },
+          { page: 'REF08', label: 'REF08 \u2014 Fanuc Robot' }
         ]
       }
     },

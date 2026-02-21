@@ -25,7 +25,8 @@ DIME_PAGES['EX19'] = {
           '<p>This pattern is powerful for any scenario where queries need to change at runtime \u2014 pagination, date ranges, dynamic filters, etc.</p>',
         related: [
           { page: '06', label: '06 \u2014 Source Connectors' },
-          { page: 'EX20', label: 'EX20 \u2014 SQL Server Reads' }
+          { page: 'EX20', label: 'EX20 \u2014 SQL Server Reads' },
+          { page: 'REF26', label: 'REF26 \u2014 Postgres' }
         ]
       }
     },

@@ -28,8 +28,8 @@ DIME_PAGES['20'] = {
           '</ul>' +
           '<p>Less network traffic, less database storage, less CPU on the sink side. The downstream systems only process meaningful changes.</p>',
         related: [
-          { page: '08', hotspot: 'exclude-filter', label: '08 \u2014 Filtering (complementary)' },
-          { page: '05', hotspot: 'performance', label: '05 \u2014 Performance by design' }
+          { page: '29', hotspot: 'backpressure', label: '29 \u2014 Backpressure & slow sinks' },
+          { page: 'EX35', label: 'EX35 \u2014 Streaming (rbe: false)' }
         ]
       }
     },
@@ -52,7 +52,7 @@ DIME_PAGES['20'] = {
           '    scan_interval: !!int 1000',
         related: [
           { page: '20', hotspot: 'item-rbe', label: '20 \u2014 Item-level override' },
-          { page: '06', hotspot: 'source-config', label: '06 \u2014 Source connector config' }
+          { page: '06', hotspot: 'source-types', label: '06 \u2014 Source connector types' }
         ]
       }
     },
@@ -78,7 +78,7 @@ DIME_PAGES['20'] = {
           '        rbe: !!bool false    # every reading',
         related: [
           { page: '20', hotspot: 'connector-rbe', label: '20 \u2014 Connector-level RBE' },
-          { page: '04', hotspot: 'items', label: '04 \u2014 Configuring items' }
+          { page: '04', hotspot: 'item-anatomy', label: '04 \u2014 Configuring items' }
         ]
       }
     },

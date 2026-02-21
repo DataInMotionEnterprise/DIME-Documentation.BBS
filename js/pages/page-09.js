@@ -24,7 +24,7 @@ DIME_PAGES['09'] = {
           '</ul>' +
           '<p>The loop (enter \u2192 item \u2192 exit) repeats every <code>scan_interval</code> milliseconds. These hooks work identically for both Lua and Python scripts.</p>',
         related: [
-          { page: '02', hotspot: 'lifecycle', label: '02 \u2014 Connector lifecycle stages' },
+          { page: '05', hotspot: 'lifecycle', label: '05 \u2014 Connector lifecycle stages' },
           { page: '09', hotspot: 'result-var', label: '09 \u2014 The result variable' },
           { page: '09', hotspot: 'emit', label: '09 \u2014 emit() function' }
         ]
@@ -49,7 +49,7 @@ DIME_PAGES['09'] = {
         related: [
           { page: '09', hotspot: 'lifecycle', label: '09 \u2014 When scripts run' },
           { page: '09', hotspot: 'emit', label: '09 \u2014 emit() for multi-output' },
-          { page: '02', hotspot: 'message-format', label: '02 \u2014 MessageBoxMessage format' }
+          { page: '05', hotspot: 'message-format', label: '05 \u2014 MessageBoxMessage format' }
         ]
       }
     },
@@ -75,7 +75,7 @@ DIME_PAGES['09'] = {
         related: [
           { page: '09', hotspot: 'helpers', label: '09 \u2014 Lua vs Python helper reference' },
           { page: '09', hotspot: 'transforms', label: '09 \u2014 Basic transform examples' },
-          { page: '06', hotspot: 'connector-config', label: '06 \u2014 Connector configuration' }
+          { page: '06', hotspot: 'source-types', label: '06 \u2014 Source connector types' }
         ]
       }
     },
@@ -130,7 +130,7 @@ DIME_PAGES['09'] = {
           { page: '09', hotspot: 'helpers', label: '09 \u2014 Built-in helper functions' },
           { page: '09', hotspot: 'result-var', label: '09 \u2014 The result variable' },
           { page: '08', hotspot: 'paths', label: '08 \u2014 Message path format' },
-          { page: '12', hotspot: 'walkthrough', label: '12 \u2014 PLC walkthrough' }
+          { page: '12', hotspot: 'complete-flow', label: '12 \u2014 PLC to dashboard walkthrough' }
         ]
       }
     },
@@ -154,7 +154,7 @@ DIME_PAGES['09'] = {
           '</ul>' +
           '<p>The cache persists across scan cycles. Python can also import standard library modules: json, math, re, datetime, etc.</p>',
         related: [
-          { page: '10', hotspot: 'cache-api', label: '10 \u2014 Cache API deep dive' },
+          { page: '10', hotspot: 'cache-read', label: '10 \u2014 Cache API deep dive' },
           { page: '09', hotspot: 'emit', label: '09 \u2014 emit() function' },
           { page: '09', hotspot: 'examples', label: '09 \u2014 Practical examples' }
         ]
@@ -213,9 +213,9 @@ DIME_PAGES['09'] = {
         related: [
           { page: '09', hotspot: 'emit', label: '09 \u2014 emit() function' },
           { page: '09', hotspot: 'helpers', label: '09 \u2014 Helper functions' },
-          { page: '10', hotspot: 'cache-api', label: '10 \u2014 Cache API details' },
-          { page: '12', hotspot: 'walkthrough', label: '12 \u2014 PLC walkthrough' },
-          { page: '08', hotspot: 'paths', label: '08 \u2014 Message paths' }
+          { page: '10', hotspot: 'cache-read', label: '10 \u2014 Cache API details' },
+          { page: 'EX25', label: 'EX25 \u2014 Lua Script Basics' },
+          { page: 'EX26', label: 'EX26 \u2014 Python Scripting' }
         ]
       }
     }

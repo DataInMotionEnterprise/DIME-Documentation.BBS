@@ -25,7 +25,9 @@ DIME_PAGES['EX32'] = {
         related: [
           { page: '14', label: '14 \u2014 MQTT Connector' },
           { page: '10', label: '10 \u2014 Cache API' },
-          { page: 'EX28', label: 'EX28 \u2014 Unified Namespace' }
+          { page: 'EX28', label: 'EX28 \u2014 Unified Namespace' },
+          { page: 'REF18', label: 'REF18 \u2014 MQTT' },
+          { page: 'REF27', label: 'REF27 \u2014 Redis' }
         ]
       }
     },

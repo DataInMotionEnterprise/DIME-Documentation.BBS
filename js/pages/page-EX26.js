@@ -26,7 +26,8 @@ DIME_PAGES['EX26'] = {
           '<p>Switch from Lua to Python with a single property: <code>lang_script: python</code>.</p>',
         related: [
           { page: '09', label: '09 \u2014 Scripting (Lua & Python)' },
-          { page: 'EX01', label: 'EX01 \u2014 Basic Counter (Lua version)' }
+          { page: 'EX01', label: 'EX01 \u2014 Basic Counter (Lua version)' },
+          { page: 'REF29', label: 'REF29 \u2014 Script' }
         ]
       }
     },

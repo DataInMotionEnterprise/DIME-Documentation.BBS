@@ -25,7 +25,9 @@ DIME_PAGES['EX11'] = {
           '<p>DIME acts as the protocol bridge: no custom code needed, just YAML configuration.</p>',
         related: [
           { page: '06', label: '06 \u2014 Source Connectors' },
-          { page: 'EX12', label: 'EX12 \u2014 Secure MQTT (TLS)' }
+          { page: 'EX12', label: 'EX12 \u2014 Secure MQTT (TLS)' },
+          { page: 'REF18', label: 'REF18 \u2014 MQTT' },
+          { page: 'REF39', label: 'REF39 \u2014 WebsocketServer' }
         ]
       }
     },

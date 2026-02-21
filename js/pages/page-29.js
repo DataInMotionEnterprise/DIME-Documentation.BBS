@@ -56,7 +56,7 @@ DIME_PAGES['29'] = {
           '  - name: slow_sensor\n' +
           '    scan_interval: !!int 5000   # every 5s',
         related: [
-          { page: '20', label: '20 \u2014 Report By Exception' },
+          { page: '20', hotspot: 'execute-every', label: '20 \u2014 every throttle' },
           { page: '04', hotspot: 'source-anatomy', label: '04 \u2014 Source configuration' },
           { page: '29', hotspot: 'bottlenecks', label: 'Finding bottlenecks with $SYSTEM' }
         ]
@@ -112,7 +112,7 @@ DIME_PAGES['29'] = {
         related: [
           { page: '20', label: '20 \u2014 RBE reduces volume by 90%+' },
           { page: '29', hotspot: 'ring-buffer', label: 'Ring buffer sizing' },
-          { page: '29', hotspot: 'double-buffer', label: 'Double-buffer pattern' }
+          { page: 'EX30', label: 'EX30 \u2014 Analytics Pipeline' }
         ]
       }
     },

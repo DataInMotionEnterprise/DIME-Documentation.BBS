@@ -18,6 +18,7 @@ DIME_PAGES['05'] = {
           '<p>Each source runs on its own timer, independently. The SinkDispatcher pushes every message to every registered sink. Each sink also runs independently.</p>' +
           '<p>A fault in one connector never affects any other \u2014 full isolation by design.</p>',
         related: [
+          { page: '04', label: '04 \u2014 YAML Configuration' },
           { page: '01', hotspot: 'how-it-works', label: '01 \u2014 How it works overview' }
         ]
       }
@@ -102,6 +103,7 @@ DIME_PAGES['05'] = {
           '<li><strong>DatabaseSourceConnector</strong> \u2014 Timer fires, SQL query, maps columns to named items. Used by SQL Server (MsSql), PostgreSQL (Postgres).</li>' +
           '</ul>',
         related: [
+          { page: '06', label: '06 \u2014 Source Connector Catalog' },
           { page: '01', hotspot: 'connectors', label: '01 \u2014 30+ connector types' }
         ]
       }

@@ -25,7 +25,8 @@ DIME_PAGES['EX23'] = {
           '<p>A single-file YAML config keeps everything in one place. Only the New York item is enabled by default.</p>',
         related: [
           { page: '06', label: '06 \u2014 Source Connectors' },
-          { page: 'EX22', label: 'EX22 \u2014 JSON Web Scraper (generic REST)' }
+          { page: 'EX22', label: 'EX22 \u2014 JSON Web Scraper (generic REST)' },
+          { page: 'REF23', label: 'REF23 \u2014 NWS Weather' }
         ]
       }
     },

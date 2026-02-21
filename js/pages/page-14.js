@@ -33,7 +33,7 @@ DIME_PAGES['14'] = {
           '    token: my-influx-token',
         related: [
           { page: '07', label: '07 \u2014 Sink connectors' },
-          { page: '08', label: '08 \u2014 Filtering & routing' }
+          { page: 'EX17', label: 'EX17 \u2014 InfluxDB Pipeline' }
         ]
       }
     },
@@ -88,7 +88,7 @@ DIME_PAGES['14'] = {
           '    collection: readings',
         related: [
           { page: '07', label: '07 \u2014 Sink connectors' },
-          { page: '12', label: '12 \u2014 PLC walkthrough' }
+          { page: 'EX18', label: 'EX18 \u2014 MongoDB Pipeline' }
         ]
       }
     },
@@ -141,8 +141,8 @@ DIME_PAGES['14'] = {
           '    query: "SELECT id, value FROM sensors WHERE updated > @last_run"',
         related: [
           { page: '06', label: '06 \u2014 Source connectors' },
-          { page: '05', hotspot: 'source-types', label: '05 \u2014 Source connector types' },
-          { page: '12', label: '12 \u2014 PLC walkthrough' }
+          { page: 'EX19', label: 'EX19 \u2014 PostgreSQL Source' },
+          { page: 'EX20', label: 'EX20 \u2014 SQL Server Source' }
         ]
       }
     }

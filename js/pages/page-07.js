@@ -160,8 +160,8 @@ DIME_PAGES['07'] = {
           '<p>Add a new sink? It immediately sees every message. Remove a sink? Nothing else changes. This is fan-out, not routing.</p>' +
           '<p>The double-buffer pattern in each sink decouples receive speed from write speed \u2014 a slow sink never blocks the ring buffer or other sinks.</p>',
         related: [
-          { page: '06', label: '06 \u2014 Source connectors' },
           { page: '08', label: '08 \u2014 Filtering & routing' },
+          { page: '20', label: '20 \u2014 Report By Exception' },
           { page: '05', label: '05 \u2014 Architecture: data flow' }
         ]
       }

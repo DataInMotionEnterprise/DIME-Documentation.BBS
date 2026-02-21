@@ -24,7 +24,8 @@ DIME_PAGES['EX10'] = {
           '<p>This is the minimal OPC-DA configuration. OPC-DA (Data Access) is the original 1990s OPC standard built on Windows COM/DCOM. It is Windows-only but still widely deployed in brownfield factories running Kepware, Wonderware, RSLinx, or FactoryTalk.</p>',
         related: [
           { page: '06', label: '06 \u2014 Source Connectors' },
-          { page: 'EX08', label: 'EX08 \u2014 OPC-UA Server Sink (modern alternative)' }
+          { page: 'EX08', label: 'EX08 \u2014 OPC-UA Server Sink (modern alternative)' },
+          { page: 'REF24', label: 'REF24 \u2014 OPC-DA' }
         ]
       }
     },

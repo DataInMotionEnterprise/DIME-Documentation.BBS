@@ -25,7 +25,8 @@ DIME_PAGES['EX16'] = {
           '<p>This pattern enables centralized data collection from distributed MTConnect agents across a factory floor or multiple facilities.</p>',
         related: [
           { page: 'EX15', label: 'EX15 \u2014 MTConnect Agent Output' },
-          { page: '07', label: '07 \u2014 Sink Connectors' }
+          { page: '07', label: '07 \u2014 Sink Connectors' },
+          { page: 'REF20', label: 'REF20 \u2014 MTConnect Agent' }
         ]
       }
     },

@@ -25,7 +25,9 @@ DIME_PAGES['EX17'] = {
           '<p>Demonstrates the standard DIME fan-in pattern: multiple sources feed the same ring buffer, and all sinks consume from it independently.</p>',
         related: [
           { page: '07', label: '07 \u2014 Sink Connectors' },
-          { page: 'EX18', label: 'EX18 \u2014 MongoDB Documents' }
+          { page: 'EX18', label: 'EX18 \u2014 MongoDB Documents' },
+          { page: 'REF13', label: 'REF13 \u2014 InfluxLP' },
+          { page: 'REF07', label: 'REF07 \u2014 Ethernet/IP' }
         ]
       }
     },

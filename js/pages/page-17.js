@@ -27,7 +27,7 @@ DIME_PAGES['17'] = {
         related: [
           { page: '16', hotspot: 'status-endpoint', label: '16 \u2014 REST API /status endpoint' },
           { page: '17', hotspot: 'ws-sink', label: '17 \u2014 WebSocket Server sink' },
-          { page: '18', hotspot: 'health-check', label: '18 \u2014 Health monitoring' }
+          { page: '18', hotspot: 'states', label: '18 \u2014 Health monitoring' }
         ]
       }
     },
@@ -107,7 +107,7 @@ DIME_PAGES['17'] = {
         related: [
           { page: '17', hotspot: 'ws-sink', label: '17 \u2014 WebSocket Server sink config' },
           { page: '17', hotspot: 'self-contained', label: '17 \u2014 Self-contained setup' },
-          { page: '12', hotspot: 'plc-walkthrough', label: '12 \u2014 PLC walkthrough' }
+          { page: '12', hotspot: 'complete-flow', label: '12 \u2014 PLC to dashboard walkthrough' }
         ]
       }
     },
@@ -129,8 +129,8 @@ DIME_PAGES['17'] = {
         related: [
           { page: '17', hotspot: 'http-sink', label: '17 \u2014 WebServer sink config' },
           { page: '17', hotspot: 'ws-sink', label: '17 \u2014 WebsocketServer sink config' },
-          { page: '16', hotspot: 'hot-reconfig', label: '16 \u2014 Add sinks at runtime' },
-          { page: '19', hotspot: 'connector-ux', label: '19 \u2014 Connector UX dashboard' }
+          { page: 'EX31', label: 'EX31 \u2014 Self-Contained Dashboard' },
+          { page: 'EX02', label: 'EX02 \u2014 CNC WebSocket Dashboard' }
         ]
       }
     }

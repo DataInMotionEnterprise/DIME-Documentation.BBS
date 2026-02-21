@@ -28,8 +28,8 @@ DIME_PAGES['08'] = {
           '<p>With <code>itemized_read: true</code>, each item gets its own path and message. With <code>itemized_read: false</code> (default), all items arrive as one bulk message.</p>' +
           '<p>Sinks use <strong>regex</strong> against these paths to decide what to accept or reject.</p>',
         related: [
-          { page: '02', hotspot: 'message-format', label: '02 \u2014 MessageBoxMessage format' },
-          { page: '04', hotspot: 'items', label: '04 \u2014 Configuring items' }
+          { page: '05', hotspot: 'message-format', label: '05 \u2014 MessageBoxMessage format' },
+          { page: '04', hotspot: 'item-anatomy', label: '04 \u2014 Configuring items' }
         ]
       }
     },
@@ -50,6 +50,7 @@ DIME_PAGES['08'] = {
           '</ul>' +
           '<p>These messages flow through the ring buffer like any other data. Sinks receive them unless explicitly excluded with <code>exclude_filter</code>.</p>',
         related: [
+          { page: '18', hotspot: 'system-msgs', label: '18 \u2014 $SYSTEM message details' },
           { page: '05', hotspot: 'admin-server', label: '05 \u2014 Admin server monitoring' },
           { page: '08', hotspot: 'exclude-filter', label: '08 \u2014 Excluding $SYSTEM messages' }
         ]
@@ -79,9 +80,9 @@ DIME_PAGES['08'] = {
           '      - "debug/.*"',
         related: [
           { page: '08', hotspot: 'include-filter', label: '08 \u2014 Include filter (whitelist)' },
-          { page: '07', hotspot: 'sinks', label: '07 \u2014 Sink configuration' },
-          { page: '20', hotspot: 'rbe', label: '20 \u2014 Report By Exception' },
-          { page: '04', hotspot: 'yaml-basics', label: '04 \u2014 YAML basics' }
+          { page: '07', hotspot: 'fanout', label: '07 \u2014 Sink fan-out' },
+          { page: '20', hotspot: 'connector-rbe', label: '20 \u2014 Report By Exception' },
+          { page: '04', hotspot: 'sink-anatomy', label: '04 \u2014 Sink configuration' }
         ]
       }
     },
@@ -111,7 +112,7 @@ DIME_PAGES['08'] = {
           { page: '08', hotspot: 'exclude-filter', label: '08 \u2014 Exclude filter (blacklist)' },
           { page: '08', hotspot: 'paths', label: '08 \u2014 Message path format' },
           { page: '05', hotspot: 'data-flow', label: '05 \u2014 Data flow architecture' },
-          { page: '04', hotspot: 'yaml-basics', label: '04 \u2014 YAML basics' }
+          { page: '04', hotspot: 'sink-anatomy', label: '04 \u2014 Sink configuration' }
         ]
       }
     },
@@ -139,7 +140,7 @@ DIME_PAGES['08'] = {
           '    # instead of "plc1/temperature"',
         related: [
           { page: '08', hotspot: 'paths', label: '08 \u2014 Message path format' },
-          { page: '07', hotspot: 'sinks', label: '07 \u2014 Sink connector types' }
+          { page: '07', hotspot: 'fanout', label: '07 \u2014 Sink fan-out' }
         ]
       }
     }

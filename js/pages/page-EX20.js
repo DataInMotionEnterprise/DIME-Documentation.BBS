@@ -25,7 +25,8 @@ DIME_PAGES['EX20'] = {
           '<p>Compare with EX19 (PostgreSQL) which adds dynamic query parameterization. This example is intentionally minimal to show the simplest database polling pattern.</p>',
         related: [
           { page: '06', label: '06 \u2014 Source Connectors' },
-          { page: 'EX19', label: 'EX19 \u2014 PostgreSQL Polling' }
+          { page: 'EX19', label: 'EX19 \u2014 PostgreSQL Polling' },
+          { page: 'REF19', label: 'REF19 \u2014 MSSQL' }
         ]
       }
     },

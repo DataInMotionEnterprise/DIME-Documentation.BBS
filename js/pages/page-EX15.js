@@ -25,7 +25,8 @@ DIME_PAGES['EX15'] = {
           '<p>The agent automatically constructs the MTConnect device model XML from the <code>sink.mtconnect</code> annotations on each item \u2014 no separate Devices.xml file is needed.</p>',
         related: [
           { page: '07', label: '07 \u2014 Sink Connectors' },
-          { page: 'EX16', label: 'EX16 \u2014 MTConnect Aggregation' }
+          { page: 'EX16', label: 'EX16 \u2014 MTConnect Aggregation' },
+          { page: 'REF20', label: 'REF20 \u2014 MTConnect Agent' }
         ]
       }
     },
