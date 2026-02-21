@@ -120,6 +120,19 @@
   color: var(--cyan-dim);
 }
 
+#chat-token-bar .chat-cost {
+  color: var(--amber);
+  font-weight: bold;
+}
+
+#chat-token-bar .chat-be {
+  color: var(--amber-dim);
+}
+
+#chat-token-bar .chat-be-ok {
+  color: var(--cyan);
+}
+
 /* === Messages === */
 #chat-messages {
   flex: 1;
@@ -492,7 +505,8 @@
   margin-bottom: 6px;
 }
 
-#chat-key-input {
+#chat-key-input,
+#chat-ttl-input {
   flex: 1;
   background: transparent;
   border: 1px solid var(--border);
@@ -502,6 +516,10 @@
   padding: 6px 8px;
   outline: none;
   caret-color: var(--cyan);
+}
+
+#chat-ttl-input {
+  max-width: 120px;
 }
 
 #chat-key-toggle {

@@ -14,6 +14,7 @@
   var scriptModal = null;
   var importModal = null;
   var importFiles = [];  // {name, text} array for Upload tab
+  var dimeUrl = localStorage.getItem('dime-playground-url') || 'http://localhost:9999';
 
   // Fields handled in dedicated sections (skip in type-specific rendering)
   var BASE_FIELDS = [
@@ -1285,6 +1286,83 @@
     });
   }
 
+  // ── DIME Instance Connection ──────────────────────────────────
+
+  var receiveBtn, sendBtn;
+
+  function promptDimeUrl(action) {
+    var url = prompt('DIME instance URL:', dimeUrl);
+    if (url === null) return null; // cancelled
+    url = url.trim().replace(/\/+$/, '');
+    if (!url) return null;
+    dimeUrl = url;
+    localStorage.setItem('dime-playground-url', dimeUrl);
+    return dimeUrl;
+  }
+
+  function flashBtn(btn, text, ms) {
+    var orig = btn.textContent;
+    btn.textContent = text;
+    btn.disabled = true;
+    setTimeout(function () { btn.textContent = orig; btn.disabled = false; }, ms || 2000);
+  }
+
+  function showDimeError(msg) {
+    if (errorsEl) {
+      errorsEl.textContent = msg;
+      errorsEl.style.display = 'block';
+    }
+  }
+
+  function receiveFromDime() {
+    var url = promptDimeUrl();
+    if (!url) return;
+    flashBtn(receiveBtn, 'Loading...', 10000);
+    fetch(url + '/config/yaml')
+      .then(function (resp) {
+        if (!resp.ok) throw new Error('HTTP ' + resp.status);
+        return resp.text();
+      })
+      .then(function (yaml) {
+        if (!yaml || !yaml.trim()) {
+          showDimeError('DIME returned empty configuration.');
+          flashBtn(receiveBtn, 'Empty', 2000);
+          return;
+        }
+        loadFromYaml(yaml);
+        flashBtn(receiveBtn, 'Received!', 1500);
+      })
+      .catch(function (err) {
+        showDimeError('Cannot reach DIME at ' + url + ' \u2014 ' + err.message);
+        flashBtn(receiveBtn, 'Failed', 2000);
+      });
+  }
+
+  function sendToDime() {
+    var yaml = yamlPre.getAttribute('data-raw') || yamlPre.textContent;
+    if (!yaml || !yaml.trim()) return;
+    var url = promptDimeUrl();
+    if (!url) return;
+    flashBtn(sendBtn, 'Sending...', 10000);
+    fetch(url + '/config/yaml', {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain' },
+      body: yaml
+    })
+      .then(function (resp) {
+        if (!resp.ok) throw new Error('HTTP ' + resp.status);
+        return fetch(url + '/config/reload', { method: 'POST' });
+      })
+      .then(function (resp) {
+        if (!resp.ok) throw new Error('Reload failed: HTTP ' + resp.status);
+        flashBtn(sendBtn, 'Sent!', 1500);
+      })
+      .catch(function (err) {
+        showDimeError('Cannot reach DIME at ' + url + ' \u2014 ' + err.message);
+        flashBtn(sendBtn, 'Failed', 2000);
+      });
+  }
+
   // ── Init ───────────────────────────────────────────────────────
 
   var toChatBtn, importBtn;
@@ -1297,6 +1375,8 @@
     importBtn = document.getElementById('pg-import-btn');
     copyBtn = document.getElementById('pg-copy');
     toChatBtn = document.getElementById('pg-to-chat');
+    receiveBtn = document.getElementById('pg-receive');
+    sendBtn = document.getElementById('pg-send');
     sourceList = document.getElementById('pg-source-list');
     sinkList = document.getElementById('pg-sink-list');
     addSourceBtn = document.getElementById('pg-add-source');
@@ -1311,6 +1391,8 @@
     closeBtn.addEventListener('click', closePlayground);
     copyBtn.addEventListener('click', copyYaml);
     toChatBtn.addEventListener('click', sendToChat);
+    if (receiveBtn) receiveBtn.addEventListener('click', receiveFromDime);
+    if (sendBtn) sendBtn.addEventListener('click', sendToDime);
     importBtn.addEventListener('click', function () { openImportModal(); });
     validateBtn.addEventListener('click', function () { renderValidation(validate()); });
     addSourceBtn.addEventListener('click', function () { addConnector(false); });

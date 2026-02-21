@@ -154,6 +154,8 @@
     var blockLines = [];
     var inSinkOverride = '';
     var nextId = 1;
+    var listKey = '';       // key collecting bare list items (e.g. exclude_filter)
+    var listTarget = null;  // object the list is being attached to
 
     function flushBlock() {
       if (blockKey && current) {
@@ -163,6 +165,23 @@
       blockKey = '';
       blockIndent = -1;
       blockLines = [];
+    }
+
+    function flushList() {
+      listKey = '';
+      listTarget = null;
+    }
+
+    // Strip !!type tags and coerce values
+    function coerceVal(v) {
+      var tagMatch = v.match(/^!!(bool|int|float|str)\s+(.*)/);
+      if (!tagMatch) return v;
+      var tag = tagMatch[1];
+      var rest = tagMatch[2];
+      if (tag === 'bool') return /^true$/i.test(rest);
+      if (tag === 'int') return parseInt(rest, 10);
+      if (tag === 'float') return parseFloat(rest);
+      return rest; // !!str
     }
 
     for (var i = 0; i < lines.length; i++) {
@@ -180,6 +199,17 @@
         continue;
       }
       if (blockKey) flushBlock();
+
+      // Collect bare list items: "- value" lines for a pending list key
+      if (listKey && listTarget) {
+        var bareItem = trimmed.match(/^-\s+(.+)$/);
+        if (bareItem && !trimmed.match(/^- [a-zA-Z_]\w*:\s/)) {
+          var itemVal = bareItem[1].replace(/\s+#.*$/, '').replace(/^['"]|['"]$/g, '');
+          listTarget[listKey].push(itemVal);
+          continue;
+        }
+        flushList();
+      }
 
       if (indent === 0 && trimmed === 'sources:') { section = 'sources'; inItems = false; current = null; connIndent = -1; continue; }
       if (indent === 0 && trimmed === 'sinks:') { section = 'sinks'; inItems = false; current = null; connIndent = -1; continue; }
@@ -235,6 +265,11 @@
       var key = kv[1];
       var val = kv[2];
 
+      // Strip inline comments (but not inside quoted strings)
+      if (!/^['"]/.test(val)) {
+        val = val.replace(/\s+#.*$/, '');
+      }
+
       if (val === '|' || val === '>' || val === '|-' || val === '>-') {
         blockKey = key;
         blockIndent = indent;
@@ -246,6 +281,18 @@
       }
 
       val = val.replace(/^['"]|['"]$/g, '');
+
+      // Empty value → start collecting bare list items on next lines
+      // Skip known nested-object keys that aren't lists
+      if (val === '' && current && key !== 'sink' && key !== 'items') {
+        var target = (inItems && currentItem) ? currentItem : current;
+        target[key] = [];
+        listKey = key;
+        listTarget = target;
+        continue;
+      }
+
+      val = coerceVal(val);
 
       if (inItems && currentItem) {
         if (inSinkOverride === 'mtconnect') {
@@ -275,6 +322,7 @@
       }
     }
     flushBlock();
+    flushList();
     return result;
   }
 

@@ -84,6 +84,9 @@
       <button id="pg-import-btn" title="Import YAML configuration">Import</button>
       <button id="pg-copy" title="Copy YAML to clipboard">Copy</button>
       <button id="pg-to-chat" title="Send YAML to Chat for AI review">&#x2192; Chat</button>
+      <span class="pg-sep"></span>
+      <button id="pg-receive" title="Receive YAML from running DIME instance">&#x2193; Receive</button>
+      <button id="pg-send" title="Send YAML to running DIME instance">&#x2191; Send</button>
       <button id="pg-close" title="Close playground">&times;</button>
     </div>
     <div id="pg-body">
@@ -141,6 +144,11 @@
           <button id="chat-key-toggle">Show</button>
         </div>
         <div class="chat-key-note">Stored in your browser only. Get a key at aistudio.google.com</div>
+        <label class="chat-settings-label">Cache TTL (seconds)</label>
+        <div class="chat-key-row">
+          <input id="chat-ttl-input" type="number" min="300" max="86400" step="300" placeholder="3600" autocomplete="off" spellcheck="false">
+        </div>
+        <div class="chat-key-note">How long Gemini caches docs before re-sending (300–86400). Default 3600.</div>
         <div class="chat-settings-actions">
           <button id="chat-key-save">Save</button>
           <button id="chat-key-cancel">Cancel</button>
@@ -283,6 +291,7 @@
   <!-- Playground -->
   <script src="js/playground.js"></script>
   <!-- Chat -->
+  <script src="js/gemini-pricing.js"></script>
   <script src="js/chat.js"></script>
   <!-- Terminal -->
   <script src="js/terminal.js"></script>

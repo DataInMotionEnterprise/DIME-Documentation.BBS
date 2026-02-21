@@ -57,6 +57,25 @@
   border-color: var(--amber);
 }
 
+#pg-header .pg-sep {
+  width: 1px;
+  height: 18px;
+  background: var(--border);
+  flex-shrink: 0;
+}
+
+#pg-receive,
+#pg-send {
+  color: var(--cyan-dim) !important;
+  border-color: var(--cyan-dim) !important;
+}
+
+#pg-receive:hover,
+#pg-send:hover {
+  color: var(--cyan) !important;
+  border-color: var(--cyan) !important;
+}
+
 /* === Body === */
 #pg-body {
   flex: 1;

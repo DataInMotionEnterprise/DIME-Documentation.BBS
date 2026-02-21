@@ -28,9 +28,11 @@
     '- If you are unsure about something, say so rather than guessing.';
 
   // ── State ──────────────────────────────────────────────────────
+  var DEFAULT_TTL = 3600;
   var apiKey = localStorage.getItem('dime-gemini-key') || '';
   var chatHistory = loadHistory();
   var selectedModel = localStorage.getItem('dime-chat-model') || MODELS[0].id;
+  var cacheTtl = parseInt(localStorage.getItem('dime-chat-ttl'), 10) || DEFAULT_TTL;
   var llmsContent = null;
   var cacheName = null;
   var cacheModel = null;
@@ -39,6 +41,8 @@
   var stagedFiles = []; // [{ name, base64, mimeType }, ...]
   var MAX_FILES = 5;
   var lastUsage = null; // latest usageMetadata from Gemini API
+  var sessionCost = 0;  // accumulated estimated cost in USD
+  var cacheMsgCount = 0; // messages sent since cache creation
 
   // Build valid page ID set
   var validPageIds = {};
@@ -261,7 +265,7 @@
   // ── DOM refs (set during init) ─────────────────────────────────
   var bubble, pane, resizeHandle, messagesEl, tokenBar;
   var chatInput, sendBtn, modelSelect, newBtn, settingsBtn, closeBtn;
-  var settingsEl, keyInput, keyToggle, keySave, keyCancel;
+  var settingsEl, keyInput, keyToggle, keySave, keyCancel, ttlInput;
   var attachBtn, fileInput, filePreview;
 
   // ── UI: Toggle pane ────────────────────────────────────────────
@@ -306,6 +310,7 @@
   // ── UI: Settings ───────────────────────────────────────────────
   function openSettings() {
     keyInput.value = apiKey;
+    ttlInput.value = cacheTtl;
     settingsEl.classList.add('open');
     keyInput.focus();
   }
@@ -317,6 +322,14 @@
   function saveSettings() {
     apiKey = keyInput.value.trim();
     localStorage.setItem('dime-gemini-key', apiKey);
+    var newTtl = Math.max(300, Math.min(86400, parseInt(ttlInput.value, 10) || DEFAULT_TTL));
+    if (newTtl !== cacheTtl) {
+      cacheTtl = newTtl;
+      localStorage.setItem('dime-chat-ttl', String(cacheTtl));
+      cacheName = null;
+      cacheModel = null;
+      updateTokenBar();
+    }
     closeSettings();
   }
 
@@ -422,7 +435,7 @@
             { role: 'user', parts: [{ text: 'Here is the complete DIME documentation for reference:\n\n' + docs }] },
             { role: 'model', parts: [{ text: 'I have the complete DIME documentation loaded. I can help you understand DIME concepts, write YAML configurations, troubleshoot setups, and answer any questions about the platform. What would you like to know?' }] }
           ],
-          ttl: '3600s'
+          ttl: cacheTtl + 's'
         }),
         signal: signal
       });
@@ -436,6 +449,15 @@
     }).then(function (data) {
       cacheName = data.name;
       cacheModel = selectedModel;
+      cacheMsgCount = 0;
+      // Add cache storage cost for the TTL window
+      var pricing = window.GEMINI_PRICING && window.GEMINI_PRICING[selectedModel];
+      if (pricing && data.usageMetadata) {
+        var cacheTokens = data.usageMetadata.totalTokenCount || 0;
+        var hours = cacheTtl / 3600;
+        sessionCost += (cacheTokens * pricing.storage * hours) / 1e6;
+        updateTokenBar();
+      }
       return cacheName;
     });
   }
@@ -689,6 +711,8 @@
 
       addCopyResponseButtons();
       scrollToBottom();
+      cacheMsgCount++;
+      sessionCost += calcCost(lastUsage);
       updateTokenBar();
     }).catch(function (err) {
       // Clean up thinking effects and status
@@ -754,6 +778,8 @@
     cacheName = null;
     cacheModel = null;
     lastUsage = null;
+    sessionCost = 0;
+    cacheMsgCount = 0;
     messagesEl.innerHTML = '';
     addWelcomeMessage();
     updateTokenBar();
@@ -819,11 +845,46 @@
     return String(n);
   }
 
+  function formatCost(usd) {
+    if (usd < 0.01) return '<$0.01';
+    return '$' + usd.toFixed(2);
+  }
+
+  function calcCost(usage) {
+    var pricing = window.GEMINI_PRICING && window.GEMINI_PRICING[selectedModel];
+    if (!pricing || !usage) return 0;
+    var cachedTokens = usage.cachedContentTokenCount || 0;
+    var uncachedInput = (usage.promptTokenCount || 0) - cachedTokens;
+    var outputTokens = (usage.candidatesTokenCount || 0) + (usage.thoughtsTokenCount || 0);
+    return (uncachedInput * pricing.input + cachedTokens * pricing.cache + outputTokens * pricing.output) / 1e6;
+  }
+
+  // Breakeven: msgs needed for cache savings to exceed storage cost.
+  // storage_rate * hours / (input_rate - cache_rate)  — token count cancels out.
+  function calcBreakeven() {
+    var pricing = window.GEMINI_PRICING && window.GEMINI_PRICING[selectedModel];
+    if (!pricing || !cacheName) return 0;
+    var savings = pricing.input - pricing.cache;
+    if (savings <= 0) return 0;
+    var hours = cacheTtl / 3600;
+    return Math.ceil((pricing.storage * hours) / savings);
+  }
+
+  function breakevenText() {
+    var be = calcBreakeven();
+    if (!be) return '';
+    if (cacheMsgCount >= be) {
+      return ' · <span class="chat-be chat-be-ok">\u2713 breakeven</span>';
+    }
+    var remaining = be - cacheMsgCount;
+    return ' · <span class="chat-be">' + remaining + ' msg' + (remaining > 1 ? 's' : '') + ' to breakeven</span>';
+  }
+
   function updateTokenBar() {
     if (!tokenBar) return;
     var cacheStatus = cacheName
-      ? '<span class="cached">● cached</span>'
-      : '○ not cached';
+      ? '<span class="cached">\u25CF cached</span>'
+      : '\u25CB not cached';
 
     if (lastUsage) {
       var prompt = formatTokens(lastUsage.promptTokenCount || 0);
@@ -832,14 +893,20 @@
         : '';
       var resp = formatTokens(lastUsage.candidatesTokenCount || 0);
       var thought = lastUsage.thoughtsTokenCount
-        ? ' · ' + formatTokens(lastUsage.thoughtsTokenCount) + ' thinking'
+        ? ' \u00B7 ' + formatTokens(lastUsage.thoughtsTokenCount) + ' thinking'
         : '';
-      tokenBar.innerHTML = cacheStatus + ' · ' + prompt + ' prompt' + cached +
-        ' · ' + resp + ' response' + thought;
+      var costText = sessionCost > 0
+        ? ' \u00B7 <span class="chat-cost">' + formatCost(sessionCost) + '</span>'
+        : '';
+      tokenBar.innerHTML = cacheStatus + ' \u00B7 ' + prompt + ' prompt' + cached +
+        ' \u00B7 ' + resp + ' response' + thought + costText + breakevenText();
     } else {
       var tokens = estimateTokens();
-      var tokenText = tokens > 0 ? ' · ~' + formatTokens(tokens) + ' conversation tokens' : '';
-      tokenBar.innerHTML = cacheStatus + tokenText;
+      var tokenText = tokens > 0 ? ' \u00B7 ~' + formatTokens(tokens) + ' conversation tokens' : '';
+      var costText2 = sessionCost > 0
+        ? ' \u00B7 <span class="chat-cost">' + formatCost(sessionCost) + '</span>'
+        : '';
+      tokenBar.innerHTML = cacheStatus + tokenText + costText2 + breakevenText();
     }
   }
 
@@ -901,6 +968,7 @@
     keyToggle    = document.getElementById('chat-key-toggle');
     keySave      = document.getElementById('chat-key-save');
     keyCancel    = document.getElementById('chat-key-cancel');
+    ttlInput     = document.getElementById('chat-ttl-input');
     tokenBar     = document.getElementById('chat-token-bar');
     attachBtn    = document.getElementById('chat-attach');
     fileInput    = document.getElementById('chat-file-input');
