@@ -557,14 +557,19 @@
   }
 
   // ── DIME instance helpers ─────────────────────────────────────
-  // Normalize camelCase keys (System.Text.Json) to PascalCase (C# property names)
+  // Normalize camelCase keys (System.Text.Json) to PascalCase (C# property names), recursively
   function normalizeToPascal(obj) {
     if (!obj || typeof obj !== 'object') return obj;
+    if (Array.isArray(obj)) {
+      var arr = [];
+      for (var i = 0; i < obj.length; i++) arr.push(normalizeToPascal(obj[i]));
+      return arr;
+    }
     var out = {};
     for (var k in obj) {
       if (!obj.hasOwnProperty(k)) continue;
       var pk = k.charAt(0).toUpperCase() + k.slice(1);
-      out[pk] = obj[k];
+      out[pk] = normalizeToPascal(obj[k]);
     }
     return out;
   }
@@ -1525,6 +1530,62 @@
       cancelStream = function () {
         clearInterval(interval);
       };
+    }
+  });
+
+  // ── errors ─────────────────────────────────────────────────────
+  registerCommand('errors', {
+    description: 'Show recent errors from connectors',
+    usage: 'errors [connector-name]',
+    category: 'Remote',
+    fn: function (args) {
+      if (!requireConnection()) return;
+
+      refreshStatus()
+        .then(function (status) {
+          var names = Object.keys(status);
+          if (names.length === 0) {
+            writeDim('No connector status data.');
+            return;
+          }
+
+          // Filter to specific connector if given
+          if (args.length > 0) {
+            var name = args[0];
+            if (!status[name]) {
+              writeError('Connector not found: ' + name);
+              writeDim('Available: ' + names.join(', '));
+              return;
+            }
+            names = [name];
+          }
+
+          var totalErrors = 0;
+          for (var i = 0; i < names.length; i++) {
+            var s = status[names[i]];
+            var errors = s.RecentErrors && s.RecentErrors.Items ? s.RecentErrors.Items : [];
+            if (errors.length === 0) continue;
+
+            totalErrors += errors.length;
+            writeHeading(names[i] + ' (' + errors.length + ' error' + (errors.length !== 1 ? 's' : '') + ')');
+            for (var j = 0; j < errors.length; j++) {
+              var e = errors[j];
+              var ts = e.Timestamp ? new Date(e.Timestamp).toLocaleTimeString() : '';
+              writeError('  ' + ts + '  ' + (e.Message || ''));
+            }
+            writeLine('');
+          }
+
+          if (totalErrors === 0) {
+            writeLine('No recent errors across ' + names.length + ' connector' + (names.length !== 1 ? 's' : '') + '.', 'term-line-success');
+          }
+        })
+        .catch(function (err) {
+          writeError('Failed to fetch status: ' + err.message);
+        });
+    },
+    complete: function (partial) {
+      return completeConnectorNames(partial);
     }
   });
 
