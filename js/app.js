@@ -300,7 +300,7 @@
     if (cfg.yaml) {
       panelYaml.innerHTML =
         '<span class="yaml-label">Example <button class="copy-yaml-btn">Copy</button></span>' +
-        '<pre>' + escapeHtml(cfg.yaml) + '</pre>';
+        '<pre>' + window.DIME_HL.highlightYaml(cfg.yaml) + '</pre>';
       var yamlBtn = panelYaml.querySelector('.copy-yaml-btn');
       yamlBtn.addEventListener('click', function () {
         copyToClipboard(cfg.yaml, yamlBtn);

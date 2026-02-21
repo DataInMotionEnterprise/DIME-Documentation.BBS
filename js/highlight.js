@@ -84,7 +84,25 @@
     for (var i = 0; i < lines.length; i++) {
       var raw = lines[i];
 
-      if (raw.trim() === '') { out.push(''); inBlock = false; isScript = false; continue; }
+      if (raw.trim() === '') {
+        if (inBlock) {
+          // Blank line inside a block scalar — peek ahead to see if the block continues
+          var nextNonEmpty = -1;
+          for (var j = i + 1; j < lines.length; j++) {
+            if (lines[j].trim() !== '') { nextNonEmpty = j; break; }
+          }
+          if (nextNonEmpty !== -1 && lines[nextNonEmpty].match(/^(\s*)/)[1].length > blockIndent) {
+            // Block continues after blank line(s)
+            out.push('');
+            continue;
+          }
+          // Block ends
+          inBlock = false;
+          isScript = false;
+        }
+        out.push('');
+        continue;
+      }
 
       if (inBlock) {
         var spaces = raw.match(/^(\s*)/)[1].length;

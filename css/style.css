@@ -479,6 +479,19 @@ kbd {
   font-family: var(--font);
   white-space: pre;
 }
+#panel-yaml .y-key     { color: var(--cyan); }
+#panel-yaml .y-colon   { color: var(--amber-dim); }
+#panel-yaml .y-str     { color: var(--amber); }
+#panel-yaml .y-num     { color: #f8a; }
+#panel-yaml .y-bool    { color: #f8a; }
+#panel-yaml .y-bullet  { color: var(--cyan-dim); }
+#panel-yaml .y-pipe    { color: var(--cyan-dim); }
+#panel-yaml .y-comment { color: var(--amber-dim); font-style: italic; }
+#panel-yaml .y-tag     { color: #c9a; }
+#panel-yaml .y-kw      { color: var(--cyan); }
+#panel-yaml .y-cmt     { color: var(--amber-dim); font-style: italic; }
+#panel-yaml .y-slit    { color: var(--amber); }
+
 
 /* === Panel Related === */
 #panel-related {

@@ -226,6 +226,19 @@
   color: var(--cyan);
 }
 
+.pg-field textarea.pg-obj-input {
+  flex: 1;
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--amber);
+  font-family: var(--font);
+  font-size: 11px;
+  padding: 2px 6px;
+  outline: none;
+  caret-color: var(--cyan);
+  min-width: 0;
+  resize: vertical;
+}
 .pg-field input[type="text"],
 .pg-field input[type="number"] {
   flex: 1;

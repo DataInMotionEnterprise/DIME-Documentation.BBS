@@ -880,6 +880,27 @@
       num.addEventListener('input', function (e) { onChange(e.target.value); });
       num.addEventListener('keydown', function (e) { e.stopPropagation(); });
       row.appendChild(num);
+    } else if (propDef.type === 'object') {
+      var ta = document.createElement('textarea');
+      ta.className = 'pg-obj-input';
+      ta.rows = 3;
+      var lines = [];
+      if (value && typeof value === 'object') {
+        for (var ok in value) lines.push(ok + ': ' + value[ok]);
+      }
+      ta.value = lines.join('\n');
+      ta.placeholder = propDef.description || 'key: value (one per line)';
+      ta.addEventListener('input', function (e) {
+        var obj = {};
+        var ls = e.target.value.split('\n');
+        for (var li = 0; li < ls.length; li++) {
+          var parts = ls[li].match(/^([^:]+):\s*(.*)$/);
+          if (parts) obj[parts[1].trim()] = parts[2].trim();
+        }
+        onChange(obj);
+      });
+      ta.addEventListener('keydown', function (e) { e.stopPropagation(); });
+      row.appendChild(ta);
     } else {
       var inp = document.createElement('input');
       inp.type = 'text';
@@ -1001,7 +1022,15 @@
       if (_cache.baseKeys[key]) continue;
       var val = conn[key];
       if (val === undefined || val === '') continue;
-      y.push(I2 + key + ': ' + yamlVal(val, props[key]));
+      if (props[key].type === 'object' && val && typeof val === 'object') {
+        y.push(I2 + key + ':');
+        for (var ok in val) {
+          if (val[ok] !== undefined && val[ok] !== '')
+            y.push(I2 + '  ' + ok + ': ' + yamlStr(String(val[ok])));
+        }
+      } else {
+        y.push(I2 + key + ': ' + yamlVal(val, props[key]));
+      }
     }
 
     if (!isSink) {
