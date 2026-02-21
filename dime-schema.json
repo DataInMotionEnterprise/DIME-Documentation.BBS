@@ -145,6 +145,49 @@
               "description": "OPC-UA Node path",
               "default": "ns=2;s=Device1.Tag1;t=int"
             },
+            "i3x": {
+              "type": "object",
+              "description": "I3X object metadata for contextualizing data in the I3X graph",
+              "properties": {
+                "elementId": {
+                  "type": "string",
+                  "description": "Unique identifier for the I3X object instance"
+                },
+                "typeId": {
+                  "type": "string",
+                  "description": "Type definition ID (e.g., equipment-type, job-type)"
+                },
+                "parentId": {
+                  "type": "string",
+                  "description": "Parent object element ID for hierarchical composition"
+                },
+                "namespace": {
+                  "type": "string",
+                  "description": "Namespace URI for the object (e.g., http://i3x.net/mfg/equipment)",
+                  "format": "uri"
+                },
+                "name": {
+                  "type": "string",
+                  "description": "Human-readable display name for the object"
+                },
+                "attribute": {
+                  "type": "string",
+                  "description": "The specific attribute on the I3X object that this item's value updates"
+                },
+                "relationships": {
+                  "type": "object",
+                  "description": "Map of relationship type names to arrays of target element IDs",
+                  "additionalProperties": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                }
+              },
+              "additionalProperties": true,
+              "required": ["elementId", "typeId", "attribute"]
+            },
             "transform": {
               "type": "object",
               "properties": {

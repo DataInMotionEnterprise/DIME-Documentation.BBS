@@ -393,8 +393,7 @@
         return;
       }
 
-      var resolved = window.DIME_HL.resolveAnchors(yamlText);
-      var parsed = window.DIME_HL.parseYaml(resolved);
+      var parsed = window.DIME_HL.parseYaml(yamlText);
       var totalConnectors = parsed.sources.length + parsed.sinks.length;
 
       if (totalConnectors === 0) {
@@ -427,7 +426,7 @@
         }
 
         close();
-        loadFromYaml(resolved);
+        loadFromYaml(yamlText);
 
         if (skipped.length > 0) {
           showStatus('Imported with ' + skipped.length + ' skipped (unknown type): ' + skipped.join(', '), true);

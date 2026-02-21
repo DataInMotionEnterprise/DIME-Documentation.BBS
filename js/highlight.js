@@ -138,301 +138,70 @@
     return out.join('\n');
   }
 
-  // ── YAML Parser (DIME config subset) ──────────────────────────
+  // ── YAML Parser (delegates to js-yaml) ────────────────────────
 
   function parseYaml(text) {
-    var lines = text.split('\n');
     var result = { sources: [], sinks: [] };
-    var section = '';
-    var connIndent = -1;
-    var current = null;
-    var inItems = false;
-    var itemsIndent = -1;
-    var currentItem = null;
-    var blockKey = '';
-    var blockIndent = -1;
-    var blockLines = [];
-    var inSinkOverride = '';
+    var doc;
+    try {
+      doc = jsyaml.load(text);
+    } catch (e) {
+      return result;
+    }
+    if (!doc || typeof doc !== 'object') return result;
+
     var nextId = 1;
-    var listKey = '';       // key collecting bare list items (e.g. exclude_filter)
-    var listTarget = null;  // object the list is being attached to
 
-    function flushBlock() {
-      if (blockKey && current) {
-        var target = inItems && currentItem ? currentItem : current;
-        target[blockKey] = blockLines.join('\n');
+    function normalizeSink(item) {
+      if (!item.sink || typeof item.sink !== 'object') {
+        item.sink = {};
+        return;
       }
-      blockKey = '';
-      blockIndent = -1;
-      blockLines = [];
-    }
-
-    function flushList() {
-      listKey = '';
-      listTarget = null;
-    }
-
-    // Strip !!type tags and coerce values
-    function coerceVal(v) {
-      var tagMatch = v.match(/^!!(bool|int|float|str)\s+(.*)/);
-      if (!tagMatch) return v;
-      var tag = tagMatch[1];
-      var rest = tagMatch[2];
-      if (tag === 'bool') return /^true$/i.test(rest);
-      if (tag === 'int') return parseInt(rest, 10);
-      if (tag === 'float') return parseFloat(rest);
-      return rest; // !!str
-    }
-
-    for (var i = 0; i < lines.length; i++) {
-      var raw = lines[i];
-      var trimmed = raw.trim();
-      var indent = raw.match(/^(\s*)/)[1].length;
-
-      if (trimmed === '' || trimmed.charAt(0) === '#') {
-        if (blockKey && indent > blockIndent) blockLines.push(raw.substring(blockIndent + 2));
-        continue;
+      // Flatten mtconnect: {path: "..."} → mtconnect: "..."
+      if (item.sink.mtconnect && typeof item.sink.mtconnect === 'object') {
+        item.sink.mtconnect = item.sink.mtconnect.path || '';
       }
-
-      if (blockKey && indent > blockIndent) {
-        blockLines.push(raw.substring(blockIndent + 2));
-        continue;
+      // Flatten opcua: {path: "..."} → opcua: "..."
+      if (item.sink.opcua && typeof item.sink.opcua === 'object') {
+        item.sink.opcua = item.sink.opcua.path || '';
       }
-      if (blockKey) flushBlock();
-
-      // Collect bare list items: "- value" lines for a pending list key
-      if (listKey && listTarget) {
-        var bareItem = trimmed.match(/^-\s+(.+)$/);
-        if (bareItem && !trimmed.match(/^- [a-zA-Z_]\w*:\s/)) {
-          var itemVal = bareItem[1].replace(/\s+#.*$/, '').replace(/^['"]|['"]$/g, '');
-          listTarget[listKey].push(itemVal);
-          continue;
-        }
-        flushList();
-      }
-
-      if (indent === 0 && trimmed === 'sources:') { section = 'sources'; inItems = false; current = null; connIndent = -1; continue; }
-      if (indent === 0 && trimmed === 'sinks:') { section = 'sinks'; inItems = false; current = null; connIndent = -1; continue; }
-      if (indent === 0 && trimmed === 'app:') { section = 'app'; continue; }
-      if (section === 'app') continue;
-      if (section !== 'sources' && section !== 'sinks') continue;
-
-      var listKv = trimmed.match(/^- ([a-zA-Z_]\w*):\s*(.*)$/);
-
-      if (listKv && listKv[1] === 'name') {
-        if (inItems && connIndent >= 0 && indent > connIndent) {
-          flushBlock();
-          inSinkOverride = '';
-          currentItem = { name: listKv[2].replace(/^['"]|['"]$/g, '') };
-          current.items.push(currentItem);
-          continue;
-        }
-        flushBlock();
-        inItems = false;
-        inSinkOverride = '';
-        currentItem = null;
-        connIndent = indent;
-        current = { _id: nextId++, name: listKv[2].replace(/^['"]|['"]$/g, ''), items: [] };
-        result[section].push(current);
-        continue;
-      }
-
-      if (listKv && inItems && currentItem) {
-        currentItem[listKv[1]] = listKv[2].replace(/^['"]|['"]$/g, '');
-        continue;
-      }
-
-      if (!current) continue;
-
-      if (inItems && connIndent >= 0 && indent <= connIndent + 2) {
-        inItems = false;
-        currentItem = null;
-        inSinkOverride = '';
-      }
-
-      if (trimmed === 'items:') { inItems = true; itemsIndent = indent; currentItem = null; inSinkOverride = ''; continue; }
-
-      if (inItems && currentItem) {
-        if (trimmed === 'sink:') { inSinkOverride = 'sink'; continue; }
-        if (trimmed === 'mtconnect:') { inSinkOverride = 'mtconnect'; continue; }
-        if (trimmed === 'opcua:') { inSinkOverride = 'opcua'; continue; }
-        if (trimmed === 'transform:') { inSinkOverride = 'transform'; continue; }
-      }
-
-      var kv = trimmed.match(/^([a-zA-Z_]\w*):\s*(.*)$/);
-      if (!kv) continue;
-
-      var key = kv[1];
-      var val = kv[2];
-
-      // Strip inline comments (but not inside quoted strings)
-      if (!/^['"]/.test(val)) {
-        val = val.replace(/\s+#.*$/, '');
-      }
-
-      if (val === '|' || val === '>' || val === '|-' || val === '>-') {
-        blockKey = key;
-        blockIndent = indent;
-        blockLines = [];
-        if (inItems && currentItem && inSinkOverride === 'transform') {
-          blockKey = '_sink_transform_template';
-        }
-        continue;
-      }
-
-      val = val.replace(/^['"]|['"]$/g, '');
-
-      // Empty value → start collecting bare list items on next lines
-      // Skip known nested-object keys that aren't lists
-      if (val === '' && current && key !== 'sink' && key !== 'items') {
-        var target = (inItems && currentItem) ? currentItem : current;
-        target[key] = [];
-        listKey = key;
-        listTarget = target;
-        continue;
-      }
-
-      val = coerceVal(val);
-
-      if (inItems && currentItem) {
-        if (inSinkOverride === 'mtconnect') {
-          if (key === 'path') currentItem._sink_mtconnect_path = val;
-          continue;
-        }
-        if (inSinkOverride === 'opcua') {
-          if (key === 'path') currentItem._sink_opcua_path = val;
-          continue;
-        }
-        if (inSinkOverride === 'transform') {
-          if (key === 'type') currentItem._sink_transform_type = val;
-          else if (key === 'template') currentItem._sink_transform_template = val;
-          continue;
-        }
-        if (inSinkOverride === 'sink') {
-          if (key === 'mtconnect') { inSinkOverride = 'mtconnect'; continue; }
-          if (key === 'opcua') { inSinkOverride = 'opcua'; continue; }
-          if (key === 'transform') { inSinkOverride = 'transform'; continue; }
-          continue;
-        }
-        currentItem[key] = val;
-      } else if (current) {
-        inSinkOverride = '';
-        if (key === 'sink') continue;
-        current[key] = val;
+      if (!item.sink.transform || typeof item.sink.transform !== 'object') {
+        item.sink.transform = {};
       }
     }
-    flushBlock();
-    flushList();
+
+    function processConnectors(arr) {
+      if (!Array.isArray(arr)) return [];
+      var out = [];
+      for (var i = 0; i < arr.length; i++) {
+        var c = arr[i];
+        if (!c || typeof c !== 'object') continue;
+        c._id = nextId++;
+        if (!c.items) c.items = [];
+        if (Array.isArray(c.items)) {
+          for (var j = 0; j < c.items.length; j++) {
+            normalizeSink(c.items[j]);
+          }
+        }
+        // Normalize connector-level sink
+        if (!c.sink || typeof c.sink !== 'object') c.sink = {};
+        if (!c.sink.transform || typeof c.sink.transform !== 'object') c.sink.transform = {};
+        out.push(c);
+      }
+      return out;
+    }
+
+    result.sources = processConnectors(doc.sources);
+    result.sinks = processConnectors(doc.sinks);
     return result;
   }
 
-  // ── Anchor/Alias Resolution (multi-file DIME configs) ──────
+  // ── Anchor/Alias Resolution ──────────────────────────────────
+  // js-yaml handles &anchors, *aliases, and <<: *merge natively.
+  // Keep function signature so callers don't break.
 
   function resolveAnchors(text) {
-    var lines = text.split('\n');
-    var anchors = {};  // anchorName → { lines: [...], baseIndent: N }
-
-    // Pass 1: find anchor definitions and capture their blocks
-    var i = 0;
-    while (i < lines.length) {
-      var line = lines[i];
-      var anchorName = null;
-      var defIndent = 0;
-      var m = line.match(/^(\s*)([a-zA-Z_][\w-]*):\s+&([\w-]+)\s*$/);
-      if (m) {
-        anchorName = m[3];
-        defIndent = m[1].length;
-      } else {
-        var m2 = line.match(/^(\s*)-\s+&([\w-]+)\s*$/);
-        if (m2) { anchorName = m2[2]; defIndent = m2[1].length; }
-      }
-      if (anchorName) {
-        var blockLines = [];
-        var j = i + 1;
-        while (j < lines.length) {
-          var sub = lines[j];
-          if (sub.trim() === '') { j++; continue; }
-          var subIndent = sub.match(/^(\s*)/)[1].length;
-          if (subIndent <= defIndent) break;
-          blockLines.push(sub);
-          j++;
-        }
-        anchors[anchorName] = { lines: blockLines, baseIndent: defIndent + 2 };
-        i = j;
-        continue;
-      }
-      // Also handle inline anchor on key-value: key: &anchor value
-      var mv = line.match(/^(\s*)([a-zA-Z_][\w-]*):\s+&([\w-]+)\s+(.+)$/);
-      if (mv) {
-        anchors[mv[3]] = { value: mv[4], lines: [], baseIndent: 0 };
-      }
-      i++;
-    }
-
-    // Pass 2: resolve alias references
-    var out = [];
-    for (i = 0; i < lines.length; i++) {
-      var line = lines[i];
-      var trimmed = line.trim();
-
-      // List alias: "- *anchorName"
-      var la = trimmed.match(/^-\s+\*([\w-]+)\s*$/);
-      if (la && anchors[la[1]]) {
-        var alias = anchors[la[1]];
-        var listIndent = line.match(/^(\s*)/)[1].length;
-        if (alias.lines.length > 0) {
-          // Expand block under list item
-          var rebase = listIndent + 2;
-          for (var k = 0; k < alias.lines.length; k++) {
-            var srcLine = alias.lines[k];
-            var srcIndent = srcLine.match(/^(\s*)/)[1].length;
-            var relative = srcIndent - alias.baseIndent;
-            var newIndent = rebase + Math.max(0, relative);
-            var prefix = '';
-            for (var p = 0; p < newIndent; p++) prefix += ' ';
-            var content = srcLine.trim();
-            if (k === 0) {
-              out.push(line.match(/^(\s*)/)[1] + '- ' + content);
-            } else {
-              out.push(prefix + content);
-            }
-          }
-        } else if (alias.value) {
-          out.push(line.replace('*' + la[1], alias.value));
-        } else {
-          out.push(line);
-        }
-        continue;
-      }
-
-      // Inline alias in value: "key: *anchorName"
-      var iv = line.match(/^(\s*)([a-zA-Z_][\w-]*):\s+\*([\w-]+)\s*$/);
-      if (iv && anchors[iv[3]]) {
-        var a = anchors[iv[3]];
-        if (a.value) {
-          out.push(iv[1] + iv[2] + ': ' + a.value);
-        } else if (a.lines.length > 0) {
-          out.push(iv[1] + iv[2] + ':');
-          var base = iv[1].length + 2;
-          for (var k2 = 0; k2 < a.lines.length; k2++) {
-            var sl = a.lines[k2];
-            var si = sl.match(/^(\s*)/)[1].length;
-            var rel = si - a.baseIndent;
-            var ni = base + Math.max(0, rel);
-            var pfx = '';
-            for (var p2 = 0; p2 < ni; p2++) pfx += ' ';
-            out.push(pfx + sl.trim());
-          }
-        } else {
-          out.push(line);
-        }
-        continue;
-      }
-
-      out.push(line);
-    }
-
-    return out.join('\n');
+    return text;
   }
 
   window.DIME_HL = {
