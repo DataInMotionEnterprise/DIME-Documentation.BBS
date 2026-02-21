@@ -987,172 +987,11 @@
     }
   }
 
-  // ── YAML Parser (DIME config subset) ──────────────────────────
-
-  function parseYaml(text) {
-    var lines = text.split('\n');
-    var result = { sources: [], sinks: [] };
-    var section = '';       // 'app', 'sources', or 'sinks'
-    var connIndent = -1;    // indent of connector list items (the "- " in "  - name:")
-    var current = null;     // current connector object
-    var inItems = false;
-    var itemsIndent = -1;   // indent of the "items:" key
-    var currentItem = null;
-    var blockKey = '';
-    var blockIndent = -1;
-    var blockLines = [];
-    var inSinkOverride = '';
-
-    function flushBlock() {
-      if (blockKey && current) {
-        var target = inItems && currentItem ? currentItem : current;
-        target[blockKey] = blockLines.join('\n');
-      }
-      blockKey = '';
-      blockIndent = -1;
-      blockLines = [];
-    }
-
-    for (var i = 0; i < lines.length; i++) {
-      var raw = lines[i];
-      var trimmed = raw.trim();
-      var indent = raw.match(/^(\s*)/)[1].length;
-
-      // Skip empty lines and comments
-      if (trimmed === '' || trimmed.charAt(0) === '#') {
-        if (blockKey && indent > blockIndent) blockLines.push(raw.substring(blockIndent + 2));
-        continue;
-      }
-
-      // Block scalar continuation
-      if (blockKey && indent > blockIndent) {
-        blockLines.push(raw.substring(blockIndent + 2));
-        continue;
-      }
-      if (blockKey) flushBlock();
-
-      // Top-level sections
-      if (indent === 0 && trimmed === 'sources:') { section = 'sources'; inItems = false; current = null; connIndent = -1; continue; }
-      if (indent === 0 && trimmed === 'sinks:') { section = 'sinks'; inItems = false; current = null; connIndent = -1; continue; }
-      if (indent === 0 && trimmed === 'app:') { section = 'app'; continue; }
-      if (section === 'app') continue;
-      if (section !== 'sources' && section !== 'sinks') continue;
-
-      // Detect list items starting with "- "
-      var listKv = trimmed.match(/^- ([a-zA-Z_]\w*):\s*(.*)$/);
-
-      // If we see a "- name:" line, decide if it's a connector or an item
-      if (listKv && listKv[1] === 'name') {
-        // If we're inside items and this is deeper than the connector indent, it's an item
-        if (inItems && connIndent >= 0 && indent > connIndent) {
-          flushBlock();
-          inSinkOverride = '';
-          currentItem = { name: listKv[2].replace(/^['"]|['"]$/g, '') };
-          current.items.push(currentItem);
-          continue;
-        }
-        // Otherwise it's a new connector
-        flushBlock();
-        inItems = false;
-        inSinkOverride = '';
-        currentItem = null;
-        connIndent = indent;
-        current = { _id: nextId++, name: listKv[1] === 'name' ? listKv[2].replace(/^['"]|['"]$/g, '') : '', items: [] };
-        result[section].push(current);
-        continue;
-      }
-
-      // Other list item "- key: val" (e.g. first field of an item that isn't name)
-      if (listKv && inItems && currentItem) {
-        currentItem[listKv[1]] = listKv[2].replace(/^['"]|['"]$/g, '');
-        continue;
-      }
-
-      if (!current) continue;
-
-      // If indent drops back to connector level or above, we've left items
-      if (inItems && connIndent >= 0 && indent <= connIndent + 2) {
-        inItems = false;
-        currentItem = null;
-        inSinkOverride = '';
-      }
-
-      // Items array start
-      if (trimmed === 'items:') { inItems = true; itemsIndent = indent; currentItem = null; inSinkOverride = ''; continue; }
-
-      // Sink override sections within an item
-      if (inItems && currentItem) {
-        if (trimmed === 'sink:') { inSinkOverride = 'sink'; continue; }
-        if (trimmed === 'mtconnect:') { inSinkOverride = 'mtconnect'; continue; }
-        if (trimmed === 'opcua:') { inSinkOverride = 'opcua'; continue; }
-        if (trimmed === 'transform:') { inSinkOverride = 'transform'; continue; }
-      }
-
-      // Key: value pairs
-      var kv = trimmed.match(/^([a-zA-Z_]\w*):\s*(.*)$/);
-      if (!kv) continue;
-
-      var key = kv[1];
-      var val = kv[2];
-
-      // Block scalar
-      if (val === '|') {
-        blockKey = key;
-        blockIndent = indent;
-        blockLines = [];
-        if (inItems && currentItem && inSinkOverride === 'transform') {
-          blockKey = '_sink_transform_template';
-        }
-        continue;
-      }
-
-      // Clean value
-      val = val.replace(/^['"]|['"]$/g, '');
-
-      // Route to the right target
-      if (inItems && currentItem) {
-        if (inSinkOverride === 'mtconnect') {
-          if (key === 'path') currentItem._sink_mtconnect_path = val;
-          continue;
-        }
-        if (inSinkOverride === 'opcua') {
-          if (key === 'path') currentItem._sink_opcua_path = val;
-          continue;
-        }
-        if (inSinkOverride === 'transform') {
-          if (key === 'type') currentItem._sink_transform_type = val;
-          else if (key === 'template') currentItem._sink_transform_template = val;
-          continue;
-        }
-        if (inSinkOverride === 'sink') {
-          if (key === 'mtconnect') { inSinkOverride = 'mtconnect'; continue; }
-          if (key === 'opcua') { inSinkOverride = 'opcua'; continue; }
-          if (key === 'transform') { inSinkOverride = 'transform'; continue; }
-          continue;
-        }
-        currentItem[key] = val;
-      } else if (current) {
-        inSinkOverride = '';
-        if (key === 'sink') continue;
-        current[key] = val;
-      }
-    }
-    flushBlock();
-    return result;
-  }
+  // ── YAML Parser (delegated to shared highlight.js) ─────────────
 
   function loadFromYaml(yamlText) {
-    console.log('[PG] loadFromYaml called, text length:', yamlText.length);
     loadSchema(function () {
-      console.log('[PG] schema loaded');
-      var parsed = parseYaml(yamlText);
-      console.log('[PG] parsed sources:', parsed.sources.length, 'sinks:', parsed.sinks.length);
-      for (var d = 0; d < parsed.sources.length; d++) {
-        console.log('[PG] parsed source:', parsed.sources[d].name, 'connector:', parsed.sources[d].connector, 'items:', (parsed.sources[d].items || []).length);
-      }
-      for (var d2 = 0; d2 < parsed.sinks.length; d2++) {
-        console.log('[PG] parsed sink:', parsed.sinks[d2].name, 'connector:', parsed.sinks[d2].connector);
-      }
+      var parsed = window.DIME_HL.parseYaml(yamlText);
       var sourceTypes = getTypeEnum(false);
       var sinkTypes = getTypeEnum(true);
 
@@ -1168,10 +1007,7 @@
       for (var i = 0; i < parsed.sources.length; i++) {
         var s = parsed.sources[i];
         var resolvedSrc = srcMap[(s.connector || '').toLowerCase()];
-        if (!resolvedSrc) {
-          console.log('[PG] SKIPPED source - unknown type:', s.connector);
-          continue;
-        }
+        if (!resolvedSrc) continue;
         s.connector = resolvedSrc;
         s._id = nextId++;
         sources.push(s);
@@ -1179,18 +1015,12 @@
       for (var j = 0; j < parsed.sinks.length; j++) {
         var sk = parsed.sinks[j];
         var resolvedSnk = snkMap[(sk.connector || '').toLowerCase()];
-        if (!resolvedSnk) {
-          console.log('[PG] SKIPPED sink - unknown type:', sk.connector);
-          continue;
-        }
+        if (!resolvedSnk) continue;
         sk.connector = resolvedSnk;
         sk._id = nextId++;
-        // Sinks don't have items in the playground
         delete sk.items;
         sinks.push(sk);
       }
-
-      console.log('[PG] final sources:', sources.length, 'sinks:', sinks.length);
 
       pane.classList.add('open');
       document.body.classList.add('pg-open');

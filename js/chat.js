@@ -818,15 +818,7 @@
         return;
       }
       if (e.target.classList.contains('chat-code-playground')) {
-        console.log('[CHAT→PG] Button clicked');
         var pgPre = e.target.parentElement.querySelector('pre');
-        console.log('[CHAT→PG] pre found:', !!pgPre);
-        console.log('[CHAT→PG] DIME_PG:', !!window.DIME_PG);
-        if (pgPre) {
-          var yamlText = pgPre.textContent;
-          console.log('[CHAT→PG] YAML length:', yamlText.length);
-          console.log('[CHAT→PG] YAML first 200 chars:', yamlText.substring(0, 200));
-        }
         if (pgPre && window.DIME_PG) {
           window.DIME_PG.loadYaml(pgPre.textContent);
           e.target.textContent = 'Loaded!';

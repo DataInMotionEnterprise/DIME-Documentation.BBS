@@ -137,9 +137,150 @@
     return out.join('\n');
   }
 
+  // ── YAML Parser (DIME config subset) ──────────────────────────
+
+  function parseYaml(text) {
+    var lines = text.split('\n');
+    var result = { sources: [], sinks: [] };
+    var section = '';
+    var connIndent = -1;
+    var current = null;
+    var inItems = false;
+    var itemsIndent = -1;
+    var currentItem = null;
+    var blockKey = '';
+    var blockIndent = -1;
+    var blockLines = [];
+    var inSinkOverride = '';
+    var nextId = 1;
+
+    function flushBlock() {
+      if (blockKey && current) {
+        var target = inItems && currentItem ? currentItem : current;
+        target[blockKey] = blockLines.join('\n');
+      }
+      blockKey = '';
+      blockIndent = -1;
+      blockLines = [];
+    }
+
+    for (var i = 0; i < lines.length; i++) {
+      var raw = lines[i];
+      var trimmed = raw.trim();
+      var indent = raw.match(/^(\s*)/)[1].length;
+
+      if (trimmed === '' || trimmed.charAt(0) === '#') {
+        if (blockKey && indent > blockIndent) blockLines.push(raw.substring(blockIndent + 2));
+        continue;
+      }
+
+      if (blockKey && indent > blockIndent) {
+        blockLines.push(raw.substring(blockIndent + 2));
+        continue;
+      }
+      if (blockKey) flushBlock();
+
+      if (indent === 0 && trimmed === 'sources:') { section = 'sources'; inItems = false; current = null; connIndent = -1; continue; }
+      if (indent === 0 && trimmed === 'sinks:') { section = 'sinks'; inItems = false; current = null; connIndent = -1; continue; }
+      if (indent === 0 && trimmed === 'app:') { section = 'app'; continue; }
+      if (section === 'app') continue;
+      if (section !== 'sources' && section !== 'sinks') continue;
+
+      var listKv = trimmed.match(/^- ([a-zA-Z_]\w*):\s*(.*)$/);
+
+      if (listKv && listKv[1] === 'name') {
+        if (inItems && connIndent >= 0 && indent > connIndent) {
+          flushBlock();
+          inSinkOverride = '';
+          currentItem = { name: listKv[2].replace(/^['"]|['"]$/g, '') };
+          current.items.push(currentItem);
+          continue;
+        }
+        flushBlock();
+        inItems = false;
+        inSinkOverride = '';
+        currentItem = null;
+        connIndent = indent;
+        current = { _id: nextId++, name: listKv[2].replace(/^['"]|['"]$/g, ''), items: [] };
+        result[section].push(current);
+        continue;
+      }
+
+      if (listKv && inItems && currentItem) {
+        currentItem[listKv[1]] = listKv[2].replace(/^['"]|['"]$/g, '');
+        continue;
+      }
+
+      if (!current) continue;
+
+      if (inItems && connIndent >= 0 && indent <= connIndent + 2) {
+        inItems = false;
+        currentItem = null;
+        inSinkOverride = '';
+      }
+
+      if (trimmed === 'items:') { inItems = true; itemsIndent = indent; currentItem = null; inSinkOverride = ''; continue; }
+
+      if (inItems && currentItem) {
+        if (trimmed === 'sink:') { inSinkOverride = 'sink'; continue; }
+        if (trimmed === 'mtconnect:') { inSinkOverride = 'mtconnect'; continue; }
+        if (trimmed === 'opcua:') { inSinkOverride = 'opcua'; continue; }
+        if (trimmed === 'transform:') { inSinkOverride = 'transform'; continue; }
+      }
+
+      var kv = trimmed.match(/^([a-zA-Z_]\w*):\s*(.*)$/);
+      if (!kv) continue;
+
+      var key = kv[1];
+      var val = kv[2];
+
+      if (val === '|') {
+        blockKey = key;
+        blockIndent = indent;
+        blockLines = [];
+        if (inItems && currentItem && inSinkOverride === 'transform') {
+          blockKey = '_sink_transform_template';
+        }
+        continue;
+      }
+
+      val = val.replace(/^['"]|['"]$/g, '');
+
+      if (inItems && currentItem) {
+        if (inSinkOverride === 'mtconnect') {
+          if (key === 'path') currentItem._sink_mtconnect_path = val;
+          continue;
+        }
+        if (inSinkOverride === 'opcua') {
+          if (key === 'path') currentItem._sink_opcua_path = val;
+          continue;
+        }
+        if (inSinkOverride === 'transform') {
+          if (key === 'type') currentItem._sink_transform_type = val;
+          else if (key === 'template') currentItem._sink_transform_template = val;
+          continue;
+        }
+        if (inSinkOverride === 'sink') {
+          if (key === 'mtconnect') { inSinkOverride = 'mtconnect'; continue; }
+          if (key === 'opcua') { inSinkOverride = 'opcua'; continue; }
+          if (key === 'transform') { inSinkOverride = 'transform'; continue; }
+          continue;
+        }
+        currentItem[key] = val;
+      } else if (current) {
+        inSinkOverride = '';
+        if (key === 'sink') continue;
+        current[key] = val;
+      }
+    }
+    flushBlock();
+    return result;
+  }
+
   window.DIME_HL = {
     esc: esc,
     highlightYaml: highlightYaml,
-    highlightCode: highlightCode
+    highlightCode: highlightCode,
+    parseYaml: parseYaml
   };
 })();
