@@ -16,22 +16,8 @@
   var importFiles = [];  // {name, text} array for Upload tab
   var dimeUrl = localStorage.getItem('dime-playground-url') || 'http://localhost:9999';
 
-  // Fields handled in dedicated sections (skip in type-specific rendering)
-  var BASE_FIELDS = [
-    'name', 'enabled', 'scan_interval', 'connector',
-    'rbe', 'ignore_errors_on_read', 'wait_for_connectors',
-    'include_filter', 'exclude_filter', 'use_sink_transform',
-    'items', 'itemized_read', 'create_dummy_messages_on_startup',
-    'lang_script', 'paths_script', 'init_script', 'deinit_script',
-    'enter_script', 'exit_script', 'item_script', 'strip_path_prefix', 'sink'
-  ];
-
-  var SCRIPT_FIELDS = ['init_script', 'deinit_script', 'enter_script', 'exit_script', 'item_script'];
-
-  var STREAMING_SOURCES = [
-    'activeMq', 'haasShdr', 'httpServer', 'mqtt', 'mtConnectAgent',
-    'postgresNotify', 'redis', 'ros2', 'sparkplugB', 'timebaseWs', 'udpServer'
-  ];
+  // Schema-derived cache (populated by initSchemaCache after schema loads)
+  var _cache = {};
 
   // ── Schema Loading ─────────────────────────────────────────────
 
@@ -39,8 +25,43 @@
     if (schema) return cb();
     fetch('dime-schema.json')
       .then(function (r) { return r.json(); })
-      .then(function (data) { schema = data; cb(); })
+      .then(function (data) { schema = data; initSchemaCache(); cb(); })
       .catch(function () { showStatus('Failed to load schema', true); });
+  }
+
+  function initSchemaCache() {
+    var defs = schema.definitions;
+    var basePr = defs.baseConnector.properties;
+    var srcPr = defs.sourceConnector.allOf[1].properties;
+    var snkPr = defs.sinkConnector.allOf[1].properties;
+
+    // Union of base + source + sink property keys (skip in type-specific rendering)
+    var baseKeys = {};
+    var k;
+    for (k in basePr) baseKeys[k] = 1;
+    for (k in srcPr) baseKeys[k] = 1;
+    for (k in snkPr) baseKeys[k] = 1;
+    _cache.baseKeys = baseKeys;
+
+    // Script fields: source properties where key ends in '_script' and type === 'string'
+    var scriptFields = [];
+    for (k in srcPr) {
+      if (k.length > 7 && k.indexOf('_script') === k.length - 7 &&
+          k !== 'paths_script' && k !== 'lang_script' && srcPr[k].type === 'string') {
+        scriptFields.push(k);
+      }
+    }
+    _cache.scriptFields = scriptFields;
+
+    // Streaming source types from allOf[2].if.properties.connector.enum
+    var streamingBlock = defs.sourceConnector.allOf[2];
+    _cache.streamingSrc = (streamingBlock && streamingBlock['if'] &&
+      streamingBlock['if'].properties && streamingBlock['if'].properties.connector &&
+      streamingBlock['if'].properties.connector['enum']) || [];
+
+    // Item-level sink override definitions
+    var baseItemPr = defs.baseItem.properties;
+    _cache.itemSinkDef = baseItemPr.sink ? baseItemPr.sink.properties || {} : {};
   }
 
   function getTypeEnum(isSink) {
@@ -75,7 +96,7 @@
   }
 
   function isStreaming(connType) {
-    return STREAMING_SOURCES.indexOf(connType) !== -1;
+    return _cache.streamingSrc.indexOf(connType) !== -1;
   }
 
   // ── State Management ───────────────────────────────────────────
@@ -518,7 +539,7 @@
     var hasSpecific = false;
 
     for (var key in props) {
-      if (BASE_FIELDS.indexOf(key) !== -1) continue;
+      if (_cache.baseKeys[key]) continue;
       if (!hasSpecific) {
         fields.appendChild(makeSection(conn.connector + ' settings'));
         hasSpecific = true;
@@ -599,8 +620,8 @@
       function (v) { conn.paths_script = splitCSV(v); updateYaml(); }));
 
     // Script fields
-    for (var i = 0; i < SCRIPT_FIELDS.length; i++) {
-      var sf = SCRIPT_FIELDS[i];
+    for (var i = 0; i < _cache.scriptFields.length; i++) {
+      var sf = _cache.scriptFields[i];
       body.appendChild(buildScriptButton(sf, conn));
     }
 
@@ -932,11 +953,13 @@
 
   function generateYaml() {
     var y = [];
+    var appProps = schema.properties.app.properties;
     y.push('app:');
-    y.push('  license: DEMO-0000-0000-0000-0000-0000-0000-0000');
-    y.push('  ring_buffer: 4096');
-    y.push('  http_server_uri: http://127.0.0.1:9999/');
-    y.push('  ws_server_uri: ws://127.0.0.1:9998/');
+    for (var ak in appProps) {
+      if (appProps[ak].default !== undefined) {
+        y.push('  ' + ak + ': ' + yamlVal(appProps[ak].default, appProps[ak]));
+      }
+    }
 
     if (sources.length) {
       y.push('');
@@ -975,7 +998,7 @@
     var def = getConnectorDef(isSink, conn.connector);
     var props = def.properties || {};
     for (var key in props) {
-      if (BASE_FIELDS.indexOf(key) !== -1) continue;
+      if (_cache.baseKeys[key]) continue;
       var val = conn[key];
       if (val === undefined || val === '') continue;
       y.push(I2 + key + ': ' + yamlVal(val, props[key]));
@@ -992,8 +1015,8 @@
           y.push(I2 + '  - ' + yamlStr(conn.paths_script[p]));
       }
 
-      for (var si = 0; si < SCRIPT_FIELDS.length; si++) {
-        var sf = SCRIPT_FIELDS[si];
+      for (var si = 0; si < _cache.scriptFields.length; si++) {
+        var sf = _cache.scriptFields[si];
         if (conn[sf]) yamlBlockScalar(y, I2, sf, conn[sf]);
       }
 
@@ -1059,18 +1082,53 @@
     // Item script
     if (item.script) yamlBlockScalar(y, indent + '  ', 'script', item.script);
 
-    // Sink overrides
+    // Sink overrides (schema-driven via _cache.itemSinkDef)
     if (item.sink) {
-      var hasSink = item.sink.mtconnect || item.sink.opcua ||
-        (item.sink.transform && (item.sink.transform.type || item.sink.transform.template));
+      var hasSink = false;
+      for (var sk in _cache.itemSinkDef) {
+        var sv = item.sink[sk];
+        if (sv === undefined || sv === '') continue;
+        if (typeof sv === 'object') {
+          for (var ck in sv) { if (sv[ck]) { hasSink = true; break; } }
+        } else {
+          hasSink = true;
+        }
+        if (hasSink) break;
+      }
       if (hasSink) {
         y.push(indent + '  sink:');
-        if (item.sink.mtconnect) y.push(indent + '    mtconnect: ' + yamlStr(item.sink.mtconnect));
-        if (item.sink.opcua) y.push(indent + '    opcua: ' + yamlStr(item.sink.opcua));
-        if (item.sink.transform && (item.sink.transform.type || item.sink.transform.template)) {
-          y.push(indent + '    transform:');
-          if (item.sink.transform.type) y.push(indent + '      type: ' + yamlStr(item.sink.transform.type));
-          if (item.sink.transform.template) yamlBlockScalar(y, indent + '      ', 'template', item.sink.transform.template);
+        for (var soKey in _cache.itemSinkDef) {
+          var soDef = _cache.itemSinkDef[soKey];
+          var soVal = item.sink[soKey];
+          if (soVal === undefined || soVal === '') continue;
+          if (soDef.type === 'string' && soVal) {
+            y.push(indent + '    ' + soKey + ': ' + yamlStr(soVal));
+          } else if (soDef.type === 'object' && soDef.properties && typeof soVal === 'object') {
+            // Check if sub-object has data
+            var hasSubData = false;
+            for (var subK in soDef.properties) {
+              if (soVal[subK] !== undefined && soVal[subK] !== '') { hasSubData = true; break; }
+            }
+            if (hasSubData) {
+              y.push(indent + '    ' + soKey + ':');
+              for (var emitK in soDef.properties) {
+                var emitV = soVal[emitK];
+                if (emitV === undefined || emitV === '') continue;
+                var emitD = soDef.properties[emitK];
+                if (emitD.type === 'string' && typeof emitV === 'string') {
+                  if (emitV.indexOf('\n') !== -1) {
+                    yamlBlockScalar(y, indent + '      ', emitK, emitV);
+                  } else {
+                    y.push(indent + '      ' + emitK + ': ' + yamlStr(emitV));
+                  }
+                } else if (emitD.type === 'boolean') {
+                  y.push(indent + '      ' + emitK + ': ' + (emitV ? 'true' : 'false'));
+                } else if (emitD.type === 'integer' || emitD.type === 'number') {
+                  y.push(indent + '      ' + emitK + ': ' + emitV);
+                }
+              }
+            }
+          }
         }
       }
     }

@@ -1,10 +1,11 @@
 (function () {
   'use strict';
 
-  var SCRIPT_KEYS = {
-    'init_script':1, 'deinit_script':1, 'enter_script':1,
-    'exit_script':1, 'item_script':1, 'script':1, 'paths_script':1
-  };
+  function isScriptKey(key) {
+    return key === 'script' || key === 'template' ||
+      (key.length > 7 && key.indexOf('_script') === key.length - 7 &&
+       key !== 'paths_script' && key !== 'lang_script');
+  }
 
   var LUA_KW = /\b(and|break|do|else|elseif|end|for|function|goto|if|in|local|not|or|repeat|return|then|until|while|nil|true|false)\b/g;
   var PY_KW = /\b(and|as|assert|async|await|break|class|continue|def|del|elif|else|except|finally|for|from|global|if|import|in|is|lambda|nonlocal|not|or|pass|raise|return|try|while|with|yield|None|True|False)\b/g;
@@ -115,7 +116,7 @@
           highlightValue(m[5]));
         if (/^[|>][-]?\s*$/.test(m[5].trim())) {
           inBlock = true; blockIndent = m[1].length;
-          isScript = SCRIPT_KEYS.hasOwnProperty(m[3]);
+          isScript = isScriptKey(m[3]);
         }
         continue;
       }
@@ -129,7 +130,7 @@
           highlightValue(m[4]));
         if (/^[|>][-]?\s*$/.test(m[4].trim())) {
           inBlock = true; blockIndent = m[1].length;
-          isScript = SCRIPT_KEYS.hasOwnProperty(m[2]);
+          isScript = isScriptKey(m[2]);
         }
         continue;
       }
