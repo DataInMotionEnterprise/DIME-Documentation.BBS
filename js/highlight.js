@@ -277,10 +277,120 @@
     return result;
   }
 
+  // ── Anchor/Alias Resolution (multi-file DIME configs) ──────
+
+  function resolveAnchors(text) {
+    var lines = text.split('\n');
+    var anchors = {};  // anchorName → { lines: [...], baseIndent: N }
+
+    // Pass 1: find anchor definitions and capture their blocks
+    var i = 0;
+    while (i < lines.length) {
+      var line = lines[i];
+      var anchorName = null;
+      var defIndent = 0;
+      var m = line.match(/^(\s*)([a-zA-Z_][\w-]*):\s+&([\w-]+)\s*$/);
+      if (m) {
+        anchorName = m[3];
+        defIndent = m[1].length;
+      } else {
+        var m2 = line.match(/^(\s*)-\s+&([\w-]+)\s*$/);
+        if (m2) { anchorName = m2[2]; defIndent = m2[1].length; }
+      }
+      if (anchorName) {
+        var blockLines = [];
+        var j = i + 1;
+        while (j < lines.length) {
+          var sub = lines[j];
+          if (sub.trim() === '') { j++; continue; }
+          var subIndent = sub.match(/^(\s*)/)[1].length;
+          if (subIndent <= defIndent) break;
+          blockLines.push(sub);
+          j++;
+        }
+        anchors[anchorName] = { lines: blockLines, baseIndent: defIndent + 2 };
+        i = j;
+        continue;
+      }
+      // Also handle inline anchor on key-value: key: &anchor value
+      var mv = line.match(/^(\s*)([a-zA-Z_][\w-]*):\s+&([\w-]+)\s+(.+)$/);
+      if (mv) {
+        anchors[mv[3]] = { value: mv[4], lines: [], baseIndent: 0 };
+      }
+      i++;
+    }
+
+    // Pass 2: resolve alias references
+    var out = [];
+    for (i = 0; i < lines.length; i++) {
+      var line = lines[i];
+      var trimmed = line.trim();
+
+      // List alias: "- *anchorName"
+      var la = trimmed.match(/^-\s+\*([\w-]+)\s*$/);
+      if (la && anchors[la[1]]) {
+        var alias = anchors[la[1]];
+        var listIndent = line.match(/^(\s*)/)[1].length;
+        if (alias.lines.length > 0) {
+          // Expand block under list item
+          var rebase = listIndent + 2;
+          for (var k = 0; k < alias.lines.length; k++) {
+            var srcLine = alias.lines[k];
+            var srcIndent = srcLine.match(/^(\s*)/)[1].length;
+            var relative = srcIndent - alias.baseIndent;
+            var newIndent = rebase + Math.max(0, relative);
+            var prefix = '';
+            for (var p = 0; p < newIndent; p++) prefix += ' ';
+            var content = srcLine.trim();
+            if (k === 0) {
+              out.push(line.match(/^(\s*)/)[1] + '- ' + content);
+            } else {
+              out.push(prefix + content);
+            }
+          }
+        } else if (alias.value) {
+          out.push(line.replace('*' + la[1], alias.value));
+        } else {
+          out.push(line);
+        }
+        continue;
+      }
+
+      // Inline alias in value: "key: *anchorName"
+      var iv = line.match(/^(\s*)([a-zA-Z_][\w-]*):\s+\*([\w-]+)\s*$/);
+      if (iv && anchors[iv[3]]) {
+        var a = anchors[iv[3]];
+        if (a.value) {
+          out.push(iv[1] + iv[2] + ': ' + a.value);
+        } else if (a.lines.length > 0) {
+          out.push(iv[1] + iv[2] + ':');
+          var base = iv[1].length + 2;
+          for (var k2 = 0; k2 < a.lines.length; k2++) {
+            var sl = a.lines[k2];
+            var si = sl.match(/^(\s*)/)[1].length;
+            var rel = si - a.baseIndent;
+            var ni = base + Math.max(0, rel);
+            var pfx = '';
+            for (var p2 = 0; p2 < ni; p2++) pfx += ' ';
+            out.push(pfx + sl.trim());
+          }
+        } else {
+          out.push(line);
+        }
+        continue;
+      }
+
+      out.push(line);
+    }
+
+    return out.join('\n');
+  }
+
   window.DIME_HL = {
     esc: esc,
     highlightYaml: highlightYaml,
     highlightCode: highlightCode,
-    parseYaml: parseYaml
+    parseYaml: parseYaml,
+    resolveAnchors: resolveAnchors
   };
 })();

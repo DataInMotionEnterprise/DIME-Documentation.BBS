@@ -676,6 +676,240 @@ body.pg-open #playground-bubble {
   background: rgba(255, 176, 0, 0.15);
 }
 
+/* === Import Modal === */
+#pg-import-modal {
+  display: none;
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.9);
+  z-index: 10;
+  flex-direction: column;
+}
+
+#pg-import-modal.open {
+  display: flex;
+}
+
+#pg-import-box {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  margin: 20px;
+  max-width: 700px;
+  width: 100%;
+  align-self: center;
+}
+
+#pg-import-header {
+  display: flex;
+  align-items: center;
+  padding: 8px 0;
+  flex-shrink: 0;
+}
+
+#pg-import-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--cyan);
+  text-shadow: 0 0 8px var(--cyan-glow);
+  letter-spacing: 1px;
+}
+
+/* Tabs */
+#pg-import-tabs {
+  display: flex;
+  gap: 0;
+  flex-shrink: 0;
+  margin-bottom: 12px;
+}
+
+.pg-import-tab {
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--amber-dim);
+  font-family: var(--font);
+  font-size: 11px;
+  padding: 4px 14px;
+  cursor: pointer;
+  line-height: 1.4;
+  transition: color 0.12s, border-color 0.12s, background 0.12s;
+}
+
+.pg-import-tab + .pg-import-tab {
+  border-left: none;
+}
+
+.pg-import-tab:hover {
+  color: var(--amber);
+  border-color: var(--amber);
+}
+
+.pg-import-tab.active {
+  color: var(--cyan);
+  border-color: var(--cyan-dim);
+  background: rgba(0, 255, 255, 0.05);
+}
+
+/* Paste panel */
+.pg-import-panel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+#pg-import-text {
+  flex: 1;
+  background: rgba(0, 0, 0, 0.6);
+  border: 1px solid var(--border);
+  color: var(--amber);
+  font-family: var(--font);
+  font-size: 12px;
+  line-height: 1.5;
+  padding: 12px;
+  resize: none;
+  outline: none;
+  caret-color: var(--cyan);
+  tab-size: 2;
+  white-space: pre;
+  overflow: auto;
+  min-height: 200px;
+}
+
+#pg-import-text:focus {
+  border-color: var(--cyan-dim);
+}
+
+/* Upload panel */
+#pg-import-dropzone {
+  border: 1px dashed var(--border);
+  padding: 16px;
+  text-align: center;
+  color: var(--amber-dim);
+  font-size: 11px;
+  transition: border-color 0.15s, background 0.15s;
+  margin-bottom: 10px;
+}
+
+#pg-import-dropzone.dragover {
+  border-color: var(--cyan);
+  background: rgba(0, 255, 255, 0.05);
+}
+
+#pg-import-browse {
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--amber-dim);
+  font-family: var(--font);
+  font-size: 11px;
+  padding: 2px 10px;
+  cursor: pointer;
+  line-height: 1.4;
+  transition: color 0.12s, border-color 0.12s;
+}
+
+#pg-import-browse:hover {
+  color: var(--amber);
+  border-color: var(--amber);
+}
+
+/* File list */
+#pg-import-filelist {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+  overflow-y: auto;
+  min-height: 0;
+}
+
+.pg-import-fileitem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 4px 8px;
+  border: 1px solid var(--border);
+  font-size: 11px;
+}
+
+.pg-import-filename {
+  color: var(--amber);
+}
+
+.pg-import-filename.main {
+  color: var(--cyan);
+}
+
+.pg-import-filerm {
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--amber-dim);
+  font-family: var(--font);
+  font-size: 11px;
+  padding: 0 5px;
+  cursor: pointer;
+  line-height: 1.4;
+  transition: color 0.12s, border-color 0.12s;
+}
+
+.pg-import-filerm:hover {
+  color: #ff4444;
+  border-color: #ff4444;
+}
+
+#pg-import-filenote {
+  font-size: 10px;
+  color: var(--amber-dim);
+  padding: 6px 0;
+  font-style: italic;
+}
+
+/* Error message */
+#pg-import-error {
+  font-size: 11px;
+  color: #ff4444;
+  padding: 4px 0 0;
+  min-height: 0;
+}
+
+#pg-import-error:empty {
+  display: none;
+}
+
+/* Actions bar */
+#pg-import-actions {
+  display: flex;
+  gap: 8px;
+  padding: 12px 0 0;
+  flex-shrink: 0;
+}
+
+#pg-import-actions button {
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--amber-dim);
+  font-family: var(--font);
+  font-size: 12px;
+  padding: 3px 14px;
+  cursor: pointer;
+  line-height: 1.4;
+  transition: color 0.12s, border-color 0.12s;
+}
+
+#pg-import-actions button:hover {
+  color: var(--amber);
+  border-color: var(--amber);
+}
+
+#pg-import-ok {
+  color: var(--cyan) !important;
+  border-color: var(--cyan-dim) !important;
+}
+
+#pg-import-ok:hover {
+  border-color: var(--cyan) !important;
+}
+
 /* === Desktop Only === */
 @media (max-width: 768px) {
   #playground-bubble,

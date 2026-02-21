@@ -12,6 +12,8 @@
   var sourceList, sinkList, addSourceBtn, addSinkBtn;
   var yamlPre, statusEl, errorsEl;
   var scriptModal = null;
+  var importModal = null;
+  var importFiles = [];  // {name, text} array for Upload tab
 
   // Fields handled in dedicated sections (skip in type-specific rendering)
   var BASE_FIELDS = [
@@ -183,6 +185,259 @@
     doneBtn.addEventListener('click', save);
     cancelBtn.addEventListener('click', cancel);
     editor.addEventListener('keydown', onKey);
+  }
+
+  // ── Import Modal ─────────────────────────────────────────────
+
+  function ensureImportModal() {
+    if (importModal) return;
+    importModal = document.createElement('div');
+    importModal.id = 'pg-import-modal';
+    importModal.innerHTML =
+      '<div id="pg-import-box">' +
+        '<div id="pg-import-header">' +
+          '<span id="pg-import-title">Import Configuration</span>' +
+        '</div>' +
+        '<div id="pg-import-tabs">' +
+          '<button class="pg-import-tab active" data-tab="paste">Paste</button>' +
+          '<button class="pg-import-tab" data-tab="upload">Upload Files</button>' +
+        '</div>' +
+        '<div id="pg-import-paste" class="pg-import-panel">' +
+          '<textarea id="pg-import-text" spellcheck="false" placeholder="Paste YAML here...\n\nMulti-file configs: paste all files concatenated.\nAnchors (&name) and aliases (*name) will be resolved."></textarea>' +
+        '</div>' +
+        '<div id="pg-import-upload" class="pg-import-panel" style="display:none">' +
+          '<div id="pg-import-dropzone">' +
+            '<span>Drop .yaml files here or </span>' +
+            '<button id="pg-import-browse">Browse</button>' +
+            '<input id="pg-import-file" type="file" accept=".yaml,.yml" multiple style="display:none">' +
+          '</div>' +
+          '<div id="pg-import-filelist"></div>' +
+          '<div id="pg-import-filenote">Files merged in DIME order (main.yaml loaded last, anchors resolved)</div>' +
+        '</div>' +
+        '<div id="pg-import-error"></div>' +
+        '<div id="pg-import-actions">' +
+          '<button id="pg-import-ok">Import</button>' +
+          '<button id="pg-import-cancel">Cancel</button>' +
+        '</div>' +
+      '</div>';
+    pane.appendChild(importModal);
+
+    // Tab switching
+    var tabs = importModal.querySelectorAll('.pg-import-tab');
+    for (var t = 0; t < tabs.length; t++) {
+      tabs[t].addEventListener('click', function () {
+        for (var i = 0; i < tabs.length; i++) tabs[i].classList.remove('active');
+        this.classList.add('active');
+        document.getElementById('pg-import-paste').style.display = this.dataset.tab === 'paste' ? '' : 'none';
+        document.getElementById('pg-import-upload').style.display = this.dataset.tab === 'upload' ? '' : 'none';
+      });
+    }
+
+    // Browse button
+    document.getElementById('pg-import-browse').addEventListener('click', function () {
+      document.getElementById('pg-import-file').click();
+    });
+
+    // File input change
+    document.getElementById('pg-import-file').addEventListener('change', function (e) {
+      addImportFiles(e.target.files);
+      e.target.value = '';
+    });
+
+    // Drop handling: accept drops anywhere on the upload panel
+    var dz = document.getElementById('pg-import-dropzone');
+    var uploadPanel = document.getElementById('pg-import-upload');
+
+    // Prevent browser default file-open on the entire modal
+    importModal.addEventListener('dragover', function (e) { e.preventDefault(); });
+    importModal.addEventListener('drop', function (e) { e.preventDefault(); });
+
+    // Upload panel accepts drops anywhere within it
+    uploadPanel.addEventListener('dragover', function (e) {
+      e.preventDefault();
+      dz.classList.add('dragover');
+    });
+    uploadPanel.addEventListener('dragleave', function (e) {
+      // Only remove highlight when leaving the upload panel entirely
+      if (!uploadPanel.contains(e.relatedTarget)) {
+        dz.classList.remove('dragover');
+      }
+    });
+    uploadPanel.addEventListener('drop', function (e) {
+      e.preventDefault();
+      dz.classList.remove('dragover');
+      if (e.dataTransfer.files.length) {
+        addImportFiles(e.dataTransfer.files);
+      }
+    });
+  }
+
+  function addImportFiles(fileList) {
+    var pending = fileList.length;
+    if (!pending) return;
+    for (var i = 0; i < fileList.length; i++) {
+      var f = fileList[i];
+      if (!f.name.match(/\.ya?ml$/i)) { pending--; continue; }
+      // Skip duplicates
+      var dup = false;
+      for (var d = 0; d < importFiles.length; d++) {
+        if (importFiles[d].name === f.name) { dup = true; break; }
+      }
+      if (dup) { pending--; continue; }
+      (function (file) {
+        var reader = new FileReader();
+        reader.onload = function (ev) {
+          importFiles.push({ name: file.name, text: ev.target.result });
+          pending--;
+          if (pending <= 0) renderImportFileList();
+        };
+        reader.readAsText(file);
+      })(f);
+    }
+    if (pending <= 0) renderImportFileList();
+  }
+
+  function renderImportFileList() {
+    var list = document.getElementById('pg-import-filelist');
+    if (!list) return;
+    list.innerHTML = '';
+    var sorted = sortImportFiles(importFiles);
+    for (var i = 0; i < sorted.length; i++) {
+      var item = document.createElement('div');
+      item.className = 'pg-import-fileitem';
+
+      var name = document.createElement('span');
+      name.className = 'pg-import-filename';
+      var isMain = /^main\.ya?ml$/i.test(sorted[i].name);
+      name.textContent = sorted[i].name + (isMain ? ' (loaded last)' : '');
+      if (isMain) name.classList.add('main');
+
+      var rmBtn = document.createElement('button');
+      rmBtn.className = 'pg-import-filerm';
+      rmBtn.textContent = '\u00d7';
+      rmBtn.addEventListener('click', (function (fname) {
+        return function () {
+          for (var j = 0; j < importFiles.length; j++) {
+            if (importFiles[j].name === fname) { importFiles.splice(j, 1); break; }
+          }
+          renderImportFileList();
+        };
+      })(sorted[i].name));
+
+      item.appendChild(name);
+      item.appendChild(rmBtn);
+      list.appendChild(item);
+    }
+  }
+
+  function sortImportFiles(files) {
+    return files.slice().sort(function (a, b) {
+      var aMain = /^main\.ya?ml$/i.test(a.name);
+      var bMain = /^main\.ya?ml$/i.test(b.name);
+      if (aMain && !bMain) return 1;
+      if (!aMain && bMain) return -1;
+      return a.name.localeCompare(b.name);
+    });
+  }
+
+  function mergeImportFiles(files) {
+    var sorted = sortImportFiles(files);
+    return sorted.map(function (f) { return f.text; }).join('\n');
+  }
+
+  function openImportModal() {
+    ensureImportModal();
+    importFiles = [];
+    var textarea = document.getElementById('pg-import-text');
+    if (textarea) textarea.value = '';
+    renderImportFileList();
+
+    // Reset to Paste tab
+    var tabs = importModal.querySelectorAll('.pg-import-tab');
+    for (var i = 0; i < tabs.length; i++) tabs[i].classList.remove('active');
+    tabs[0].classList.add('active');
+    document.getElementById('pg-import-paste').style.display = '';
+    document.getElementById('pg-import-upload').style.display = 'none';
+
+    importModal.classList.add('open');
+
+    var okBtn = document.getElementById('pg-import-ok');
+    var cancelBtn = document.getElementById('pg-import-cancel');
+
+    function close() {
+      importModal.classList.remove('open');
+      okBtn.removeEventListener('click', doImport);
+      cancelBtn.removeEventListener('click', cancel);
+    }
+
+    function doImport() {
+      var errEl = document.getElementById('pg-import-error');
+      errEl.textContent = '';
+
+      var activeTab = importModal.querySelector('.pg-import-tab.active');
+      var yamlText = '';
+
+      if (activeTab && activeTab.dataset.tab === 'upload') {
+        if (importFiles.length === 0) {
+          errEl.textContent = 'No files added. Browse or drop .yaml files above.';
+          return;
+        }
+        yamlText = mergeImportFiles(importFiles);
+      } else {
+        yamlText = (document.getElementById('pg-import-text') || {}).value || '';
+      }
+
+      if (!yamlText.trim()) {
+        errEl.textContent = 'Nothing to import. Paste YAML text above.';
+        return;
+      }
+
+      var resolved = window.DIME_HL.resolveAnchors(yamlText);
+      var parsed = window.DIME_HL.parseYaml(resolved);
+      var totalConnectors = parsed.sources.length + parsed.sinks.length;
+
+      if (totalConnectors === 0) {
+        errEl.textContent = 'No sources or sinks found. Check that the YAML contains a "sources:" or "sinks:" section with valid connector definitions.';
+        return;
+      }
+
+      // Check how many connectors will actually load (known types)
+      loadSchema(function () {
+        var sourceTypes = getTypeEnum(false);
+        var sinkTypes = getTypeEnum(true);
+        var srcMap = {};
+        for (var si = 0; si < sourceTypes.length; si++) srcMap[sourceTypes[si].toLowerCase()] = sourceTypes[si];
+        var snkMap = {};
+        for (var ki = 0; ki < sinkTypes.length; ki++) snkMap[sinkTypes[ki].toLowerCase()] = sinkTypes[ki];
+
+        var skipped = [];
+        for (var i = 0; i < parsed.sources.length; i++) {
+          var ct = (parsed.sources[i].connector || '').toLowerCase();
+          if (!srcMap[ct]) skipped.push(parsed.sources[i].name || ct);
+        }
+        for (var j = 0; j < parsed.sinks.length; j++) {
+          var st = (parsed.sinks[j].connector || '').toLowerCase();
+          if (!snkMap[st]) skipped.push(parsed.sinks[j].name || st);
+        }
+
+        if (skipped.length === totalConnectors) {
+          errEl.textContent = 'No recognized connector types found. Unknown: ' + skipped.join(', ');
+          return;
+        }
+
+        close();
+        loadFromYaml(resolved);
+
+        if (skipped.length > 0) {
+          showStatus('Imported with ' + skipped.length + ' skipped (unknown type): ' + skipped.join(', '), true);
+        }
+      });
+    }
+
+    function cancel() { close(); }
+
+    okBtn.addEventListener('click', doImport);
+    cancelBtn.addEventListener('click', cancel);
   }
 
   // ── Form Rendering ─────────────────────────────────────────────
@@ -1032,13 +1287,14 @@
 
   // ── Init ───────────────────────────────────────────────────────
 
-  var toChatBtn;
+  var toChatBtn, importBtn;
 
   function init() {
     bubble = document.getElementById('playground-bubble');
     pane = document.getElementById('playground-pane');
     closeBtn = document.getElementById('pg-close');
     validateBtn = document.getElementById('pg-validate');
+    importBtn = document.getElementById('pg-import-btn');
     copyBtn = document.getElementById('pg-copy');
     toChatBtn = document.getElementById('pg-to-chat');
     sourceList = document.getElementById('pg-source-list');
@@ -1055,14 +1311,20 @@
     closeBtn.addEventListener('click', closePlayground);
     copyBtn.addEventListener('click', copyYaml);
     toChatBtn.addEventListener('click', sendToChat);
+    importBtn.addEventListener('click', function () { openImportModal(); });
     validateBtn.addEventListener('click', function () { renderValidation(validate()); });
     addSourceBtn.addEventListener('click', function () { addConnector(false); });
     addSinkBtn.addEventListener('click', function () { addConnector(true); });
 
     document.addEventListener('keydown', function (e) {
       if (e.key === 'Escape' && pane.classList.contains('open')) {
-        // Don't close playground if script modal is open
+        // Don't close playground if script modal or import modal is open
         if (scriptModal && scriptModal.classList.contains('open')) return;
+        if (importModal && importModal.classList.contains('open')) {
+          importModal.classList.remove('open');
+          e.stopPropagation();
+          return;
+        }
         closePlayground();
         e.stopPropagation();
       }

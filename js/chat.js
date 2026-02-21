@@ -92,6 +92,12 @@
       }
       return m;
     });
+    h = h.replace(/\bPage\s+(\d{2})\b/g, function (full, num) {
+      if (validPageIds[num]) {
+        return '<a class="chat-page-link" href="#page-' + num + '">' + full + '</a>';
+      }
+      return full;
+    });
     return h;
   }
 
