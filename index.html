@@ -8,6 +8,7 @@
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/chat.css">
   <link rel="stylesheet" href="css/playground.css">
+  <link rel="stylesheet" href="css/terminal.css">
 </head>
 <body>
   <button id="sidebar-toggle" title="Toggle menu">☰</button>
@@ -52,6 +53,7 @@
   <div id="bottom-controls">
     <button id="playground-bubble" title="YAML Playground">Playground</button>
     <button id="chat-bubble" title="Chat with DIME AI">Chat</button>
+    <button id="term-bubble" title="Terminal (`)">&gt;_</button>
     <span class="controls-sep"></span>
     <button id="font-down" title="Decrease font size">&minus;</button>
     <button id="font-up" title="Increase font size">+</button>
@@ -68,6 +70,7 @@
         <tr><td><kbd>&uarr;</kbd> <kbd>&darr;</kbd></td><td>Previous / next page</td></tr>
         <tr><td><kbd>Esc</kbd></td><td>Close panel or modal</td></tr>
         <tr><td><kbd>Ctrl +</kbd> <kbd>Ctrl &minus;</kbd></td><td>Increase / decrease font</td></tr>
+        <tr><td><kbd>`</kbd></td><td>Toggle terminal</td></tr>
         <tr><td><kbd>?</kbd></td><td>Show this help</td></tr>
       </table>
       <div id="shortcut-footer">Press <kbd>Esc</kbd> to close</div>
@@ -143,6 +146,19 @@
           <button id="chat-key-cancel">Cancel</button>
         </div>
       </div>
+    </div>
+  </div>
+  <!-- Terminal -->
+  <div id="term-pane">
+    <div id="term-header">
+      <span id="term-title">DIME TERMINAL</span>
+      <span id="term-status"></span>
+      <button id="term-close" title="Close (Esc)">&times;</button>
+    </div>
+    <div id="term-output"></div>
+    <div id="term-input-line">
+      <span class="term-prompt">DIME&gt;</span>
+      <input id="term-input" type="text" autocomplete="off" spellcheck="false" placeholder="Type a command...">
     </div>
   </div>
   <div id="scanlines"></div>
@@ -268,5 +284,7 @@
   <script src="js/playground.js"></script>
   <!-- Chat -->
   <script src="js/chat.js"></script>
+  <!-- Terminal -->
+  <script src="js/terminal.js"></script>
 </body>
 </html>

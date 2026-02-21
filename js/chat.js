@@ -1003,6 +1003,23 @@
 
   // ── Public API ──────────────────────────────────────────────────
 
+  function streamQuestion(text, onChunk, onDone, onError) {
+    if (!apiKey) { onError({message:'No API key. Configure one in Chat settings.'}); return; }
+    var ctrl = new AbortController();
+    var contents = [{ role:'user', parts:[{text:text}] }];
+    ensureContext(ctrl.signal).then(function(ctx) {
+      return streamChat(contents, ctx, onChunk, ctrl.signal);
+    }).then(onDone).catch(function(err) {
+      if (err && err.retry) {
+        cacheName = null; cacheModel = null;
+        streamQuestion(text, onChunk, onDone, onError);
+        return;
+      }
+      onError(err || {message:'Unknown error'});
+    });
+    return function() { ctrl.abort(); };
+  }
+
   function sendYamlToChat(yaml) {
     // Open the chat pane
     if (pane && !pane.classList.contains('open')) openPane();
@@ -1017,6 +1034,7 @@
   }
 
   window.DIME_CHAT = {
-    sendYaml: sendYamlToChat
+    sendYaml: sendYamlToChat,
+    streamQuestion: streamQuestion
   };
 })();
