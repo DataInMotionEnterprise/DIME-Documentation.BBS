@@ -506,11 +506,19 @@
 
   // ── File attachment ────────────────────────────────────────────
   var MAX_FILE_SIZE = 1024 * 1024; // 1MB
+  var ALLOWED_TYPES = {
+    'application/pdf': true,
+    'image/png': true,
+    'image/jpeg': true,
+    'image/gif': true,
+    'image/webp': true,
+    'image/bmp': true
+  };
 
   function stageFile(file) {
     if (!file) return;
-    if (file.type !== 'application/pdf') {
-      addStatusMessage('Only PDF files are supported.', 'chat-error');
+    if (!ALLOWED_TYPES[file.type]) {
+      addStatusMessage('Unsupported file type. Use PDF or image files (PNG, JPG, GIF, WebP).', 'chat-error');
       return;
     }
     if (file.size > MAX_FILE_SIZE) {
@@ -524,7 +532,7 @@
     var reader = new FileReader();
     reader.onload = function () {
       var base64 = reader.result.split(',')[1];
-      stagedFiles.push({ name: file.name, base64: base64, mimeType: 'application/pdf' });
+      stagedFiles.push({ name: file.name, base64: base64, mimeType: file.type });
       showFilePreview();
       chatInput.focus();
     };
@@ -553,8 +561,9 @@
     filePreview.style.display = 'flex';
     var html = '';
     for (var i = 0; i < stagedFiles.length; i++) {
+      var icon = /^image\//.test(stagedFiles[i].mimeType) ? '&#x1F5BC;' : '&#x1F4C4;';
       html += '<span class="chat-file-chip" data-idx="' + i + '">' +
-        '<span class="chat-file-icon">&#x1F4C4;</span>' +
+        '<span class="chat-file-icon">' + icon + '</span>' +
         '<span class="chat-file-name">' + esc(stagedFiles[i].name) + '</span>' +
         '<button class="chat-file-remove" title="Remove">&times;</button>' +
         '</span>';
@@ -599,7 +608,8 @@
     var fileLabel = '';
     for (var f = 0; f < pendingFiles.length; f++) {
       parts.push({ inlineData: { mimeType: pendingFiles[f].mimeType, data: pendingFiles[f].base64 } });
-      fileLabel += '[PDF: ' + pendingFiles[f].name + ']\n';
+      var typeTag = /^image\//.test(pendingFiles[f].mimeType) ? 'Image' : 'PDF';
+      fileLabel += '[' + typeTag + ': ' + pendingFiles[f].name + ']\n';
     }
     if (fileLabel) displayText = fileLabel + displayText;
     if (apiText) parts.push({ text: apiText });
@@ -651,7 +661,7 @@
           for (var p = 0; p < userMsg.parts.length; p++) {
             if (userMsg.parts[p].inlineData) {
               var fname = fileIdx < pendingFiles.length ? pendingFiles[fileIdx].name : 'file';
-              newParts.push({ text: '[Attached PDF: ' + fname + ']\n' });
+              newParts.push({ text: '[Attached file: ' + fname + ']\n' });
               fileIdx++;
             } else {
               newParts.push(userMsg.parts[p]);

@@ -494,6 +494,12 @@
   var searchIndex   = [];
   var selectedIdx   = -1;
 
+  function stripHtml(html) {
+    var tmp = document.createElement('div');
+    tmp.innerHTML = html;
+    return tmp.textContent || '';
+  }
+
   function buildSearchIndex() {
     searchIndex = [];
     for (var i = 0; i < PAGES.length; i++) {
@@ -510,6 +516,7 @@
           if (hs.panel) {
             searchIndex.push({
               text: hs.panel.title,
+              bodyText: stripHtml(hs.panel.body || ''),
               pageId: page.id,
               hotspotId: hs.id,
               type: 'topic',
@@ -541,7 +548,7 @@
 
     for (var i = 0; i < searchIndex.length; i++) {
       var entry = searchIndex[i];
-      var haystack = entry.text.toLowerCase();
+      var haystack = (entry.text + ' ' + (entry.bodyText || '')).toLowerCase();
       var allMatch = true;
       for (var t = 0; t < terms.length; t++) {
         if (haystack.indexOf(terms[t]) < 0) { allMatch = false; break; }
@@ -556,6 +563,25 @@
     renderSearchResults(matches, terms);
   }
 
+  function getBodySnippet(bodyText, terms) {
+    if (!bodyText) return '';
+    var lower = bodyText.toLowerCase();
+    // Find the first term that appears in bodyText
+    var pos = -1;
+    for (var t = 0; t < terms.length; t++) {
+      pos = lower.indexOf(terms[t]);
+      if (pos >= 0) break;
+    }
+    if (pos < 0) return '';
+    var radius = 40;
+    var start = Math.max(0, pos - radius);
+    var end = Math.min(bodyText.length, pos + radius);
+    var snippet = (start > 0 ? '...' : '') +
+      bodyText.slice(start, end).replace(/\s+/g, ' ') +
+      (end < bodyText.length ? '...' : '');
+    return snippet;
+  }
+
   function renderSearchResults(matches, terms) {
     var html = '';
     for (var i = 0; i < matches.length; i++) {
@@ -565,8 +591,26 @@
       var sub = m.type === 'topic'
         ? ' <span class="sr-page">in ' + escapeHtml(m.pageTitle) + '</span>'
         : '';
+
+      // Show body snippet if match came from body text, not just title
+      var snippetHtml = '';
+      if (m.bodyText) {
+        var titleLower = m.text.toLowerCase();
+        var allInTitle = true;
+        for (var t = 0; t < terms.length; t++) {
+          if (titleLower.indexOf(terms[t]) < 0) { allInTitle = false; break; }
+        }
+        if (!allInTitle) {
+          var raw = getBodySnippet(m.bodyText, terms);
+          if (raw) {
+            snippetHtml = '<span class="sr-snippet">' + highlightTerms(escapeHtml(raw), terms) + '</span>';
+          }
+        }
+      }
+
       html += '<li' + cls + ' data-idx="' + i + '">' +
-        '<span class="sr-title">' + title + '</span>' + sub + '</li>';
+        '<span class="sr-title">' + title + '</span>' + sub +
+        snippetHtml + '</li>';
     }
     searchResults.innerHTML = html;
 
@@ -717,9 +761,14 @@
   // ── Copy body as markdown ────────────────────────────────────
 
   var copyBodyBtn = document.getElementById('copy-body');
+  var sharePanelBtn = document.getElementById('share-panel');
   var copyPageBtn = document.getElementById('copy-page');
 
   function initCopyBody() {
+    sharePanelBtn.addEventListener('click', function () {
+      copyToClipboard(window.location.href, sharePanelBtn);
+    });
+
     copyBodyBtn.addEventListener('click', function () {
       var title = panelTitle.textContent;
       var bodyMd = htmlToMarkdown(panelBody).replace(/\n{3,}/g, '\n\n').trim();

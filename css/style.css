@@ -901,6 +901,16 @@ kbd {
   color: var(--cyan);
 }
 
+#search-results .sr-snippet {
+  display: block;
+  color: var(--amber-dim);
+  font-size: 11px;
+  margin-top: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 #search-results:empty + #search-footer {
   display: none;
 }
@@ -927,6 +937,7 @@ kbd {
 }
 
 #copy-body,
+#share-panel,
 #copy-page,
 .copy-yaml-btn {
   background: none;
@@ -943,6 +954,7 @@ kbd {
 }
 
 #copy-body:hover,
+#share-panel:hover,
 #copy-page:hover,
 .copy-yaml-btn:hover {
   background: rgba(0, 229, 255, 0.12);
@@ -951,6 +963,7 @@ kbd {
 }
 
 #copy-body.copied,
+#share-panel.copied,
 #copy-page.copied,
 .copy-yaml-btn.copied {
   border-color: var(--cyan);

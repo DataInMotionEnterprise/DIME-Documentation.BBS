@@ -34,6 +34,7 @@
       <div id="panel-header">
         <h2 id="panel-title"></h2>
         <button id="copy-body" title="Copy as markdown">&#x2398;</button>
+        <button id="share-panel" title="Copy link to clipboard">&#x2197;</button>
         <button id="panel-close" title="Close (ESC)">&times;</button>
       </div>
       <div id="panel-body"></div>
@@ -123,10 +124,10 @@
     <div id="chat-messages"></div>
     <div id="chat-file-preview"></div>
     <div id="chat-input-bar">
-      <button id="chat-attach" title="Attach PDFs (5 max, 1MB each)">&#x1F4CE;</button>
+      <button id="chat-attach" title="Attach files (5 max, 1MB each)">&#x1F4CE;</button>
       <textarea id="chat-input" placeholder="Ask about DIME..." rows="1"></textarea>
       <button id="chat-send">Send</button>
-      <input id="chat-file-input" type="file" accept=".pdf" multiple style="display:none">
+      <input id="chat-file-input" type="file" accept=".pdf,.png,.jpg,.jpeg,.gif,.webp,.bmp" multiple style="display:none">
     </div>
     <div id="chat-settings">
       <div id="chat-settings-box">
