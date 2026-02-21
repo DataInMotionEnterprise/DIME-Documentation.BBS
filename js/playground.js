@@ -86,13 +86,84 @@
 
   // Get connector-specific item extra properties (e.g. opcUaItem.namespace)
   function getItemExtraProps(connType) {
+    // 1. Check for a standalone definition (e.g. ethernetIpItem, modbusTcpItem)
     var defKey = connType + 'Item';
     var def = schema.definitions[defKey];
-    if (!def || !def.allOf) return {};
-    for (var i = 1; i < def.allOf.length; i++) {
-      if (def.allOf[i].properties) return def.allOf[i].properties;
+    if (def && def.allOf) {
+      for (var i = 1; i < def.allOf.length; i++) {
+        if (def.allOf[i].properties) return def.allOf[i].properties;
+      }
     }
+
+    // 2. Check for inline item definition in connector source (e.g. ros2Source.properties.items.items.allOf)
+    var srcDef = schema.definitions[connType + 'Source'];
+    if (srcDef && srcDef.properties && srcDef.properties.items &&
+        srcDef.properties.items.items && srcDef.properties.items.items.allOf) {
+      var allOf = srcDef.properties.items.items.allOf;
+      for (var j = 1; j < allOf.length; j++) {
+        if (allOf[j].properties) return allOf[j].properties;
+      }
+    }
+
     return {};
+  }
+
+  // Returns { properties: {...}, required: [...] } merging baseItem + connector-specific item props
+  function getFullItemProps(connType) {
+    var defs = schema.definitions;
+    var props = {};
+    var req = [];
+    var k;
+
+    var baseDef = defs.baseItem;
+    for (k in baseDef.properties) props[k] = baseDef.properties[k];
+    if (baseDef.required) req = req.concat(baseDef.required);
+
+    var extra = getItemExtraProps(connType);
+    for (k in extra) props[k] = extra[k];
+
+    return { properties: props, required: req };
+  }
+
+  // Returns { properties: {...}, required: [...] } merging base + shared + connector-specific + streaming
+  function getFullConnectorProps(isSink, connType) {
+    var defs = schema.definitions;
+    var props = {};
+    var req = [];
+    var k;
+
+    // 1. Base connector (name, enabled, scan_interval)
+    var baseDef = defs.baseConnector;
+    for (k in baseDef.properties) props[k] = baseDef.properties[k];
+    if (baseDef.required) req = req.concat(baseDef.required);
+
+    // 2. Shared source/sink properties (connector, rbe, scripts, filters, etc.)
+    var sharedBlock = defs[isSink ? 'sinkConnector' : 'sourceConnector'].allOf[1];
+    for (k in sharedBlock.properties) {
+      if (k === 'connector' || k === 'items') continue;
+      props[k] = sharedBlock.properties[k];
+    }
+    if (sharedBlock.required) req = req.concat(sharedBlock.required);
+
+    // 3. Streaming properties (itemized_read, create_dummy_messages_on_startup)
+    if (!isSink && _cache.streamingSrc.indexOf(connType) !== -1) {
+      var streamThen = defs.sourceConnector.allOf[2].then;
+      if (streamThen && streamThen.properties) {
+        for (k in streamThen.properties) props[k] = streamThen.properties[k];
+      }
+    }
+
+    // 4. Connector-specific properties
+    var specDef = getConnectorDef(isSink, connType);
+    if (specDef.properties) {
+      for (k in specDef.properties) {
+        if (k === 'items') continue;
+        props[k] = specDef.properties[k];
+      }
+    }
+    if (specDef.required) req = req.concat(specDef.required);
+
+    return { properties: props, required: req };
   }
 
   function isStreaming(connType) {
@@ -1507,6 +1578,14 @@
 
   // ── Public API ──────────────────────────────────────────────────
   window.DIME_PG = {
-    loadYaml: loadFromYaml
+    loadYaml: loadFromYaml,
+    loadSchema: loadSchema,
+    getSchema: function () { return schema; },
+    getTypeEnum: getTypeEnum,
+    getConnectorDef: getConnectorDef,
+    getConnectorRequired: getConnectorRequired,
+    getConnectorExample: getConnectorExample,
+    getFullConnectorProps: getFullConnectorProps,
+    getFullItemProps: getFullItemProps
   };
 })();

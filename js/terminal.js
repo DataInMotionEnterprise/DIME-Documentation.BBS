@@ -1098,6 +1098,378 @@
     }
   });
 
+  // ── Schema helpers ─────────────────────────────────────────────
+  function withSchema(fn) {
+    if (!window.DIME_PG) { writeError('Playground not available'); return; }
+    window.DIME_PG.loadSchema(function () { fn(); });
+  }
+
+  // forceSide: 'source', 'sink', or null (auto-detect)
+  function matchConnectorType(input, forceSide) {
+    var pg = window.DIME_PG;
+    var q = input.toLowerCase();
+    var sources = pg.getTypeEnum(false);
+    var sinks = pg.getTypeEnum(true);
+    var checkSrc = forceSide !== 'sink';
+    var checkSnk = forceSide !== 'source';
+
+    // Exact matches
+    var exact = [];
+    if (checkSrc) {
+      for (var i = 0; i < sources.length; i++) {
+        if (sources[i].toLowerCase() === q) exact.push({ type: sources[i], isSink: false });
+      }
+    }
+    if (checkSnk) {
+      for (var j = 0; j < sinks.length; j++) {
+        if (sinks[j].toLowerCase() === q) exact.push({ type: sinks[j], isSink: true });
+      }
+    }
+    if (exact.length === 1) return exact[0];
+    if (exact.length > 1) return exact; // both source and sink exist
+
+    // Partial match
+    var matches = [];
+    if (checkSrc) {
+      for (var si = 0; si < sources.length; si++) {
+        if (sources[si].toLowerCase().indexOf(q) >= 0) matches.push({ type: sources[si], isSink: false });
+      }
+    }
+    if (checkSnk) {
+      for (var ki = 0; ki < sinks.length; ki++) {
+        if (sinks[ki].toLowerCase().indexOf(q) >= 0) matches.push({ type: sinks[ki], isSink: true });
+      }
+    }
+
+    if (matches.length === 1) return matches[0];
+    return matches.length > 0 ? matches : null;
+  }
+
+  function completeConnectorTypes(partial) {
+    if (!window.DIME_PG || !window.DIME_PG.getSchema()) return [];
+    var pg = window.DIME_PG;
+    var p = partial.toLowerCase();
+    var items = [];
+    var sources = pg.getTypeEnum(false);
+    var sinks = pg.getTypeEnum(true);
+    var seen = {};
+    for (var i = 0; i < sources.length; i++) {
+      if (sources[i].toLowerCase().indexOf(p) === 0 && !seen[sources[i]]) {
+        items.push(sources[i]);
+        seen[sources[i]] = 1;
+      }
+    }
+    for (var j = 0; j < sinks.length; j++) {
+      if (sinks[j].toLowerCase().indexOf(p) === 0 && !seen[sinks[j]]) {
+        items.push(sinks[j]);
+        seen[sinks[j]] = 1;
+      }
+    }
+    return items.slice(0, 20);
+  }
+
+  // ── connectors ────────────────────────────────────────────────
+  registerCommand('connectors', {
+    description: 'List all source/sink connector types from the schema',
+    usage: 'connectors [--sources|--sinks]',
+    category: 'Config',
+    fn: function (args, flags) {
+      withSchema(function () {
+        var pg = window.DIME_PG;
+        var sources = pg.getTypeEnum(false);
+        var sinks = pg.getTypeEnum(true);
+
+        if (!flags.sinks) {
+          writeHeading('SOURCE CONNECTORS (' + sources.length + ')');
+          var srcRows = [];
+          for (var i = 0; i < sources.length; i++) {
+            var def = pg.getConnectorDef(false, sources[i]);
+            srcRows.push([sources[i], def.description || '']);
+          }
+          writeTable(['Connector', 'Description'], srcRows);
+          writeLine('');
+        }
+
+        if (!flags.sources) {
+          writeHeading('SINK CONNECTORS (' + sinks.length + ')');
+          var snkRows = [];
+          for (var j = 0; j < sinks.length; j++) {
+            var def = pg.getConnectorDef(true, sinks[j]);
+            snkRows.push([sinks[j], def.description || '']);
+          }
+          writeTable(['Connector', 'Description'], snkRows);
+        }
+
+        writeDim('Use "describe <type>" for details or "sample <type>" for a YAML snippet.');
+      });
+    }
+  });
+
+  // ── describe ──────────────────────────────────────────────────
+  function describeProps(props, reqFields, prefix) {
+    var pre = prefix || '';
+    var rows = [];
+    for (var key in props) {
+      var p = props[key];
+      if (p.type === 'object' && p.properties) {
+        // Nested object — recurse with dotted prefix
+        var nested = describeProps(p.properties, p.required || [], pre + key + '.');
+        for (var n = 0; n < nested.length; n++) rows.push(nested[n]);
+      } else {
+        var typeStr = p.type || 'string';
+        if (p.enum && p.type !== 'boolean') typeStr += ' [' + p.enum.join(', ') + ']';
+        var defVal = p.default !== undefined ? String(p.default) : '';
+        var req = reqFields.indexOf(key) !== -1 ? '*' : '';
+        rows.push([req + pre + key, typeStr, defVal, p.description || '']);
+      }
+    }
+    return rows;
+  }
+
+  function describeOne(pg, type, isSink) {
+    var specDef = pg.getConnectorDef(isSink, type);
+    var full = pg.getFullConnectorProps(isSink, type);
+    var props = full.properties;
+    var reqFields = full.required;
+
+    writeHeading(type.toUpperCase() + ' (' + (isSink ? 'sink' : 'source') + ')');
+    if (specDef.description) writeDim(specDef.description);
+    writeLine('');
+
+    writeTable(['Property', 'Type', 'Default', 'Description'], describeProps(props, reqFields));
+
+    if (reqFields.length > 0) {
+      writeDim('* = required');
+    }
+
+    // Item properties (sources only)
+    if (!isSink) {
+      var itemFull = pg.getFullItemProps(type);
+      var itemProps = itemFull.properties;
+      var itemReq = itemFull.required;
+
+      writeLine('');
+      writeHeading('ITEM PROPERTIES');
+      writeTable(['Property', 'Type', 'Default', 'Description'], describeProps(itemProps, itemReq));
+
+      if (itemReq.length > 0) {
+        writeDim('* = required');
+      }
+    }
+  }
+
+  registerCommand('describe', {
+    description: 'Show all properties for a connector type',
+    usage: 'describe <type> [--source|--sink]  (e.g., "describe mqtt --sink")',
+    category: 'Config',
+    fn: function (args, flags) {
+      if (args.length === 0) { writeError('Usage: describe <type> [--source|--sink]'); return; }
+      withSchema(function () {
+        var forceSide = flags.source ? 'source' : flags.sink ? 'sink' : null;
+        var result = matchConnectorType(args[0], forceSide);
+        if (!result) {
+          writeError('Connector not found: ' + args[0]);
+          writeDim('Use "connectors" to list available types.');
+          return;
+        }
+        if (Array.isArray(result)) {
+          // Check if all matches are the same connector name (both source and sink)
+          var sameName = result.length > 1 && result.every(function (r) {
+            return r.type.toLowerCase() === result[0].type.toLowerCase();
+          });
+          if (sameName) {
+            // Show both source and sink
+            var pg = window.DIME_PG;
+            for (var b = 0; b < result.length; b++) {
+              describeOne(pg, result[b].type, result[b].isSink);
+              if (b < result.length - 1) writeSeparator();
+            }
+            writeDim('Use --source or --sink to show only one side.');
+            return;
+          }
+          writeDim('Multiple matches for "' + args[0] + '":');
+          for (var m = 0; m < result.length; m++) {
+            writeLine('  ' + result[m].type + ' (' + (result[m].isSink ? 'sink' : 'source') + ')');
+          }
+          writeDim('Use --source or --sink to narrow results.');
+          return;
+        }
+
+        describeOne(window.DIME_PG, result.type, result.isSink);
+      });
+    },
+    complete: function (partial) {
+      return completeConnectorTypes(partial);
+    }
+  });
+
+  // ── sample ────────────────────────────────────────────────────
+  function sampleYStr(v) {
+    var s = String(v);
+    if (s === '') return '""';
+    if (/[:{}\[\],&*?|>!%@`#'"\\]/.test(s) || s === 'true' || s === 'false' || s === 'null' ||
+        (/^\d/.test(s) && !isNaN(Number(s)))) {
+      return '"' + s.replace(/\\/g, '\\\\').replace(/"/g, '\\"') + '"';
+    }
+    return s;
+  }
+
+  function sampleOne(pg, type, isSink, full) {
+    var fullDef = pg.getFullConnectorProps(isSink, type);
+    var example = pg.getConnectorExample(isSink, type);
+    var props = fullDef.properties;
+    var reqFields = fullDef.required;
+
+    // Skip these in sample output — they're in the header or structural
+    var skipInYaml = { name: 1, connector: 1, scan_interval: 1, enabled: 1 };
+
+    var y = [];
+    var section = isSink ? 'sinks' : 'sources';
+    y.push(section + ':');
+    y.push('  - name: my_' + type);
+    y.push('    connector: ' + type);
+    y.push('    scan_interval: 1000');
+
+    for (var key in props) {
+      if (skipInYaml[key]) continue;
+      var p = props[key];
+      var isReq = reqFields.indexOf(key) !== -1;
+
+      // Skip sink object and script fields in minimal mode unless example has them
+      if (key === 'sink') continue;
+      if (!full && !isReq && !example) continue;
+      if (!full && !isReq && example && example[key] === undefined) continue;
+
+      var val;
+      if (example && example[key] !== undefined) {
+        val = example[key];
+      } else if (p.default !== undefined) {
+        val = p.default;
+      } else if (p.type === 'integer' || p.type === 'number') {
+        val = 0;
+      } else if (p.type === 'boolean') {
+        val = false;
+      } else if (p.type === 'array') {
+        val = [];
+      } else {
+        val = '';
+      }
+
+      if (p.type === 'boolean') {
+        y.push('    ' + key + ': ' + (val ? 'true' : 'false'));
+      } else if (p.type === 'integer' || p.type === 'number') {
+        y.push('    ' + key + ': ' + val);
+      } else if (p.type === 'array' && Array.isArray(val) && val.length > 0) {
+        y.push('    ' + key + ':');
+        for (var ai = 0; ai < val.length; ai++) y.push('      - ' + sampleYStr(String(val[ai])));
+      } else if (p.type === 'object' && val && typeof val === 'object') {
+        y.push('    ' + key + ':');
+        for (var ok in val) y.push('      ' + ok + ': ' + sampleYStr(String(val[ok])));
+      } else if (p.type === 'string' && typeof val === 'string' && val.indexOf('\n') !== -1) {
+        y.push('    ' + key + ': |');
+        var sLines = val.split('\n');
+        for (var sl = 0; sl < sLines.length; sl++) y.push('      ' + sLines[sl]);
+      } else if (p.type !== 'array') {
+        y.push('    ' + key + ': ' + sampleYStr(val));
+      }
+    }
+
+    if (!isSink) {
+      var itemFull = pg.getFullItemProps(type);
+      var itemProps = itemFull.properties;
+      var itemReq = itemFull.required;
+      // Find first example item if available
+      var exItem = (example && Array.isArray(example.items) && example.items[0]) || null;
+
+      y.push('    items:');
+      y.push('      - name: item_1');
+
+      for (var ik in itemProps) {
+        if (ik === 'name' || ik === 'sink') continue;
+        var ip = itemProps[ik];
+        var iReq = itemReq.indexOf(ik) !== -1;
+
+        if (!full && !iReq && !exItem) continue;
+        if (!full && !iReq && exItem && exItem[ik] === undefined) continue;
+
+        var iv;
+        if (exItem && exItem[ik] !== undefined) {
+          iv = exItem[ik];
+        } else if (ip.default !== undefined) {
+          iv = ip.default;
+        } else if (ip.type === 'integer' || ip.type === 'number') {
+          iv = 0;
+        } else if (ip.type === 'boolean') {
+          iv = false;
+        } else {
+          iv = '';
+        }
+
+        if (ip.type === 'boolean') {
+          y.push('        ' + ik + ': ' + (iv ? 'true' : 'false'));
+        } else if (ip.type === 'integer' || ip.type === 'number') {
+          y.push('        ' + ik + ': ' + iv);
+        } else if (ip.type === 'string' && typeof iv === 'string' && iv.indexOf('\n') !== -1) {
+          y.push('        ' + ik + ': |');
+          var iLines = iv.split('\n');
+          for (var il = 0; il < iLines.length; il++) y.push('          ' + iLines[il]);
+        } else {
+          y.push('        ' + ik + ': ' + sampleYStr(iv));
+        }
+      }
+    }
+
+    writeHeading('SAMPLE ' + type.toUpperCase() + ' (' + (isSink ? 'sink' : 'source') + ')');
+    writeYaml(y.join('\n'));
+  }
+
+  registerCommand('sample', {
+    description: 'Generate a minimal YAML snippet for a connector',
+    usage: 'sample <type> [--source|--sink] [--full]',
+    category: 'Config',
+    fn: function (args, flags) {
+      if (args.length === 0) { writeError('Usage: sample <type> [--source|--sink] [--full]'); return; }
+      withSchema(function () {
+        var forceSide = flags.source ? 'source' : flags.sink ? 'sink' : null;
+        var result = matchConnectorType(args[0], forceSide);
+        if (!result) {
+          writeError('Connector not found: ' + args[0]);
+          writeDim('Use "connectors" to list available types.');
+          return;
+        }
+        var full = !!flags.full;
+        var pg = window.DIME_PG;
+
+        if (Array.isArray(result)) {
+          var sameName = result.length > 1 && result.every(function (r) {
+            return r.type.toLowerCase() === result[0].type.toLowerCase();
+          });
+          if (sameName) {
+            for (var b = 0; b < result.length; b++) {
+              sampleOne(pg, result[b].type, result[b].isSink, full);
+              if (b < result.length - 1) writeSeparator();
+            }
+            writeDim('Use --source or --sink to show only one side.' +
+              (full ? '' : ' Use --full to see all properties.'));
+            return;
+          }
+          writeDim('Multiple matches for "' + args[0] + '":');
+          for (var m = 0; m < result.length; m++) {
+            writeLine('  ' + result[m].type + ' (' + (result[m].isSink ? 'sink' : 'source') + ')');
+          }
+          writeDim('Use --source or --sink to narrow results.');
+          return;
+        }
+
+        sampleOne(pg, result.type, result.isSink, full);
+        writeDim(full ? 'Showing all properties.' : 'Use --full to see all properties.');
+      });
+    },
+    complete: function (partial) {
+      return completeConnectorTypes(partial);
+    }
+  });
+
   // ── ask ────────────────────────────────────────────────────────
   registerCommand('ask', {
     description: 'Ask DIME AI a question (streams response)',
