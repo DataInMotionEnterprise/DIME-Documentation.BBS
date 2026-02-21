@@ -16,8 +16,10 @@
     'The complete DIME documentation has been provided to you as context. Use it to ' +
     'give accurate, specific answers grounded in the documentation.\n\n' +
     'Guidelines:\n' +
-    '- When referencing documentation pages, mention their page IDs (e.g. REF18, EX05) ' +
-    'so users can navigate to them in the documentation browser.\n' +
+    '- Page references MUST use one of these exact prefixed formats to become clickable links:\n' +
+    '  CON05 (concept pages 01-30), REF18 (reference pages), EX05 (example pages).\n' +
+    '  Never write bare numbers, "page 12", "REF: 12", or any other format.\n' +
+    '  Example: "see CON08 for filtering" or "the OPC-UA connector (REF25)".\n' +
     '- When generating YAML configurations, use proper DIME YAML structure with ' +
     'sources and sinks. Include comments explaining key settings. Use YAML anchors ' +
     '(&/*) where appropriate.\n' +
@@ -36,6 +38,7 @@
   var abortCtrl = null;
   var stagedFiles = []; // [{ name, base64, mimeType }, ...]
   var MAX_FILES = 5;
+  var lastUsage = null; // latest usageMetadata from Gemini API
 
   // Build valid page ID set
   var validPageIds = {};
@@ -86,15 +89,25 @@
     var h = esc(text);
     h = h.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
     h = h.replace(/`([^`]+)`/g, '<code>$1</code>');
-    h = h.replace(/\b(REF\d{1,2}|EX\d{1,2})\b/g, function (m) {
-      if (validPageIds[m]) {
-        return '<a class="chat-page-link" href="#page-' + m + '">' + m + '</a>';
+    // Page IDs: CON12 → concept page "12", REF18, EX05
+    h = h.replace(/\b(CON|REF|EX)(\d{1,2})\b/g, function (full, prefix, num) {
+      var id = prefix === 'CON'
+        ? (num.length === 1 ? '0' + num : num)
+        : prefix + (num.length === 1 ? '0' + num : num);
+      if (validPageIds[id]) {
+        return '<a class="chat-page-link" href="#page-' + id + '">' + full + '</a>';
       }
-      return m;
+      return full;
     });
-    h = h.replace(/\bPage\s+(\d{2})\b/g, function (full, num) {
-      if (validPageIds[num]) {
-        return '<a class="chat-page-link" href="#page-' + num + '">' + full + '</a>';
+    // Fallback: "Page 08", "page 8", "REF: 05", "CON: 12" drift patterns
+    h = h.replace(/\b(Page|page|CON|REF|EX)[:\s]+(\d{1,2})\b/g, function (full, prefix, num) {
+      var p = prefix.toUpperCase();
+      if (p === 'PAGE') p = 'CON';
+      var id = p === 'CON'
+        ? (num.length === 1 ? '0' + num : num)
+        : p + (num.length === 1 ? '0' + num : num);
+      if (validPageIds[id]) {
+        return '<a class="chat-page-link" href="#page-' + id + '">' + full + '</a>';
       }
       return full;
     });
@@ -485,6 +498,7 @@
 
             try {
               var data = JSON.parse(json);
+              if (data.usageMetadata) lastUsage = data.usageMetadata;
               if (data.candidates && data.candidates[0] &&
                   data.candidates[0].content && data.candidates[0].content.parts) {
                 var t = data.candidates[0].content.parts[0].text;
@@ -741,6 +755,7 @@
     saveHistory();
     cacheName = null;
     cacheModel = null;
+    lastUsage = null;
     messagesEl.innerHTML = '';
     addWelcomeMessage();
     updateTokenBar();
@@ -808,12 +823,26 @@
 
   function updateTokenBar() {
     if (!tokenBar) return;
-    var tokens = estimateTokens();
     var cacheStatus = cacheName
       ? '<span class="cached">● cached</span>'
       : '○ not cached';
-    var tokenText = tokens > 0 ? ' · ~' + formatTokens(tokens) + ' conversation tokens' : '';
-    tokenBar.innerHTML = cacheStatus + tokenText;
+
+    if (lastUsage) {
+      var prompt = formatTokens(lastUsage.promptTokenCount || 0);
+      var cached = lastUsage.cachedContentTokenCount
+        ? ' (' + formatTokens(lastUsage.cachedContentTokenCount) + ' cached)'
+        : '';
+      var resp = formatTokens(lastUsage.candidatesTokenCount || 0);
+      var thought = lastUsage.thoughtsTokenCount
+        ? ' · ' + formatTokens(lastUsage.thoughtsTokenCount) + ' thinking'
+        : '';
+      tokenBar.innerHTML = cacheStatus + ' · ' + prompt + ' prompt' + cached +
+        ' · ' + resp + ' response' + thought;
+    } else {
+      var tokens = estimateTokens();
+      var tokenText = tokens > 0 ? ' · ~' + formatTokens(tokens) + ' conversation tokens' : '';
+      tokenBar.innerHTML = cacheStatus + tokenText;
+    }
   }
 
   // ── Copy helper ────────────────────────────────────────────────
