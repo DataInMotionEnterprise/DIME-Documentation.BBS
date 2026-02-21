@@ -57,7 +57,8 @@
 
   function highlightValue(val) {
     if (val.trim() === '') return esc(val);
-    if (val.trim() === '|') return esc(val.replace('|', '')) + '<span class="y-pipe">|</span>';
+    if (val.trim() === '|' || val.trim() === '>' || val.trim() === '|-' || val.trim() === '>-')
+      return esc(val.replace(/[|>][-]?/, '')) + '<span class="y-pipe">' + esc(val.trim()) + '</span>';
     // YAML type tag (!!int, !!bool, !!str, etc.) optionally followed by a value
     var tagMatch = val.match(/^(\s*)(!![\w]+)(.*)$/);
     if (tagMatch) {
@@ -112,7 +113,7 @@
         out.push(esc(m[1]) + '<span class="y-bullet">' + esc(m[2]) + '</span>' +
           '<span class="y-key">' + esc(m[3]) + '</span><span class="y-colon">' + esc(m[4]) + '</span>' +
           highlightValue(m[5]));
-        if (m[5].trim() === '|') {
+        if (/^[|>][-]?\s*$/.test(m[5].trim())) {
           inBlock = true; blockIndent = m[1].length;
           isScript = SCRIPT_KEYS.hasOwnProperty(m[3]);
         }
@@ -126,7 +127,7 @@
       if ((m = raw.match(/^(\s*)([a-zA-Z_][a-zA-Z0-9_]*)(:)(.*)$/))) {
         out.push(esc(m[1]) + '<span class="y-key">' + esc(m[2]) + '</span><span class="y-colon">' + esc(m[3]) + '</span>' +
           highlightValue(m[4]));
-        if (m[4].trim() === '|') {
+        if (/^[|>][-]?\s*$/.test(m[4].trim())) {
           inBlock = true; blockIndent = m[1].length;
           isScript = SCRIPT_KEYS.hasOwnProperty(m[2]);
         }
@@ -234,7 +235,7 @@
       var key = kv[1];
       var val = kv[2];
 
-      if (val === '|') {
+      if (val === '|' || val === '>' || val === '|-' || val === '>-') {
         blockKey = key;
         blockIndent = indent;
         blockLines = [];
