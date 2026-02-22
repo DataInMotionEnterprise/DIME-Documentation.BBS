@@ -732,6 +732,15 @@
   margin-bottom: 14px;
 }
 
+.chat-key-note a {
+  color: var(--green);
+  text-decoration: underline;
+}
+
+.chat-key-note a:hover {
+  color: var(--amber);
+}
+
 .chat-checkbox-row {
   margin: 4px 0;
   font-size: 11px;
