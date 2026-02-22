@@ -33,7 +33,10 @@
   var chatHistory = loadHistory();
   var selectedModel = localStorage.getItem('dime-chat-model') || MODELS[0].id;
   var cacheTtl = parseInt(localStorage.getItem('dime-chat-ttl'), 10) || DEFAULT_TTL;
+  var ctxDocs = localStorage.getItem('dime-chat-ctx-docs') !== 'false';     // default true
+  var ctxSchema = localStorage.getItem('dime-chat-ctx-schema') !== 'false'; // default true
   var llmsContent = null;
+  var schemaContent = null;
   var cacheName = null;
   var cacheModel = null;
   var isStreaming = false;
@@ -267,6 +270,7 @@
   var chatInput, sendBtn, modelSelect, newBtn, settingsBtn, closeBtn;
   var settingsEl, keyInput, keyToggle, keySave, keyCancel, ttlInput;
   var attachBtn, fileInput, filePreview;
+  var ctxDocsEl, ctxSchemaEl;
 
   // ── UI: Toggle pane ────────────────────────────────────────────
   function openPane() {
@@ -311,6 +315,8 @@
   function openSettings() {
     keyInput.value = apiKey;
     ttlInput.value = cacheTtl;
+    if (ctxDocsEl) ctxDocsEl.checked = ctxDocs;
+    if (ctxSchemaEl) ctxSchemaEl.checked = ctxSchema;
     settingsEl.classList.add('open');
     keyInput.focus();
   }
@@ -323,9 +329,16 @@
     apiKey = keyInput.value.trim();
     localStorage.setItem('dime-gemini-key', apiKey);
     var newTtl = Math.max(300, Math.min(86400, parseInt(ttlInput.value, 10) || DEFAULT_TTL));
-    if (newTtl !== cacheTtl) {
-      cacheTtl = newTtl;
-      localStorage.setItem('dime-chat-ttl', String(cacheTtl));
+    var newDocs = ctxDocsEl ? ctxDocsEl.checked : ctxDocs;
+    var newSchema = ctxSchemaEl ? ctxSchemaEl.checked : ctxSchema;
+    var cacheInvalid = (newTtl !== cacheTtl || newDocs !== ctxDocs || newSchema !== ctxSchema);
+    cacheTtl = newTtl;
+    ctxDocs = newDocs;
+    ctxSchema = newSchema;
+    localStorage.setItem('dime-chat-ttl', String(cacheTtl));
+    localStorage.setItem('dime-chat-ctx-docs', String(ctxDocs));
+    localStorage.setItem('dime-chat-ctx-schema', String(ctxSchema));
+    if (cacheInvalid) {
       cacheName = null;
       cacheModel = null;
       updateTokenBar();
@@ -412,19 +425,51 @@
   }
 
   // ── Gemini API ─────────────────────────────────────────────────
-  function fetchLlmsContent(signal) {
-    if (llmsContent) return Promise.resolve(llmsContent);
-    return fetch('llms-full.txt', { signal: signal }).then(function (resp) {
-      if (!resp.ok) throw new Error('Failed to load documentation (' + resp.status + ')');
-      return resp.text();
-    }).then(function (text) {
-      llmsContent = text;
-      return text;
-    });
+  function fetchContextContent(signal) {
+    var fetches = [];
+
+    // Documentation
+    if (ctxDocs) {
+      var docsPromise = llmsContent
+        ? Promise.resolve(llmsContent)
+        : fetch('llms-full.txt', { signal: signal }).then(function (r) {
+            if (!r.ok) throw new Error('Failed to load docs (' + r.status + ')');
+            return r.text();
+          }).then(function (t) { llmsContent = t; return t; });
+      fetches.push(docsPromise);
+    } else {
+      fetches.push(Promise.resolve(null));
+    }
+
+    // Schema
+    if (ctxSchema) {
+      var schemaPromise = schemaContent
+        ? Promise.resolve(schemaContent)
+        : fetch('dime-schema.json', { signal: signal }).then(function (r) {
+            if (!r.ok) throw new Error('Failed to load schema (' + r.status + ')');
+            return r.text();
+          }).then(function (t) { schemaContent = t; return t; });
+      fetches.push(schemaPromise);
+    } else {
+      fetches.push(Promise.resolve(null));
+    }
+
+    return Promise.all(fetches);
   }
 
   function createCache(signal) {
-    return fetchLlmsContent(signal).then(function (docs) {
+    return fetchContextContent(signal).then(function (results) {
+      var docs = results[0];
+      var schema = results[1];
+
+      var contextParts = [];
+      if (docs) contextParts.push('Here is the complete DIME documentation for reference:\n\n' + docs);
+      if (schema) contextParts.push('Here is the DIME JSON schema defining all connector types, properties, defaults, and validation rules:\n\n' + schema);
+
+      if (contextParts.length === 0) {
+        throw new Error('No context sources selected. Enable Documentation or Schema in settings.');
+      }
+
       return fetch(GEMINI_BASE + '/cachedContents?key=' + apiKey, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -432,8 +477,8 @@
           model: 'models/' + selectedModel,
           systemInstruction: { parts: [{ text: SYSTEM_PROMPT }] },
           contents: [
-            { role: 'user', parts: [{ text: 'Here is the complete DIME documentation for reference:\n\n' + docs }] },
-            { role: 'model', parts: [{ text: 'I have the complete DIME documentation loaded. I can help you understand DIME concepts, write YAML configurations, troubleshoot setups, and answer any questions about the platform. What would you like to know?' }] }
+            { role: 'user', parts: [{ text: contextParts.join('\n\n') }] },
+            { role: 'model', parts: [{ text: 'I have the DIME context loaded. I can help you understand DIME concepts, write YAML configurations, troubleshoot setups, and answer any questions about the platform. What would you like to know?' }] }
           ],
           ttl: cacheTtl + 's'
         }),
@@ -973,6 +1018,8 @@
     attachBtn    = document.getElementById('chat-attach');
     fileInput    = document.getElementById('chat-file-input');
     filePreview  = document.getElementById('chat-file-preview');
+    ctxDocsEl    = document.getElementById('chat-ctx-docs');
+    ctxSchemaEl  = document.getElementById('chat-ctx-schema');
 
     if (!bubble || !pane) return;
 

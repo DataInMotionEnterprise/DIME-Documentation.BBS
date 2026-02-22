@@ -149,6 +149,14 @@
           <input id="chat-ttl-input" type="number" min="300" max="86400" step="300" placeholder="3600" autocomplete="off" spellcheck="false">
         </div>
         <div class="chat-key-note">How long Gemini caches docs before re-sending (300–86400). Default 3600.</div>
+        <label class="chat-settings-label">Context Sources</label>
+        <div class="chat-checkbox-row">
+          <label><input id="chat-ctx-docs" type="checkbox" checked> Documentation (llms-full.txt)</label>
+        </div>
+        <div class="chat-checkbox-row">
+          <label><input id="chat-ctx-schema" type="checkbox" checked> Schema (dime-schema.json)</label>
+        </div>
+        <div class="chat-key-note">What to include in the cached context. Changes invalidate current cache.</div>
         <div class="chat-settings-actions">
           <button id="chat-key-save">Save</button>
           <button id="chat-key-cancel">Cancel</button>
@@ -240,6 +248,8 @@
   <script src="js/pages/page-EX34.js"></script>
   <script src="js/pages/page-EX35.js"></script>
   <!-- Connector Reference pages -->
+  <script src="js/pages/page-REFIN.js"></script>
+  <script src="js/pages/page-REFOUT.js"></script>
   <script src="js/pages/page-REF01.js"></script>
   <script src="js/pages/page-REF02.js"></script>
   <script src="js/pages/page-REF03.js"></script>

@@ -79,6 +79,8 @@
 
 ## Connector Reference
 
+- [REFIN — Source](content/REFIN-source.md): Common properties shared by all source connectors and items
+- [REFOUT — Sink](content/REFOUT-sink.md): Common properties shared by all sink connectors
 - [REF01 — ActiveMQ](content/REF01-activemq.md): ActiveMQ message broker source
 - [REF02 — ASC CPC](content/REF02-asc-cpc.md): ASC CPC source connector
 - [REF03 — Beckhoff ADS](content/REF03-beckhoff-ads.md): Beckhoff TwinCAT ADS source
