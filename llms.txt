@@ -76,6 +76,7 @@
 - [EX33 — ROS2 Robotics](content/EX33-ros2-robotics.md): ROS2 DDS topics to MQTT via DIME
 - [EX34 — UDP Binary Protocol](content/EX34-udp-binary-protocol.md): UDP binary parsing with emit() fan-out
 - [EX35 — CNC Fingerprinting](content/EX35-cnc-fingerprinting.md): Current transformer analytics for productivity tracking
+- [EX36 — Configuration Tutorial](content/EX36-configuration-tutorial.md): Progressive walkthrough from single-file PLC to multi-source OEE pipeline with scripting
 
 ## Connector Reference
 

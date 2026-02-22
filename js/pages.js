@@ -21,7 +21,7 @@ var PAGE_ORDER = [
   'EX01', 'EX02', 'EX03', 'EX04', 'EX05', 'EX06', 'EX07', 'EX08', 'EX09', 'EX10',
   'EX11', 'EX12', 'EX13', 'EX14', 'EX15', 'EX16', 'EX17', 'EX18', 'EX19', 'EX20',
   'EX21', 'EX22', 'EX23', 'EX24', 'EX25', 'EX26', 'EX27', 'EX28', 'EX29', 'EX30',
-  'EX31', 'EX32', 'EX33', 'EX34', 'EX35',
+  'EX31', 'EX32', 'EX33', 'EX34', 'EX35', 'EX36',
   'REFIN', 'REFOUT',
   'REF01', 'REF02', 'REF03', 'REF04', 'REF05', 'REF06', 'REF07', 'REF08', 'REF09', 'REF10',
   'REF11', 'REF12', 'REF13', 'REF14', 'REF15', 'REF16', 'REF17', 'REF18', 'REF19', 'REF20',
