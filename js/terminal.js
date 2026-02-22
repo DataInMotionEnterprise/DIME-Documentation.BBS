@@ -17,7 +17,9 @@
   // ── DIME instance connection state ───────────────────────────
   var dimeConn = {
     url: localStorage.getItem('dime-playground-url') || null,
-    status: {}   // connectorName → latest ConnectorStatus object
+    status: {},   // connectorName → latest ConnectorStatus object
+    httpServerUri: null,  // resolved HttpServer sink URL (for data command)
+    yaml: null            // raw YAML config from DIME instance
   };
 
   // ── DOM refs (set during init) ─────────────────────────────────
@@ -99,10 +101,11 @@
     var div = document.createElement('div');
     div.className = 'term-line term-line-yaml';
     var pre = document.createElement('pre');
-    if (window.DIME_HL) {
-      pre.innerHTML = window.DIME_HL.highlightYaml(text);
+    var clean = text.replace(/\r/g, '');
+    if (window.DIME_HL && window.DIME_HL.highlightYaml) {
+      pre.innerHTML = window.DIME_HL.highlightYaml(clean);
     } else {
-      pre.textContent = text;
+      pre.textContent = clean;
     }
     div.appendChild(pre);
     outputEl.appendChild(div);
@@ -621,6 +624,124 @@
       if (names[i].toLowerCase().indexOf(p) === 0) items.push(names[i]);
     }
     return items;
+  }
+
+  // Resolve HttpServer URI: use the connected host with the port from the config URI
+  function resolveHttpServerUrl(configUri) {
+    try {
+      var configUrl = new URL(configUri);
+      var connUrl = new URL(dimeConn.url);
+      return connUrl.protocol + '//' + connUrl.hostname + ':' + configUrl.port;
+    } catch (e) {
+      return configUri.replace(/0\.0\.0\.0/g, 'localhost').replace(/\/+$/, '');
+    }
+  }
+
+  // Fetch /list from the HttpServer sink
+  function fetchDataList() {
+    var base = dimeConn.httpServerUri.replace(/\/+$/, '');
+    return fetch(base + '/list')
+      .then(function (r) {
+        if (!r.ok) throw new Error('HTTP ' + r.status);
+        return r.json();
+      })
+      .then(function (data) {
+        return normalizeToPascal(Array.isArray(data) ? data : []);
+      });
+  }
+
+  // Discover HttpServer sink URI from YAML config text
+  function discoverHttpServer(yamlText) {
+    try {
+      var doc = jsyaml.load(yamlText);
+      if (doc && Array.isArray(doc.sinks)) {
+        for (var i = 0; i < doc.sinks.length; i++) {
+          var s = doc.sinks[i];
+          if (s && s.connector && s.connector.toLowerCase() === 'httpserver' && s.uri) {
+            return resolveHttpServerUrl(s.uri);
+          }
+        }
+      }
+    } catch (e) { /* ignore parse errors */ }
+    return null;
+  }
+
+  function renderDataTable(items, targetEl, filterPattern) {
+    var filtered = items;
+    if (filterPattern) {
+      try {
+        var re = new RegExp(filterPattern, 'i');
+        filtered = items.filter(function (item) { return re.test(item.Path || ''); });
+      } catch (e) {
+        var fp = filterPattern.toLowerCase();
+        filtered = items.filter(function (item) { return (item.Path || '').toLowerCase().indexOf(fp) >= 0; });
+      }
+    }
+
+    var headers = ['Path', 'Value', 'Timestamp'];
+    var rows = [];
+    for (var i = 0; i < filtered.length; i++) {
+      var item = filtered[i];
+      var ts = item.Timestamp ? new Date(item.Timestamp).toLocaleTimeString() : '';
+      var val = item.Data;
+      if (val === null || val === undefined) val = 'null';
+      else if (typeof val === 'boolean') val = val ? 'true' : 'false';
+      else if (typeof val === 'object') try { val = JSON.stringify(val); } catch (e) { val = String(val); }
+      else val = String(val);
+
+      var isSys = (item.Path || '').indexOf('$SYSTEM') >= 0;
+      var pathHtml = isSys
+        ? '<span class="dim">' + escapeHtml(item.Path || '') + '</span>'
+        : escapeHtml(item.Path || '');
+
+      rows.push([{ html: pathHtml }, val, ts]);
+    }
+
+    if (targetEl) {
+      targetEl.innerHTML = '';
+      var heading = document.createElement('div');
+      heading.className = 'term-line term-line-heading';
+      heading.textContent = 'DATA VALUES (live)';
+      targetEl.appendChild(heading);
+
+      var table = document.createElement('table');
+      table.className = 'term-table';
+      var thead = document.createElement('tr');
+      for (var h = 0; h < headers.length; h++) {
+        var th = document.createElement('th');
+        th.textContent = headers[h];
+        thead.appendChild(th);
+      }
+      table.appendChild(thead);
+      for (var r = 0; r < rows.length; r++) {
+        var tr = document.createElement('tr');
+        for (var c = 0; c < rows[r].length; c++) {
+          var td = document.createElement('td');
+          if (typeof rows[r][c] === 'object' && rows[r][c].html) {
+            td.innerHTML = rows[r][c].html;
+          } else {
+            td.textContent = rows[r][c];
+          }
+          if (c > 0) td.className = 'dim';
+          tr.appendChild(td);
+        }
+        table.appendChild(tr);
+      }
+      var wrap = document.createElement('div');
+      wrap.className = 'term-line';
+      wrap.appendChild(table);
+      targetEl.appendChild(wrap);
+
+      var updated = document.createElement('div');
+      updated.className = 'term-line term-line-dim';
+      updated.textContent = filtered.length + ' items \u00b7 Updated: ' + new Date().toLocaleTimeString() + '  (Ctrl+C to stop)';
+      targetEl.appendChild(updated);
+    } else {
+      writeHeading('DATA VALUES');
+      writeTable(headers, rows);
+      writeDim(filtered.length + ' item' + (filtered.length !== 1 ? 's' : '') +
+        (filterPattern ? ' (filtered from ' + items.length + ')' : ''));
+    }
   }
 
   function renderPerfTable(statusMap, targetEl) {
@@ -1264,6 +1385,8 @@
       if (flags.disconnect) {
         dimeConn.url = null;
         dimeConn.status = {};
+        dimeConn.httpServerUri = null;
+        dimeConn.yaml = null;
         localStorage.removeItem('dime-playground-url');
         writeLine('Disconnected', 'term-line-success');
         updateStatus();
@@ -1329,6 +1452,25 @@
           }
           writeDim(names.length + ' connector' + (names.length !== 1 ? 's' : ''));
           updateStatus();
+
+          // Fetch config to discover HttpServer sink and display YAML
+          fetch(url + '/config/yaml')
+            .then(function (cr) { return cr.ok ? cr.text() : ''; })
+            .then(function (yaml) {
+              if (!yaml || !yaml.trim()) return;
+              dimeConn.yaml = yaml;
+              dimeConn.httpServerUri = discoverHttpServer(yaml);
+
+              writeSeparator();
+              writeHeading('CONFIGURATION');
+              writeYaml(yaml);
+
+              if (dimeConn.httpServerUri) {
+                writeDim('HttpServer data endpoint: ' + dimeConn.httpServerUri + '/list');
+                writeDim('Use "data" or "data --watch" to view live values.');
+              }
+            })
+            .catch(function () { /* config fetch is optional */ });
         })
         .catch(function (err) {
           writeError('Cannot reach DIME at ' + url + ': ' + err.message);
@@ -1526,6 +1668,70 @@
         if (!isStreaming) { clearInterval(interval); return; }
         poll();
       }, 2000);
+
+      cancelStream = function () {
+        clearInterval(interval);
+      };
+    }
+  });
+
+  // ── data ──────────────────────────────────────────────────────
+  registerCommand('data', {
+    description: 'Show live data values from HttpServer sink',
+    usage: 'data [--watch] [--filter <pattern>]',
+    category: 'Remote',
+    fn: function (args, flags) {
+      if (!requireConnection()) return;
+      if (!dimeConn.httpServerUri) {
+        writeError('No HttpServer sink found in DIME config.');
+        writeDim('Config must include a sink with connector: HttpServer and a uri property.');
+        writeDim('Reconnect with "connect <host>" to re-scan config.');
+        return;
+      }
+
+      var filterPattern = flags.filter || null;
+
+      if (!flags.watch) {
+        // One-shot
+        fetchDataList()
+          .then(function (items) {
+            if (items.length === 0) {
+              writeDim('No data items returned.');
+              return;
+            }
+            renderDataTable(items, null, filterPattern);
+          })
+          .catch(function (err) {
+            writeError('Failed to fetch data: ' + err.message);
+          });
+        return;
+      }
+
+      // Watch mode
+      if (isStreaming) {
+        writeError('Already streaming. Press Ctrl+C to cancel first.');
+        return;
+      }
+      isStreaming = true;
+      var watchEl = document.createElement('div');
+      watchEl.className = 'term-line term-data-watch';
+      outputEl.appendChild(watchEl);
+      writeDim('Fetching...');
+
+      function poll() {
+        fetchDataList()
+          .then(function (items) {
+            renderDataTable(items, watchEl, filterPattern);
+            scrollBottom();
+          })
+          .catch(function () { /* ignore transient errors */ });
+      }
+
+      poll();
+      var interval = setInterval(function () {
+        if (!isStreaming) { clearInterval(interval); return; }
+        poll();
+      }, 1000);
 
       cancelStream = function () {
         clearInterval(interval);

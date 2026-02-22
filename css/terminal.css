@@ -113,6 +113,18 @@
   line-height: 1.5;
   color: var(--amber);
 }
+#term-output .y-key     { color: var(--cyan); }
+#term-output .y-colon   { color: var(--amber-dim); }
+#term-output .y-str     { color: var(--amber); }
+#term-output .y-num     { color: #f8a; }
+#term-output .y-bool    { color: #f8a; }
+#term-output .y-bullet  { color: var(--cyan-dim); }
+#term-output .y-pipe    { color: var(--cyan-dim); }
+#term-output .y-comment { color: var(--amber-dim); font-style: italic; }
+#term-output .y-tag     { color: #c9a; }
+#term-output .y-kw      { color: var(--cyan); font-weight: 700; }
+#term-output .y-slit    { color: #a8e6a0; }
+#term-output .y-cmt     { color: var(--amber-dim); font-style: italic; }
 
 .term-line-separator {
   color: var(--border);
