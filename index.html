@@ -120,20 +120,33 @@
   <div id="chat-pane">
     <div id="chat-resize"></div>
     <div id="chat-header">
+      <button id="chat-history-toggle" title="Conversation history">&#x2630;</button>
       <span id="chat-title">DIME AI</span>
       <select id="chat-model"></select>
+      <button id="chat-save" title="Save conversation">Save</button>
       <button id="chat-new" title="New conversation">New</button>
       <button id="chat-settings-btn" title="Settings">&#x2699;</button>
       <button id="chat-close" title="Close">&times;</button>
     </div>
     <div id="chat-token-bar"></div>
-    <div id="chat-messages"></div>
-    <div id="chat-file-preview"></div>
-    <div id="chat-input-bar">
-      <button id="chat-attach" title="Attach files (5 max, 1MB each)">&#x1F4CE;</button>
-      <textarea id="chat-input" placeholder="Ask about DIME..." rows="1"></textarea>
-      <button id="chat-send">Send</button>
-      <input id="chat-file-input" type="file" accept=".pdf,.png,.jpg,.jpeg,.gif,.webp,.bmp" multiple style="display:none">
+    <div id="chat-body">
+      <div id="chat-sidebar">
+        <div id="chat-sidebar-search">
+          <input id="chat-sidebar-filter" placeholder="Filter..." autocomplete="off" spellcheck="false">
+        </div>
+        <div id="chat-sidebar-list"></div>
+        <div id="chat-sidebar-empty">No saved conversations</div>
+      </div>
+      <div id="chat-main">
+        <div id="chat-messages"></div>
+        <div id="chat-file-preview"></div>
+        <div id="chat-input-bar">
+          <button id="chat-attach" title="Attach files (5 max, 1MB each)">&#x1F4CE;&#xFE0E;</button>
+          <textarea id="chat-input" placeholder="Ask about DIME..." rows="1"></textarea>
+          <button id="chat-send">Send</button>
+          <input id="chat-file-input" type="file" accept=".pdf,.png,.jpg,.jpeg,.gif,.webp,.bmp" multiple style="display:none">
+        </div>
+      </div>
     </div>
     <div id="chat-settings">
       <div id="chat-settings-box">

@@ -46,6 +46,8 @@
   var lastUsage = null; // latest usageMetadata from Gemini API
   var sessionCost = 0;  // accumulated estimated cost in USD
   var cacheMsgCount = 0; // messages sent since cache creation
+  var db = null;          // IndexedDB handle
+  var loadedConvId = null; // ID of loaded conversation (null = new/unsaved)
 
   // Build valid page ID set
   var validPageIds = {};
@@ -271,6 +273,7 @@
   var settingsEl, keyInput, keyToggle, keySave, keyCancel, ttlInput;
   var attachBtn, fileInput, filePreview;
   var ctxDocsEl, ctxSchemaEl;
+  var histToggleBtn, saveBtn, sidebarEl, sidebarList, sidebarEmpty, sidebarFilter;
 
   // ── UI: Toggle pane ────────────────────────────────────────────
   function openPane() {
@@ -805,6 +808,268 @@
     if (abortCtrl) abortCtrl.abort();
   }
 
+  // ── IndexedDB ──────────────────────────────────────────────────
+  function openDatabase(cb) {
+    var req = indexedDB.open('dime-chat-db', 1);
+    req.onupgradeneeded = function (e) {
+      var idb = e.target.result;
+      if (!idb.objectStoreNames.contains('conversations')) {
+        var store = idb.createObjectStore('conversations', { keyPath: 'id' });
+        store.createIndex('timestamp', 'timestamp', { unique: false });
+      }
+    };
+    req.onsuccess = function (e) {
+      db = e.target.result;
+      if (cb) cb();
+    };
+    req.onerror = function () {
+      console.warn('IndexedDB unavailable — history will not persist.');
+    };
+  }
+
+  // ── Sidebar ───────────────────────────────────────────────────
+  function toggleSidebar() {
+    pane.classList.toggle('sidebar-open');
+    if (pane.classList.contains('sidebar-open')) {
+      refreshSidebarList();
+      sidebarFilter.focus();
+    }
+  }
+
+  function refreshSidebarList() {
+    if (!db) { renderSidebarItems([]); return; }
+    var tx = db.transaction('conversations', 'readonly');
+    var store = tx.objectStore('conversations');
+    var idx = store.index('timestamp');
+    var items = [];
+    var cursor = idx.openCursor(null, 'prev');
+    cursor.onsuccess = function (e) {
+      var c = e.target.result;
+      if (c) {
+        items.push(c.value);
+        c.continue();
+      } else {
+        renderSidebarItems(items);
+      }
+    };
+  }
+
+  function renderSidebarItems(items) {
+    var filter = sidebarFilter ? sidebarFilter.value.toLowerCase() : '';
+    var filtered = items;
+    if (filter) {
+      filtered = [];
+      for (var i = 0; i < items.length; i++) {
+        if (items[i].title.toLowerCase().indexOf(filter) >= 0) {
+          filtered.push(items[i]);
+        }
+      }
+    }
+
+    sidebarList.innerHTML = '';
+    if (filtered.length === 0) {
+      sidebarEmpty.classList.add('visible');
+    } else {
+      sidebarEmpty.classList.remove('visible');
+    }
+
+    for (var i = 0; i < filtered.length; i++) {
+      (function (conv) {
+        var el = document.createElement('div');
+        el.className = 'chat-hist-item';
+        if (conv.id === loadedConvId) el.classList.add('active');
+        var date = new Date(conv.timestamp);
+        var dateStr = date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        el.innerHTML =
+          '<div class="chat-hist-title">' + esc(conv.title) + '</div>' +
+          '<div class="chat-hist-meta">' + dateStr + ' \u00B7 ' + conv.messageCount + ' msgs</div>' +
+          '<div class="chat-hist-actions">' +
+            '<button class="hist-export" title="Export">\u2193</button>' +
+            '<button class="hist-delete" title="Delete">\u00D7</button>' +
+          '</div>';
+
+        el.addEventListener('click', function (e) {
+          if (e.target.closest('.chat-hist-actions')) return;
+          loadConversation(conv.id);
+        });
+
+        var exportBtn = el.querySelector('.hist-export');
+        exportBtn.addEventListener('click', function (e) {
+          e.stopPropagation();
+          exportConversation(conv.id);
+        });
+
+        var deleteBtn = el.querySelector('.hist-delete');
+        deleteBtn.addEventListener('click', function (e) {
+          e.stopPropagation();
+          showDeleteConfirm(conv.id, el);
+        });
+
+        sidebarList.appendChild(el);
+      })(filtered[i]);
+    }
+  }
+
+  function showDeleteConfirm(id, itemEl) {
+    var orig = itemEl.innerHTML;
+    itemEl.innerHTML = '';
+    var confirm = document.createElement('div');
+    confirm.className = 'chat-hist-confirm';
+    confirm.innerHTML = '<span>Delete?</span>' +
+      '<button class="confirm-yes">Yes</button>' +
+      '<button class="confirm-no">No</button>';
+    confirm.querySelector('.confirm-yes').addEventListener('click', function (e) {
+      e.stopPropagation();
+      deleteConversation(id);
+    });
+    confirm.querySelector('.confirm-no').addEventListener('click', function (e) {
+      e.stopPropagation();
+      itemEl.innerHTML = orig;
+      // Re-bind event listeners after restoring — simplest to just refresh
+      refreshSidebarList();
+    });
+    itemEl.appendChild(confirm);
+  }
+
+  function saveConversation() {
+    if (!db) return;
+    if (chatHistory.length === 0) return;
+
+    // Default title: first user message truncated to 40 chars
+    var defaultTitle = '';
+    for (var i = 0; i < chatHistory.length; i++) {
+      if (chatHistory[i].role === 'user') {
+        for (var p = 0; p < chatHistory[i].parts.length; p++) {
+          if (chatHistory[i].parts[p].text) {
+            defaultTitle = chatHistory[i].parts[p].text
+              .replace(/^\[Currently viewing:.*?\]\n\n/, '')
+              .replace(/\n/g, ' ')
+              .substring(0, 40);
+            break;
+          }
+        }
+        if (defaultTitle) break;
+      }
+    }
+
+    var title = prompt('Conversation title:', loadedConvId ? defaultTitle : defaultTitle);
+    if (title === null) return;
+    title = title.trim() || defaultTitle || 'Untitled';
+
+    var record = {
+      id: loadedConvId || Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
+      title: title,
+      timestamp: loadedConvId ? undefined : Date.now(), // keep original timestamp on update
+      model: selectedModel,
+      messageCount: chatHistory.length,
+      messages: chatHistory
+    };
+
+    // If updating, preserve original timestamp
+    if (loadedConvId) {
+      var txRead = db.transaction('conversations', 'readonly');
+      var storeRead = txRead.objectStore('conversations');
+      var getReq = storeRead.get(loadedConvId);
+      getReq.onsuccess = function (e) {
+        var existing = e.target.result;
+        record.timestamp = existing ? existing.timestamp : Date.now();
+        putRecord(record);
+      };
+      getReq.onerror = function () {
+        record.timestamp = Date.now();
+        putRecord(record);
+      };
+    } else {
+      record.timestamp = Date.now();
+      putRecord(record);
+    }
+  }
+
+  function putRecord(record) {
+    var tx = db.transaction('conversations', 'readwrite');
+    var store = tx.objectStore('conversations');
+    store.put(record);
+    tx.oncomplete = function () {
+      loadedConvId = record.id;
+      refreshSidebarList();
+    };
+  }
+
+  function loadConversation(id) {
+    if (!db) return;
+    // Warn if current conversation has unsaved content
+    if (chatHistory.length > 0 && loadedConvId !== id) {
+      if (!confirm('Load this conversation? Unsaved changes to the current conversation will be lost.')) return;
+    }
+    var tx = db.transaction('conversations', 'readonly');
+    var store = tx.objectStore('conversations');
+    var req = store.get(id);
+    req.onsuccess = function (e) {
+      var record = e.target.result;
+      if (!record) return;
+      if (isStreaming) stopStreaming();
+      clearStagedFiles();
+      chatHistory = record.messages || [];
+      loadedConvId = record.id;
+      saveHistory();
+      messagesEl.innerHTML = '';
+      addWelcomeMessage();
+      if (chatHistory.length > 0) restoreMessages();
+      // Reset cost/token tracking for loaded conversation
+      lastUsage = null;
+      sessionCost = 0;
+      cacheMsgCount = 0;
+      updateTokenBar();
+      refreshSidebarList();
+    };
+  }
+
+  function deleteConversation(id) {
+    if (!db) return;
+    var tx = db.transaction('conversations', 'readwrite');
+    var store = tx.objectStore('conversations');
+    store.delete(id);
+    tx.oncomplete = function () {
+      if (loadedConvId === id) loadedConvId = null;
+      refreshSidebarList();
+    };
+  }
+
+  function exportConversation(id) {
+    if (!db) return;
+    var tx = db.transaction('conversations', 'readonly');
+    var store = tx.objectStore('conversations');
+    var req = store.get(id);
+    req.onsuccess = function (e) {
+      var record = e.target.result;
+      if (!record) return;
+      var md = '# ' + record.title + '\n';
+      md += '*Exported ' + new Date().toISOString() + ' \u00B7 Model: ' + (record.model || 'unknown') + '*\n\n';
+      for (var i = 0; i < record.messages.length; i++) {
+        var msg = record.messages[i];
+        var text = '';
+        for (var p = 0; p < msg.parts.length; p++) {
+          if (msg.parts[p].text) text += msg.parts[p].text;
+        }
+        if (msg.role === 'user') {
+          text = text.replace(/^\[Currently viewing:.*?\]\n\n/, '');
+          md += '## You\n' + text + '\n\n';
+        } else {
+          md += '## AI\n' + text + '\n\n';
+        }
+      }
+      var blob = new Blob([md], { type: 'text/markdown' });
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement('a');
+      a.href = url;
+      a.download = record.title.replace(/[^a-z0-9_-]/gi, '_').substring(0, 60) + '.md';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    };
+  }
+
   // ── New conversation ───────────────────────────────────────────
   function addWelcomeMessage() {
     var div = document.createElement('div');
@@ -825,9 +1090,11 @@
     lastUsage = null;
     sessionCost = 0;
     cacheMsgCount = 0;
+    loadedConvId = null;
     messagesEl.innerHTML = '';
     addWelcomeMessage();
     updateTokenBar();
+    refreshSidebarList();
   }
 
   // ── Thinking effects ────────────────────────────────────────────
@@ -1020,6 +1287,12 @@
     filePreview  = document.getElementById('chat-file-preview');
     ctxDocsEl    = document.getElementById('chat-ctx-docs');
     ctxSchemaEl  = document.getElementById('chat-ctx-schema');
+    histToggleBtn = document.getElementById('chat-history-toggle');
+    saveBtn      = document.getElementById('chat-save');
+    sidebarEl    = document.getElementById('chat-sidebar');
+    sidebarList  = document.getElementById('chat-sidebar-list');
+    sidebarEmpty = document.getElementById('chat-sidebar-empty');
+    sidebarFilter = document.getElementById('chat-sidebar-filter');
 
     if (!bubble || !pane) return;
 
@@ -1094,11 +1367,28 @@
       }
     });
 
+    // Sidebar toggle + save
+    histToggleBtn.addEventListener('click', toggleSidebar);
+    saveBtn.addEventListener('click', saveConversation);
+
+    // Sidebar filter with debounce
+    var filterTimer = null;
+    sidebarFilter.addEventListener('input', function () {
+      clearTimeout(filterTimer);
+      filterTimer = setTimeout(refreshSidebarList, 200);
+    });
+    sidebarFilter.addEventListener('keydown', function (e) { e.stopPropagation(); });
+
     // Resize handle
     initResize();
 
     // Click delegation for code copy, message copy, page links
     initClickDelegation();
+
+    // Open IndexedDB
+    openDatabase(function () {
+      refreshSidebarList();
+    });
 
     // Restore previous messages or show welcome
     addWelcomeMessage();
