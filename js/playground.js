@@ -5,6 +5,7 @@
   var schema = null;
   var sources = [];
   var sinks = [];
+  var appOverrides = null;  // parsed app section from imported/received YAML
   var nextId = 1;
 
   // ── DOM refs ───────────────────────────────────────────────────
@@ -1048,8 +1049,9 @@
     var appProps = schema.properties.app.properties;
     y.push('app:');
     for (var ak in appProps) {
-      if (appProps[ak].default !== undefined) {
-        y.push('  ' + ak + ': ' + yamlVal(appProps[ak].default, appProps[ak]));
+      var appVal = appOverrides && appOverrides[ak] !== undefined ? appOverrides[ak] : appProps[ak].default;
+      if (appVal !== undefined) {
+        y.push('  ' + ak + ': ' + yamlVal(appVal, appProps[ak]));
       }
     }
 
@@ -1414,6 +1416,7 @@
       var snkMap = {};
       for (var ki = 0; ki < sinkTypes.length; ki++) snkMap[sinkTypes[ki].toLowerCase()] = sinkTypes[ki];
 
+      appOverrides = parsed.app;
       sources = [];
       sinks = [];
 

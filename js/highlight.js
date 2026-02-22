@@ -160,7 +160,7 @@
   // ── YAML Parser (delegates to js-yaml) ────────────────────────
 
   function parseYaml(text) {
-    var result = { sources: [], sinks: [] };
+    var result = { app: null, sources: [], sinks: [] };
     var doc;
     try {
       doc = jsyaml.load(text);
@@ -210,6 +210,7 @@
       return out;
     }
 
+    if (doc.app && typeof doc.app === 'object') result.app = doc.app;
     result.sources = processConnectors(doc.sources);
     result.sinks = processConnectors(doc.sinks);
     return result;

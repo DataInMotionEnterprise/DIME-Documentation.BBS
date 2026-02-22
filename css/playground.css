@@ -687,7 +687,7 @@
 #playground-bubble:hover,
 #chat-bubble:hover {
   border-color: var(--amber);
-  background: rgba(255, 176, 0, 0.08);
+  color: var(--fg);
 }
 
 /* Hide playground bubble when playground is open (via JS-added class on body) */

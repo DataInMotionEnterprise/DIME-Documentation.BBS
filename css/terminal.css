@@ -231,7 +231,7 @@
 
 #term-bubble:hover {
   border-color: var(--amber);
-  background: rgba(255, 176, 0, 0.08);
+  color: var(--fg);
 }
 
 /* Hide bubble when terminal is open */
