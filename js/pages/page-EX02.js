@@ -2,6 +2,7 @@
  * EX02 — Horizon & Zenith Minimum
  * Multi-file YAML with anchors. 5-axis CNC simulator + WebServer + WebSocket.
  */
+
 DIME_PAGES['EX02'] = {
   id: 'EX02',
   title: 'EX02 \u2014 Horizon & Zenith Minimum',
