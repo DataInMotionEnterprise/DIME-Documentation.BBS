@@ -44,7 +44,8 @@
   var stagedFiles = []; // [{ name, base64, mimeType }, ...]
   var MAX_FILES = 5;
   var lastUsage = null; // latest usageMetadata from Gemini API
-  var sessionCost = 0;  // accumulated estimated cost in USD
+  var sessionCost = 0;  // accumulated estimated cost in USD (excludes cache storage)
+  var cacheStorageCost = 0; // cache storage cost (docs × TTL)
   var cacheMsgCount = 0; // messages sent since cache creation
   var db = null;          // IndexedDB handle
   var loadedConvId = null; // ID of loaded conversation (null = new/unsaved)
@@ -503,7 +504,7 @@
       if (pricing && data.usageMetadata) {
         var cacheTokens = data.usageMetadata.totalTokenCount || 0;
         var hours = cacheTtl / 3600;
-        sessionCost += (cacheTokens * pricing.storage * hours) / 1e6;
+        cacheStorageCost = (cacheTokens * pricing.storage * hours) / 1e6;
         updateTokenBar();
       }
       return cacheName;
@@ -1018,6 +1019,7 @@
       // Reset cost/token tracking for loaded conversation
       lastUsage = null;
       sessionCost = 0;
+      cacheStorageCost = 0;
       cacheMsgCount = 0;
       updateTokenBar();
       refreshSidebarList();
@@ -1089,6 +1091,7 @@
     cacheModel = null;
     lastUsage = null;
     sessionCost = 0;
+    cacheStorageCost = 0;
     cacheMsgCount = 0;
     loadedConvId = null;
     messagesEl.innerHTML = '';
@@ -1198,6 +1201,10 @@
       ? '<span class="cached">\u25CF cached</span>'
       : '\u25CB not cached';
 
+    var cacheCostText = cacheStorageCost > 0
+      ? ' + ' + formatCost(cacheStorageCost) + ' cache'
+      : '';
+
     if (lastUsage) {
       var prompt = formatTokens(lastUsage.promptTokenCount || 0);
       var cached = lastUsage.cachedContentTokenCount
@@ -1207,16 +1214,16 @@
       var thought = lastUsage.thoughtsTokenCount
         ? ' \u00B7 ' + formatTokens(lastUsage.thoughtsTokenCount) + ' thinking'
         : '';
-      var costText = sessionCost > 0
-        ? ' \u00B7 <span class="chat-cost">' + formatCost(sessionCost) + '</span>'
+      var costText = sessionCost > 0 || cacheStorageCost > 0
+        ? ' \u00B7 <span class="chat-cost">' + formatCost(sessionCost) + cacheCostText + '</span>'
         : '';
       tokenBar.innerHTML = cacheStatus + ' \u00B7 ' + prompt + ' prompt' + cached +
         ' \u00B7 ' + resp + ' response' + thought + costText + breakevenText();
     } else {
       var tokens = estimateTokens();
       var tokenText = tokens > 0 ? ' \u00B7 ~' + formatTokens(tokens) + ' conversation tokens' : '';
-      var costText2 = sessionCost > 0
-        ? ' \u00B7 <span class="chat-cost">' + formatCost(sessionCost) + '</span>'
+      var costText2 = cacheStorageCost > 0
+        ? ' \u00B7 <span class="chat-cost">' + formatCost(cacheStorageCost) + ' cache</span>'
         : '';
       tokenBar.innerHTML = cacheStatus + tokenText + costText2 + breakevenText();
     }

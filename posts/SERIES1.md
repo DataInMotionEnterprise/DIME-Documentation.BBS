@@ -140,10 +140,10 @@ DIME's architecture is deceptively simple: Read, Route, Write.
 Every connector follows a six-stage lifecycle: Initialize, Create, Connect, Read/Write, Disconnect, Deinitialize. Faults trigger automatic disconnect-reconnect cycles. DIME never gives up on a connector.
 
 Four source base classes handle every pattern:
-- PollingSource — timer-driven reads
-- QueuingSource — event-driven push
-- BatchPollingSource — bulk database queries
-- DatabaseSource — SQL result sets
+- Polling Source — timer-driven reads
+- Queuing Source — event-driven push
+- Batch Polling Source — bulk database queries
+- Database Source — SQL result sets
 
 All of this is managed by a REST API (port 9999) and WebSocket stream (port 9998) that are always on.
 
