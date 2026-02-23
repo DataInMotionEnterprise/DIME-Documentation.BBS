@@ -2,6 +2,7 @@
  * EX08 — OPC-UA Server Sink
  * DIME as an OPC-UA server: Script source → Console + OPC-UA Server endpoint.
  */
+
 DIME_PAGES['EX08'] = {
   id: 'EX08',
   title: 'EX08 \u2014 OPC-UA Server Sink',

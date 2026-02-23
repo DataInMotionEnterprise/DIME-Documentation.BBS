@@ -2,6 +2,7 @@
  * EX05 — Modbus TCP Registers
  * Modbus holding registers with Lua struct library for binary decode.
  */
+
 DIME_PAGES['EX05'] = {
   id: 'EX05',
   title: 'EX05 \u2014 Modbus TCP Registers',

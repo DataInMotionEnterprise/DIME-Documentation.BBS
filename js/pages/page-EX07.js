@@ -2,6 +2,7 @@
  * EX07 — Beckhoff ADS
  * TwinCAT ADS protocol. AMS Net ID addressing, typed PLC variables, multiple source instances.
  */
+
 DIME_PAGES['EX07'] = {
   id: 'EX07',
   title: 'EX07 \u2014 Beckhoff ADS',

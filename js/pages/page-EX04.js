@@ -2,6 +2,7 @@
  * EX04 — Siemens S7 PLC
  * Native S7 protocol for S7-1200/1500. Bool/word data types, I/O addressing.
  */
+
 DIME_PAGES['EX04'] = {
   id: 'EX04',
   title: 'EX04 \u2014 Siemens S7 PLC',

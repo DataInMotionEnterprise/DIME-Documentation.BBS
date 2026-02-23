@@ -2,6 +2,7 @@
  * EX10 — OPC-DA Legacy
  * Classic OPC-DA (COM-based) for legacy Kepware/Wonderware/RSLinx systems.
  */
+
 DIME_PAGES['EX10'] = {
   id: 'EX10',
   title: 'EX10 \u2014 OPC-DA Legacy',

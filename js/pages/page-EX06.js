@@ -2,6 +2,7 @@
  * EX06 — EtherNet/IP (Rockwell)
  * Allen-Bradley CIP protocol + SHARC MQTT sensors. Multi-source fusion to multiple sinks.
  */
+
 DIME_PAGES['EX06'] = {
   id: 'EX06',
   title: 'EX06 \u2014 EtherNet/IP (Rockwell)',

@@ -2,6 +2,7 @@
  * EX09 — Fanuc Robot
  * Fanuc industrial robot: joint positions, cartesian coords, I/O, system variables.
  */
+
 DIME_PAGES['EX09'] = {
   id: 'EX09',
   title: 'EX09 \u2014 Fanuc Robot',
