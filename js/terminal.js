@@ -19,6 +19,7 @@
     url: localStorage.getItem('dime-playground-url') || null,
     status: {},   // connectorName → latest ConnectorStatus object
     httpServerUri: null,  // resolved HttpServer sink URL (for data command)
+    webServerUri: null,   // resolved WebServer sink URL (for dashboard command)
     yaml: null            // raw YAML config from DIME instance
   };
 
@@ -658,6 +659,22 @@
         for (var i = 0; i < doc.sinks.length; i++) {
           var s = doc.sinks[i];
           if (s && s.connector && s.connector.toLowerCase() === 'httpserver' && s.uri) {
+            return resolveHttpServerUrl(s.uri);
+          }
+        }
+      }
+    } catch (e) { /* ignore parse errors */ }
+    return null;
+  }
+
+  // Discover WebServer sink URI from YAML config text
+  function discoverWebServer(yamlText) {
+    try {
+      var doc = jsyaml.load(yamlText);
+      if (doc && Array.isArray(doc.sinks)) {
+        for (var i = 0; i < doc.sinks.length; i++) {
+          var s = doc.sinks[i];
+          if (s && s.connector && s.connector.toLowerCase() === 'webserver' && s.uri) {
             return resolveHttpServerUrl(s.uri);
           }
         }
@@ -1386,6 +1403,7 @@
         dimeConn.url = null;
         dimeConn.status = {};
         dimeConn.httpServerUri = null;
+        dimeConn.webServerUri = null;
         dimeConn.yaml = null;
         localStorage.removeItem('dime-playground-url');
         writeLine('Disconnected', 'term-line-success');
@@ -1460,6 +1478,7 @@
               if (!yaml || !yaml.trim()) return;
               dimeConn.yaml = yaml;
               dimeConn.httpServerUri = discoverHttpServer(yaml);
+              dimeConn.webServerUri = discoverWebServer(yaml);
 
               writeSeparator();
               writeHeading('CONFIGURATION');
@@ -1468,6 +1487,10 @@
               if (dimeConn.httpServerUri) {
                 writeDim('HttpServer data endpoint: ' + dimeConn.httpServerUri + '/list');
                 writeDim('Use "data" or "data --watch" to view live values.');
+              }
+              if (dimeConn.webServerUri) {
+                writeDim('WebServer dashboard: ' + dimeConn.webServerUri);
+                writeDim('Use "dashboard" to open in a new tab.');
               }
             })
             .catch(function () { /* config fetch is optional */ });
@@ -1672,6 +1695,25 @@
       cancelStream = function () {
         clearInterval(interval);
       };
+    }
+  });
+
+  // ── dashboard ───────────────────────────────────────────────
+  registerCommand('dashboard', {
+    description: 'Open WebServer dashboard in a new tab',
+    usage: 'dashboard',
+    category: 'Remote',
+    fn: function () {
+      if (!requireConnection()) return;
+      if (!dimeConn.webServerUri) {
+        writeError('No WebServer sink found in DIME config.');
+        writeDim('Config must include a sink with connector: WebServer and a uri property.');
+        writeDim('Reconnect with "connect <host>" to re-scan config.');
+        return;
+      }
+      var url = dimeConn.webServerUri;
+      window.open(url, '_blank');
+      writeDim('Opened dashboard: ' + url);
     }
   });
 
