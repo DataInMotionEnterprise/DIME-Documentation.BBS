@@ -321,7 +321,7 @@
               "default": "console",
               "enum": [
                 "console", "logger", "csvWriter", "httpClient", "httpServer",
-                "i3xWebServer", "influxLp", "mongoDb", "mqtt", "mtConnectAgent", "mtConnectMqtt", "mtConnectShdr",
+                "i3xWebServer", "influxLp", "maximoMonitor", "mongoDb", "mqtt", "mtConnectAgent", "mtConnectMqtt", "mtConnectShdr",
                 "opcUa", "opcUaServer", "redis", "sparkplugB", "splunkEhSdk1", "splunkEhSdk2",
                 "splunkHec", "trakHoundHttp", "websocketServer", "webServer"
               ]
@@ -392,6 +392,12 @@
             "properties": { "connector": { "enum": ["mongoDb"] } }
           },
           "then": { "$ref": "#/definitions/mongoDbSink" }
+        },
+        {
+          "if": {
+            "properties": { "connector": { "enum": ["maximoMonitor"] } }
+          },
+          "then": { "$ref": "#/definitions/maximoMonitorSink" }
         },
         {
           "if": {
@@ -1016,6 +1022,105 @@
           "address": "mongodb+srv://user:pass@cluster.mongodb.net",
           "database": "dime",
           "collection": "ts"
+        }
+      ]
+    },
+    "maximoMonitorSink": {
+      "description": "Publishes source data to an IBM Maximo Monitor (Watson IoT style) MQTT endpoint. Each write cycle merges newly received items into a running device snapshot and publishes a single flat JSON event (auto-added 'timestamp', configured 'device', and one key per item).",
+      "type": "object",
+      "properties": {
+        "address": {
+          "type": "string",
+          "description": "Maximo Monitor / Watson IoT MQTT broker hostname or IP address"
+        },
+        "port": {
+          "type": "integer",
+          "description": "Broker port",
+          "default": 8883
+        },
+        "org_id": {
+          "type": "string",
+          "description": "IBM organization id (first segment of the device client id)"
+        },
+        "device_type": {
+          "type": "string",
+          "description": "Device type (second segment of the device client id)"
+        },
+        "device_id": {
+          "type": "string",
+          "description": "Device id (third segment of the device client id). Together these form the client id d:{org_id}:{device_type}:{device_id}."
+        },
+        "auth_token": {
+          "type": "string",
+          "description": "Device authentication token. When set, the connection uses username 'use-token-auth' and this token as the password."
+        },
+        "device": {
+          "type": "string",
+          "description": "Value emitted in the payload 'device' field"
+        },
+        "event_id": {
+          "type": "string",
+          "description": "Event id used in the publish topic iot-2/evt/{event_id}/fmt/json",
+          "default": "data"
+        },
+        "qos": {
+          "type": "integer",
+          "description": "Quality of Service (0, 1, 2)",
+          "default": 1,
+          "enum": [0, 1, 2]
+        },
+        "retain": {
+          "type": "boolean",
+          "description": "Retain published messages",
+          "default": false
+        },
+        "clean_session": {
+          "type": "boolean",
+          "description": "MQTT clean session",
+          "default": true
+        },
+        "tls": {
+          "type": "boolean",
+          "description": "SSL/TLS connection",
+          "default": true
+        },
+        "tls_insecure": {
+          "type": "boolean",
+          "description": "Allow untrusted certificates",
+          "default": false
+        },
+        "client_cert_path": {
+          "type": "string",
+          "description": "Relative or absolute path to the client certificate (.pfx)"
+        },
+        "client_cert_password": {
+          "type": "string",
+          "description": "Client certificate password"
+        },
+        "ca_cert_path": {
+          "type": "string",
+          "description": "Relative or absolute path to the certificate authority certificate"
+        }
+      },
+      "required": ["address"],
+      "examples": [
+        {
+          "name": "maximoMonitorSink",
+          "enabled": true,
+          "connector": "maximoMonitor",
+          "scan_interval": 2000,
+          "include_filter": ["mazakSource/.*"],
+          "address": "vm-maxproxy.sms-inc.net",
+          "port": 8883,
+          "org_id": "smsinst3",
+          "device_type": "CNC_Mazak",
+          "device_id": "CNC_Mazak_001",
+          "auth_token": "your-device-auth-token",
+          "device": "Mazak",
+          "event_id": "status",
+          "qos": 1,
+          "tls": true,
+          "tls_insecure": false
         }
       ]
     },

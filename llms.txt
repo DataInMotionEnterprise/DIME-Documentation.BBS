@@ -3,7 +3,7 @@
 > DIME is a high-performance data integration platform that connects industrial
 > and enterprise systems using a connector-based architecture. It uses the
 > Disruptor pattern for low-latency message passing between sources and sinks.
-> Configuration is YAML-based. Supports 42+ connector types across PLCs,
+> Configuration is YAML-based. Supports 43+ connector types across PLCs,
 > databases, message brokers, APIs, and robotics systems.
 
 ## Documentation
@@ -77,6 +77,7 @@
 - [EX34 — UDP Binary Protocol](content/EX34-udp-binary-protocol.md): UDP binary parsing with emit() fan-out
 - [EX35 — CNC Fingerprinting](content/EX35-cnc-fingerprinting.md): Current transformer analytics for productivity tracking
 - [EX36 — Configuration Tutorial](content/EX36-configuration-tutorial.md): Progressive walkthrough from single-file PLC to multi-source OEE pipeline with scripting
+- [EX37 — Maximo Monitor](content/EX37-maximo-monitor.md): MTConnect Mazak data to IBM Maximo Monitor via the MaximoMonitor sink — one JSON event per cycle, no Script connector
 
 ## Connector Reference
 
@@ -124,3 +125,4 @@
 - [REF40 — Wintriss SmartPAC](content/REF40-wintriss-smartpac.md): Wintriss SmartPAC press monitor source
 - [REF41 — XMLWebScraper](content/REF41-xml-web-scraper.md): XML/XPath web scraper source
 - [REF42 — Yaskawa Robot](content/REF42-yaskawa-robot.md): Yaskawa robot controller source (DX200/YRC1000)
+- [REF43 — Maximo Monitor](content/REF43-maximo-monitor.md): IBM Maximo Monitor (Watson IoT) MQTT sink
