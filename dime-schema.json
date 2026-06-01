@@ -268,6 +268,81 @@
         }
       ]
     },
+    "opcUaEventItem": {
+      "allOf": [
+        { "$ref": "#/definitions/baseItem" },
+        {
+          "properties": {
+            "namespace": {
+              "type": "integer",
+              "description": "OPC-UA namespace index",
+              "default": 2
+            },
+            "sampling_interval_ms": {
+              "type": "integer",
+              "description": "Server-side sampling interval for this monitored item in milliseconds (0 = server default)",
+              "default": 250
+            },
+            "queue_size": {
+              "type": "integer",
+              "description": "Number of notifications the server should queue per item between publishes",
+              "default": 10
+            },
+            "discard_oldest": {
+              "type": "boolean",
+              "description": "When the per-item queue fills, discard the oldest notification (true) or the newest (false)",
+              "default": true
+            },
+            "monitoring_mode": {
+              "type": "integer",
+              "description": "Monitored-item mode: 0=Disabled, 1=Sampling (no reporting), 2=Reporting",
+              "default": 2,
+              "enum": [0, 1, 2]
+            }
+          }
+        }
+      ]
+    },
+    "opcUaConditionItem": {
+      "allOf": [
+        { "$ref": "#/definitions/baseItem" },
+        {
+          "properties": {
+            "namespace": {
+              "type": "integer",
+              "description": "OPC-UA namespace index for the monitored object. Ignored when address is empty (default Server object ns=0;i=2253 is used).",
+              "default": 0
+            },
+            "sampling_interval_ms": {
+              "type": "integer",
+              "description": "Server-side sampling interval for this monitored item in milliseconds (0 = server default)",
+              "default": 0
+            },
+            "queue_size": {
+              "type": "integer",
+              "description": "Number of event notifications the server should queue per item between publishes",
+              "default": 100
+            },
+            "discard_oldest": {
+              "type": "boolean",
+              "description": "When the per-item event queue fills, discard the oldest notification (true) or the newest (false)",
+              "default": true
+            },
+            "monitoring_mode": {
+              "type": "integer",
+              "description": "Monitored-item mode: 0=Disabled, 1=Sampling, 2=Reporting",
+              "default": 2,
+              "enum": [0, 1, 2]
+            },
+            "select_clauses": {
+              "type": "array",
+              "description": "EventFilter SELECT clauses as slash-delimited browse paths in namespace 0 from BaseEventType (e.g. 'Severity', 'EnabledState/Id'). Empty or missing falls back to the standard event field set: EventId, EventType, SourceName, Message, Severity, Time.",
+              "items": { "type": "string" }
+            }
+          }
+        }
+      ]
+    },
     "siemensS7Item": {
       "allOf": [
         { "$ref": "#/definitions/baseItem" },
@@ -497,7 +572,7 @@
               "enum": [
                 "activeMq", "ascCpc", "beckhoffAds", "claudeCode", "ethernetIp", "fanucRobot",
                 "haasShdr", "httpServer", "jsonWebScraper", "modbusTcp", "mqtt",
-                "msSql", "mtConnectAgent", "nwsWeather", "opcDa", "opcUa",
+                "msSql", "mtConnectAgent", "nwsWeather", "opcDa", "opcUa", "opcUaCondition", "opcUaEvent",
                 "postgres", "postgresNotify", "redis", "ros2", "script", "siemensS7", "snmp", "sparkplugB",
                 "tcpAscii", "timebaseWs", "udpServer", "smartPac",
                 "xmlWebScraper", "yaskawa"
@@ -705,6 +780,18 @@
             "properties": { "connector": { "enum": ["opcUa"] } }
           },
           "then": { "$ref": "#/definitions/opcUaSource" }
+        },
+        {
+          "if": {
+            "properties": { "connector": { "enum": ["opcUaCondition"] } }
+          },
+          "then": { "$ref": "#/definitions/opcUaConditionSource" }
+        },
+        {
+          "if": {
+            "properties": { "connector": { "enum": ["opcUaEvent"] } }
+          },
+          "then": { "$ref": "#/definitions/opcUaEventSource" }
         },
         {
           "if": {
@@ -4225,6 +4312,218 @@
               "template": "Message.Data"
             }
           }
+        }
+      ]
+    },
+    "opcUaEventSource": {
+      "description": "Event-driven OPC-UA source. Uses LibUA subscriptions + monitored items (data-change notifications) so the server pushes value changes on its publishing interval instead of being polled.",
+      "type": "object",
+      "properties": {
+        "address": {
+          "type": "string",
+          "description": "Server hostname or IP address"
+        },
+        "port": {
+          "type": "integer",
+          "description": "Server port",
+          "default": 49320
+        },
+        "path": {
+          "type": "string",
+          "description": "Server path"
+        },
+        "timeout": {
+          "type": "integer",
+          "description": "Timeout in milliseconds",
+          "default": 1000
+        },
+        "mode": {
+          "type": "integer",
+          "description": "1=None, 2=Sign, 3=SignAndEncrypt",
+          "default": 1,
+          "enum": [1, 2, 3]
+        },
+        "policy": {
+          "type": "integer",
+          "description": "1=None, 2=Basic256, 3=Basic128Rsa15, 4=Basic256Sha256",
+          "default": 1,
+          "enum": [1, 2, 3, 4]
+        },
+        "anonymous": {
+          "type": "boolean",
+          "description": "Connect anonymously",
+          "default": false
+        },
+        "username": {
+          "type": "string",
+          "description": "Username"
+        },
+        "password": {
+          "type": "string",
+          "description": "Password"
+        },
+        "publishing_interval_ms": {
+          "type": "integer",
+          "description": "Subscription publishing interval in milliseconds (how often the server emits accumulated notifications)",
+          "default": 500
+        },
+        "max_notifications_per_publish": {
+          "type": "integer",
+          "description": "Maximum notifications per publish response (0 = server default)",
+          "default": 0
+        },
+        "priority": {
+          "type": "integer",
+          "description": "Subscription priority (0-255)",
+          "default": 0
+        },
+        "items": {
+          "type": "array",
+          "description": "List of items for the connector",
+          "items": { "$ref": "#/definitions/opcUaEventItem" }
+        }
+      },
+      "required": ["address"],
+      "examples": [
+        {
+          "name": "opcua_event_source",
+          "enabled": true,
+          "scan_interval": 500,
+          "connector": "opcUaEvent",
+          "rbe": true,
+          "address": "localhost",
+          "port": 49320,
+          "timeout": 1000,
+          "anonymous": false,
+          "username": "opcuser",
+          "password": "opcpassword",
+          "publishing_interval_ms": 500,
+          "max_notifications_per_publish": 0,
+          "priority": 0,
+          "items": [
+            {
+              "name": "Random1",
+              "enabled": true,
+              "rbe": true,
+              "namespace": 2,
+              "address": "Simulation Examples.Functions.Random1",
+              "sampling_interval_ms": 250,
+              "queue_size": 10,
+              "discard_oldest": true,
+              "monitoring_mode": 2
+            }
+          ]
+        }
+      ]
+    },
+    "opcUaConditionSource": {
+      "description": "OPC-UA Events & Conditions source. Subscribes monitored items against the EventNotifier attribute with an EventFilter and surfaces the SELECT-clause row as a dict payload (keyed by clause name). Optional ConditionRefresh replays current condition state on subscribe.",
+      "type": "object",
+      "properties": {
+        "address": {
+          "type": "string",
+          "description": "Server hostname or IP address"
+        },
+        "port": {
+          "type": "integer",
+          "description": "Server port",
+          "default": 49320
+        },
+        "path": {
+          "type": "string",
+          "description": "Server path"
+        },
+        "timeout": {
+          "type": "integer",
+          "description": "Timeout in milliseconds",
+          "default": 1000
+        },
+        "mode": {
+          "type": "integer",
+          "description": "1=None, 2=Sign, 3=SignAndEncrypt",
+          "default": 1,
+          "enum": [1, 2, 3]
+        },
+        "policy": {
+          "type": "integer",
+          "description": "1=None, 2=Basic256, 3=Basic128Rsa15, 4=Basic256Sha256",
+          "default": 1,
+          "enum": [1, 2, 3, 4]
+        },
+        "anonymous": {
+          "type": "boolean",
+          "description": "Connect anonymously",
+          "default": false
+        },
+        "username": {
+          "type": "string",
+          "description": "Username"
+        },
+        "password": {
+          "type": "string",
+          "description": "Password"
+        },
+        "publishing_interval_ms": {
+          "type": "integer",
+          "description": "Subscription publishing interval in milliseconds",
+          "default": 500
+        },
+        "max_notifications_per_publish": {
+          "type": "integer",
+          "description": "Maximum notifications per publish response (0 = server default)",
+          "default": 0
+        },
+        "priority": {
+          "type": "integer",
+          "description": "Subscription priority (0-255)",
+          "default": 0
+        },
+        "refresh_conditions": {
+          "type": "boolean",
+          "description": "Call ConditionType::ConditionRefresh after subscribing so the server replays current condition state (RefreshStartEvent → existing conditions → RefreshEndEvent)",
+          "default": true
+        },
+        "items": {
+          "type": "array",
+          "description": "List of items for the connector",
+          "items": { "$ref": "#/definitions/opcUaConditionItem" }
+        }
+      },
+      "required": ["address"],
+      "examples": [
+        {
+          "name": "opcua_condition_source",
+          "enabled": true,
+          "scan_interval": 500,
+          "connector": "opcUaCondition",
+          "rbe": false,
+          "address": "localhost",
+          "port": 4840,
+          "timeout": 5000,
+          "anonymous": true,
+          "mode": 1,
+          "policy": 1,
+          "publishing_interval_ms": 500,
+          "max_notifications_per_publish": 0,
+          "priority": 0,
+          "refresh_conditions": true,
+          "items": [
+            {
+              "name": "serverEvents",
+              "enabled": true,
+              "address": "",
+              "namespace": 0,
+              "sampling_interval_ms": 0,
+              "queue_size": 100,
+              "discard_oldest": true,
+              "monitoring_mode": 2,
+              "select_clauses": [
+                "EventId", "EventType", "SourceName", "Message", "Severity", "Time",
+                "ConditionName", "EnabledState", "EnabledState/Id",
+                "ActiveState", "ActiveState/Id", "Quality"
+              ]
+            }
+          ]
         }
       ]
     },
